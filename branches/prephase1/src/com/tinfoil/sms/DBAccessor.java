@@ -150,7 +150,14 @@ public class DBAccessor {
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
 	 */
-	public void updateRow(TrustedContact tc, String number)
+	public void updateRow (TrustedContact tc, String number)
+	{
+		open();
+		removeRow(number);
+		addRow(tc);
+		close();
+	}
+	/*public void updateRow(TrustedContact tc, String number)
 	{
 		//Check if name, number or key contain any ';'
 		
@@ -165,12 +172,13 @@ public class DBAccessor {
         open();
 		db.update(SQLitehelper.TABLE_NAME, cv, "number = "+ number, null);
 		close();
-	}
+	}*/
 	
 	public void removeRow(String number)
 	{
 		open();
 		db.delete(SQLitehelper.TABLE_NAME, "number = " +number, null);
+		close();
 	}
 	
 	//public void addTrusted()
