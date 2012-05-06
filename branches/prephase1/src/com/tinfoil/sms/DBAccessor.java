@@ -60,7 +60,7 @@ public class DBAccessor {
 	 * Adds a row to the contacts table, trusted_contact
 	 * @param tc : TrustedContact contains all the required information for the contact
 	 */
-    public void addRow (TrustedContact tc)
+	public void addRow (TrustedContact tc)
 	{
 		//Check if name, number or key contain any ';'
 		
