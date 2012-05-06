@@ -127,7 +127,7 @@ public class DBAccessor {
 	{		
 		open();
 		Cursor cur = db.query(SQLitehelper.TABLE_NAME, new String[] {KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED},
-				null, null, null, null, null);
+				null, null, null, null, "id");
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
 		//tc.add(new TrustedContact("Joseph", "1342132342", "heys", 1));
@@ -167,12 +167,20 @@ public class DBAccessor {
 		close();
 	}
 	
+	public void removeRow(String number)
+	{
+		open();
+		db.delete(SQLitehelper.TABLE_NAME, "number = " +number, null);
+	}
+	
+	//public void addTrusted()
+	
 	/**
 	 * Update the key value for a certain contact
 	 * @param number : String the number for the contact
 	 * @param key : String the contact's public key
 	 */
-	public void updateKey (String number, String key)
+	/*public void updateKey (String number, String key)
 	{
 		//Check if name, number or key contain any ';'
 		ContentValues cv = new ContentValues();
@@ -184,14 +192,14 @@ public class DBAccessor {
         open();
 		db.update(SQLitehelper.TABLE_NAME, cv, "number = "+number, null);
 		close();
-	}
+	}*/
 	
 	/**
 	 * Update the verified of the contact
 	 * @param number : String the contact's number
 	 * @param verified : int the contacts new state
 	 */
-	public void updateVerified (String number, int verified)
+	/*public void updateVerified (String number, int verified)
 	{
 		//Check if name, number or key contain any ';'
 		ContentValues cv = new ContentValues();
@@ -203,7 +211,7 @@ public class DBAccessor {
         open();
 		db.update(SQLitehelper.TABLE_NAME, cv, "number = "+number, null);
 		close();
-	}
+	}*/
 	
 	public boolean isTrustedContact (String number)
 	{
