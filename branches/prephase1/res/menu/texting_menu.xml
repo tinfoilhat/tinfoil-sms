@@ -3,7 +3,7 @@
     <item android:id="@+id/compose" android:title="Compose" />
     <item android:id="@+id/settings" android:title="Settings" />
 	<item android:id="@+id/add" android:title="Add Contact" />
-	<item android:id="@+id/manage" android:title="Manage Contacts" />
+	<item android:id="@+id/message" android:title="View Messsages" />
 	
 	
 	

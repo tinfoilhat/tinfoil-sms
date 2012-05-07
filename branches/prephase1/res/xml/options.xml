@@ -23,11 +23,15 @@
                 <intent
              		android:action="android.intent.action.VIEW"
              		android:targetPackage="com.tinfoil.sms"
-             		android:targetClass="com.tinfoil.sms.addContact" />
+             		android:targetClass="com.tinfoil.sms.AddContact" />
         </PreferenceScreen>
     	<PreferenceScreen 
 	        android:title="Import Contacts"
 	        android:key="import_contacts">
+                <intent
+             		android:action="android.intent.action.VIEW"
+             		android:targetPackage="com.tinfoil.sms"
+             		android:targetClass="com.tinfoil.sms.ImportContacts" />
         
     	</PreferenceScreen>
    		<PreferenceScreen

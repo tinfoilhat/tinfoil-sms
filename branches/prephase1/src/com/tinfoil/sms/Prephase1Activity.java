@@ -190,13 +190,13 @@ public class Prephase1Activity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
 	        case R.id.add:
-	        startActivity(new Intent(this, addContact.class));
+	        startActivity(new Intent(this, AddContact.class));
 	        return true;
 	        case R.id.settings:
 	        startActivity(new Intent(this, QuickPrefsActivity.class));
 	        return true;
-	        case R.id.manage:
-		    startActivity(new Intent(this, ManageContactsActivity.class));
+	        case R.id.message:
+		    startActivity(new Intent(this, MessageView.class));
 		    return true;
 	        default:
 	        return super.onOptionsItemSelected(item);

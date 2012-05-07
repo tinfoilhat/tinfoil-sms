@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class addContact extends Activity {
+public class AddContact extends Activity {
 	Button add;
 	EditText contactName;
 	EditText contactNumber; 
@@ -31,9 +31,12 @@ public class addContact extends Activity {
 				
 				if (name.length() > 0 && number.length() > 0)
 				{
-					Prephase1Activity.dba.addRow(name, number, null, 0);
-					Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
-									
+					//Need to add to android contact's database, and check to see if it isnt already there
+					String message = Prephase1Activity.dba.addRow(name, number, null, 0);
+					Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+					
+					
+					//Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
 					contactNumber.setText("");
 					contactName.setText("");
 				}

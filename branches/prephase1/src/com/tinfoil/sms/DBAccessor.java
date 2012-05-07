@@ -2,10 +2,12 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 
 /**
  * Creates a database that is read and write and provides methods to facilitate the reading and writing to the database. 
@@ -19,7 +21,7 @@ public class DBAccessor {
 		
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
-	
+	private ContentResolver cr;
 	/**
 	 * Creates a database that is read and write
 	 * @param c	: Context, where the database is available
@@ -28,9 +30,9 @@ public class DBAccessor {
 	{
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
+		cr = c.getContentResolver();
 	}
-	
-	
+
 	/**
 	 * Adds a row to the contacts table, trusted_contact
 	 * @param name : String the name of the contact
@@ -38,7 +40,7 @@ public class DBAccessor {
 	 * @param key : String the contact's public key, null if not received
 	 * @param verified : int whether the user's public key has been given to the contact, 0 if not sent
 	 */
-	public void addRow (String name, String number, String key, int verified)
+	public String addRow (String name, String number, String key, int verified)
 	{
 		//Check if name, number or key contain any ';'
 	
@@ -54,6 +56,52 @@ public class DBAccessor {
         open();
         db.insert(SQLitehelper.TABLE_NAME, null, cv);
         close();
+        
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
+        		null,
+        		null,
+        		null, null);
+        //ContactsContract.Contacts.DISPLAY_NAME +" = " + name,
+        while (cur.moveToNext())
+        {
+        	String id = cur.getString(
+        			cur.getColumnIndex(ContactsContract.Contacts._ID));
+        	String found_name = cur.getString(
+                    cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        	if (found_name.equalsIgnoreCase(name))
+        	{
+		        Cursor pCur = cr.query(
+		 	 		    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+		 	 		    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
+		 	 		    new String[]{id}, null);
+		        if (pCur.moveToNext())
+		        {
+		        	String tempNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+		        	if (tempNumber.equalsIgnoreCase(number))
+		        	{
+		        		return "Contact is already in dba";
+		        	}
+		        	else
+		        	{
+		        		return "Found " + found_name + " X" + tempNumber + "X " + number;
+		        	}
+		        }
+		        else
+		        {
+		        	return "Found " + found_name;
+		        }
+        	
+        	}
+        	else 
+        	{
+        		break;
+        	}
+        }
+        
+        //Need to use Content Provider to add stuff to android's db
+       
+        return "Found Nothing!";
+        
 	}
 	
 	/**
@@ -76,7 +124,10 @@ public class DBAccessor {
         open();
         db.insert(SQLitehelper.TABLE_NAME, null, cv);
         close();
+        
 	}
+	
+	
 	
     /**
      * Open the database to be used

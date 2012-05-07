@@ -16,9 +16,11 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="Tinfoil-SMS" >
-        <activity android:name="addContact" android:label="Add Contact" />
+        <activity android:name=".AddContact" android:label="Add Contact" />
         <activity android:name=".QuickPrefsActivity" android:label="Settings" />
         <activity android:name=".ManageContactsActivity" android:label="Contacts" />
+        <activity android:name=".MessageView" android:label="Messages" />
+        <activity android:name=".ImportContacts" android:label="Import Contacts" />
         <activity
             android:name=".Prephase1Activity"
             android:label="Tinfoil-SMS" >

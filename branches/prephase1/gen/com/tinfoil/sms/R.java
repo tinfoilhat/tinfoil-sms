@@ -15,24 +15,26 @@ public final class R {
     }
     public static final class id {
         public static final int add=0x7f070004;
-        public static final int compose=0x7f07000b;
+        public static final int compose=0x7f07000c;
+        public static final int confirm=0x7f070006;
         public static final int contact_name=0x7f070001;
         public static final int contact_number=0x7f070003;
         public static final int listView1=0x7f070005;
-        public static final int manage=0x7f07000d;
-        public static final int message=0x7f070009;
+        public static final int message=0x7f07000a;
         public static final int name=0x7f070000;
         public static final int number=0x7f070002;
-        public static final int phoneNum=0x7f070007;
-        public static final int phoneText=0x7f070006;
-        public static final int send=0x7f07000a;
-        public static final int settings=0x7f07000c;
-        public static final int textText=0x7f070008;
+        public static final int phoneNum=0x7f070008;
+        public static final int phoneText=0x7f070007;
+        public static final int send=0x7f07000b;
+        public static final int settings=0x7f07000d;
+        public static final int textText=0x7f070009;
     }
     public static final class layout {
         public static final int addcontact=0x7f030000;
         public static final int contact=0x7f030001;
-        public static final int main=0x7f030002;
+        public static final int importcontacts=0x7f030002;
+        public static final int main=0x7f030003;
+        public static final int messages=0x7f030004;
     }
     public static final class menu {
         public static final int texting_menu=0x7f060000;
