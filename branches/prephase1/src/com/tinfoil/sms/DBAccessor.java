@@ -32,6 +32,24 @@ public class DBAccessor {
 		db = contactDatabase.getWritableDatabase();
 		cr = c.getContentResolver();
 	}
+	
+	/**
+	 * Checks if a contact already has the given number
+	 * @param number : String, a phone number
+	 * @return : boolean
+	 * true if their is a conflict
+	 * false if there is not a conflict
+	 */
+	public boolean conflict (String number)
+	{
+		TrustedContact tc = getRow(number);
+		if (tc == null)
+		{
+			return false;
+		}
+		return true;
+		
+	}
 
 	/**
 	 * Adds a row to the contacts table, trusted_contact
@@ -40,36 +58,67 @@ public class DBAccessor {
 	 * @param key : String the contact's public key, null if not received
 	 * @param verified : int whether the user's public key has been given to the contact, 0 if not sent
 	 */
-	public String addRow (String name, String number, String key, int verified)
+	public void addRow (String name, String number, String key, int verified)
 	{
 		//Check if name, number or key contain any ';'
+		//if (!conflict(number))
+		//{
+			ContentValues cv = new ContentValues();
+				
+			//add given values to a row
+	        cv.put(KEY_NAME, name);
+	        cv.put(KEY_NUMBER, number);
+	        cv.put(KEY_KEY, key);
+	        cv.put(KEY_VERIFIED, verified);
 	
-		ContentValues cv = new ContentValues();
+	        //Insert the row into the database
+	        open();
+	        db.insert(SQLitehelper.TABLE_NAME, null, cv);
+	        close();
+		//}
 		
-		//add given values to a row
-        cv.put(KEY_NAME, name);
-        cv.put(KEY_NUMBER, number);
-        cv.put(KEY_KEY, key);
-        cv.put(KEY_VERIFIED, verified);
-
-        //Insert the row into the database
-        open();
-        db.insert(SQLitehelper.TABLE_NAME, null, cv);
-        close();
+	}
+	
+	/**
+	 * Adds a row to the contacts table, trusted_contact
+	 * @param tc : TrustedContact contains all the required information for the contact
+	 */
+	public void addRow (TrustedContact tc)
+	{
+		//Check if name, number or key contain any ';'
+		//if (!conflict(tc.getNumber()))
+		//{
+			ContentValues cv = new ContentValues();
+			
+			//add given values to a row
+	        cv.put(KEY_NAME, tc.getName());
+	        cv.put(KEY_NUMBER, tc.getNumber());
+	        cv.put(KEY_KEY, tc.getKey());
+	        cv.put(KEY_VERIFIED, tc.getVerified());
+	
+	        //Insert the row into the database
+	        open();
+	        db.insert(SQLitehelper.TABLE_NAME, null, cv);
+	        close();
+		//}
         
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
-        		null,
-        		null,
-        		null, null);
-        //ContactsContract.Contacts.DISPLAY_NAME +" = " + name,
-        while (cur.moveToNext())
-        {
-        	String id = cur.getString(
-        			cur.getColumnIndex(ContactsContract.Contacts._ID));
-        	String found_name = cur.getString(
-                    cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-        	if (found_name.equalsIgnoreCase(name))
-        	{
+	}
+	
+	public String nativeContact (String name, String number)
+	{
+		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
+		null,
+		null,
+		null, null);
+		//ContactsContract.Contacts.DISPLAY_NAME +" = " + name,
+		while (cur.moveToNext())
+		{
+			String id = cur.getString(
+					cur.getColumnIndex(ContactsContract.Contacts._ID));
+			String found_name = cur.getString(
+		            cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+			if (found_name.equalsIgnoreCase(name))
+			{
 		        Cursor pCur = cr.query(
 		 	 		    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
 		 	 		    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
@@ -90,44 +139,18 @@ public class DBAccessor {
 		        {
 		        	return "Found " + found_name;
 		        }
-        	
-        	}
-        	else 
-        	{
-        		break;
-        	}
-        }
-        
-        //Need to use Content Provider to add stuff to android's db
-       
-        return "Found Nothing!";
-        
-	}
-	
-	/**
-	 * Adds a row to the contacts table, trusted_contact
-	 * @param tc : TrustedContact contains all the required information for the contact
-	 */
-	public void addRow (TrustedContact tc)
-	{
-		//Check if name, number or key contain any ';'
+			
+			}
+			else 
+			{
+				break;
+			}
+		}
 		
-		ContentValues cv = new ContentValues();
+		//Need to use Content Provider to add stuff to android's db
 		
-		//add given values to a row
-        cv.put(KEY_NAME, tc.getName());
-        cv.put(KEY_NUMBER, tc.getNumber());
-        cv.put(KEY_KEY, tc.getKey());
-        cv.put(KEY_VERIFIED, tc.getVerified());
-
-        //Insert the row into the database
-        open();
-        db.insert(SQLitehelper.TABLE_NAME, null, cv);
-        close();
-        
+		return "Found Nothing!";
 	}
-	
-	
 	
     /**
      * Open the database to be used
