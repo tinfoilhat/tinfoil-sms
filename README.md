@@ -30,5 +30,19 @@ will traumatize even the most reserved facebook users.
 Take heed of the warnings presented in this document, Tinfoil-SMS is designed with the tinfoilhead[1]
 in mind.
 
-
 [1]: https://en.wikipedia.org/wiki/Tinfoil_hat "Tinfoil Head"
+
+
+
+
+Project Guidelines and Goals
+----------------------------
+
++ Tinfoil-SMS will be released as open source software under the GNU Public License Version 2
++ Project is currently alpha, the goal is a beta release by September
++ Tinfoil-SMS will make use of public key cryptography using ECC[1]
++ Use message authentication (HMAC) to verify messages from contacts
++ Use steganography to obfuscate text messages
++ Automatically import contacts from the phone to Tinfoil-SMS
++ Enable automatically adding new contacts that are trusted
+
