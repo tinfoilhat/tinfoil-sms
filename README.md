@@ -1,14 +1,14 @@
 Tinfoil-SMS
 ============
 
-Tinfoil head Manifesto
+Tinfoil Head Manifesto
 ----------------------
 
 We here stand as mortal men committed to creating a software application
 that will protect the rights and freedom of all men, as all men are created
 equal.
 
-We hold the following as inallianable rights of men
+We hold the following as inalienable rights of men
 
 + A right to privacy
 + A right to security
@@ -23,7 +23,7 @@ security is only as good as the weakest link. Heed the following.
 3. Security above all else, including performance
 
 
-We heed the tinfoil hat as a right of passage, as a quick view of
+We view the tinfoil hat as a right of passage, as a quick view of
 [facebook's privacy mess](http://www.nytimes.com/interactive/2010/05/12/business/facebook-privacy.html?ref=personaltech)
 will traumatize even the most reserved facebook users.
 
