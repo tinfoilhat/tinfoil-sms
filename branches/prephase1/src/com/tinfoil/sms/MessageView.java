@@ -19,6 +19,7 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -63,10 +64,29 @@ public class MessageView extends Activity {
     {
     	List<String> sms = new ArrayList<String>();
 		Uri uriSMSURI = Uri.parse("content://sms/inbox");
-		//ContentResolver cr = getContentResolver();
 		Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
-		//Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		//ContentResolver cr = getContentResolver();
+		//Cursor nCur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
+		//Used to remove duplication
+		Hashtable <String, Boolean> numbers = new Hashtable <String, Boolean>();
+		
+		while (cur.moveToNext()) 
+		{
+			String address = cur.getString(cur.getColumnIndex("address"));
+			if (numbers.isEmpty() || numbers.get(address) == null)
+			{
+				numbers.put(address, true);
+				String name = findNameByAddress(address);
+				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
+				sms.add("Number: " + address + " Name " + name + " Message: " + body);
+				//sms.add("Number: " + address + " Message: " + body);
+			}
+		}
+		cur.close();
+		//nCur.
+		
+		 
 		
 		
 		/*String id ="";
@@ -96,15 +116,32 @@ public class MessageView extends Activity {
 		    }
 	 	}*/
 		    
-		
-		while (cur.moveToNext()) 
-		{
-			
-			String address = cur.getString(cur.getColumnIndex("address"));
-			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-			sms.add("Number: " + address + " Message: " + body);  
-		}
-		      
 		return sms;
     }
+
+
+	public String findNameByAddress(String addr)
+	{
+		Uri myPerson = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
+	                Uri.encode(addr));
+	
+		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME };
+	
+		Cursor cursor = getContentResolver().query(myPerson,
+	                projection, null, null, null);
+	
+		if (cursor.moveToFirst()) {
+	
+			String name=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+	        //Log.e("","Found contact name");
+			cursor.close();
+			return name;
+		}
+	
+	    cursor.close();
+	    //Log.e("","Not Found contact name");
+	
+	    return addr;
+	}
+
 }
