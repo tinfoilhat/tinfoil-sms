@@ -74,12 +74,15 @@ public class MessageView extends Activity {
 		while (cur.moveToNext()) 
 		{
 			String address = cur.getString(cur.getColumnIndex("address"));
+			String id = cur.getString(cur.getColumnIndex("_id"));
 			if (numbers.isEmpty() || numbers.get(address) == null)
 			{
 				numbers.put(address, true);
-				String name = findNameByAddress(address);
+				
+				//String name = findNameByAddress(address);
+				String name = nameHelper(address);
 				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-				sms.add("Number: " + address + " Name " + name + " Message: " + body);
+				sms.add("Number: " + address + " < Name " + name + "> Message: " + body);
 				//sms.add("Number: " + address + " Message: " + body);
 			}
 		}
@@ -118,7 +121,25 @@ public class MessageView extends Activity {
 		    
 		return sms;
     }
+    
+    public String format (String number)
+    {
+    	if (!number.substring(0,2).equalsIgnoreCase("+1"))
+    	{
+    		return number;
+    	}
+    	return number.substring(2);
+    }
 
+    public String nameHelper(String number)
+    {
+    	String num = findNameByAddress(number);
+    	if (num.equalsIgnoreCase(number))
+    	{
+    		return findNameByAddress(format(number));
+    	}
+    	return num;
+    }
 
 	public String findNameByAddress(String addr)
 	{
@@ -139,9 +160,10 @@ public class MessageView extends Activity {
 		}
 	
 	    cursor.close();
+	    
 	    //Log.e("","Not Found contact name");
 	
 	    return addr;
 	}
-
+    
 }
