@@ -22,33 +22,47 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 
 public class MessageView extends Activity {
+	Button sendSMS;
+	EditText messageBox;
+	
+  //Change the password here or give a user possibility to change it
+    //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
+    private static final String PASSWORD = "test123";
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.messageviewer);
 		
+		Prephase2Activity.dba = new DBAccessor(this);
+        
+        Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
 		ListView list = (ListView) findViewById(R.id.listView1);
 		List<String[]> msgList = getSMS();
 		// String []msgList = {"bla", "sasdd"};
 
-		// Toast.makeText(getApplicationContext(), "Here",
-		// Toast.LENGTH_SHORT).show();
 		list.setAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.test_list_item, messageMaker(msgList)));
 		list.setItemsCanFocus(false);
@@ -59,6 +73,53 @@ public class MessageView extends Activity {
 				
 			}
 		});
+		
+		sendSMS = (Button) findViewById(R.id.send);
+		messageBox = (EditText) findViewById(R.id.message);
+		
+		sendSMS.setOnClickListener(new View.OnClickListener()
+        {
+			public void onClick(View v) 
+			{
+		        String text = messageBox.getText().toString();
+				
+				if (Prephase2Activity.selectedNumber.length() > 0 && text.length() > 0)
+				{
+					Toast.makeText(getBaseContext(), "" + Prephase2Activity.selectedNumber, Toast.LENGTH_SHORT).show();
+
+					//Encrypt the text message before sending it	
+					try
+					{
+                    	//Only expects encrypted messages from trusted contacts in the secure state
+						if (Prephase2Activity.dba.isTrustedContact(Prephase2Activity.selectedNumber) && 
+								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
+						{
+							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(PASSWORD, text));
+							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							sendSMS(Prephase2Activity.selectedNumber, text);
+							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
+						}
+						
+						messageBox.setText("");
+						//phoneBox.setText("");
+				    }
+			        catch ( Exception e ) 
+			        { 
+			        	Toast.makeText(getBaseContext(), "FAILED TO SEND", Toast.LENGTH_LONG).show();
+			        	e.printStackTrace(); 
+			    	}
+				}
+				else
+				{
+					Toast.makeText(getBaseContext(), 
+							"You have failed to provide sufficient information", Toast.LENGTH_SHORT).show();
+				}
+				
+			}
+        });
     }
 
     public List<String> messageMaker (List<String[]> sms)
@@ -66,7 +127,7 @@ public class MessageView extends Activity {
 		List <String> messageList = new ArrayList<String>();
 		for (int i = 0; i < sms.size();i++)
 		{
-			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
+			messageList.add(sms.get(i)[1] + "Number: " + sms.get(i)[0] + " : "+ sms.get(i)[2]);
 		}
 		return messageList;
 		
@@ -140,5 +201,20 @@ public class MessageView extends Activity {
 
 		return addr;
 	}
+	
+	/**
+     * Sends the given message to the phone with the given number
+     * @param number : String, the number of the phone that the message is sent to
+     * @param message : String, the message, encrypted that will be sent to the contact
+     */
+    public void sendSMS (String number, String message)
+    {
+    	PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Object.class), 0);
+        SmsManager sms = SmsManager.getDefault();
+        
+        //this is the function that does all the magic
+        sms.sendTextMessage(number, null, message, pi, null);
+    	
+    }
     
 }

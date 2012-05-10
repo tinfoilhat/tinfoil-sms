@@ -131,7 +131,7 @@ public class Prephase2Activity extends Activity {
 						// Only expects encrypted messages from trusted contacts
 						// in the secure state
 						String mess = messages[0].getOriginatingAddress();
-						mess = mess.substring(1, mess.length());
+						//mess = mess.substring(1, mess.length());
 						// Toast.makeText(getBaseContext(),mess,
 						// Toast.LENGTH_SHORT).show();
 						if (dba.isTrustedContact(mess)) {
@@ -197,7 +197,7 @@ public class Prephase2Activity extends Activity {
 		List <String> messageList = new ArrayList<String>();
 		for (int i = 0; i < sms.size();i++)
 		{
-			messageList.add(sms.get(i)[1] + " Message: " + sms.get(i)[2]);
+			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
 		}
 		return messageList;
 		

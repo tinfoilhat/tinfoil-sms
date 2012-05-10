@@ -316,6 +316,11 @@ public class DBAccessor {
 	public boolean isTrustedContact (String number)
 	{
 		TrustedContact tc = getRow(number);
+		
+		if (tc == null)
+		{
+			tc = getRow(number.substring(1));
+		}
 		if (tc != null)
 		{
 			if (!tc.isKeyNull() && tc.getVerified() == 2)
