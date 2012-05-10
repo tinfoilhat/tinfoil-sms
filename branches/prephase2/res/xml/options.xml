@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory 
+        android:title="Application Settings"
+        android:key="application_category">
+        
+        <CheckBoxPreference 
+            android:key="enable"
+            android:summary="Enable or disable SMS encrption"
+            android:title="Enable Tinfoil-SMS" 
+            android:defaultValue="true" />           
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:key="contact_category"
+        android:title="Contact Settings">
+        
+        <PreferenceScreen 
+            android:title="Add Contact"
+            android:key="add_contact"
+            android:summary="Add a contact to your secure list">
+                <intent
+             		android:action="android.intent.action.VIEW"
+             		android:targetPackage="com.tinfoil.sms"
+             		android:targetClass="com.tinfoil.sms.AddContact" />
+        </PreferenceScreen>
+    	<PreferenceScreen 
+	        android:title="Import Contacts"
+	        android:key="import_contacts">
+                <intent
+             		android:action="android.intent.action.VIEW"
+             		android:targetPackage="com.tinfoil.sms"
+             		android:targetClass="com.tinfoil.sms.ImportContacts" />
+        
+    	</PreferenceScreen>
+   		<PreferenceScreen
+			android:title="Manage Contacts"
+			android:key="manage_contacts">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:targetPackage="com.tinfoil.sms"
+				android:targetClass="com.tinfoil.sms.ManageContactsActivity" />
+    	</PreferenceScreen>
+    
+    	<PreferenceScreen 
+        	android:title="Import Trusted Contact's Key"
+        	android:key="import_trusted_key">
+        
+    	</PreferenceScreen>
+	</PreferenceCategory>
+	
+	<PreferenceCategory 
+    android:key="book_category" 
+    android:title="Book Settings">
+	    <PreferenceScreen 
+	        android:title="Add Book"
+	        android:key="add_book" 
+	        android:summary="Add a Book Source to the reference list">
+        </PreferenceScreen>
+		<PreferenceScreen 
+		    android:title="Manage Books" 
+		    android:key="manage_books">
+		    
+		</PreferenceScreen>
+	</PreferenceCategory>
+	
+	<PreferenceCategory 
+	    android:key="encryption_category" 
+	    android:title="Encryption Settings">
+	    <CheckBoxPreference 
+	        android:title="Exchange Keys" 
+	        android:key="auto_key_exchange" android:summary="Automatically exchange keys with Contacts"/>
+	    <EditTextPreference 
+	        android:key="key_exchange_timeout" 
+	        android:title="Key Exchange Timeout" 
+	        android:defaultValue="30"/>
+	    <EditTextPreference 
+	        android:key="key_exchange_attempts" 
+	        android:title="Key Exchange Attempts" 
+	        android:defaultValue="1"/>
+	</PreferenceCategory>
+          
+
+    <PreferenceCategory 
+        android:key="key_category" 
+        android:title="Key Settings">
+        <PreferenceScreen 
+            android:title="View My Public Key" 
+            android:key="view_public_key">
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:title="Export My Public Key"
+			android:key="export_public_key">
+            
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="Import My Key" 
+            android:key="import_my_key" 
+            android:summary="Import your own public/private key pair"> 
+        </PreferenceScreen>
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:key="notification_category" 
+        android:title="Notification Settings">
+        <CheckBoxPreference 
+            android:title="Enable Notifications" 
+            android:key="notification_bar" />
+        <CheckBoxPreference 
+            android:title="Vibrate" android:key="vibrate"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:title="Feedback"
+        android:key="feedback_category">
+        <EditTextPreference
+            android:summary="tinfoil.sms@gmail.com"
+            android:title="Email Developers"
+            android:key="email"/>
+          <PreferenceScreen 
+            android:title="Donate"
+            android:key="donate"
+            android:summary="Support the Developers">
+        </PreferenceScreen>  
+	</PreferenceCategory>
+	
+</PreferenceScreen>
