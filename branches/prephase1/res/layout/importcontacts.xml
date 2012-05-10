@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-    <Button
-        android:id="@+id/confirm"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Import Contacts" />
+    <Button android:layout_width="fill_parent"
+        android:layout_height="20pt" android:id="@+id/confirm"
+        android:text="Import Contacts" android:layout_alignParentBottom="true" />
 
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
+    <ListView android:layout_width="fill_parent"
+        android:layout_height="fill_parent" android:id="@+id/listView1"
+        android:layout_alignParentTop="true" android:layout_above="@id/confirm" />
 
-</LinearLayout>
+</RelativeLayout>

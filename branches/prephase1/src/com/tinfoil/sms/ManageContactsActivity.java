@@ -70,7 +70,7 @@ public class ManageContactsActivity extends Activity {
         	names[0] = "Add a Contact";
         	        
 	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, names));
+	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
 
 	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
 	        listView.setItemsCanFocus(false);

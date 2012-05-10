@@ -50,7 +50,7 @@ public class Prephase1Activity extends Activity {
     EditText messageBox;
     TextView tv;
     static DBAccessor dba;
-    
+    static SharedPreferences sharedPrefs;
     
     //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -63,15 +63,8 @@ public class Prephase1Activity extends Activity {
         setContentView(R.layout.main);
         dba = new DBAccessor(this);
         
-        /*SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPrefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-			
-			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-					String key) {
-				sharedPreferences.getString(key, "");
-				
-			}
-		} );*/
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
         
         //String actualNumber = "5555215556";
         //dba.addRow("billy", actualNumber, "12345", 2);
@@ -94,7 +87,7 @@ public class Prephase1Activity extends Activity {
 					try
 					{
                     	//Only expects encrypted messages from trusted contacts in the secure state
-						if (dba.isTrustedContact(number))
+						if (dba.isTrustedContact(number) && sharedPrefs.getBoolean("enable", true))
 						{
 							sendSMS(number, Encryption.aes_encrypt(PASSWORD, text));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
