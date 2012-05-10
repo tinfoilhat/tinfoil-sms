@@ -36,6 +36,7 @@ public final class R {
         public static final int importcontacts=0x7f030002;
         public static final int main=0x7f030003;
         public static final int messages=0x7f030004;
+        public static final int messageviewer=0x7f030005;
     }
     public static final class menu {
         public static final int import_menu=0x7f060000;

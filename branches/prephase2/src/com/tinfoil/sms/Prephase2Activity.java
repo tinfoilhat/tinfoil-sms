@@ -54,7 +54,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class Prephase2Activity extends Activity {
 	static DBAccessor dba;
 	static SharedPreferences sharedPrefs;
-	private static List<String> msgList;
+	private static List<String[]> msgList;
+	static String selectedNumber;
 
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
@@ -77,13 +78,14 @@ public class Prephase2Activity extends Activity {
 		// Toast.makeText(getApplicationContext(), "Here",
 		// Toast.LENGTH_SHORT).show();
 		list.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, msgList));
+				android.R.layout.test_list_item, messageMaker(msgList)));
 		list.setItemsCanFocus(false);
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-
+				selectedNumber = msgList.get(position)[0];
+				startActivity(new Intent (getBaseContext(), MessageView.class));
 			}
 		});
 
@@ -125,6 +127,7 @@ public class Prephase2Activity extends Activity {
 						// tc.getVerified(), Toast.LENGTH_SHORT).show();
 						// Toast.makeText(getBaseContext(),messages[0].getOriginatingAddress(),
 						// Toast.LENGTH_SHORT).show();
+						
 						// Only expects encrypted messages from trusted contacts
 						// in the secure state
 						String mess = messages[0].getOriginatingAddress();
@@ -156,7 +159,7 @@ public class Prephase2Activity extends Activity {
 								list.setAdapter(new ArrayAdapter<String>(
 										getBaseContext(),
 										android.R.layout.test_list_item,
-										msgList));
+										messageMaker(msgList)));
 								list.setItemsCanFocus(false);
 							} catch (Exception e) {
 								Toast.makeText(context, "FAILED TO DECRYPT",
@@ -172,7 +175,7 @@ public class Prephase2Activity extends Activity {
 							msgList = getSMS();
 							list.setAdapter(new ArrayAdapter<String>(
 									getBaseContext(),
-									android.R.layout.test_list_item, msgList));
+									android.R.layout.test_list_item, messageMaker(msgList)));
 							list.setItemsCanFocus(false);
 						}
 					}
@@ -189,8 +192,19 @@ public class Prephase2Activity extends Activity {
 
 	}
 
-	public List<String> getSMS() {
-		List<String> sms = new ArrayList<String>();
+	public List<String> messageMaker (List<String[]> sms)
+	{
+		List <String> messageList = new ArrayList<String>();
+		for (int i = 0; i < sms.size();i++)
+		{
+			messageList.add(sms.get(i)[1] + " Message: " + sms.get(i)[2]);
+		}
+		return messageList;
+		
+	}
+	
+	public List<String[]> getSMS() {
+		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/inbox");
 		Cursor cur = getContentResolver().query(uriSMSURI, null, null, null,
 				null);
@@ -208,8 +222,11 @@ public class Prephase2Activity extends Activity {
 				numbers.put(address, true);
 				String name = nameHelper(address);
 				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-				sms.add("Number: " + address + " < Name " + name
-						+ "> Message: " + body);
+				//msg.add("Number: " + address + " < Name " + name
+					//	+ "> Message: " + body);
+				//msg2.add(address);
+				//sms.add(msg2);
+				sms.add(new String[] {address, name, body});
 			}
 		}
 		cur.close();
@@ -262,6 +279,7 @@ public class Prephase2Activity extends Activity {
 		return true;
 	}
 
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.compose:
