@@ -87,38 +87,6 @@ public class MessageView extends Activity {
 			}
 		}
 		cur.close();
-		//nCur.
-		
-		 
-		
-		
-		/*String id ="";
-		String name = "";
-		if (cur.getCount() > 0) {
-		    while (cur.moveToNext()) {
-		        id = cur.getString(
-	                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-		        name = cur.getString(
-	                        cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-		       
-		   
-	 		/*if (Integer.parseInt(cur.getString(
-	 				cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
- 					Cursor pCur = cr.query(
-	 	 		    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
-	 	 		    null, 
-	 	 		    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-	 	 		    new String[]{id}, null);
-	 	 	        while (pCur.moveToNext()) {
-	 	 		    // Do something with phones
-	 	 	        } 
-	 	 	        pCur.close();
-	 	        }
-	 			
-	            
-		    }
-	 	}*/
-		    
 		return sms;
     }
     
@@ -154,14 +122,11 @@ public class MessageView extends Activity {
 		if (cursor.moveToFirst()) {
 	
 			String name=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-	        //Log.e("","Found contact name");
 			cursor.close();
 			return name;
 		}
 	
 	    cursor.close();
-	    
-	    //Log.e("","Not Found contact name");
 	
 	    return addr;
 	}
