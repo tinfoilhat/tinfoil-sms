@@ -22,9 +22,13 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -91,5 +95,24 @@ public class ImportContacts extends Activity {
 		});       
         
 	}
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+   	 
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.import_menu, menu);
+        return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+	        case R.id.all:
+	        //startActivity(new Intent(this, SendMessageActivity.class));
+	        return true;
+	        		    
+	        default:
+	        return super.onOptionsItemSelected(item);
+    	}
+     
+    }
 	
 }
