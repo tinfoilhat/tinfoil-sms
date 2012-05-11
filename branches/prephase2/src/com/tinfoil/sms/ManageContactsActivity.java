@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -30,6 +34,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class ManageContactsActivity extends Activity {
+	private final String KEY = "12345";
+	private final int VERIFY = 2;
     /** Called when the activity is first created. */
 	//private ListView mContactList;
 
@@ -54,7 +60,7 @@ public class ManageContactsActivity extends Activity {
 	        	names[i] = tc.get(i).getName();
 	        }
 
-
+	        
 	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
 	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
 
@@ -63,6 +69,7 @@ public class ManageContactsActivity extends Activity {
 
 	        //Set the mode to single or multiple choice, (should match top choice)
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+	        initList(tc, listView);
         }
         else 
         {
@@ -75,10 +82,7 @@ public class ManageContactsActivity extends Activity {
 	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
 	        listView.setItemsCanFocus(false);
         }
-        
- 
        
-                
         //Create what happens when you click on a button
         listView.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -86,11 +90,7 @@ public class ManageContactsActivity extends Activity {
         			int position, long id) {
         		//Note: the key does not actually affect the encryption currently
         		//In order to send a encrypted message a contact must have a key
-        		final String key = "12345";
-        		final int verify = 2;
         		
-        		
-        		//Toast.makeText(getApplicationContext(), tc.get(position).getKey(), Toast.LENGTH_SHORT).show();
         		if (tc != null)
         		{
         			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getNumber()))
@@ -103,8 +103,8 @@ public class ManageContactsActivity extends Activity {
 	        		}
 	        		else
 	        		{
-	        			tc.get(position).setKey(key);
-	        			tc.get(position).setVerified(verify);
+	        			tc.get(position).setKey(KEY);
+	        			tc.get(position).setVerified(VERIFY);
 	        			Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
 	        			Prephase2Activity.dba.addRow(tc.get(position));
 	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
@@ -118,7 +118,47 @@ public class ManageContactsActivity extends Activity {
 
         	}});
 	}
+	
+	private void initList(ArrayList<TrustedContact> tc, ListView ls)
+	{
+		for (int i = 0; i < tc.size();i++)
+		{				
+			if (Prephase2Activity.dba.isTrustedContact(tc.get(i).getNumber()))
+    		{
+				ls.setItemChecked(i, true);
+    		}
+    		else
+    		{
+    			ls.setItemChecked(i, false);
+    		}
+		}
+	}
+	
+	/*public boolean onCreateOptionsMenu(Menu menu) {
 
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.texting_menu, menu);
+		return true;
+	}
+
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.compose:
+			startActivity(new Intent(this, SendMessageActivity.class));
+			return true;
+		case R.id.settings:
+			startActivity(new Intent(this, QuickPrefsActivity.class));
+			return true;
+		case R.id.message:
+			startActivity(new Intent(this, MessageView.class));
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
+	}*/
 
 }
 
