@@ -36,6 +36,8 @@ import android.widget.Toast;
 public class ManageContactsActivity extends Activity {
 	private final String KEY = "12345";
 	private final int VERIFY = 2;
+	private ListView listView;
+	private ArrayList<TrustedContact> tc;
     /** Called when the activity is first created. */
 	//private ListView mContactList;
 
@@ -43,13 +45,12 @@ public class ManageContactsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact);
                
-        ListView listView;					//The object which is populated with the items on the list
         String[] names;
         
         //Linking the ListView object to the appropriate listview from the xml file.
         listView = (ListView)findViewById(R.id.listView1);
         
-        final ArrayList<TrustedContact> tc = Prephase2Activity.dba.getAllRows();
+        tc  = Prephase2Activity.dba.getAllRows();
         //Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
         if (tc != null)
         {
@@ -69,7 +70,7 @@ public class ManageContactsActivity extends Activity {
 
 	        //Set the mode to single or multiple choice, (should match top choice)
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        initList(tc, listView);
+	        initList();
         }
         else 
         {
@@ -95,18 +96,12 @@ public class ManageContactsActivity extends Activity {
         		{
         			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getNumber()))
 	        		{
-	        			tc.get(position).setKey(null);
-	        			tc.get(position).setVerified(0);
-	        			Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
-	        			Prephase2Activity.dba.addRow(tc.get(position));
+        				change(position, false);
 	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 	        		}
 	        		else
 	        		{
-	        			tc.get(position).setKey(KEY);
-	        			tc.get(position).setVerified(VERIFY);
-	        			Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
-	        			Prephase2Activity.dba.addRow(tc.get(position));
+	        			change(position, true);
 	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 	        		}
         		}
@@ -114,51 +109,91 @@ public class ManageContactsActivity extends Activity {
         		{
         			//Go to add contact
         			startActivity(new Intent(getBaseContext(), AddContact.class));
+        			finish();
         		}
 
         	}});
+        
 	}
 	
-	private void initList(ArrayList<TrustedContact> tc, ListView ls)
+	
+	
+	private void remove(int position)
+	{
+		tc.get(position).setKey(null);
+		tc.get(position).setVerified(0);
+	}
+	private void add(int position)
+	{
+		tc.get(position).setKey(KEY);
+		tc.get(position).setVerified(VERIFY);
+	}
+	
+	private void change(int position, boolean add)
+	{
+		if (add)
+		{
+			add(position);
+		}
+		else
+		{
+			remove(position);
+		}
+		Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
+		Prephase2Activity.dba.addRow(tc.get(position));
+		
+	}
+	
+	private void initList()
 	{
 		for (int i = 0; i < tc.size();i++)
 		{				
 			if (Prephase2Activity.dba.isTrustedContact(tc.get(i).getNumber()))
     		{
-				ls.setItemChecked(i, true);
+				listView.setItemChecked(i, true);
     		}
     		else
     		{
-    			ls.setItemChecked(i, false);
+    			listView.setItemChecked(i, false);
     		}
 		}
 	}
 	
-	/*public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu) {
 
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.texting_menu, menu);
+		inflater.inflate(R.menu.manage_contacts_menu, menu);
 		return true;
 	}
 
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.compose:
-			startActivity(new Intent(this, SendMessageActivity.class));
+		case R.id.all:
+			if (tc!=null)
+			{
+				for (int i = 0; i < tc.size();i++)
+				{
+					listView.setItemChecked(i, true);
+					change(i, true);
+				}
+			}
 			return true;
-		case R.id.settings:
-			startActivity(new Intent(this, QuickPrefsActivity.class));
+		case R.id.remove:
+			if (tc!=null)
+			{
+				for (int i = 0; i < tc.size();i++)
+				{
+					listView.setItemChecked(i, false);
+					change(i, false);
+				}
+			}
 			return true;
-		case R.id.message:
-			startActivity(new Intent(this, MessageView.class));
-			return true;
-
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 
-	}*/
+	}
 
 }
 
