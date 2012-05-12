@@ -20,31 +20,19 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.telephony.SmsMessage;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class ContactRetriever {
 	
+	/**
+	 * Get the list of 1 messages per unique contact for the main window
+	 * @param c : Context
+	 * @return : List<String[]>, a list of String arrays that contain
+	 * the number, name, and the message. 
+	 */
 	public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/inbox");
@@ -56,7 +44,7 @@ public class ContactRetriever {
 
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
-			String id = cur.getString(cur.getColumnIndex("_id"));
+			//String id = cur.getString(cur.getColumnIndex("_id"));
 			if (numbers.isEmpty() || numbers.get(address) == null) {
 				numbers.put(address, true);
 				String name = nameHelper(address, c);
@@ -68,36 +56,35 @@ public class ContactRetriever {
 		return sms;
 	}
 	
+	/**
+	 * Get a list of messages received from a given number
+	 * @param c : Context
+	 * @return : List<String[]>, a list of String arrays that contain 
+	 * the number, name, and the message.
+	 */
 	public static List<String[]> getPersonSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/inbox");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, null, "address = ?",
 				new String[] {Prephase2Activity.selectedNumber}, null);
-		// ContentResolver cr = getContentResolver();
-		// Cursor nCur = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
-		// null, null, null);
-
-		// Used to remove duplication
-		//Hashtable<String, Boolean> numbers = new Hashtable<String, Boolean>();
 
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
-			String id = cur.getString(cur.getColumnIndex("_id"));
-			//if (numbers.isEmpty() || numbers.get(address) == null) {
-				//numbers.put(address, true);
-				String name = nameHelper(address, c);
-				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-				//msg.add("Number: " + address + " < Name " + name
-					//	+ "> Message: " + body);
-				//msg2.add(address);
-				//sms.add(msg2);
-				sms.add(new String[] {address, name, body});
-			//}
+			String name = nameHelper(address, c);
+			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
+			sms.add(new String[] {address, name, body});
 		}
 		cur.close();
 		return sms;
 	}
 	
+	/**
+	 * Takes the information stored in the String array and 
+	 * formats the display that the user will see.
+	 * @param sms : List<String[]>, a list with a String array that
+	 * contains the number, name, and the message.
+	 * @return : List<String>, a list of messages formated.
+	 */
 	public static List<String> messageMaker (List<String[]> sms)
 	{
 		List <String> messageList = new ArrayList<String>();
@@ -108,6 +95,7 @@ public class ContactRetriever {
 		return messageList;
 		
 	}
+	
 	
 	public static String nameHelper(String number, Context c) {
 		String num = findNameByAddress(number,c);
@@ -136,9 +124,8 @@ public class ContactRetriever {
 
 		if (cursor.moveToFirst()) {
 
-			String name = cursor
-					.getString(cursor
-							.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+			String name = cursor.getString(cursor
+					.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
 			cursor.close();
 			return name;
 		}

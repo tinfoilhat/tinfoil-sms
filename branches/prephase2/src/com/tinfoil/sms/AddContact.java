@@ -63,6 +63,7 @@ public class AddContact extends Activity {
 					}
 					else
 					{
+						//**Note need an alert message here
 						Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
 					}
 				}

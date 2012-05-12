@@ -17,8 +17,6 @@
 
 package com.tinfoil.sms;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -27,11 +25,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.telephony.SmsMessage;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,14 +45,12 @@ public class Prephase2Activity extends Activity {
 	private static List<String[]> msgList;
 	static String selectedNumber;
 	
-
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
 	// 0x47, (byte) 0x84, 0x33, 0x58 };
 	private static final String PASSWORD = "test123";
 
 	/** Called when the activity is first created. */
-	// @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.messages);
@@ -66,14 +60,13 @@ public class Prephase2Activity extends Activity {
 
 		final ListView list = (ListView) findViewById(R.id.listView1);
 		msgList = ContactRetriever.getSMS(this);
-		// String []msgList = {"bla", "sasdd"};
 
-		// Toast.makeText(getApplicationContext(), "Here",
-		// Toast.LENGTH_SHORT).show();
+		// Toast.makeText(getApplicationContext(), "Here", Toast.LENGTH_SHORT).show();
 		list.setAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
 		list.setItemsCanFocus(false);
 
+		//Load up the conversation with the contact selected
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -105,36 +98,33 @@ public class Prephase2Activity extends Activity {
 					}
 
 					if (messages.length > -1) {
-						// Shows a Toast with the phone number of the sender,
-						// and the message.
-						/*
+						
+						/* Shows a Toast with the phone number of the sender, and the message.
 						 * String smsToast = "New SMS received from " +
 						 * messages[0].getOriginatingAddress() + "\n'Test" +
 						 * messages[0].getMessageBody() + "'";
 						 */
 
-						// TrustedContact tc =
-						// dba.getRow(messages[0].getOriginatingAddress());
-						// Toast.makeText(getBaseContext(),tc.getName() + "\n" +
-						// tc.getNumber() + "\n" + tc.getKey() +"\n"+
-						// tc.getVerified(), Toast.LENGTH_SHORT).show();
-						// Toast.makeText(getBaseContext(),messages[0].getOriginatingAddress(),
-						// Toast.LENGTH_SHORT).show();
+						/*TrustedContact tc =
+						dba.getRow(messages[0].getOriginatingAddress());
+						Toast.makeText(getBaseContext(),tc.getName() + "\n" +
+						tc.getNumber() + "\n" + tc.getKey() +"\n"+
+						tc.getVerified(), Toast.LENGTH_SHORT).show();
+						Toast.makeText(getBaseContext(),messages[0].getOriginatingAddress(),
+						Toast.LENGTH_SHORT).show();
+						*/
 						
-						// Only expects encrypted messages from trusted contacts
-						// in the secure state
+						
 						String address = messages[0].getOriginatingAddress();
-						//mess = mess.substring(1, mess.length());
-						//Toast.makeText(getBaseContext(),address.substring(1), Toast.LENGTH_SHORT).show();
-						//Toast.makeText(getBaseContext(),dba.getRow(address.substring(1)).getNumber(), Toast.LENGTH_SHORT).show();
+						/*mess = mess.substring(1);
+						Toast.makeText(getBaseContext(),address.substring(1), Toast.LENGTH_SHORT).show();
+						Toast.makeText(getBaseContext(),dba.getRow(address.substring(1)).getNumber(), Toast.LENGTH_SHORT).show();
+						*/
 						
+						// Only expects encrypted messages from trusted contacts in the secure state
 						if (dba.isTrustedContact((address))) {
-							Toast.makeText(context,
-									"Encrypted Message Received",
-									Toast.LENGTH_LONG).show();
-							Toast.makeText(context,
-									messages[0].getMessageBody(),
-									Toast.LENGTH_LONG).show();
+							Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
+							Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 
 							/*
 							 * Now send the decrypted message to ourself, set
@@ -145,12 +135,10 @@ public class Prephase2Activity extends Activity {
 								sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
 								sendToSelf(messages[0].getOriginatingAddress(),	Encryption.aes_decrypt(PASSWORD,
 												messages[0].getMessageBody()));
-								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_LONG).show();
+								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 								updateList(list);
-								//list.setItemsCanFocus(false);
 							} catch (Exception e) {
-								Toast.makeText(context, "FAILED TO DECRYPT",
-										Toast.LENGTH_LONG).show();
+								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 								e.printStackTrace();
 							}
 						} else {
@@ -158,7 +146,6 @@ public class Prephase2Activity extends Activity {
 							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 							sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
 							updateList(list);
-							//list.setItemsCanFocus(false);
 						}
 					}
 				}
@@ -174,7 +161,12 @@ public class Prephase2Activity extends Activity {
 
 	}
 	
-	public void updateList(ListView list)
+	/**
+	 * Updates the list of the messages in the main inbox and in 
+	 * the secondary inbox that the user last viewed, or is viewing
+	 * @param list : ListView, the ListView for this activity to update the message list
+	 */
+	private void updateList(ListView list)
 	{
 		msgList = ContactRetriever.getSMS(this);
 		list.setAdapter(new ArrayAdapter<String>(
@@ -211,10 +203,8 @@ public class Prephase2Activity extends Activity {
 	 * Drops the message into the in-box of the default SMS program. Tricks the
 	 * in-box to think the message was send by the original sender
 	 * 
-	 * @param srcNumber
-	 *            : String, the number of the contact that sent the message
-	 * @param decMessage
-	 *            : String, the message sent from the contact
+	 * @param srcNumber : String, the number of the contact that sent the message
+	 * @param decMessage : String, the message sent from the contact
 	 */
 	private void sendToSelf(String srcNumber, String decMessage) {
 		ContentValues values = new ContentValues();

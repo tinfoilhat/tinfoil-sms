@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
@@ -42,6 +41,7 @@ public class DBAccessor {
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
 	private ContentResolver cr;
+	
 	/**
 	 * Creates a database that is read and write
 	 * @param c	: Context, where the database is available
@@ -124,12 +124,18 @@ public class DBAccessor {
         
 	}
 	
+	/**
+	 * **Note Still a working project
+	 * This will be used to sync the contacts in tinfoil-sms's
+	 * database with the contacts in the native database.
+	 * @param name : String, the name of the contact to be added
+	 * @param number : String, the number of the contact to be added
+	 * @return : String
+	 */
 	public String nativeContact (String name, String number)
 	{
 		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
-		null,
-		null,
-		null, null);
+		null, null, null, null);
 		//ContactsContract.Contacts.DISPLAY_NAME +" = " + name,
 		while (cur.moveToNext())
 		{
@@ -191,8 +197,9 @@ public class DBAccessor {
 	
 	/**
 	 * Access the information stored in the database of a contact who has a certain number
+	 * with the columns: name, number, key, verified.
 	 * @param number : String the number of the contact to retrieve 
-	 * @return TrustedContact, the row of data stored in the TrustedContact class.
+	 * @return TrustedContact, the row of data.
 	 */
 	public TrustedContact getRow(String number)
 	{		
@@ -210,13 +217,12 @@ public class DBAccessor {
 		return null;
 	}
 	
-	/*public Cursor getRow()
-	{		
-		
-		return db.query(SQLitehelper.TABLE_NAME, new String[] {KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED},
-				null, null, null, null, null);
-	}*/
-	
+	/**
+	 * Get all of the rows in the database with the columns
+	 * name, number, key, verified.	
+	 * @return : ArrayList<TrustedContact>, a list of all the
+	 * contacts in the database
+	 */
 	public ArrayList<TrustedContact> getAllRows()
 	{		
 		open();
@@ -224,8 +230,7 @@ public class DBAccessor {
 				null, null, null, null, "id");
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
-		//tc.add(new TrustedContact("Joseph", "1342132342", "heys", 1));
-		//return tc;
+
 		if (cur.moveToFirst())
         {
 			do
@@ -251,23 +256,11 @@ public class DBAccessor {
 		addRow(tc);
 		close();
 	}
-	/*public void updateRow(TrustedContact tc, String number)
-	{
-		//Check if name, number or key contain any ';'
 		
-		ContentValues cv = new ContentValues();
-		
-		//maps the column to the value
-        cv.put(KEY_NAME, tc.getName());
-        cv.put(KEY_NUMBER, tc.getNumber());
-        cv.put(KEY_KEY, tc.getKey());
-        cv.put(KEY_VERIFIED, tc.getVerified());
-
-        open();
-		db.update(SQLitehelper.TABLE_NAME, cv, "number = "+ number, null);
-		close();
-	}*/
-	
+	/**
+	 * Deletes the rows with the given number
+	 * @param number : String, the number of the contact to be deleted
+	 */
 	public void removeRow(String number)
 	{
 		open();
@@ -276,45 +269,17 @@ public class DBAccessor {
 	}
 	
 	//public void addTrusted()
-	
-	/**
-	 * Update the key value for a certain contact
-	 * @param number : String the number for the contact
-	 * @param key : String the contact's public key
-	 */
-	/*public void updateKey (String number, String key)
-	{
-		//Check if name, number or key contain any ';'
-		ContentValues cv = new ContentValues();
-		
-		//maps the column to the value
-        cv.put(KEY_KEY, key);
 
-        //updates the value of the given row's column (hopefully just 1) with the mapped value key
-        open();
-		db.update(SQLitehelper.TABLE_NAME, cv, "number = "+number, null);
-		close();
-	}*/
-	
 	/**
-	 * Update the verified of the contact
-	 * @param number : String the contact's number
-	 * @param verified : int the contacts new state
+	 * Checks if the given number is a trusted contact's number
+	 * @param number : String, the number of the potential trusted contact
+	 * @return : boolean
+	 * true, if the contact is found in the database and is in the trusted state.
+	 * false, if the contact is not found in the database or is not the trusted state.
+	 * 
+	 * A contact is in the trusted state if they have a key (!= null) and
+	 * they have send their public key the contact (verified = 2)
 	 */
-	/*public void updateVerified (String number, int verified)
-	{
-		//Check if name, number or key contain any ';'
-		ContentValues cv = new ContentValues();
-		
-		//maps the column to the value
-        cv.put(KEY_KEY, verified);
-
-        //updates the value of the given row's column (hopefully just 1) with the mapped value key
-        open();
-		db.update(SQLitehelper.TABLE_NAME, cv, "number = "+number, null);
-		close();
-	}*/
-	
 	public boolean isTrustedContact (String number)
 	{
 		TrustedContact tc = getRow(number);
