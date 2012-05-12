@@ -21,22 +21,17 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,10 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -56,6 +48,7 @@ public class Prephase2Activity extends Activity {
 	static SharedPreferences sharedPrefs;
 	private static List<String[]> msgList;
 	static String selectedNumber;
+	
 
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
@@ -130,11 +123,12 @@ public class Prephase2Activity extends Activity {
 						
 						// Only expects encrypted messages from trusted contacts
 						// in the secure state
-						String mess = messages[0].getOriginatingAddress();
+						String address = messages[0].getOriginatingAddress();
 						//mess = mess.substring(1, mess.length());
-						// Toast.makeText(getBaseContext(),mess,
-						// Toast.LENGTH_SHORT).show();
-						if (dba.isTrustedContact(mess)) {
+						//Toast.makeText(getBaseContext(),address.substring(1), Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getBaseContext(),dba.getRow(address.substring(1)).getNumber(), Toast.LENGTH_SHORT).show();
+						
+						if (dba.isTrustedContact((address))) {
 							Toast.makeText(context,
 									"Encrypted Message Received",
 									Toast.LENGTH_LONG).show();
@@ -152,12 +146,8 @@ public class Prephase2Activity extends Activity {
 								sendToSelf(messages[0].getOriginatingAddress(),	Encryption.aes_decrypt(PASSWORD,
 												messages[0].getMessageBody()));
 								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_LONG).show();
-								msgList = getSMS();
-								list.setAdapter(new ArrayAdapter<String>(
-										getBaseContext(),
-										android.R.layout.test_list_item,
-										messageMaker(msgList)));
-								list.setItemsCanFocus(false);
+								updateList(list);
+								//list.setItemsCanFocus(false);
 							} catch (Exception e) {
 								Toast.makeText(context, "FAILED TO DECRYPT",
 										Toast.LENGTH_LONG).show();
@@ -167,11 +157,8 @@ public class Prephase2Activity extends Activity {
 							Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
 							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 							sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
-							msgList = getSMS();
-							list.setAdapter(new ArrayAdapter<String>(
-									getBaseContext(),
-									android.R.layout.test_list_item, messageMaker(msgList)));
-							list.setItemsCanFocus(false);
+							updateList(list);
+							//list.setItemsCanFocus(false);
 						}
 					}
 				}
@@ -185,6 +172,16 @@ public class Prephase2Activity extends Activity {
 		IntentFilter SMSfilter = new IntentFilter(SMS_RECEIVED);
 		this.registerReceiver(SMSbr, SMSfilter);
 
+	}
+	
+	public void updateList(ListView list)
+	{
+		msgList = getSMS();
+		list.setAdapter(new ArrayAdapter<String>(
+				getBaseContext(), android.R.layout.test_list_item, messageMaker(msgList)));
+		MessageView.msgList2 = getSMS();
+		MessageView.list2.setAdapter(new ArrayAdapter<String>(
+				getBaseContext(), android.R.layout.test_list_item, messageMaker(MessageView.msgList2)));
 	}
 
 	public List<String> messageMaker (List<String[]> sms)

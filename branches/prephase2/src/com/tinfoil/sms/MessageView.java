@@ -49,6 +49,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MessageView extends Activity {
 	Button sendSMS;
 	EditText messageBox;
+	static ListView list2;
+	static List<String[]> msgList2;
 	
   //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -64,15 +66,15 @@ public class MessageView extends Activity {
         
 		Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-		ListView list = (ListView) findViewById(R.id.listView1);
-		List<String[]> msgList = getSMS();
+		list2 = (ListView) findViewById(R.id.listView1);
+		msgList2 = getSMS();
 		// String []msgList = {"bla", "sasdd"};
 
-		list.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, messageMaker(msgList)));
-		list.setItemsCanFocus(false);
+		list2.setAdapter(new ArrayAdapter<String>(this,
+				android.R.layout.test_list_item, messageMaker(msgList2)));
+		list2.setItemsCanFocus(false);
 
-		list.setOnItemClickListener(new OnItemClickListener() {
+		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				
@@ -90,12 +92,13 @@ public class MessageView extends Activity {
 				
 				if (Prephase2Activity.selectedNumber.length() > 0 && text.length() > 0)
 				{
-					Toast.makeText(getBaseContext(), "" + Prephase2Activity.selectedNumber, Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getBaseContext(), "" + Prephase2Activity.selectedNumber, Toast.LENGTH_SHORT).show();
 
 					//Encrypt the text message before sending it	
 					try
 					{
                     	//Only expects encrypted messages from trusted contacts in the secure state
+						//Toast.makeText(getBaseContext(), Prephase2Activity.selectedNumber, Toast.LENGTH_SHORT).show();
 						if (Prephase2Activity.dba.isTrustedContact(Prephase2Activity.selectedNumber) && 
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
@@ -130,7 +133,9 @@ public class MessageView extends Activity {
 				
 			}
         });
+		
     }
+    
 
     public List<String> messageMaker (List<String[]> sms)
 	{
@@ -142,8 +147,8 @@ public class MessageView extends Activity {
 		return messageList;
 		
 	}
-	
-	public List<String[]> getSMS() {
+    
+    public List<String[]> getSMS() {
 		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/inbox");
 		Cursor cur = getContentResolver().query(uriSMSURI, null, "address = ?",
