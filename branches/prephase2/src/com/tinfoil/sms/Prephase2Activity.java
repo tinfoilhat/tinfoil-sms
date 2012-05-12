@@ -65,13 +65,13 @@ public class Prephase2Activity extends Activity {
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		final ListView list = (ListView) findViewById(R.id.listView1);
-		msgList = getSMS();
+		msgList = ContactRetriever.getSMS(this);
 		// String []msgList = {"bla", "sasdd"};
 
 		// Toast.makeText(getApplicationContext(), "Here",
 		// Toast.LENGTH_SHORT).show();
 		list.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, messageMaker(msgList)));
+				android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
 		list.setItemsCanFocus(false);
 
 		list.setOnItemClickListener(new OnItemClickListener() {
@@ -176,94 +176,14 @@ public class Prephase2Activity extends Activity {
 	
 	public void updateList(ListView list)
 	{
-		msgList = getSMS();
+		msgList = ContactRetriever.getSMS(this);
 		list.setAdapter(new ArrayAdapter<String>(
-				getBaseContext(), android.R.layout.test_list_item, messageMaker(msgList)));
-		MessageView.msgList2 = getSMS();
+				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
+		MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
 		MessageView.list2.setAdapter(new ArrayAdapter<String>(
-				getBaseContext(), android.R.layout.test_list_item, messageMaker(MessageView.msgList2)));
-	}
-
-	public List<String> messageMaker (List<String[]> sms)
-	{
-		List <String> messageList = new ArrayList<String>();
-		for (int i = 0; i < sms.size();i++)
-		{
-			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
-		}
-		return messageList;
-		
+				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(MessageView.msgList2)));
 	}
 	
-	public List<String[]> getSMS() {
-		List<String[]> sms = new ArrayList<String[]>();
-		Uri uriSMSURI = Uri.parse("content://sms/inbox");
-		Cursor cur = getContentResolver().query(uriSMSURI, null, null, null,
-				null);
-		// ContentResolver cr = getContentResolver();
-		// Cursor nCur = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
-		// null, null, null);
-
-		// Used to remove duplication
-		Hashtable<String, Boolean> numbers = new Hashtable<String, Boolean>();
-
-		while (cur.moveToNext()) {
-			String address = cur.getString(cur.getColumnIndex("address"));
-			String id = cur.getString(cur.getColumnIndex("_id"));
-			if (numbers.isEmpty() || numbers.get(address) == null) {
-				numbers.put(address, true);
-				String name = nameHelper(address);
-				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-				//msg.add("Number: " + address + " < Name " + name
-					//	+ "> Message: " + body);
-				//msg2.add(address);
-				//sms.add(msg2);
-				sms.add(new String[] {address, name, body});
-			}
-		}
-		cur.close();
-		return sms;
-	}
-
-	public String format(String number) {
-		if (!number.substring(0, 2).equalsIgnoreCase("+1")) {
-			return number;
-		}
-		return number.substring(2);
-	}
-
-	public String nameHelper(String number) {
-		String num = findNameByAddress(number);
-		if (num.equalsIgnoreCase(number)) {
-			return findNameByAddress(format(number));
-		}
-		return num;
-	}
-
-	public String findNameByAddress(String addr) {
-		Uri myPerson = Uri.withAppendedPath(
-				ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
-				Uri.encode(addr));
-
-		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME };
-
-		Cursor cursor = getContentResolver().query(myPerson, projection, null,
-				null, null);
-
-		if (cursor.moveToFirst()) {
-
-			String name = cursor
-					.getString(cursor
-							.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-			cursor.close();
-			return name;
-		}
-
-		cursor.close();
-
-		return addr;
-	}
-
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		MenuInflater inflater = getMenuInflater();
