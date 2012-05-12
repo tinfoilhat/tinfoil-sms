@@ -127,7 +127,7 @@ public class MessageView extends Activity {
 		List <String> messageList = new ArrayList<String>();
 		for (int i = 0; i < sms.size();i++)
 		{
-			messageList.add(sms.get(i)[1] + "Number: " + sms.get(i)[0] + " : "+ sms.get(i)[2]);
+			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[0] + " : "+ sms.get(i)[2]);
 		}
 		return messageList;
 		

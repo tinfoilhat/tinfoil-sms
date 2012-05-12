@@ -52,9 +52,9 @@ public class SendMessageActivity extends Activity {
         //String actualNumber = "5555215556";
         //dba.addRow("billy", actualNumber, "12345", 2);
         
-        sendSMS = (Button) findViewById(R.id.send);
-        phoneBox = (EditText) findViewById(R.id.phoneNum);
-        messageBox = (EditText) findViewById(R.id.message);
+        sendSMS = (Button) findViewById(R.id.send2);
+        phoneBox = (EditText) findViewById(R.id.reciever);
+        messageBox = (EditText) findViewById(R.id.message2);
         sendSMS.setOnClickListener(new View.OnClickListener()
         {
 			public void onClick(View v) 

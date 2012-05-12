@@ -288,9 +288,6 @@ public class Prephase2Activity extends Activity {
 		case R.id.settings:
 			startActivity(new Intent(this, QuickPrefsActivity.class));
 			return true;
-		case R.id.message:
-			startActivity(new Intent(this, MessageView.class));
-			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
