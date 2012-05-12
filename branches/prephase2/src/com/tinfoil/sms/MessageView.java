@@ -21,9 +21,13 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -114,8 +118,13 @@ public class MessageView extends Activity {
 				}
 				else
 				{
-					Toast.makeText(getBaseContext(), 
-							"You have failed to provide sufficient information", Toast.LENGTH_SHORT).show();
+					AlertDialog.Builder builder = new AlertDialog.Builder(MessageView.this);
+					builder.setMessage("You have failed to provide sufficient information")
+					       .setCancelable(false)
+					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {}});
+					AlertDialog alert = builder.create();
+					alert.show();
 				}
 				
 			}
