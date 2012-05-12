@@ -62,7 +62,7 @@ public class MessageView extends Activity {
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		Prephase2Activity.dba = new DBAccessor(this);
         
-        Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
 		ListView list = (ListView) findViewById(R.id.listView1);
 		List<String[]> msgList = getSMS();

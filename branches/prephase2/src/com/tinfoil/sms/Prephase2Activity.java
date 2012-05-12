@@ -148,13 +148,10 @@ public class Prephase2Activity extends Activity {
 							 * sender of the message
 							 */
 							try {
-								sendToSelf(messages[0].getOriginatingAddress(),
-										messages[0].getMessageBody());
-								sendToSelf(messages[0].getOriginatingAddress(),
-										Encryption.aes_decrypt(PASSWORD,
+								sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
+								sendToSelf(messages[0].getOriginatingAddress(),	Encryption.aes_decrypt(PASSWORD,
 												messages[0].getMessageBody()));
-								Toast.makeText(context, "Message Decrypted",
-										Toast.LENGTH_LONG).show();
+								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_LONG).show();
 								msgList = getSMS();
 								list.setAdapter(new ArrayAdapter<String>(
 										getBaseContext(),
@@ -167,11 +164,9 @@ public class Prephase2Activity extends Activity {
 								e.printStackTrace();
 							}
 						} else {
-							Toast.makeText(context, "Message Received",
-									Toast.LENGTH_LONG).show();
-							Toast.makeText(context,
-									messages[0].getMessageBody(),
-									Toast.LENGTH_LONG).show();
+							Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
+							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
+							sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
 							msgList = getSMS();
 							list.setAdapter(new ArrayAdapter<String>(
 									getBaseContext(),
