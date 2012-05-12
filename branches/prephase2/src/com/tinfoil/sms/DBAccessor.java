@@ -19,6 +19,7 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -36,7 +37,8 @@ public class DBAccessor {
 	public static final String KEY_NUMBER = "number";
 	public static final String KEY_KEY = "key";
 	public static final String KEY_VERIFIED = "verified";
-		
+	
+	private static Pattern p = Pattern.compile("^[+]1.{10}");
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
 	private ContentResolver cr;
@@ -196,7 +198,7 @@ public class DBAccessor {
 	{		
 		open();
 		Cursor cur = db.query(SQLitehelper.TABLE_NAME, new String[] {KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED},
-				"number = "+number, null, null, null, null);
+				"number = "+ number, null, null, null, null);
 		
 		if (cur.moveToFirst())
         {
@@ -319,7 +321,7 @@ public class DBAccessor {
 		
 		if (tc == null)
 		{
-			tc = getRow(number.substring(1));
+			tc = getRow(format(number));
 		}
 		if (tc != null)
 		{
@@ -329,5 +331,24 @@ public class DBAccessor {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * **NOTE: This class could be moved to a static method.
+	 * Removes the preceding '1' or '+1' for the given number
+	 * @param number : String, the number of the contact 
+	 * @return : String, the number without the preceding '1' or '+1'
+	 */
+	public static String format(String number)
+	{
+		if (number.matches("^1.{10}"))
+		{
+			return number.substring(1);
+		}
+		else if (number.matches(p.pattern())) 
+		{
+			return number.substring(2);
+		}
+		return number;
 	}
 }

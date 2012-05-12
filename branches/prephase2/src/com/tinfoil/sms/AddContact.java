@@ -26,6 +26,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * A class for adding a contact to the tinfoil-sms database
+ *
+ */
 public class AddContact extends Activity {
 	Button add;
 	EditText contactName;
@@ -53,10 +57,6 @@ public class AddContact extends Activity {
 					if (!Prephase2Activity.dba.conflict(number))
 					{
 						Prephase2Activity.dba.addRow(name, number, null, 0);
-						//String message = Prephase1Activity.dba.addRow(name, number, null, 0);
-						//Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
-						
-						
 						Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
 						contactNumber.setText("");
 						contactName.setText("");

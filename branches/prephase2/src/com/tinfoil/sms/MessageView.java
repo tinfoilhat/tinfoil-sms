@@ -19,14 +19,12 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -98,7 +96,16 @@ public class MessageView extends Activity {
 					try
 					{
                     	//Only expects encrypted messages from trusted contacts in the secure state
-						//Toast.makeText(getBaseContext(), Prephase2Activity.selectedNumber, Toast.LENGTH_SHORT).show();
+						/*Toast.makeText(getBaseContext(), Prephase2Activity.selectedNumber, Toast.LENGTH_SHORT).show();
+						//Pattern p = Pattern.compile("(^+1| ^1).{10}");
+						Pattern p = Pattern.compile("^[+1].{10}");
+						if (Prephase2Activity.selectedNumber.matches("^1.{10}"))
+							Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(1), Toast.LENGTH_SHORT).show();
+						else if (Prephase2Activity.selectedNumber.matches(p.pattern())) 
+							Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(2), Toast.LENGTH_SHORT).show();
+						*/
+						//Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(1), Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(2), Toast.LENGTH_SHORT).show();
 						if (Prephase2Activity.dba.isTrustedContact(Prephase2Activity.selectedNumber) && 
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
@@ -178,17 +185,17 @@ public class MessageView extends Activity {
 		return sms;
 	}
 
-	public String format(String number) {
+	/*public String format(String number) {
 		if (!number.substring(0, 2).equalsIgnoreCase("+1")) {
 			return number;
 		}
 		return number.substring(2);
-	}
+	}*/
 
 	public String nameHelper(String number) {
 		String num = findNameByAddress(number);
 		if (num.equalsIgnoreCase(number)) {
-			return findNameByAddress(format(number));
+			return findNameByAddress(DBAccessor.format(number));
 		}
 		return num;
 	}
