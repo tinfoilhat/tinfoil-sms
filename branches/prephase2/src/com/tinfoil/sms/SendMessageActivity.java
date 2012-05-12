@@ -41,18 +41,13 @@ public class SendMessageActivity extends Activity {
     private static final String PASSWORD = "test123";
 
     /** Called when the activity is first created. */
-    //@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.new_message);
         
         Prephase2Activity.dba = new DBAccessor(this);
         
         Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
-        
-        //String actualNumber = "5555215556";
-        //dba.addRow("billy", actualNumber, "12345", 2);
         
         sendSMS = (Button) findViewById(R.id.send2);
         phoneBox = (EditText) findViewById(R.id.reciever);

@@ -51,6 +51,19 @@ public class TrustedContact {
 	}
 	
 	/**
+	 * A class for storing information retrieved or to be stored in the database. 
+	 * 
+	 * @param name The contact's name 
+	 */
+	public TrustedContact (String name)
+	{
+		this.name = name;
+		this.number = null;
+		this.key = null;
+		this.verified = 0;
+	}
+	
+	/**
 	 * Access the contact's name
 	 * @return : String
 	 */

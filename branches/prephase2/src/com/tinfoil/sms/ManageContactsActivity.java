@@ -18,11 +18,9 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -117,18 +115,38 @@ public class ManageContactsActivity extends Activity {
 	}
 	
 	
-	
+	/**
+	 * Sets Contact to the not trusted state. Secure messages 
+	 * will not be sent or expected from this contact. 
+	 * @param position : int, the position on the list of
+	 * contacts.
+	 */
 	private void remove(int position)
 	{
 		tc.get(position).setKey(null);
 		tc.get(position).setVerified(0);
 	}
+	
+	/**
+	 * Sets Contact to the trusted state. Secure messages 
+	 * will be sent and expected from this contact. 
+	 * @param position : int, the position on the list of
+	 * contacts.
+	 */
 	private void add(int position)
 	{
 		tc.get(position).setKey(KEY);
 		tc.get(position).setVerified(VERIFY);
 	}
 	
+	/**
+	 * Used to toggle the contact from being in or out of
+	 * the trusted state.
+	 * @param position : int, the position on the list of
+	 * contacts.
+	 * @param add : boolean, if true the contact will be
+	 * added. If false the contact will be removed.
+	 */
 	private void change(int position, boolean add)
 	{
 		if (add)
@@ -144,6 +162,10 @@ public class ManageContactsActivity extends Activity {
 		
 	}
 	
+	/**
+	 * Reinitialises the list to ensure contacts that are
+	 * trusted are selected.
+	 */
 	private void initList()
 	{
 		for (int i = 0; i < tc.size();i++)
@@ -152,10 +174,10 @@ public class ManageContactsActivity extends Activity {
     		{
 				listView.setItemChecked(i, true);
     		}
-    		else
+    		/*else
     		{
     			listView.setItemChecked(i, false);
-    		}
+    		}*/
 		}
 	}
 	

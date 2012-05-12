@@ -53,7 +53,7 @@ public class Prephase2Activity extends Activity {
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.messages);
+		setContentView(R.layout.main);
 		dba = new DBAccessor(this);
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);

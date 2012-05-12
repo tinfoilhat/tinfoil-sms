@@ -96,22 +96,30 @@ public class ContactRetriever {
 		
 	}
 	
-	
+	/**
+	 * Facilities finding the name. If the name is not found 
+	 * it will check again removing formatting.
+	 * @param number : String, the number to be looked up to find the contact's name
+	 * @param c : Context
+	 * @return : String, the name of the contact that has the given number
+	 */
 	public static String nameHelper(String number, Context c) {
 		String num = findNameByAddress(number,c);
 		if (num.equalsIgnoreCase(number)) {
-			return findNameByAddress(format(number), c);
+			if (!number.equalsIgnoreCase(DBAccessor.format(number)))
+			{
+				return findNameByAddress(DBAccessor.format(number), c);
+			}
 		}
 		return num;
 	}
 	
-	public static String format(String number) {
-		if (!number.substring(0, 2).equalsIgnoreCase("+1")) {
-			return number;
-		}
-		return number.substring(2);
-	}
-
+	/**
+	 * Finds the name of the contact that has the given number
+	 * @param addr : String, the number to be looked up to find the contact's name
+	 * @param c : Context
+	 * @return : String, the name of the contact that has the given number
+	 */
 	public static String findNameByAddress(String addr, Context c) {
 		Uri myPerson = Uri.withAppendedPath(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
@@ -119,8 +127,7 @@ public class ContactRetriever {
 
 		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME };
 
-		Cursor cursor = c.getContentResolver().query(myPerson, projection, null,
-				null, null);
+		Cursor cursor = c.getContentResolver().query(myPerson, projection, null, null, null);
 
 		if (cursor.moveToFirst()) {
 

@@ -23,7 +23,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class SQLitehelper extends SQLiteOpenHelper {
-
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	private static final int DATABASE_VERSION = 2;
