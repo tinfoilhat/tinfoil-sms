@@ -43,9 +43,9 @@ public class MessageView extends Activity {
 	static ListView list2;
 	static List<String[]> msgList2;
 	
-  //Change the password here or give a user possibility to change it
+	//Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
-    private static final String PASSWORD = "test123";
+    //private static final String PASSWORD = "test123";
     
     /** Called when the activity is first created. */
     @Override
@@ -90,12 +90,15 @@ public class MessageView extends Activity {
                     	
 						//Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(1), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(2), Toast.LENGTH_SHORT).show();
-						
+												
 						//Only expects encrypted messages from trusted contacts in the secure state
 						if (Prephase2Activity.dba.isTrustedContact(Prephase2Activity.selectedNumber) && 
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(PASSWORD, text));
+							
+							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(
+									Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber)).getKey(),
+									text));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else

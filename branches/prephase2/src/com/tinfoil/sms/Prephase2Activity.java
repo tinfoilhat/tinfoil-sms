@@ -48,7 +48,7 @@ public class Prephase2Activity extends Activity {
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
 	// 0x47, (byte) 0x84, 0x33, 0x58 };
-	private static final String PASSWORD = "test123";
+	//private static final String PASSWORD = "test123";
 
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -125,7 +125,9 @@ public class Prephase2Activity extends Activity {
 						if (dba.isTrustedContact((address))) {
 							Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
 							Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-
+							
+							//TrustedContact tc = dba.getRow(address);
+							
 							/*
 							 * Now send the decrypted message to ourself, set
 							 * the source address of the message to the original
@@ -133,8 +135,8 @@ public class Prephase2Activity extends Activity {
 							 */
 							try {
 								sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
-								sendToSelf(messages[0].getOriginatingAddress(),	Encryption.aes_decrypt(PASSWORD,
-												messages[0].getMessageBody()));
+								sendToSelf(messages[0].getOriginatingAddress(),	Encryption.aes_decrypt(
+										dba.getRow(ContactRetriever.format(address)).getKey(), messages[0].getMessageBody()));
 								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 								updateList(list);
 							} catch (Exception e) {

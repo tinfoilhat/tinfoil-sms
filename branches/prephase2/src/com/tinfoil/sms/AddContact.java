@@ -55,8 +55,9 @@ public class AddContact extends Activity {
 					//Need to add to android contact's database, and check to see if it isnt already there
 					if (!Prephase2Activity.dba.conflict(number))
 					{
-						Prephase2Activity.dba.addRow(name, number, null, 0);
+						Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
 						Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
+						
 						contactNumber.setText("");
 						contactName.setText("");
 					}

@@ -20,12 +20,16 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
 public class ContactRetriever {
+	
+	private static Pattern p = Pattern.compile("^[+]1.{10}");
 	
 	/**
 	 * Get the list of 1 messages per unique contact for the main window
@@ -97,8 +101,8 @@ public class ContactRetriever {
 	}
 	
 	/**
-	 * Facilities finding the name. If the name is not found 
-	 * it will check again removing formatting.
+	 * Facilitates finding the name. If the name is not found 
+	 * it will check again removing possible formatting.
 	 * @param number : String, the number to be looked up to find the contact's name
 	 * @param c : Context
 	 * @return : String, the name of the contact that has the given number
@@ -106,9 +110,9 @@ public class ContactRetriever {
 	public static String nameHelper(String number, Context c) {
 		String num = findNameByAddress(number,c);
 		if (num.equalsIgnoreCase(number)) {
-			if (!number.equalsIgnoreCase(DBAccessor.format(number)))
+			if (!number.equalsIgnoreCase(format(number)))
 			{
-				return findNameByAddress(DBAccessor.format(number), c);
+				return findNameByAddress(format(number), c);
 			}
 		}
 		return num;
@@ -142,4 +146,21 @@ public class ContactRetriever {
 		return addr;
 	}
 
+	/**
+	 * Removes the preceding '1' or '+1' for the given number
+	 * @param number : String, the number of the contact 
+	 * @return : String, the number without the preceding '1' or '+1'
+	 */
+	public static String format(String number)
+	{
+		if (number.matches("^1.{10}"))
+		{
+			return number.substring(1);
+		}
+		else if (number.matches(p.pattern())) 
+		{
+			return number.substring(2);
+		}
+		return number;
+	}
 }

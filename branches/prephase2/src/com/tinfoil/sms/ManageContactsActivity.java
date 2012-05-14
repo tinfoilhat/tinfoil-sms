@@ -21,10 +21,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -32,7 +35,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class ManageContactsActivity extends Activity {
-	private final String KEY = "12345";
+	private static final String KEY = "test123";
 	private final int VERIFY = 2;
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;
@@ -42,46 +45,12 @@ public class ManageContactsActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact);
-               
-        String[] names;
         
         //Linking the ListView object to the appropriate listview from the xml file.
         listView = (ListView)findViewById(R.id.listView1);
         
-        tc  = Prephase2Activity.dba.getAllRows();
-        //Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
-        if (tc != null)
-        {
-	        //The string that is displayed for each item on the list 
-	        names = new String[tc.size()];
-	        for (int i = 0; i < tc.size(); i++)
-	        {
-	        	names[i] = tc.get(i).getName();
-	        }
-
-	        
-	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
-
-	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
-	        listView.setItemsCanFocus(false);
-
-	        //Set the mode to single or multiple choice, (should match top choice)
-	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        initList();
-        }
-        else 
-        {
-        	names = new String[1];
-        	names[0] = "Add a Contact";
-        	        
-	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
-
-	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
-	        listView.setItemsCanFocus(false);
-        }
-       
+        update();
+               
         //Create what happens when you click on a button
         listView.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -107,7 +76,7 @@ public class ManageContactsActivity extends Activity {
         		{
         			//Go to add contact
         			startActivity(new Intent(getBaseContext(), AddContact.class));
-        			finish();
+        			//finish();
         		}
 
         	}});
@@ -174,11 +143,52 @@ public class ManageContactsActivity extends Activity {
     		{
 				listView.setItemChecked(i, true);
     		}
-    		/*else
-    		{
-    			listView.setItemChecked(i, false);
-    		}*/
+			else
+			{
+				listView.setItemChecked(i, false);
+			}
 		}
+	}
+	
+	/**
+	 * Updates the list of contacts
+	 */
+	private void update()
+	{
+		String[] names;
+		tc  = Prephase2Activity.dba.getAllRows();
+		if (tc != null)
+        {
+	        //The string that is displayed for each item on the list 
+	        names = new String[tc.size()];
+	        for (int i = 0; i < tc.size(); i++)
+	        {
+	        	names[i] = tc.get(i).getName();
+	        }
+
+	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
+	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
+
+	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
+	        listView.setItemsCanFocus(false);
+
+	        //listView.set
+	        
+	        //Set the mode to single or multiple choice, (should match top choice)
+	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+	        initList();
+        }
+        else 
+        {
+        	names = new String[1];
+        	names[0] = "Add a Contact";
+        	        
+	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
+	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
+
+	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
+	        listView.setItemsCanFocus(false);
+        }
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -188,9 +198,20 @@ public class ManageContactsActivity extends Activity {
 		return true;
 	}
 
+	/*
+	 * Added the onResume to update the list of contacts
+	 */
+	public void onResume()
+	{
+		update();
+		super.onResume();
+	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.add:
+			startActivity(new Intent(this, AddContact.class));
+			return true;
 		case R.id.all:
 			if (tc!=null)
 			{
