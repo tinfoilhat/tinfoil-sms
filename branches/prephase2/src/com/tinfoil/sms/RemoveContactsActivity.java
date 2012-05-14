@@ -76,6 +76,7 @@ public class RemoveContactsActivity extends Activity {
 			public void onClick(View v) {
 				for (int i = 0; i < tc.size(); i++)
 				{
+					//**Note need an alert message here
 					Toast.makeText(getBaseContext(), ""+ tc.get(i).getNumber(), Toast.LENGTH_LONG);
 					if (contact[i])
 					{
@@ -94,23 +95,28 @@ public class RemoveContactsActivity extends Activity {
 	{
 		String[] names;
 		tc  = Prephase2Activity.dba.getAllRows();
-		//The string that is displayed for each item on the list 
-        names = new String[tc.size()];
-        for (int i = 0; i < tc.size(); i++)
-        {
-        	names[i] = tc.get(i).getName();
-        }
-
-        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
-
-        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
-        listView.setItemsCanFocus(false);
-
-        //listView.set
-        
-        //Set the mode to single or multiple choice, (should match top choice)
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		
+		if (tc != null)
+		{
+			//The string that is displayed for each item on the list 
+	        names = new String[tc.size()];
+	        for (int i = 0; i < tc.size(); i++)
+	        {
+	        	names[i] = tc.get(i).getName();
+	        }
+	
+	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
+	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
+	
+	        //Set the mode to single or multiple choice, (should match top choice)
+	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		}
+		else 
+		{
+			names = new String[] {"No Contacts"};
+			listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
+		}
+		listView.setItemsCanFocus(false);
 	}
 	
 }

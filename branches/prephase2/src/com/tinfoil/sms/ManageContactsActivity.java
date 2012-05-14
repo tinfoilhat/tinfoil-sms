@@ -236,6 +236,7 @@ public class ManageContactsActivity extends Activity {
 			}
 			else
 			{
+				//**Note need an alert message here
 				Toast.makeText(this, "You need to have contacts before you can delete them!", Toast.LENGTH_SHORT);
 			}
 		default:
