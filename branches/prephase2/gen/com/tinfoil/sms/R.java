@@ -45,7 +45,8 @@ public final class R {
     public static final class menu {
         public static final int import_menu=0x7f060000;
         public static final int manage_contacts_menu=0x7f060001;
-        public static final int texting_menu=0x7f060002;
+        public static final int remove_contacts_menu=0x7f060002;
+        public static final int texting_menu=0x7f060003;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

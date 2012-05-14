@@ -19,7 +19,11 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -60,18 +64,11 @@ public class RemoveContactsActivity extends Activity {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
         		
-        		if (!contact[position])
-        		{
-        			contact[position] = true;
-        		}
-        		else
-        		{
-        			contact[position] = false;
-        		}
+        		toggle(position);
         		
 
         	}});
-        
+
         delete.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
 				for (int i = 0; i < tc.size(); i++)
@@ -86,6 +83,18 @@ public class RemoveContactsActivity extends Activity {
 				update();
 				
 			}});
+	}
+	
+	public void toggle(int i)
+	{
+		if (!contact[i])
+		{
+			contact[i] = true;
+		}
+		else
+		{
+			contact[i] = false;
+		}
 	}
 	
 	/**
@@ -117,6 +126,41 @@ public class RemoveContactsActivity extends Activity {
 			listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
 		}
 		listView.setItemsCanFocus(false);
+	}
+		
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.remove_contacts_menu, menu);
+		return true;		
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.all:
+			if (tc!=null)
+			{
+				for (int i = 0; i < tc.size();i++)
+				{
+					listView.setItemChecked(i, true);
+					contact[i] = true;
+				}
+			}
+			return true;
+		case R.id.remove:
+			if (tc!=null)
+			{
+				for (int i = 0; i < tc.size();i++)
+				{
+					listView.setItemChecked(i, false);
+					contact[i] = false;
+				}
+			}
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
 	}
 	
 }

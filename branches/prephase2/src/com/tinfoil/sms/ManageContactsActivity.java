@@ -187,13 +187,6 @@ public class ManageContactsActivity extends Activity {
 	        listView.setItemsCanFocus(false);
         }
 	}
-	
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.manage_contacts_menu, menu);
-		return true;		
-	}
 
 	/*
 	 * Added the onResume to update the list of contacts
@@ -202,6 +195,13 @@ public class ManageContactsActivity extends Activity {
 	{
 		update();
 		super.onResume();
+	}
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.manage_contacts_menu, menu);
+		return true;		
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
