@@ -22,6 +22,7 @@
         <activity android:name=".ManageContactsActivity" android:label="Contacts" />
         <activity android:name=".MessageView" android:label="Messages" />
         <activity android:name=".ImportContacts" android:label="Import Contacts" />
+        <activity android:name=".RemoveContactsActivity" android:label="Delete Contacts" />
         <activity
             android:name=".Prephase2Activity"
             android:label="Tinfoil-SMS" >

@@ -21,13 +21,10 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -195,13 +192,13 @@ public class ManageContactsActivity extends Activity {
 
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.manage_contacts_menu, menu);
-		return true;
+		return true;		
 	}
 
 	/*
 	 * Added the onResume to update the list of contacts
 	 */
-	public void onResume()
+	protected void onResume()
 	{
 		update();
 		super.onResume();
@@ -232,6 +229,15 @@ public class ManageContactsActivity extends Activity {
 				}
 			}
 			return true;
+		case R.id.delete:
+			if (tc!=null)
+			{
+				startActivity(new Intent(this, RemoveContactsActivity.class));
+			}
+			else
+			{
+				Toast.makeText(this, "You need to have contacts before you can delete them!", Toast.LENGTH_SHORT);
+			}
 		default:
 			return super.onOptionsItemSelected(item);
 		}

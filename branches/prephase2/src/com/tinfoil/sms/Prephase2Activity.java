@@ -93,8 +93,7 @@ public class Prephase2Activity extends Activity {
 					Object[] pdus = (Object[]) bundle.get("pdus");
 					final SmsMessage[] messages = new SmsMessage[pdus.length];
 					for (int i = 0; i < pdus.length; i++) {
-						messages[i] = SmsMessage
-								.createFromPdu((byte[]) pdus[i]);
+						messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
 					}
 
 					if (messages.length > -1) {
@@ -194,7 +193,6 @@ public class Prephase2Activity extends Activity {
 		case R.id.settings:
 			startActivity(new Intent(this, QuickPrefsActivity.class));
 			return true;
-
 		default:
 			return super.onOptionsItemSelected(item);
 		}

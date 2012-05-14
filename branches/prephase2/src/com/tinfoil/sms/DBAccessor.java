@@ -18,8 +18,6 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
