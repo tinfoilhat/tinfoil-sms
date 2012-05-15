@@ -100,7 +100,6 @@ public class MessageView extends Activity {
 						if (Prephase2Activity.dba.isTrustedContact(Prephase2Activity.selectedNumber) && 
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							
 							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(
 									Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber)).getKey(),
 									text));
@@ -171,10 +170,10 @@ public class MessageView extends Activity {
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 			}
-			else 
-			{
-				Toast.makeText(this, "tc == null", Toast.LENGTH_LONG);
-			}
+			
+			return true;
+		case R.id.delete:
+			//Not sure if we should have it delete the contact or delete the conversation
 			return true;
 	
 		default:
