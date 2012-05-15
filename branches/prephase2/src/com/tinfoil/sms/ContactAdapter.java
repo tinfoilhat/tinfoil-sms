@@ -51,7 +51,8 @@ public class ContactAdapter extends ArrayAdapter<String[]>{
             row = inflater.inflate(layoutResourceId, parent, false);
             
             holder = new ContactHolder();
-            holder.txtTitle = (TextView)row.findViewById(R.id.txtTitle);
+            holder.c_name = (TextView)row.findViewById(R.id.c_name);
+            holder.c_message = (TextView)row.findViewById(R.id.c_message);
             
             row.setTag(holder);
         }
@@ -61,13 +62,15 @@ public class ContactAdapter extends ArrayAdapter<String[]>{
         }
         
         String contact[] = data.get(position);
-        holder.txtTitle.setText(contact[1] + ": " + contact[2]);
+        holder.c_name.setText(contact[1]);
+        holder.c_message.setText(contact[2]);
         
         return row;
     }
     
     static class ContactHolder
     {
-        TextView txtTitle;
+    	TextView c_name;
+    	TextView c_message;
     }
 }
