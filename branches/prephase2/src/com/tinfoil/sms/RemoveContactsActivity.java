@@ -70,16 +70,19 @@ public class RemoveContactsActivity extends Activity {
 
         delete.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
-				for (int i = 0; i < tc.size(); i++)
+				if (tc != null)
 				{
-					//**Note need an alert message here
-					Toast.makeText(getBaseContext(), ""+ tc.get(i).getNumber(), Toast.LENGTH_LONG);
-					if (contact[i])
+					for (int i = 0; i < tc.size(); i++)
 					{
-						Prephase2Activity.dba.removeRow(tc.get(i).getNumber());
+						//**Note need an alert message here
+						Toast.makeText(getBaseContext(), ""+ tc.get(i).getNumber(), Toast.LENGTH_LONG);
+						if (contact[i])
+						{
+							Prephase2Activity.dba.removeRow(tc.get(i).getNumber());
+						}
 					}
+					update();
 				}
-				update();
 				
 			}});
 	}

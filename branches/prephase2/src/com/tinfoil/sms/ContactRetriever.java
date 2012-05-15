@@ -96,7 +96,20 @@ public class ContactRetriever {
 			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
 		}
 		return messageList;
-		
+	}
+	
+	public static List<String> messageLimiter(List<String> sms)
+	{
+		final int LENGTH = 46;
+		for (int i = 0; i < sms.size();i++)
+		{
+			if (sms.get(i).length() > LENGTH)
+			{
+				sms.set(i, sms.get(i).substring(0, LENGTH));
+			}
+			
+		}
+		return sms;
 	}
 	
 	/**

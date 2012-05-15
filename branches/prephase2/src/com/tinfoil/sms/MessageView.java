@@ -64,7 +64,7 @@ public class MessageView extends Activity {
         
 		list2 = (ListView) findViewById(R.id.listView1);
 		msgList2 = ContactRetriever.getPersonSMS(this);
-
+		
 		list2.setAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList2)));
 		list2.setItemsCanFocus(false);
@@ -153,6 +153,10 @@ public class MessageView extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.exchange:
+			//Doesn't work right now
+			item.setChecked(!item.isChecked());
+			//
+			
 			//Add to trusted Contact list
 			TrustedContact tc = Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber));
 			if (tc != null)
