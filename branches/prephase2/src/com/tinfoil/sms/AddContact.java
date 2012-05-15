@@ -37,12 +37,12 @@ public class AddContact extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addcontact);
-        
-        
+                
         add = (Button) findViewById(R.id.add);
         contactName = (EditText) findViewById(R.id.contact_name);
         contactNumber = (EditText) findViewById(R.id.contact_number);
-
+        contactNumber.setText(SendMessageActivity.newNumber);
+        SendMessageActivity.newNumber = "";
         
         add.setOnClickListener(new View.OnClickListener() {
 			
@@ -63,6 +63,7 @@ public class AddContact extends Activity {
 					}
 					else
 					{
+						
 						//**Note need an alert message here
 						Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
 					}
