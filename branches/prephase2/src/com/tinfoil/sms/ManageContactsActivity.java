@@ -113,7 +113,7 @@ public class ManageContactsActivity extends Activity {
 	 * @param add : boolean, if true the contact will be
 	 * added. If false the contact will be removed.
 	 */
-	private void change(int position, boolean add)
+	public void change(int position, boolean add)
 	{
 		if (add)
 		{
@@ -123,8 +123,9 @@ public class ManageContactsActivity extends Activity {
 		{
 			remove(position);
 		}
-		Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
-		Prephase2Activity.dba.addRow(tc.get(position));
+		Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getNumber());
+		//Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
+		//Prephase2Activity.dba.addRow(tc.get(position));
 		
 	}
 	

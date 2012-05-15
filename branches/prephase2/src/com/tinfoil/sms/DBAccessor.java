@@ -256,7 +256,7 @@ public class DBAccessor {
 	public void updateRow (TrustedContact tc, String number)
 	{
 		open();
-		removeRow(number);
+		removeRow(ContactRetriever.format(number));
 		addRow(tc);
 		close();
 	}

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
