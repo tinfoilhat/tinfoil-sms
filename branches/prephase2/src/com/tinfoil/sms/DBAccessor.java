@@ -186,9 +186,16 @@ public class DBAccessor {
 	/**
 	 * Close the database
 	 */
+	public void close(Cursor cur)
+	{
+		cur.close();
+		//contactDatabase.close();
+		db.close();
+	}
+	
 	public void close()
 	{
-		contactDatabase.close();
+		//contactDatabase.close();
 		db.close();
 	}
 	
@@ -207,10 +214,10 @@ public class DBAccessor {
 		if (cur.moveToFirst())
         {
 			TrustedContact tc = new TrustedContact (cur.getString(0), cur.getString(1), cur.getString(2), cur.getInt(3));
-			close();
+			close(cur);
 			return tc;
         }
-		close();
+		close(cur);
 		return null;
 	}
 	
@@ -234,10 +241,10 @@ public class DBAccessor {
 			{
 				tc.add(new TrustedContact (cur.getString(0), cur.getString(1), cur.getString(2), cur.getInt(3)));
 			}while (cur.moveToNext());
-			close();
+			close(cur);
 			return tc;
         }
-		close();
+		close(cur);
 		return null;
 	}
 	

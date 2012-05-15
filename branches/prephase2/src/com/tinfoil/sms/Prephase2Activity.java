@@ -177,6 +177,12 @@ public class Prephase2Activity extends Activity {
 				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(MessageView.msgList2)));
 	}
 	
+	protected void onDestroy()
+	{
+		dba.close();
+		super.onDestroy();
+	}
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		MenuInflater inflater = getMenuInflater();
