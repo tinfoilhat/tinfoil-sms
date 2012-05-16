@@ -18,11 +18,13 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Pattern;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.Contacts.People;
 import android.provider.ContactsContract;
 
 public class ContactRetriever {
@@ -37,7 +39,7 @@ public class ContactRetriever {
 	 */
 	public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
-		final String[] projection = new String[]{"*"};
+		final String[] projection = new String[]{"address", "body"};
 		Uri uri = Uri.parse("content://mms-sms/conversations/");
 		Cursor cur = c.getContentResolver().query(uri, projection, null, null, null);
 
@@ -58,14 +60,28 @@ public class ContactRetriever {
 	 * the number, name, and the message.
 	 */
 	public static List<String[]> getPersonSMS(Context c) {
+		String dateColumn = "date DESC";
+		final String[] projection = new String[]{"address", "body", "type"};
 		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/");
-		Cursor cur = c.getContentResolver().query(uriSMSURI, null, "address = ?",
-				new String[] {Prephase2Activity.selectedNumber}, null);
-
+		Cursor cur = c.getContentResolver().query(uriSMSURI, projection, 
+				"address = '" + format(Prephase2Activity.selectedNumber) + 
+				"' or address = '+1" + format(Prephase2Activity.selectedNumber) + "'", 
+				null, dateColumn);
+	
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
-			String name = nameHelper(address, c);
+			String type = cur.getString(cur.getColumnIndex("type"));
+			String name ="";
+			if (type.equalsIgnoreCase("1"))
+			{
+				name = nameHelper(address, c);
+			}
+			else if (type.equalsIgnoreCase("2"))
+			{
+				name = "Me"; 
+			}
+			
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
 			sms.add(new String[] {address, name, body});
 		}

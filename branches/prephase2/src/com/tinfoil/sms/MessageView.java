@@ -23,6 +23,8 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
@@ -58,12 +60,14 @@ public class MessageView extends Activity {
 		setContentView(R.layout.messageviewer);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		Prephase2Activity.dba = new DBAccessor(this);
-        
+	
 		Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
 		list2 = (ListView) findViewById(R.id.listView1);
 		msgList2 = ContactRetriever.getPersonSMS(this);
 		
+		//for (int i =0;i<1;i++)
+		//	Toast.makeText(this, msgList2.get(0)[i],Toast.LENGTH_LONG);
 		list2.setAdapter(new ContactAdapter(this,
 				R.layout.listview_full_item_row, msgList2));
 		list2.setItemsCanFocus(false);
