@@ -38,22 +38,15 @@ public class ContactRetriever {
 	 */
 	public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
-		Uri uriSMSURI = Uri.parse("content://sms/inbox");
-		Cursor cur = c.getContentResolver().query(uriSMSURI, null, null, null,
-				null);
-		
-		// Used to remove duplication
-		Hashtable<String, Boolean> numbers = new Hashtable<String, Boolean>();
+		final String[] projection = new String[]{"*"};
+		Uri uri = Uri.parse("content://mms-sms/conversations/");
+		Cursor cur = c.getContentResolver().query(uri, projection, null, null, null);
 
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
-			//String id = cur.getString(cur.getColumnIndex("_id"));
-			if (numbers.isEmpty() || numbers.get(address) == null) {
-				numbers.put(address, true);
-				String name = nameHelper(address, c);
-				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-				sms.add(new String[] {address, name, body});
-			}
+			String name = nameHelper(address, c);
+			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
+			sms.add(new String[] {address, name, body});
 		}
 		cur.close();
 		return sms;
@@ -70,6 +63,9 @@ public class ContactRetriever {
 		Uri uriSMSURI = Uri.parse("content://sms/inbox");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, null, "address = ?",
 				new String[] {Prephase2Activity.selectedNumber}, null);
+		/*final String[] projection = new String[]{"*"};
+		Uri uri = Uri.parse("content://mms-sms/conversations/");
+		Cursor cur = c.getContentResolver().query(uri, projection, null, null, null);*/
 
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
