@@ -38,7 +38,7 @@ in mind.
 Project Guidelines and Goals
 ----------------------------
 
-+ Tinfoil-SMS will be released as open source software under the GNU Public License Version 2
++ Tinfoil-SMS will be released as open source software under the GNU Public License Version 3
 + Project is currently alpha, the goal is a beta release by September
 + Tinfoil-SMS will make use of public key cryptography using ECC[2]
 + Use message authentication (HMAC) to verify messages from contacts
