@@ -65,8 +65,8 @@ public class MessageView extends Activity {
 		list2 = (ListView) findViewById(R.id.listView1);
 		msgList2 = ContactRetriever.getPersonSMS(this);
 		
-		list2.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList2)));
+		list2.setAdapter(new ContactAdapter(this,
+				R.layout.listview_full_item_row, msgList2));
 		list2.setItemsCanFocus(false);
 
 		list2.setOnItemClickListener(new OnItemClickListener() {

@@ -17,10 +17,8 @@
 
 package com.tinfoil.sms;
 
-import java.util.ArrayList;
 import java.util.List;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,7 +36,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -190,9 +187,12 @@ public class Prephase2Activity extends Activity {
 		msgList = ContactRetriever.getSMS(this);
 		list.setAdapter(new ArrayAdapter<String>(
 				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
-		MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-		MessageView.list2.setAdapter(new ArrayAdapter<String>(
+		if (Prephase2Activity.selectedNumber != null)
+		{
+			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
+			MessageView.list2.setAdapter(new ArrayAdapter<String>(
 				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(MessageView.msgList2)));
+		}
 	}
 	
 	protected void onDestroy()
