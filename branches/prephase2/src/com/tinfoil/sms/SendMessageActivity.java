@@ -35,6 +35,7 @@ public class SendMessageActivity extends Activity {
 	Button sendSMS;
 	EditText phoneBox;
     EditText messageBox;
+    public static String newNumber;
         
     //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -79,7 +80,29 @@ public class SendMessageActivity extends Activity {
 							sendSMS(number, text);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						
+						if (Prephase2Activity.dba.getRow(ContactRetriever.format(number)) == null)
+						{
+							newNumber = number;
+							
+							//Toast.makeText(getBaseContext(), newNumber, Toast.LENGTH_SHORT).show();
+							AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
+							builder.setMessage("Would you like to add " + number + " to your contacts list?")
+							       .setCancelable(false)
+							       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							        	   
+							        		   SendMessageActivity.this.startActivity(new Intent(
+							        				   SendMessageActivity.this, AddContact.class));
+							        	   finish();
+							           }})
+							       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+							               public void onClick(DialogInterface dialog, int id) {
+							                   dialog.cancel();
+							              }
+							          });
+							AlertDialog alert = builder.create();
+							alert.show();
+						}
 						messageBox.setText("");
 						phoneBox.setText("");
 				    }

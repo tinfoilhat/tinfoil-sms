@@ -20,6 +20,9 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -60,31 +63,40 @@ public class RemoveContactsActivity extends Activity {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
         		
-        		if (!contact[position])
-        		{
-        			contact[position] = true;
-        		}
-        		else
-        		{
-        			contact[position] = false;
-        		}
+        		toggle(position);
         		
 
         	}});
-        
+
         delete.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
-				for (int i = 0; i < tc.size(); i++)
+				if (tc != null)
 				{
-					Toast.makeText(getBaseContext(), ""+ tc.get(i).getNumber(), Toast.LENGTH_LONG);
-					if (contact[i])
+					for (int i = 0; i < tc.size(); i++)
 					{
-						Prephase2Activity.dba.removeRow(tc.get(i).getNumber());
+						//**Note need an alert message here
+						Toast.makeText(getBaseContext(), ""+ tc.get(i).getNumber(), Toast.LENGTH_LONG);
+						if (contact[i])
+						{
+							Prephase2Activity.dba.removeRow(tc.get(i).getNumber());
+						}
 					}
+					update();
 				}
-				update();
 				
 			}});
+	}
+	
+	public void toggle(int i)
+	{
+		if (!contact[i])
+		{
+			contact[i] = true;
+		}
+		else
+		{
+			contact[i] = false;
+		}
 	}
 	
 	/**
@@ -94,23 +106,63 @@ public class RemoveContactsActivity extends Activity {
 	{
 		String[] names;
 		tc  = Prephase2Activity.dba.getAllRows();
-		//The string that is displayed for each item on the list 
-        names = new String[tc.size()];
-        for (int i = 0; i < tc.size(); i++)
-        {
-        	names[i] = tc.get(i).getName();
-        }
+		
+		if (tc != null)
+		{
+			//The string that is displayed for each item on the list 
+	        names = new String[tc.size()];
+	        for (int i = 0; i < tc.size(); i++)
+	        {
+	        	names[i] = tc.get(i).getName();
+	        }
+	
+	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
+	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
+	
+	        //Set the mode to single or multiple choice, (should match top choice)
+	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		}
+		else 
+		{
+			names = new String[] {"No Contacts"};
+			listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
+		}
+		listView.setItemsCanFocus(false);
+	}
+		
+	public boolean onCreateOptionsMenu(Menu menu) {
 
-        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.remove_contacts_menu, menu);
+		return true;		
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.all:
+			if (tc!=null)
+			{
+				for (int i = 0; i < tc.size();i++)
+				{
+					listView.setItemChecked(i, true);
+					contact[i] = true;
+				}
+			}
+			return true;
+		case R.id.remove:
+			if (tc!=null)
+			{
+				for (int i = 0; i < tc.size();i++)
+				{
+					listView.setItemChecked(i, false);
+					contact[i] = false;
+				}
+			}
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 
-        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
-        listView.setItemsCanFocus(false);
-
-        //listView.set
-        
-        //Set the mode to single or multiple choice, (should match top choice)
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	}
 	
 }

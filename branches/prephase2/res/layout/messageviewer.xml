@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF" >
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/message" >
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignParentTop="true" >
+
     </ListView>
 
-    <Button
-        android:id="@+id/send"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="Send" />
+        android:background="#000000" >
 
-    <EditText
-        android:id="@+id/message"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/send"
-        android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-        android:maxLength="160"
-        android:maxLines="4" >
+        <EditText
+            android:id="@+id/message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.00"
+            android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+            android:maxLength="160"
+            android:maxLines="4" >
 
-        <requestFocus />
-    </EditText>
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send" />
+    </LinearLayout>
     
 </RelativeLayout>

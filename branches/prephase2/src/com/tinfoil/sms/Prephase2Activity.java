@@ -44,6 +44,7 @@ public class Prephase2Activity extends Activity {
 	static SharedPreferences sharedPrefs;
 	private static List<String[]> msgList;
 	static String selectedNumber;
+	ListView list;
 	
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
@@ -56,16 +57,30 @@ public class Prephase2Activity extends Activity {
 		setContentView(R.layout.main);
 		dba = new DBAccessor(this);
 
+		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		final ListView list = (ListView) findViewById(R.id.listView1);
+		list = (ListView) findViewById(R.id.listView2);
 		msgList = ContactRetriever.getSMS(this);
 
+		/*ArrayList<TextView> messageList = new ArrayList<TextView>();//new TextView(this);
+		
+		for (int i = 0; i < msgList.size();i++)
+		{
+			messageList.add((TextView)findViewById(R.id.textView1));
+		}*/
 		// Toast.makeText(getApplicationContext(), "Here", Toast.LENGTH_SHORT).show();
-		list.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
-		list.setItemsCanFocus(false);
-
+		/*list.setAdapter(new ArrayAdapter<String>(this,
+				android.R.layout.test_list_item, 
+				(ContactRetriever.messageMaker(msgList))));*/
+		//Toast.makeText(this, msgList.get )
+		ContactAdapter adapter = new ContactAdapter(this, R.layout.listview_item_row, msgList);
+		
+		
+		//View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
+        //list.addHeaderView(header);
+		list.setAdapter(adapter);
+        
 		//Load up the conversation with the contact selected
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -74,7 +89,7 @@ public class Prephase2Activity extends Activity {
 				startActivity(new Intent (getBaseContext(), MessageView.class));
 			}
 		});
-
+		
 		// String actualNumber = "5555215556";
 		// dba.addRow("billy", actualNumber, "12345", 2);
 
@@ -172,9 +187,18 @@ public class Prephase2Activity extends Activity {
 		msgList = ContactRetriever.getSMS(this);
 		list.setAdapter(new ArrayAdapter<String>(
 				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
-		MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-		MessageView.list2.setAdapter(new ArrayAdapter<String>(
+		if (Prephase2Activity.selectedNumber != null)
+		{
+			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
+			MessageView.list2.setAdapter(new ArrayAdapter<String>(
 				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(MessageView.msgList2)));
+		}
+	}
+	
+	protected void onDestroy()
+	{
+		dba.close();
+		super.onDestroy();
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {

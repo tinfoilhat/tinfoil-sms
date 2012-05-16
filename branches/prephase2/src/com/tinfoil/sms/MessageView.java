@@ -26,6 +26,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -38,6 +41,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 public class MessageView extends Activity {
+	private static final String KEY = "test123";
+	private final int VERIFY = 2;
 	Button sendSMS;
 	EditText messageBox;
 	static ListView list2;
@@ -59,9 +64,9 @@ public class MessageView extends Activity {
         
 		list2 = (ListView) findViewById(R.id.listView1);
 		msgList2 = ContactRetriever.getPersonSMS(this);
-
-		list2.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList2)));
+		
+		list2.setAdapter(new ContactAdapter(this,
+				R.layout.listview_full_item_row, msgList2));
 		list2.setItemsCanFocus(false);
 
 		list2.setOnItemClickListener(new OnItemClickListener() {
@@ -95,7 +100,6 @@ public class MessageView extends Activity {
 						if (Prephase2Activity.dba.isTrustedContact(Prephase2Activity.selectedNumber) && 
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							
 							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(
 									Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber)).getKey(),
 									text));
@@ -131,6 +135,57 @@ public class MessageView extends Activity {
 		
     }
     
+    
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.exchange).setChecked(true);
+        return true;
+    }
+    
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.message_view_menu, menu);
+		return true;
+	}
+
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.exchange:
+			//Doesn't work right now
+			item.setChecked(!item.isChecked());
+			//
+			
+			//Add to trusted Contact list
+			TrustedContact tc = Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber));
+			if (tc != null)
+			{
+				if (Prephase2Activity.dba.isTrustedContact(ContactRetriever.format(Prephase2Activity.selectedNumber)))
+				{
+					tc.setKey(null);
+					tc.setVerified(0);
+					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
+				}
+				else
+				{
+					tc.setKey(KEY);
+					tc.setVerified(VERIFY);
+					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
+				}
+			}
+			
+			return true;
+		case R.id.delete:
+			//Not sure if we should have it delete the contact or delete the conversation
+			return true;
+	
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
+	}	    
+        
 	/**
      * Sends the given message to the phone with the given number
      * @param number : String, the number of the phone that the message is sent to

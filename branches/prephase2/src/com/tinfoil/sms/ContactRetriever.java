@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,22 +38,15 @@ public class ContactRetriever {
 	 */
 	public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
-		Uri uriSMSURI = Uri.parse("content://sms/inbox");
-		Cursor cur = c.getContentResolver().query(uriSMSURI, null, null, null,
-				null);
-		
-		// Used to remove duplication
-		Hashtable<String, Boolean> numbers = new Hashtable<String, Boolean>();
+		final String[] projection = new String[]{"*"};
+		Uri uri = Uri.parse("content://mms-sms/conversations/");
+		Cursor cur = c.getContentResolver().query(uri, projection, null, null, null);
 
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
-			//String id = cur.getString(cur.getColumnIndex("_id"));
-			if (numbers.isEmpty() || numbers.get(address) == null) {
-				numbers.put(address, true);
-				String name = nameHelper(address, c);
-				String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-				sms.add(new String[] {address, name, body});
-			}
+			String name = nameHelper(address, c);
+			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
+			sms.add(new String[] {address, name, body});
 		}
 		cur.close();
 		return sms;
@@ -68,7 +60,7 @@ public class ContactRetriever {
 	 */
 	public static List<String[]> getPersonSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
-		Uri uriSMSURI = Uri.parse("content://sms/inbox");
+		Uri uriSMSURI = Uri.parse("content://sms/");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, null, "address = ?",
 				new String[] {Prephase2Activity.selectedNumber}, null);
 
@@ -97,7 +89,20 @@ public class ContactRetriever {
 			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
 		}
 		return messageList;
-		
+	}
+	
+	public static List<String> messageLimiter(List<String> sms)
+	{
+		final int LENGTH = 46;
+		for (int i = 0; i < sms.size();i++)
+		{
+			if (sms.get(i).length() > LENGTH)
+			{
+				sms.set(i, sms.get(i).substring(0, LENGTH));
+			}
+			
+		}
+		return sms;
 	}
 	
 	/**
