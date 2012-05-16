@@ -60,12 +60,9 @@ public class ContactRetriever {
 	 */
 	public static List<String[]> getPersonSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
-		Uri uriSMSURI = Uri.parse("content://sms/inbox");
+		Uri uriSMSURI = Uri.parse("content://sms/");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, null, "address = ?",
 				new String[] {Prephase2Activity.selectedNumber}, null);
-		/*final String[] projection = new String[]{"*"};
-		Uri uri = Uri.parse("content://mms-sms/conversations/");
-		Cursor cur = c.getContentResolver().query(uri, projection, null, null, null);*/
 
 		while (cur.moveToNext()) {
 			String address = cur.getString(cur.getColumnIndex("address"));
