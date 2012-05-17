@@ -202,6 +202,7 @@ public class Prephase2Activity extends Activity {
 	
 	protected void onResume()
 	{
+		Prephase2Activity.selectedNumber = null;
 		updateList();
 		super.onResume();
 	}
