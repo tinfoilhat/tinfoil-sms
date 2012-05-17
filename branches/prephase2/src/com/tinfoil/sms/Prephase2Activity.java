@@ -42,7 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class Prephase2Activity extends Activity {
 	static DBAccessor dba;
 	public static final String INBOX = "content://sms/inbox";
-	public static final String ALL = "content://sms/";
+	public static final String ALL = "content://sms/sent";
 	static SharedPreferences sharedPrefs;
 	private static List<String[]> msgList;
 	static String selectedNumber;

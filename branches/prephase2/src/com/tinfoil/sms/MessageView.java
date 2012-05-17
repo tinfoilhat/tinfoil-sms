@@ -96,7 +96,7 @@ public class MessageView extends Activity {
 					//Encrypt the text message before sending it	
 					try
 					{
-                    	
+						messageBox.setText("");
 						//Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(1), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getBaseContext(), ""+Prephase2Activity.selectedNumber.substring(2), Toast.LENGTH_SHORT).show();
 												
@@ -123,7 +123,7 @@ public class MessageView extends Activity {
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList();
-						messageBox.setText("");
+						
 					}
 			        catch ( Exception e ) 
 			        { 
