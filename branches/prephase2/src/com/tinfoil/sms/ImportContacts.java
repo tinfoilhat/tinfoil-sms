@@ -44,8 +44,10 @@ public class ImportContacts extends Activity {
         setContentView(R.layout.importcontacts);
         
         confirm = (Button) findViewById(R.id.confirm);
-        listView = (ListView)findViewById(R.id.listView1);
+        listView = (ListView)findViewById(R.id.import_contact_list);
         ContentResolver cr = getContentResolver();
+        
+        //**NOTE we should limit the columns retrieved by this query
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         tc = new ArrayList<TrustedContact>();
         
@@ -77,8 +79,6 @@ public class ImportContacts extends Activity {
 		
 		listView.setAdapter(new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_multiple_choice, getNames()));
-		
-        listView.setItemsCanFocus(false);
         
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         

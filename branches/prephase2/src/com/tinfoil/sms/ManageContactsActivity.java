@@ -44,7 +44,7 @@ public class ManageContactsActivity extends Activity {
         setContentView(R.layout.contact);
         
         //Linking the ListView object to the appropriate listview from the xml file.
-        listView = (ListView)findViewById(R.id.listView1);
+        listView = (ListView)findViewById(R.id.contact_list);
         
         update();
                

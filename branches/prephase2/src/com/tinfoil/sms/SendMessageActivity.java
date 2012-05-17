@@ -50,9 +50,9 @@ public class SendMessageActivity extends Activity {
         
         Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-        sendSMS = (Button) findViewById(R.id.send2);
-        phoneBox = (EditText) findViewById(R.id.reciever);
-        messageBox = (EditText) findViewById(R.id.message2);
+        sendSMS = (Button) findViewById(R.id.new_message_send);
+        phoneBox = (EditText) findViewById(R.id.new_message_number);
+        messageBox = (EditText) findViewById(R.id.new_message_message);
         sendSMS.setOnClickListener(new View.OnClickListener()
         {
 			public void onClick(View v) 

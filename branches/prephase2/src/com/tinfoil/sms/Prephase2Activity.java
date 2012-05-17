@@ -34,7 +34,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -62,7 +61,7 @@ public class Prephase2Activity extends Activity {
 		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		list = (ListView) findViewById(R.id.listView2);
+		list = (ListView) findViewById(R.id.conversation_list);
 		msgList = ContactRetriever.getSMS(this);
 
 		/*ArrayList<TextView> messageList = new ArrayList<TextView>();//new TextView(this);

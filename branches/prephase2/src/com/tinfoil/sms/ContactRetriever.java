@@ -18,19 +18,17 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Pattern;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.Contacts.People;
 import android.provider.ContactsContract;
 
 public class ContactRetriever {
 	
 	private static Pattern p = Pattern.compile("^[+]1.{10}");
-	private static final int limit = 50;
+	private static final int LIMIT = 50;
 	
 	/**
 	 * Get the list of 1 messages per unique contact for the main window
@@ -72,7 +70,7 @@ public class ContactRetriever {
 				null, dateColumn);
 		int i = 0;
 		while (cur.moveToNext()) {
-			if (i == limit)
+			if (i == LIMIT)
 			{
 				break;
 			}

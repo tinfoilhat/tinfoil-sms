@@ -46,7 +46,7 @@ public class RemoveContactsActivity extends Activity {
         
         delete = (Button)findViewById(R.id.delete_cont);
         //Linking the ListView object to the appropriate listview from the xml file.
-        listView = (ListView)findViewById(R.id.listView1);
+        listView = (ListView)findViewById(R.id.removeable_contact_list);
         
         update();
         

@@ -21,11 +21,8 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
@@ -64,7 +61,7 @@ public class MessageView extends Activity {
 	
 		Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-		list2 = (ListView) findViewById(R.id.listView1);
+		list2 = (ListView) findViewById(R.id.message_list);
 		msgList2 = ContactRetriever.getPersonSMS(this);
 		
 		//for (int i =0;i<1;i++)

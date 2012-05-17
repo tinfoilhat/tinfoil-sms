@@ -58,7 +58,7 @@ public class QuickPrefsActivity extends PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
-            	startActivity(new Intent(this, AddContact.class));
+            	//startActivity(new Intent(this, AddContact.class));
             return true;
         }
         return false;
