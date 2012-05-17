@@ -30,6 +30,7 @@ import android.provider.ContactsContract;
 public class ContactRetriever {
 	
 	private static Pattern p = Pattern.compile("^[+]1.{10}");
+	private static final int limit = 50;
 	
 	/**
 	 * Get the list of 1 messages per unique contact for the main window
@@ -66,10 +67,15 @@ public class ContactRetriever {
 		Uri uriSMSURI = Uri.parse("content://sms/");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, projection, 
 				"address = '" + format(Prephase2Activity.selectedNumber) + 
-				"' or address = '+1" + format(Prephase2Activity.selectedNumber) + "'", 
+				"' or address = '+1" + format(Prephase2Activity.selectedNumber) +
+				"' or address = '1" + format(Prephase2Activity.selectedNumber) + "'", 
 				null, dateColumn);
-	
+		int i = 0;
 		while (cur.moveToNext()) {
+			if (i == limit)
+			{
+				break;
+			}
 			String address = cur.getString(cur.getColumnIndex("address"));
 			String type = cur.getString(cur.getColumnIndex("type"));
 			String name ="";
@@ -84,6 +90,7 @@ public class ContactRetriever {
 			
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
 			sms.add(new String[] {address, name, body});
+			i++;
 		}
 		cur.close();
 		return sms;

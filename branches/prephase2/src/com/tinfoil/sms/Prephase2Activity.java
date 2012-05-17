@@ -41,10 +41,12 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Prephase2Activity extends Activity {
 	static DBAccessor dba;
+	public static final String INBOX = "content://sms/inbox";
+	public static final String ALL = "content://sms/";
 	static SharedPreferences sharedPrefs;
 	private static List<String[]> msgList;
 	static String selectedNumber;
-	ListView list;
+	private ListView list;
 	
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
@@ -148,11 +150,13 @@ public class Prephase2Activity extends Activity {
 							 * sender of the message
 							 */
 							try {
-								sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
-								sendToSelf(messages[0].getOriginatingAddress(),	Encryption.aes_decrypt(
-										dba.getRow(ContactRetriever.format(address)).getKey(), messages[0].getMessageBody()));
+								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(), 
+										messages[0].getMessageBody(), INBOX, false);
+								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),	
+										Encryption.aes_decrypt(dba.getRow(ContactRetriever.format
+										(address)).getKey(), messages[0].getMessageBody()), INBOX, false);
 								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
-								updateList(list);
+								updateList();
 							} catch (Exception e) {
 								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 								e.printStackTrace();
@@ -160,8 +164,9 @@ public class Prephase2Activity extends Activity {
 						} else {
 							Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
 							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-							sendToSelf(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
-							updateList(list);
+							sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),
+									messages[0].getMessageBody(), INBOX, false);
+							updateList();
 						}
 					}
 				}
@@ -182,17 +187,23 @@ public class Prephase2Activity extends Activity {
 	 * the secondary inbox that the user last viewed, or is viewing
 	 * @param list : ListView, the ListView for this activity to update the message list
 	 */
-	private void updateList(ListView list)
+	private void updateList()
 	{
 		msgList = ContactRetriever.getSMS(this);
-		list.setAdapter(new ArrayAdapter<String>(
-				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(msgList)));
+		list.setAdapter(new ContactAdapter(this, R.layout.listview_item_row, msgList));
 		if (Prephase2Activity.selectedNumber != null)
 		{
 			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-			MessageView.list2.setAdapter(new ArrayAdapter<String>(
-				getBaseContext(), android.R.layout.test_list_item, ContactRetriever.messageMaker(MessageView.msgList2)));
+			MessageView.list2.setAdapter(new ContactAdapter(this,
+					R.layout.listview_full_item_row, MessageView.msgList2));
 		}
+		
+	}
+	
+	protected void onResume()
+	{
+		updateList();
+		super.onResume();
 	}
 	
 	protected void onDestroy()
@@ -223,17 +234,25 @@ public class Prephase2Activity extends Activity {
 
 	}
 
-	/**
+	/** 
 	 * Drops the message into the in-box of the default SMS program. Tricks the
 	 * in-box to think the message was send by the original sender
 	 * 
 	 * @param srcNumber : String, the number of the contact that sent the message
 	 * @param decMessage : String, the message sent from the contact
 	 */
-	private void sendToSelf(String srcNumber, String decMessage) {
+	public static void sendToSelf(Context c, String srcNumber, String decMessage, String dest, boolean sent) {
 		ContentValues values = new ContentValues();
 		values.put("address", srcNumber);
 		values.put("body", decMessage);
-		getContentResolver().insert(Uri.parse("content://sms/inbox"), values);
+		if (sent)
+		{
+			values.put("type", "2");
+		}
+		else
+		{
+			values.put("type", "1");
+		}
+		c.getContentResolver().insert(Uri.parse(dest), values);
 	}
 }

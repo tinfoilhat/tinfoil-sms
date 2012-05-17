@@ -21,6 +21,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -105,15 +106,23 @@ public class MessageView extends Activity {
 						{
 							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(
 									Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber)).getKey(),
-									text));
+									text));							
+							
+							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
+									Encryption.aes_encrypt(Prephase2Activity.dba.getRow(ContactRetriever.format
+									(Prephase2Activity.selectedNumber)).getKey(), text), Prephase2Activity.ALL, true);
+							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
+									 text, Prephase2Activity.ALL, true);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							sendSMS(Prephase2Activity.selectedNumber, text);
+							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
+									text, Prephase2Activity.ALL, true);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						
+						updateList();
 						messageBox.setText("");
 					}
 			        catch ( Exception e ) 
@@ -136,9 +145,19 @@ public class MessageView extends Activity {
 			}
         });
 		
+    }   
+    
+    public void updateList()
+    {
+    	MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
+		MessageView.list2.setAdapter(new ContactAdapter(this,
+				R.layout.listview_full_item_row, MessageView.msgList2));
     }
     
-    
+    protected void onStart()
+    {
+		super.onStart();
+    }
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.exchange).setChecked(true);
@@ -161,10 +180,12 @@ public class MessageView extends Activity {
 			//
 			
 			//Add to trusted Contact list
-			TrustedContact tc = Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber));
+			TrustedContact tc = Prephase2Activity.dba.getRow(ContactRetriever.format
+					(Prephase2Activity.selectedNumber));
 			if (tc != null)
 			{
-				if (Prephase2Activity.dba.isTrustedContact(ContactRetriever.format(Prephase2Activity.selectedNumber)))
+				if (Prephase2Activity.dba.isTrustedContact(ContactRetriever.format
+						(Prephase2Activity.selectedNumber)))
 				{
 					tc.setKey(null);
 					tc.setVerified(0);
