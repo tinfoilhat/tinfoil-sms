@@ -129,7 +129,7 @@ public class DBAccessor {
 	 * @param number : String, the number of the contact to be added
 	 * @return : String
 	 */
-	public String nativeContact (String name, String number)
+	/*public String nativeContact (String name, String number)
 	{
 		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
 		null, null, null, null);
@@ -173,6 +173,27 @@ public class DBAccessor {
 		//Need to use Content Provider to add stuff to android's db
 		
 		return "Found Nothing!";
+	}*/
+	
+	public boolean inDatabase(ArrayList<String> number)
+	{
+		for (int i = 0; i<number.size(); i++)
+		{
+			if (getRow(number.get(i)) == null)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean inDatabase(String number)
+	{
+		if (getRow(number) == null)
+		{
+			return false;
+		}
+		return true;
 	}
 	
     /**

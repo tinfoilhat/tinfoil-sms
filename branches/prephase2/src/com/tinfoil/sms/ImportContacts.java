@@ -19,10 +19,16 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts.People;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,11 +38,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ImportContacts extends Activity {
 	Button confirm;
-	private ListView listView;
+	private ListView importList;
 	private ArrayList<TrustedContact> tc;
 	 
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,25 +51,69 @@ public class ImportContacts extends Activity {
         setContentView(R.layout.importcontacts);
         
         confirm = (Button) findViewById(R.id.confirm);
-        listView = (ListView)findViewById(R.id.import_contact_list);
+        importList = (ListView)findViewById(R.id.import_contact_list);
         ContentResolver cr = getContentResolver();
         
         //**NOTE we should limit the columns retrieved by this query
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        //Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         tc = new ArrayList<TrustedContact>();
+                
+        //String number=null;
+        ArrayList<String> number = new ArrayList<String>();
+        String name;
+        //ArrayList<String> value = new ArrayList<String>();
         
+        String columnsN[] = new String[] { Phone.NUMBER};
+        String columnsC[] = new String[] { Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER};
+        Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
+        Cursor cur = managedQuery(mContacts, columnsC, null, null, Contacts.DISPLAY_NAME);
+        
+        Hashtable<String,ArrayList<String>> ActualSender = new Hashtable<String,ArrayList<String>>();
+        int i = 0;
+        if (cur.moveToFirst()) {
+                do {
+                		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
+                		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
+                		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
+                		{
+                			Cursor pCur = cr.query(Phone.CONTENT_URI, 
+                					columnsN, Phone.CONTACT_ID +" = ?", 
+                	 	 		    new String[]{id}, null);
+                			if (pCur.moveToFirst())
+                			{
+                				//number = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
+                				do
+                				{
+                					number.add(pCur.getString(pCur.getColumnIndex(Phone.NUMBER)));
+                				} while (pCur.moveToNext());
+                			}
+                		}
+                		
+                        if(number!=null)
+                        {
+                        	
+                        	if (!Prephase2Activity.dba.inDatabase(number))
+                        	{
+                        		ActualSender.put(name, number);
+                        		//tc.add(new TrustedContact(name, number, null,0));
+                        	}
+                        }
+                        i++;
+                } while (cur.moveToNext());
+        }
+
         //String id ="";
 		//final ArrayList <String> names = new ArrayList<String>();
         
-		if (cur.getCount() > 0) {
+		/*if (cur.getCount() > 0) {
 		    while (cur.moveToNext()) {
-		        /*id = cur.getString(
-	                        cur.getColumnIndex(ContactsContract.Contacts._ID));*/
+		        id = cur.getString(
+	                        cur.getColumnIndex(ContactsContract.Contacts._ID));
 		        //names.add(cur.getString(
 	            //            cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
 		    	tc.add(new TrustedContact(cur.getString(cur.getColumnIndex(
 		    			ContactsContract.Contacts.DISPLAY_NAME))));
-		       /*if (Integer.parseInt(cur.getString(
+		       if (Integer.parseInt(cur.getString(
 	 				cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
  					Cursor pCur = cr.query(
 	 	 		    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
@@ -73,31 +124,40 @@ public class ImportContacts extends Activity {
 	 	 		    // Do something with phones
 	 	 	        } 
 	 	 	        pCur.close();
-	 	        }*/
+	 	        }
  			}
 	 	}
-		
-		listView.setAdapter(new ArrayAdapter<String>(this, 
+	 	
+	 	listView.setAdapter(new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_multiple_choice, getNames()));*/
+        importList.setAdapter(new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_multiple_choice, getNames()));
+		
+        //importList.setItemsCanFocus(false);
         
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         
-        listView.setOnItemClickListener(new OnItemClickListener(){
+        /*confirm.setOnClickListener(new View.OnClickListener() {
+		
+        	public void onClick(View v) {
+			
+			//Add Contacts to the tinfoil-sms database from android's database
+	
+        	}
+        });   */
+        
+        
+        importList.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
+        		Toast.makeText(getApplicationContext(), "Number "+ tc.get(position).getNumber(), Toast.LENGTH_SHORT).show();
         		//Keep track of the contacts selected.
+        			
         	}
         	
         });
                 
-        confirm.setOnClickListener(new View.OnClickListener() {
-			
-			public void onClick(View v) {
-				
-				//Add Contacts to the tinfoil-sms database from android's database
-				
-			}
-		});       
+            
         
 	}
 	
@@ -134,7 +194,7 @@ public class ImportContacts extends Activity {
 				{
 					for (int i = 0; i < tc.size();i++)
 					{
-						listView.setItemChecked(i, true);
+						importList.setItemChecked(i, true);
 						//change(i, true);
 					}
 				}
