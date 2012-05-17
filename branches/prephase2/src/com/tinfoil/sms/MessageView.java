@@ -110,16 +110,16 @@ public class MessageView extends Activity {
 							
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
 									Encryption.aes_encrypt(Prephase2Activity.dba.getRow(ContactRetriever.format
-									(Prephase2Activity.selectedNumber)).getKey(), text), Prephase2Activity.ALL, true);
+									(Prephase2Activity.selectedNumber)).getKey(), text), Prephase2Activity.SENT);
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
-									 text, Prephase2Activity.ALL, true);
+									 text, Prephase2Activity.SENT);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							sendSMS(Prephase2Activity.selectedNumber, text);
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
-									text, Prephase2Activity.ALL, true);
+									text, Prephase2Activity.SENT);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList();

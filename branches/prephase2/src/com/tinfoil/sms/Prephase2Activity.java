@@ -42,7 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class Prephase2Activity extends Activity {
 	static DBAccessor dba;
 	public static final String INBOX = "content://sms/inbox";
-	public static final String ALL = "content://sms/sent";
+	public static final String SENT = "content://sms/sent";
 	static SharedPreferences sharedPrefs;
 	private static List<String[]> msgList;
 	static String selectedNumber;
@@ -151,10 +151,10 @@ public class Prephase2Activity extends Activity {
 							 */
 							try {
 								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(), 
-										messages[0].getMessageBody(), INBOX, false);
+										messages[0].getMessageBody(), INBOX);
 								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),	
 										Encryption.aes_decrypt(dba.getRow(ContactRetriever.format
-										(address)).getKey(), messages[0].getMessageBody()), INBOX, false);
+										(address)).getKey(), messages[0].getMessageBody()), INBOX);
 								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 								updateList();
 							} catch (Exception e) {
@@ -165,7 +165,7 @@ public class Prephase2Activity extends Activity {
 							Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
 							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 							sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),
-									messages[0].getMessageBody(), INBOX, false);
+									messages[0].getMessageBody(), INBOX);
 							updateList();
 						}
 					}
@@ -241,12 +241,13 @@ public class Prephase2Activity extends Activity {
 	 * 
 	 * @param srcNumber : String, the number of the contact that sent the message
 	 * @param decMessage : String, the message sent from the contact
+	 * @param dest : String, the folder in the android database that the message will be stored in
 	 */
-	public static void sendToSelf(Context c, String srcNumber, String decMessage, String dest, boolean sent) {
+	public static void sendToSelf(Context c, String srcNumber, String decMessage, String dest) {
 		ContentValues values = new ContentValues();
 		values.put("address", srcNumber);
 		values.put("body", decMessage);
-		if (sent)
+		if (dest.equalsIgnoreCase(SENT))
 		{
 			values.put("type", "2");
 		}
