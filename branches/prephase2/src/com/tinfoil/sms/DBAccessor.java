@@ -287,8 +287,9 @@ public class DBAccessor {
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
 					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
-			
-			getNumbers(tc,cur.getInt(cur.getColumnIndex(KEY_ID)));
+			int id = cur.getInt(cur.getColumnIndex(KEY_ID));
+			close(cur);
+			tc = getNumbers(tc, id);
 			/*int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {KEY_NUMBER},
@@ -311,9 +312,9 @@ public class DBAccessor {
 		return null;
 	}
 	
-	private TrustedContact getNumbers(TrustedContact tc, int id)
+	public TrustedContact getNumbers(TrustedContact tc, int id)
 	{
-		//open();
+		open();
 		Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
@@ -330,7 +331,7 @@ public class DBAccessor {
 				close(pCur);
 				return tc;
 			}
-		pCur.close();
+		close(pCur);
 		return null;
 	}
 	
