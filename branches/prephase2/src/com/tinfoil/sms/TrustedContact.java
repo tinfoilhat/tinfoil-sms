@@ -18,6 +18,8 @@
 
 package com.tinfoil.sms;
 
+import java.util.ArrayList;
+
 /**
  * A class for storing information retrieved or to be stored in the database. 
  * 
@@ -30,25 +32,63 @@ package com.tinfoil.sms;
 public class TrustedContact {
 	
 	private String name;
-	private String number;
+	private String primaryNumber;
 	private String key;
 	private int verified;
+	private ArrayList<String> numbers;
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
-	 * @param number The contact's number
+	 * @param primaryNumber The contact's primaryNumber
 	 * @param key The contact's public key used to encrypt message sent to this contact
 	 * @param verified A identifier used to help maintain state during the key exchange.
 	 */
-	public TrustedContact (String name, String number, String key, int verified)
+	public TrustedContact (String name, String primaryNumber, String key, int verified)
 	{
 		this.name = name;
-		this.number = number;
+		this.primaryNumber = primaryNumber;
 		this.key = key;
 		this.verified = verified;
+		this.numbers = new ArrayList<String>();
+		this.numbers.add(primaryNumber);
 	}
+	
+	/**
+	 * A class for storing information retrieved or to be stored in the database. 
+	 * 
+	 * @param name The contact's name 
+	 * @param primaryNumber The contact's primaryNumber
+	 * @param key The contact's public key used to encrypt message sent to this contact
+	 * @param verified A identifier used to help maintain state during the key exchange.
+	 * @param numbers A list of numbers that are associated to the contact.
+	 */
+	public TrustedContact (String name, String primaryNumber, String key, int verified, ArrayList<String> numbers)
+	{
+		this.name = name;
+		this.primaryNumber = primaryNumber;
+		this.key = key;
+		this.verified = verified;
+		this.numbers = numbers;
+	}
+	
+	/**
+	 * A class for storing information retrieved or to be stored in the database. 
+	 * 
+	 * @param name The contact's name 
+	 * @param verified A identifier used to help maintain state during the key exchange.
+	 * @param numbers A list of numbers that are associated to the contact.
+	 */
+	public TrustedContact (String name, int verified, ArrayList<String> numbers)
+	{
+		this.name = name;
+		this.primaryNumber = numbers.get(0);	//Set the first number as default
+		this.key = null;
+		this.verified = verified;
+		this.numbers = numbers;
+	}
+	
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -58,7 +98,7 @@ public class TrustedContact {
 	public TrustedContact (String name)
 	{
 		this.name = name;
-		this.number = null;
+		this.primaryNumber = null;
 		this.key = null;
 		this.verified = 0;
 	}
@@ -82,21 +122,63 @@ public class TrustedContact {
 	}
 	
 	/**
-	 * Access the contact's number
+	 * Access the contact's primaryNumber
 	 * @return : String
 	 */
-	public String getNumber()
+	public String getPrimaryNumber()
 	{
-		return number;
+		return primaryNumber;
 	}
 	
 	/**
-	 * Set the contact's number
+	 * Set a number in the contact's numbers list
+	 * @param index : int the index of the number
+	 * @param number : String the new number
+	 */
+	public void setNumber(int index, String number)
+	{
+		this.numbers.set(index, number);
+	}
+	
+	/**
+	 * Add a number to the contact's numbers list
 	 * @param number : String
 	 */
-	public void setNumber(String number)
+	public void addNumber(String number)
 	{
-		this.number = number;
+		this.numbers.add(number);
+	}
+	
+	/**
+	 * Access a contact's number from their contact list
+	 * @return : String
+	 */
+	public String getNumber(int index)
+	{
+		return numbers.get(index);
+	}
+	
+	public int getNumberSize()
+	{
+		return numbers.size();
+	}
+	
+	public boolean isNumbersEmpty()
+	{
+		if (numbers.size() <= 1)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Set the contact's primaryNumber
+	 * @param primaryNumber : String
+	 */
+	public void setPrimaryNumber(String primaryNumber)
+	{
+		this.primaryNumber = primaryNumber;
 	}
 	
 	/**

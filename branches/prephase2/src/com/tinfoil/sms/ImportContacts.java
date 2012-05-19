@@ -45,7 +45,7 @@ public class ImportContacts extends Activity {
 	Button confirm;
 	private ListView importList;
 	private ArrayList<TrustedContact> tc;
-	 
+	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.importcontacts);
@@ -68,8 +68,8 @@ public class ImportContacts extends Activity {
         Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
         Cursor cur = managedQuery(mContacts, columnsC, null, null, Contacts.DISPLAY_NAME);
         
-        Hashtable<String,ArrayList<String>> ActualSender = new Hashtable<String,ArrayList<String>>();
-        int i = 0;
+        //Hashtable<String,ArrayList<String>> ActualSender = new Hashtable<String,ArrayList<String>>();
+        //int i = 0;
         if (cur.moveToFirst()) {
                 do {
                 		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
@@ -87,6 +87,7 @@ public class ImportContacts extends Activity {
                 					number.add(pCur.getString(pCur.getColumnIndex(Phone.NUMBER)));
                 				} while (pCur.moveToNext());
                 			}
+                			pCur.close();
                 		}
                 		
                         if(number!=null)
@@ -94,13 +95,16 @@ public class ImportContacts extends Activity {
                         	
                         	if (!Prephase2Activity.dba.inDatabase(number))
                         	{
-                        		ActualSender.put(name, number);
-                        		//tc.add(new TrustedContact(name, number, null,0));
+                        		//Toast.makeText(getApplicationContext(),""+Prephase2Activity.dba.inDatabase(number) , Toast.LENGTH_SHORT).show();
+                        		//ActualSender.put(name, number);
+                        		tc.add(new TrustedContact(name, -1, number));
                         	}
                         }
-                        i++;
+                        //i++;
+                        number.clear();
                 } while (cur.moveToNext());
         }
+        cur.close();
 
         //String id ="";
 		//final ArrayList <String> names = new ArrayList<String>();
@@ -130,6 +134,7 @@ public class ImportContacts extends Activity {
 	 	
 	 	listView.setAdapter(new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_multiple_choice, getNames()));*/
+        
         importList.setAdapter(new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_multiple_choice, getNames()));
 		
@@ -137,28 +142,39 @@ public class ImportContacts extends Activity {
         
         importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         
-        /*confirm.setOnClickListener(new View.OnClickListener() {
+        confirm.setOnClickListener(new View.OnClickListener() {
 		
         	public void onClick(View v) {
-			
-			//Add Contacts to the tinfoil-sms database from android's database
-	
-        	}
-        });   */
-        
-        
+        		//Add Contacts to the tinfoil-sms database from android's database
+        		for (int i = 0; i<tc.size();i++)
+        		{        			
+        			if (tc.get(i).getVerified() == 0)
+        			{
+        				Toast.makeText(getApplicationContext(), tc.get(i).getName(), Toast.LENGTH_SHORT).show();
+        				Prephase2Activity.dba.addRow(tc.get(i));
+        			}
+        		}
+			}
+        });   
+                
         importList.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
-        		Toast.makeText(getApplicationContext(), "Number "+ tc.get(position).getNumber(), Toast.LENGTH_SHORT).show();
+        		//Toast.makeText(getApplicationContext(), "Number "+ tc.get(position).getPrimaryNumber(), Toast.LENGTH_SHORT).show();
         		//Keep track of the contacts selected.
-        			
+        		if (tc != null)
+        		{
+        			if (tc.get(position).getVerified() == -1)
+        			{
+        				tc.get(position).setVerified(0);
+        			}
+        			else
+        			{
+        				tc.get(position).setVerified(-1);
+        			}
+        		}
         	}
-        	
         });
-                
-            
-        
 	}
 	
 	/**

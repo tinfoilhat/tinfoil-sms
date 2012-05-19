@@ -18,6 +18,8 @@
 package com.tinfoil.sms;
 
 import java.util.List;
+
+import android.R.color;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -25,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -35,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -58,10 +62,18 @@ public class Prephase2Activity extends Activity {
 		setContentView(R.layout.main);
 		dba = new DBAccessor(this);
 
-		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		list = (ListView) findViewById(R.id.conversation_list);
+		
+		/*TextView name = (TextView)findViewById(R.id.c_name);
+		TextView message = (TextView)findViewById(R.id.c_message);
+		
+		name.setTextColor(color.white);
+		message.setTextColor(color.white);
+		list.setBackgroundColor(color.black);
+		*/
+		
 		msgList = ContactRetriever.getSMS(this);
 
 		/*ArrayList<TextView> messageList = new ArrayList<TextView>();//new TextView(this);
