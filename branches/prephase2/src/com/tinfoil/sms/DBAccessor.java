@@ -287,25 +287,24 @@ public class DBAccessor {
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
 					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
+			
 			int id = cur.getInt(cur.getColumnIndex(KEY_ID));
-			close(cur);
-			tc = getNumbers(tc, id);
-			/*int id = cur.getInt(cur.getColumnIndex(KEY_ID));
-			cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
-					new String[] {KEY_NUMBER},
+			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
+					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
 					null, null, null, null);
-			//tc.setNumber(cur.get)
-			if (cur.moveToFirst())
+
+			if (pCur.moveToFirst())
 			{
 				do
 				{
-					tc.addNumber(cur.getString(cur.getColumnIndex(KEY_NUMBER)));
-				}while(cur.moveToNext());
-			}*/
-			
+					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
+				}while(pCur.moveToNext());
+				pCur.close();
+			}
+			close(cur);
 			return tc;
         }
 		close(cur);
