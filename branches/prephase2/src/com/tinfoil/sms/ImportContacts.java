@@ -19,14 +19,11 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts.People;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract;
@@ -105,35 +102,6 @@ public class ImportContacts extends Activity {
                 } while (cur.moveToNext());
         }
         cur.close();
-
-        //String id ="";
-		//final ArrayList <String> names = new ArrayList<String>();
-        
-		/*if (cur.getCount() > 0) {
-		    while (cur.moveToNext()) {
-		        id = cur.getString(
-	                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-		        //names.add(cur.getString(
-	            //            cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-		    	tc.add(new TrustedContact(cur.getString(cur.getColumnIndex(
-		    			ContactsContract.Contacts.DISPLAY_NAME))));
-		       if (Integer.parseInt(cur.getString(
-	 				cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
- 					Cursor pCur = cr.query(
-	 	 		    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
-	 	 		    null, 
-	 	 		    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-	 	 		    new String[]{id}, null);
-	 	 	        while (pCur.moveToNext()) {
-	 	 		    // Do something with phones
-	 	 	        } 
-	 	 	        pCur.close();
-	 	        }
- 			}
-	 	}
-	 	
-	 	listView.setAdapter(new ArrayAdapter<String>(this, 
-				android.R.layout.simple_list_item_multiple_choice, getNames()));*/
         
         importList.setAdapter(new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_multiple_choice, getNames()));
@@ -154,13 +122,13 @@ public class ImportContacts extends Activity {
         				Prephase2Activity.dba.addRow(tc.get(i));
         			}
         		}
+        		finish();
 			}
         });   
                 
         importList.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
-        		//Toast.makeText(getApplicationContext(), "Number "+ tc.get(position).getPrimaryNumber(), Toast.LENGTH_SHORT).show();
         		//Keep track of the contacts selected.
         		if (tc != null)
         		{

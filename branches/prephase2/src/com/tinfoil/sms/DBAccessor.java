@@ -18,7 +18,6 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -39,7 +38,7 @@ public class DBAccessor {
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
-	private ContentResolver cr;
+	//private ContentResolver cr;
 	
 	/**
 	 * Creates a database that is read and write
@@ -49,7 +48,7 @@ public class DBAccessor {
 	{
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
-		cr = c.getContentResolver();
+		//cr = c.getContentResolver();
 	}
 	
 	/**
@@ -98,6 +97,11 @@ public class DBAccessor {
 		
 	}
 	
+	/**
+	 * Add a row to the numbers table.
+	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param number : String the number 
+	 */
 	public void addRow (int reference, String number)
 	{
 		//Check if name, number or key contain any ';'
@@ -284,7 +288,7 @@ public class DBAccessor {
 					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
 					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
 			
-			//getNumbers(tc,cur.getInt(cur.getColumnIndex(KEY_ID)));
+			getNumbers(tc,cur.getInt(cur.getColumnIndex(KEY_ID)));
 			/*int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {KEY_NUMBER},
@@ -311,7 +315,7 @@ public class DBAccessor {
 	{
 		//open();
 		Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
-					new String[] {KEY_NUMBER},
+					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -339,19 +343,40 @@ public class DBAccessor {
 	public ArrayList<TrustedContact> getAllRows()
 	{		
 		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED},
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
 				null, null, null, null, KEY_ID);
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
-
+		
 		if (cur.moveToFirst())
         {
+			int i = 0;
 			do
 			{
 				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 						cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
 						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));
+				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
+				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
+						new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
+						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
+						null, null, null, null);
+
+				if (pCur.moveToFirst())
+				{
+					do
+					{
+						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
+					}while(pCur.moveToNext());
+					pCur.close();
+					return tc;
+				}
+								
+				i++;
 			}while (cur.moveToNext());
+			
 			close(cur);
 			return tc;
         }
