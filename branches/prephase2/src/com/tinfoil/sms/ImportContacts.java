@@ -42,6 +42,7 @@ public class ImportContacts extends Activity {
 	Button confirm;
 	private ListView importList;
 	private ArrayList<TrustedContact> tc;
+	private boolean disable;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,26 +104,44 @@ public class ImportContacts extends Activity {
         }
         cur.close();
         
-        importList.setAdapter(new ArrayAdapter<String>(this, 
-				android.R.layout.simple_list_item_multiple_choice, getNames()));
-		
-        //importList.setItemsCanFocus(false);
-        
-        importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        if (tc != null && tc.size() > 0)
+        {
+        	disable = false;
+        	importList.setAdapter(new ArrayAdapter<String>(this, 
+					android.R.layout.simple_list_item_multiple_choice, getNames()));
+			
+        	
+	        //importList.setItemsCanFocus(false);
+	        
+	        importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        }
+        else 
+        {
+        	disable = true;
+        	importList.setAdapter(new ArrayAdapter<String>(this, 
+					android.R.layout.simple_list_item_1, getNames()));
+			
+	        //importList.setItemsCanFocus(false);
+	        
+	        //importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        }
         
         confirm.setOnClickListener(new View.OnClickListener() {
 		
         	public void onClick(View v) {
         		//Add Contacts to the tinfoil-sms database from android's database
-        		for (int i = 0; i<tc.size();i++)
-        		{        			
-        			if (tc.get(i).getVerified() == 0)
-        			{
-        				Toast.makeText(getApplicationContext(), tc.get(i).getName(), Toast.LENGTH_SHORT).show();
-        				Prephase2Activity.dba.addRow(tc.get(i));
-        			}
+        		if (!disable)
+        		{
+        			for (int i = 0; i<tc.size();i++)
+	        		{        			
+	        			if (tc.get(i).getVerified() == 0)
+	        			{
+	        				//Toast.makeText(getApplicationContext(), tc.get(i).getName(), Toast.LENGTH_SHORT).show();
+	        				Prephase2Activity.dba.addRow(tc.get(i));
+	        			}
+	        		}
+	        		finish();
         		}
-        		finish();
 			}
         });   
                 
@@ -130,21 +149,38 @@ public class ImportContacts extends Activity {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
         		//Keep track of the contacts selected.
-        		if (tc != null)
+        		if (!disable)
         		{
-        			if (tc.get(position).getVerified() == -1)
-        			{
-        				tc.get(position).setVerified(0);
-        			}
-        			else
-        			{
-        				tc.get(position).setVerified(-1);
-        			}
+        			change(position);
         		}
         	}
         });
 	}
 	
+	public void remove (int position)
+	{
+		tc.get(position).setVerified(-1);
+	}
+	
+	public void add(int position)
+	{
+		tc.get(position).setVerified(0);
+	}
+	
+	public void change(int position)
+	{
+		if (tc != null)
+		{
+			if (tc.get(position).getVerified() == -1)
+			{
+				add(position);
+			}
+			else
+			{
+				remove(position);
+			}
+		}
+	}
 	/**
 	 * Produces an ArrayList of contact names from the ArrayList of TrustedContacts
 	 * @return : ArrayList, a list of the names of each person on the list.
@@ -152,7 +188,7 @@ public class ImportContacts extends Activity {
 	public ArrayList<String> getNames()
 	{
 		ArrayList <String> names = new ArrayList<String>();
-		if (tc != null)
+		if (!disable)
 		{
 			for (int i = 0; i < tc.size();i++)
 			{
@@ -160,7 +196,8 @@ public class ImportContacts extends Activity {
 			}
 			return names;
 		}
-		return null;
+		names.add("No Contacts to Import");
+		return names;
 		
 	}
 	
@@ -179,10 +216,26 @@ public class ImportContacts extends Activity {
 					for (int i = 0; i < tc.size();i++)
 					{
 						importList.setItemChecked(i, true);
-						//change(i, true);
+						if (tc != null)
+						{
+							add(i);
+						}
 					}
 				}
 		        return true;
+	        case R.id.rm_import:
+	        	if (tc!=null)
+				{
+					for (int i = 0; i < tc.size();i++)
+					{
+						importList.setItemChecked(i, false);
+						if (tc != null)
+						{
+							remove(i);
+						}
+					}
+				}
+	        	return true;
 	        		    
 	        default:
 	        return super.onOptionsItemSelected(item);
