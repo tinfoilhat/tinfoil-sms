@@ -58,7 +58,7 @@ public class ManageContactsActivity extends Activity {
         		
         		if (tc != null)
         		{
-        			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getNumber()))
+        			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getPrimaryNumber()))
 	        		{
         				change(position, false);
 	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
@@ -123,8 +123,8 @@ public class ManageContactsActivity extends Activity {
 		{
 			remove(position);
 		}
-		Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getNumber());
-		//Prephase2Activity.dba.removeRow(tc.get(position).getNumber());
+		Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getPrimaryNumber());
+		//Prephase2Activity.dba.removeRow(tc.get(position).getPrimaryNumber());
 		//Prephase2Activity.dba.addRow(tc.get(position));
 		
 	}
@@ -137,7 +137,7 @@ public class ManageContactsActivity extends Activity {
 	{
 		for (int i = 0; i < tc.size();i++)
 		{				
-			if (Prephase2Activity.dba.isTrustedContact(tc.get(i).getNumber()))
+			if (Prephase2Activity.dba.isTrustedContact(tc.get(i).getPrimaryNumber()))
     		{
 				listView.setItemChecked(i, true);
     		}

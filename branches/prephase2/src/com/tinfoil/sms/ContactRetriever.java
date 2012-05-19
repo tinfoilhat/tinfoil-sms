@@ -180,12 +180,14 @@ public class ContactRetriever {
 	{
 		if (number.matches("^1.{10}"))
 		{
-			return number.substring(1);
+			number = number.substring(1);
 		}
 		else if (number.matches(p.pattern())) 
 		{
-			return number.substring(2);
+			number = number.substring(2);
 		}
+		number = number.replaceAll("-", "");
+		
 		return number;
 	}
 }

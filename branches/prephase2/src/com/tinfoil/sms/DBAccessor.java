@@ -18,26 +18,27 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 
 /**
  * Creates a database that is read and write and provides methods to facilitate the reading and writing to the database. 
  */
 public class DBAccessor {
 	
+	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
 	public static final String KEY_NUMBER = "number";
 	public static final String KEY_KEY = "key";
 	public static final String KEY_VERIFIED = "verified";
 	
+	public static final String KEY_REFERNECE = "reference";
+	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
-	private ContentResolver cr;
+	//private ContentResolver cr;
 	
 	/**
 	 * Creates a database that is read and write
@@ -47,7 +48,7 @@ public class DBAccessor {
 	{
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
-		cr = c.getContentResolver();
+		//cr = c.getContentResolver();
 	}
 	
 	/**
@@ -90,7 +91,31 @@ public class DBAccessor {
 	
 	        //Insert the row into the database
 	        open();
-	        db.insert(SQLitehelper.TABLE_NAME, null, cv);
+	        db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
+	        close();
+		//}
+		
+	}
+	
+	/**
+	 * Add a row to the numbers table.
+	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param number : String the number 
+	 */
+	public void addRow (int reference, String number)
+	{
+		//Check if name, number or key contain any ';'
+		//if (!conflict(number))
+		//{
+			ContentValues cv = new ContentValues();
+				
+			//add given values to a row
+	        cv.put(KEY_REFERNECE, reference);
+	        cv.put(KEY_NUMBER, number);
+	
+	        //Insert the row into the database
+	        open();
+	        db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
 	        close();
 		//}
 		
@@ -103,23 +128,46 @@ public class DBAccessor {
 	public void addRow (TrustedContact tc)
 	{
 		//Check if name, number or key contain any ';'
-		//if (!conflict(tc.getNumber()))
+		//if (!conflict(tc.getPrimaryNumber()))
 		//{
+			tc.setPrimaryNumber(ContactRetriever.format(tc.getPrimaryNumber()));
 			ContentValues cv = new ContentValues();
 			
 			//add given values to a row
 	        cv.put(KEY_NAME, tc.getName());
-	        cv.put(KEY_NUMBER, tc.getNumber());
+	        cv.put(KEY_NUMBER, tc.getPrimaryNumber());
 	        cv.put(KEY_KEY, tc.getKey());
 	        cv.put(KEY_VERIFIED, tc.getVerified());
-	
+	        
 	        //Insert the row into the database
 	        open();
-	        db.insert(SQLitehelper.TABLE_NAME, null, cv);
+	        db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
 	        close();
-		//}
-        
+	        if (!tc.isNumbersEmpty())
+	        {
+	        	for (int i = 0; i< tc.getNumberSize();i++)
+	        	{
+	        		addRow(getId(tc.getPrimaryNumber()), ContactRetriever.format(tc.getNumber(i)));
+	        	}
+	        }
+	              
 	}
+	
+	private int getId(String number)
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {"id"},
+				"number = "+ number, null, null, null, null);
+		if (cur.moveToFirst())
+		{
+			int id = cur.getInt(cur.getColumnIndex("id"));
+			close(cur);
+			return id;
+		}
+		close(cur);
+		return 0;
+	}
+	
 	
 	/**
 	 * **Note Still a working project
@@ -179,17 +227,18 @@ public class DBAccessor {
 	{
 		for (int i = 0; i<number.size(); i++)
 		{
-			if (getRow(number.get(i)) == null)
+			TrustedContact tc =getRow(ContactRetriever.format(number.get(i)));
+			if (tc != null)
 			{
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	public boolean inDatabase(String number)
 	{
-		if (getRow(number) == null)
+		if (getRow(ContactRetriever.format(number)) == null)
 		{
 			return false;
 		}
@@ -229,16 +278,60 @@ public class DBAccessor {
 	public TrustedContact getRow(String number)
 	{		
 		open();
-		Cursor cur = db.query(SQLitehelper.TABLE_NAME, new String[] {KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED},
+		//new String[] {KEY_ID, KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED}
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
 				"number = "+ number, null, null, null, null);
 		
 		if (cur.moveToFirst())
-        {
-			TrustedContact tc = new TrustedContact (cur.getString(0), cur.getString(1), cur.getString(2), cur.getInt(3));
+        { 	
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
+					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
+			int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			close(cur);
+			tc = getNumbers(tc, id);
+			/*int id = cur.getInt(cur.getColumnIndex(KEY_ID));
+			cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
+					new String[] {KEY_NUMBER},
+					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
+					null, null, null, null);
+			//tc.setNumber(cur.get)
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					tc.addNumber(cur.getString(cur.getColumnIndex(KEY_NUMBER)));
+				}while(cur.moveToNext());
+			}*/
+			
 			return tc;
         }
 		close(cur);
+		return null;
+	}
+	
+	public TrustedContact getNumbers(TrustedContact tc, int id)
+	{
+		open();
+		Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
+					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
+					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
+					null, null, null, null);
+
+			if (pCur.moveToFirst())
+			{
+				do
+				{
+					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
+				}while(pCur.moveToNext());
+				close(pCur);
+				return tc;
+			}
+		close(pCur);
 		return null;
 	}
 	
@@ -251,17 +344,40 @@ public class DBAccessor {
 	public ArrayList<TrustedContact> getAllRows()
 	{		
 		open();
-		Cursor cur = db.query(SQLitehelper.TABLE_NAME, new String[] {KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED},
-				null, null, null, null, "id");
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
+				null, null, null, null, KEY_ID);
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
-
+		
 		if (cur.moveToFirst())
         {
+			int i = 0;
 			do
 			{
-				tc.add(new TrustedContact (cur.getString(0), cur.getString(1), cur.getString(2), cur.getInt(3)));
+				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+						cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
+						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));
+				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
+				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
+						new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
+						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
+						null, null, null, null);
+
+				if (pCur.moveToFirst())
+				{
+					do
+					{
+						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
+					}while(pCur.moveToNext());
+					pCur.close();
+					return tc;
+				}
+								
+				i++;
 			}while (cur.moveToNext());
+			
 			close(cur);
 			return tc;
         }
@@ -289,7 +405,7 @@ public class DBAccessor {
 	public void removeRow(String number)
 	{
 		open();
-		db.delete(SQLitehelper.TABLE_NAME, "number = " +number, null);
+		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, "number = " +number, null);
 		close();
 	}
 	
