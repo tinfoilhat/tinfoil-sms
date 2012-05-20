@@ -29,6 +29,7 @@ import java.security.Security;
 import org.spongycastle.crypto.AsymmetricCipherKeyPair;
 import org.spongycastle.crypto.BufferedBlockCipher;
 import org.spongycastle.crypto.CipherParameters;
+import org.spongycastle.crypto.Digest;
 import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.crypto.KeyGenerationParameters;
 import org.spongycastle.crypto.agreement.ECDHBasicAgreement;
@@ -87,6 +88,44 @@ public class ECCKeyExchangeActivity extends Activity {
 								        ecSpec.getG(),		// G
 								        ecSpec.getN());		// N
     
+    
+    /*
+     * The pre-defined shared information that the users have agreed upon before
+     * initiating the key exchange 
+     */
+    byte[] S1 = "This is 256bit secret passphrase".getBytes();
+    byte[] S2 = "Another 256bit secret passphrase".getBytes();
+    
+    
+	/*
+	 * are_same A function which checks if two array of bytes are identical
+	 * 
+	 * @param a first array of bytes
+	 * @param b first array of bytes
+	 * 
+	 * @return boolean, true if identical
+	 */
+	private boolean are_same(
+	        byte[]  a,
+	        byte[]  b)
+	    {
+	        if (a.length != b.length)
+	        {
+	            return false;
+	        }
+
+	        for (int i = 0; i != a.length; i++)
+	        {
+	            if (a[i] != b[i])
+	            {
+	                return false;
+	            }
+	        }
+
+	        return true;
+	    }
+    
+	
     /*
      * pubKey_to_string A function which takes an ECC public key parameter
      * object and returns the X and Y values for the public key Q as a string
@@ -158,6 +197,131 @@ public class ECCKeyExchangeActivity extends Activity {
     }    
    
     
+    /*
+     * NOTE: THIS SHOULD THROW AN EXCEPTION IF S1 OR S2 ARE NULL, BUT S1 AND S2 NULL IS OK
+     * 
+     * sign_publickey A function which takes a hex encoded ASN.1 encoded public key Q
+     * and signs the public key using the shared information S1 if initiating the key exchange
+     * or S2 if responding to a key exchange.
+     * 
+     * The function returns the signed public key which is a byte array containing the hash
+     * of the public key concatenated with the public key 
+     * 
+     * @param digest the digest function to use for signing the key such as SHA256
+     * @param encodedPubkey A byte array of the hex encoded ASN.1 encoded public key Q
+     * @param isResponse True if responding to a key exchange, false if initiating key exchange
+     * @return byte array containing public key concatenated with the hash of the public key
+     */
+    public byte[] sign_publickey(Digest digest, byte[] encodedPubKey, boolean isResponse)
+    {
+    	/*
+    	 * The shared information to use for signing the public key
+    	 * The digest input which is the public key concatenated with S1 or S2
+    	 * Signed public key byte array to hold the public key and hash 
+    	 */
+    	byte[] S;
+    	byte[] digestInput;
+    	byte[] signedPubKey = new byte[encodedPubKey.length + digest.getDigestSize()];
+    	System.arraycopy(encodedPubKey, 0, signedPubKey, 0, encodedPubKey.length);
+    	
+    	/*
+    	 * Set the shared information as S1 if initiating key exchange, S2 if
+    	 * responding to key exchange
+    	 */
+    	if (isResponse) {
+    		S = S2;
+		} else { 
+    		S = S1;
+		}
+    	
+    	/*
+    	 * Calculate the signature of the encoded public key concatenated with
+    	 * shared information, S 
+    	 */
+		digestInput = new byte[encodedPubKey.length + S.length];
+		System.arraycopy(encodedPubKey, 0, digestInput, 0, encodedPubKey.length);
+		System.arraycopy(S, 0, digestInput, encodedPubKey.length, S.length);
+		
+		/*
+		 * Sign the public key, concatenate the signature to public key
+		 */
+		digest.update(digestInput, 0, digestInput.length);
+		digest.doFinal(signedPubKey, encodedPubKey.length);
+		
+		return signedPubKey;
+    }
+    
+    
+    /*
+     * NOTE: THIS SHOULD THROW AN EXCEPTION IF S1 OR S2 ARE NULL, BUT S1 AND S2 NULL IS OK
+     * 
+     * verify_publickey A function which takes a signed public key and verifies
+     * the public key using the shared information S1 if initiating the key exchange
+     * or S2 if responding to a key exchange.
+     * 
+     * The function returns true if the signature of the signed public key received
+     * matches the calculated signature of the public key concatenated with S1 or S2
+     * LENGTH_SHORT
+     * @param digest the digest function to use for signing the key such as SHA256
+     * @param signedPubKey byte array containing public key concatenated with the hash of the public key 
+     * @param isResponse True if responding to a key exchange, false if initiating key exchange
+     * @return true if the public key is verified to be valid
+     */
+    public boolean verify_publickey(Digest digest, byte[] signedPubKey, boolean isResponse)
+    {
+    	/*
+    	 * The shared information to use for verifying the public key
+    	 * The digest input which is the public key concatenated with S1 or S2
+    	 * The originator of the public key's signature and the calculated signature
+    	 */
+    	byte[] S;
+    	byte[] digestInput;
+    	byte[] origSignature = new byte[digest.getDigestSize()];
+    	byte[] calcSignature = new byte[digest.getDigestSize()];
+    	System.arraycopy(signedPubKey, signedPubKey.length - digest.getDigestSize(), 
+    			origSignature, 0, digest.getDigestSize());
+    	
+    	/*
+    	 * Set the shared information as S1 if initiating key exchange, S2 if
+    	 * responding to key exchange
+    	 */
+    	if (isResponse) {
+    		S = S2;
+		} else { 
+    		S = S1;
+		}
+    	
+    	/*
+    	 * Calculate the signature of the encoded public key concatenated with
+    	 * shared information, S 
+    	 */
+		digestInput = new byte[signedPubKey.length - digest.getDigestSize() + S.length];
+		System.arraycopy(signedPubKey, 0, digestInput, 0, signedPubKey.length - digest.getDigestSize());
+		System.arraycopy(S, 0, digestInput, signedPubKey.length - digest.getDigestSize(), S.length);
+		
+		/*
+		 * Calculated the signature of the public key
+		 */
+		digest.update(digestInput, 0, digestInput.length);
+		digest.doFinal(calcSignature, 0);
+		
+		/*
+		 * Verify that the calculated signature matches the signature of the
+		 * signed public key received
+		 */
+		if (are_same(calcSignature, origSignature))
+		{
+			Toast.makeText(getApplicationContext(), "Valid signature", Toast.LENGTH_LONG).show();
+			return true;
+		}
+		else
+		{
+			Toast.makeText(getApplicationContext(), "INVALID SIGNATURE!", Toast.LENGTH_LONG).show();
+			return false;
+		}
+    }
+    
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,11 +343,17 @@ public class ECCKeyExchangeActivity extends Activity {
         // Bob encoded public key Q
         byte[] encodedPubKey = encode_publickey(bob.getPublic());
         
+        // Bob signed public key
+        byte[] signedPubKey = sign_publickey(new SHA256Digest(), encodedPubKey, false);
+        
         TextView tv = new TextView(this);
-        tv.setText("Alice public key, Q: \n" + publickey_to_string(alice.getPublic()) 
-        		+ "\n\nBob public key, Q: \n" + publickey_to_string(bob.getPublic())
+        tv.setText("Bob public key, Q: \n" + publickey_to_string(bob.getPublic())
         		+ "\n\nBob encoded public key, Q:\n" + new String(encodedPubKey)
-        		+ "\n\nBob encoded public key Q, DECODED:\n" + publickey_to_string(decode_publickey(encodedPubKey)));
+        		+ "\n\nBob encoded public key Q, DECODED:\n" + publickey_to_string(decode_publickey(encodedPubKey))
+        		+ "\n\nBob signed public key:\n" + new String(signedPubKey));
         setContentView(tv);
+        
+        // Verify Bob signed public key
+        verify_publickey(new SHA256Digest(), signedPubKey, false);
     }
 }
