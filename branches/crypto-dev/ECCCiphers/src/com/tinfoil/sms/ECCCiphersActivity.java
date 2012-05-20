@@ -345,7 +345,7 @@ public class ECCCiphersActivity extends Activity {
 */		
         
         /* 
-         * Get the elliptic specifications for NIST P-256
+         * Get the elliptic curve specifications for NIST P-256
          */
         ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
         
@@ -379,7 +379,7 @@ public class ECCCiphersActivity extends Activity {
          */
         try
 		{
-			//stream_test(p1, p2);
+			stream_test(p1, p2);
 			block_test(p1, p2);
 		}
         catch (Exception e)

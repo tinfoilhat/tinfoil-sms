@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, ECCStreamCipherActivity!</string>
-    <string name="app_name">ECCStreamCipher</string>
+    <string name="hello">Hello World, ECCCipherActivity!</string>
+    <string name="app_name">ECCCipher</string>
 
 </resources>
