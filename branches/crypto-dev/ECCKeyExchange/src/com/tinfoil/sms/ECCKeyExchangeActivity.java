@@ -205,7 +205,7 @@ public class ECCKeyExchangeActivity extends Activity {
      * or S2 if responding to a key exchange.
      * 
      * The function returns the signed public key which is a byte array containing the hash
-     * of the public key concatenated with the public key 
+     * of the public key concatenated with the public key.
      * 
      * @param digest the digest function to use for signing the key such as SHA256
      * @param encodedPubkey A byte array of the hex encoded ASN.1 encoded public key Q
@@ -260,8 +260,8 @@ public class ECCKeyExchangeActivity extends Activity {
      * or S2 if responding to a key exchange.
      * 
      * The function returns true if the signature of the signed public key received
-     * matches the calculated signature of the public key concatenated with S1 or S2
-     * LENGTH_SHORT
+     * matches the calculated signature of the public key concatenated with S1 or S2.
+     * 
      * @param digest the digest function to use for signing the key such as SHA256
      * @param signedPubKey byte array containing public key concatenated with the hash of the public key 
      * @param isResponse True if responding to a key exchange, false if initiating key exchange
