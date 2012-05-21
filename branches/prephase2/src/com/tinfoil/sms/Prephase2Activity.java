@@ -74,7 +74,7 @@ public class Prephase2Activity extends Activity {
 		//msgList = ContactRetriever.getSMS(this, 10);
 		msgList = ContactRetriever.getSMS(this);
 
-		ContactAdapter adapter = new ContactAdapter(this, R.layout.listview_item_row, msgList);
+		MessageAdapter adapter = new MessageAdapter(this, R.layout.listview_item_row, msgList);
 		
 		
 		//View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
@@ -191,11 +191,11 @@ public class Prephase2Activity extends Activity {
 	{
 		//msgList = ContactRetriever.getSMS(this, 0);
 		msgList = ContactRetriever.getSMS(this);
-		list.setAdapter(new ContactAdapter(this, R.layout.listview_item_row, msgList));
+		list.setAdapter(new MessageAdapter(this, R.layout.listview_item_row, msgList));
 		if (Prephase2Activity.selectedNumber != null)
 		{
 			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-			MessageView.list2.setAdapter(new ContactAdapter(this,
+			MessageView.list2.setAdapter(new MessageAdapter(this,
 					R.layout.listview_full_item_row, MessageView.msgList2));
 		}
 		

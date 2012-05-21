@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dp">
+    android:orientation="horizontal"
+    android:padding="10dp" >
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/new_number"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:inputType="phone" >
-
+        android:layout_toLeftOf="@+id/primary_number"
+        android:inputType="phone">
         <requestFocus />
     </EditText>
 
-    <Button
-        android:id="@+id/add_new_number"
+    <RadioButton
+        android:id="@+id/primary_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText1"
-        android:layout_centerHorizontal="true"
-        android:text="Add Number" />
+        android:layout_alignBaseline="@+id/editText1"
+        android:layout_alignBottom="@+id/editText1"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

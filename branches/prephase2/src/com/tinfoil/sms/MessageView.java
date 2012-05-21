@@ -66,7 +66,7 @@ public class MessageView extends Activity {
 		
 		//for (int i =0;i<1;i++)
 		//	Toast.makeText(this, msgList2.get(0)[i],Toast.LENGTH_LONG);
-		list2.setAdapter(new ContactAdapter(this,
+		list2.setAdapter(new MessageAdapter(this,
 				R.layout.listview_full_item_row, msgList2));
 		list2.setItemsCanFocus(false);
 
@@ -147,7 +147,7 @@ public class MessageView extends Activity {
     public void updateList()
     {
     	MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-		MessageView.list2.setAdapter(new ContactAdapter(this,
+		MessageView.list2.setAdapter(new MessageAdapter(this,
 				R.layout.listview_full_item_row, MessageView.msgList2));
     }
     

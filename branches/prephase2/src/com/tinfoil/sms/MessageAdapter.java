@@ -25,17 +25,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-public class ContactAdapter extends ArrayAdapter<String[]>{
+public class MessageAdapter extends ArrayAdapter<String[]>{
 
     Context context; 
     int layoutResourceId;    
     List<String[]> data = null;
     
-    public ContactAdapter(Context context, int layoutResourceId, List<String[]> data) {
+    public MessageAdapter(Context context, int layoutResourceId, List<String[]> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -45,46 +43,34 @@ public class ContactAdapter extends ArrayAdapter<String[]>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        ContactHolder holder = null;
+        MessageHolder holder = null;
         
         if(row == null)
         {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
             
-            holder = new ContactHolder();
-            holder.c_number = (EditText)row.findViewById(R.id.new_number);
-            holder.primary = (RadioButton)row.findViewById(R.id.primary_number);
+            holder = new MessageHolder();
+            holder.c_name = (TextView)row.findViewById(R.id.c_name);
+            holder.c_message = (TextView)row.findViewById(R.id.c_message);
             
             row.setTag(holder);
         }
         else
         {
-            holder = (ContactHolder)row.getTag();
+            holder = (MessageHolder)row.getTag();
         }
         
-        String number[] = data.get(position);
-        if (number != null)
-        {
-        	holder.c_number.setText(number[0]);
-        	if (number[1].equalsIgnoreCase("primary"))
-        	{
-        		holder.primary.setChecked(true);
-        	}
-        	else
-        	{
-        		holder.primary.setChecked(false);
-        	}
-        }
-        //holder.c_name.setText(contact[1]);
-        //holder.c_message.setText(contact[2]);
+        String contact[] = data.get(position);
+        holder.c_name.setText(contact[1]);
+        holder.c_message.setText(contact[2]);
         
         return row;
     }
     
-    static class ContactHolder
+    static class MessageHolder
     {
-    	EditText c_number;
-    	RadioButton primary;
+    	TextView c_name;
+    	TextView c_message;
     }
 }
