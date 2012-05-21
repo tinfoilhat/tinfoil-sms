@@ -70,7 +70,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 public class ECCKeyExchangeActivity extends Activity {
-	private static final String TAG = "ECIES";
+	protected static final String TAG = "ECIES";
 	static {
 	    Security.addProvider(new BouncyCastleProvider());
 	}
@@ -78,12 +78,12 @@ public class ECCKeyExchangeActivity extends Activity {
     /* 
      * Get the elliptic curve specifications for NIST P-256
      */
-    private static final ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
+    protected static final ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
     
     /*
      * Define the elliptic curve parameters based on NIST P-256 specs
      */
-    private static final ECDomainParameters params = new ECDomainParameters(
+    protected static final ECDomainParameters params = new ECDomainParameters(
     									ecSpec.getCurve(),	// Curve
 								        ecSpec.getG(),		// G
 								        ecSpec.getN());		// N
@@ -93,8 +93,8 @@ public class ECCKeyExchangeActivity extends Activity {
      * The pre-defined shared information that the users have agreed upon before
      * initiating the key exchange 
      */
-    byte[] S1 = "This is 256bit secret passphrase".getBytes();
-    byte[] S2 = "Another 256bit secret passphrase".getBytes();
+    protected static final byte[] S1 = "This is 256bit secret passphrase".getBytes();
+    protected static final byte[] S2 = "Another 256bit secret passphrase".getBytes();
     
     
 	/*
@@ -105,7 +105,7 @@ public class ECCKeyExchangeActivity extends Activity {
 	 * 
 	 * @return boolean, true if identical
 	 */
-	private boolean are_same(
+	public boolean are_same(
 	        byte[]  a,
 	        byte[]  b)
 	    {
@@ -150,7 +150,7 @@ public class ECCKeyExchangeActivity extends Activity {
      * Q.
      * 
      * @param pubKey an ECC public key parameter which implements CipherParameters
-     * @return A byte array of the hex encoded public key Q
+     * @return A byte array of the ASN.1 encoded public key Q
      */
     public byte[] encode_publickey(CipherParameters pubKey) throws InvalidParameterException
     {
@@ -162,12 +162,12 @@ public class ECCKeyExchangeActivity extends Activity {
     		 *     1. It takes the X and Y value of the public key Q
     		 *     2. Then creates a single encoded byte array for the public key Q
     		 *     3. Finally it creates a hex encoded byte array of the encoded public key Q
-    		 *     
     		 */
-        	return Hex.encode(ecSpec.getCurve().createPoint(
-        				((ECPublicKeyParameters)pubKey).getQ().getX().toBigInteger(), 	// X
-        				((ECPublicKeyParameters)pubKey).getQ().getY().toBigInteger(), 	// Y
-        				true).getEncoded());	// Encoded public key Q
+        	
+        	return ecSpec.getCurve().createPoint(
+    					((ECPublicKeyParameters)pubKey).getQ().getX().toBigInteger(), 	// X
+    					((ECPublicKeyParameters)pubKey).getQ().getY().toBigInteger(), 	// Y
+    					true).getEncoded();	// Encoded public key Q
     	}
     	else
     	{
@@ -177,42 +177,70 @@ public class ECCKeyExchangeActivity extends Activity {
     
     
     /*
-     * decode_publickey A function which takes a hex encoded byte array of the 
-     * ASN.1 encoded ECC public key Q and returns an ECPublicKeyParameters object
-     * for the public key Q 
+     * decode_publickey A function which takes an ASN.1 encoded ECC public key Q
+     * and returns an ECPublicKeyParameters object for the public key Q. 
      * 
-     * @param encodedPubkey A byte array of the hex encoded ASN.1 encoded public key Q
+     * @param encodedPubkey A byte array of the ASN.1 encoded public key Q
      * @return An ECC public key parameter for Q, ECPublicKeyParametersimplements
      */
     public ECPublicKeyParameters decode_publickey(byte[] encodedPubKey)
     {
-    		/*
-    		 * Takes the encoded public key Q and decodes an X and Y value for 
-    		 * the point Q, then returns an ECPublicKeyParameters object for
-    		 * the elliptic curve parameters specified 
-    		 */
-        	return new ECPublicKeyParameters(
-        			ecSpec.getCurve().decodePoint(Hex.decode(encodedPubKey)), 	// Q
-        		    params);
-    }    
-   
+		/*
+		 * Takes the encoded public key Q and decodes an X and Y value for 
+		 * the point Q, then returns an ECPublicKeyParameters object for
+		 * the elliptic curve parameters specified 
+		 */
+    	
+    	return new ECPublicKeyParameters(
+    			ecSpec.getCurve().decodePoint(encodedPubKey), 	// Q
+    			params);
+    }
+    
+    
+    /*
+     * decode_sign_publickey A function which takes an ASN.1 encoded ECC public key Q
+     * that is signed using ECG key exchange and returns an ECPublicKeyParameters 
+     * object for the public key Q. 
+     * 
+     * @param signedPubkey A byte array of the ASN.1 encoded public key Q that is signed
+     * @return An ECC public key parameter for Q, ECPublicKeyParametersimplements
+     */
+    public ECPublicKeyParameters decode_signed_publickey(Digest digest, byte[] signedPubKey)
+    {
+    	/*
+    	 * Retrieve the ASN.1 encoded ECC public key Q from the contents of signed public key  
+    	 */
+    	byte[] encodedPubKey = new byte[signedPubKey.length - digest.getDigestSize()];
+    	System.arraycopy(signedPubKey, 0, encodedPubKey, 0, signedPubKey.length - digest.getDigestSize());
+    	
+		/*
+		 * Takes the encoded public key Q and decodes an X and Y value for 
+		 * the point Q, then returns an ECPublicKeyParameters object for
+		 * the elliptic curve parameters specified 
+		 */
+    	
+    	return new ECPublicKeyParameters(
+    			ecSpec.getCurve().decodePoint(encodedPubKey), 	// Q
+    			params);
+    }
+    
     
     /*
      * NOTE: THIS SHOULD THROW AN EXCEPTION IF S1 OR S2 ARE NULL, BUT S1 AND S2 NULL IS OK
      * 
-     * sign_publickey A function which takes a hex encoded ASN.1 encoded public key Q
-     * and signs the public key using the shared information S1 if initiating the key exchange
-     * or S2 if responding to a key exchange.
+     * sign_publickey A function which takes an ASN.1 encoded public key Q and 
+     * signs the public key using the shared information S1 if initiating the key
+     * exchange or S2 if responding to a key exchange.
      * 
      * The function returns the signed public key which is a byte array containing the hash
      * of the public key concatenated with the public key.
      * 
-     * @param digest the digest function to use for signing the key such as SHA256
-     * @param encodedPubkey A byte array of the hex encoded ASN.1 encoded public key Q
+     * @param digest The digest function to use for signing the key such as SHA256
+     * @param encodedPubkey A byte array of the ASN.1 encoded public key Q
      * @param isResponse True if responding to a key exchange, false if initiating key exchange
-     * @return byte array containing public key concatenated with the hash of the public key
+     * @return A byte array containing public key concatenated with the hash of the public key
      */
-    public byte[] sign_publickey(Digest digest, byte[] encodedPubKey, boolean isResponse)
+    public byte[] sign_publickey(Digest digest, byte[] encodedPubKey, boolean isInitiator)
     {
     	/*
     	 * The shared information to use for signing the public key
@@ -228,10 +256,10 @@ public class ECCKeyExchangeActivity extends Activity {
     	 * Set the shared information as S1 if initiating key exchange, S2 if
     	 * responding to key exchange
     	 */
-    	if (isResponse) {
-    		S = S2;
-		} else { 
+    	if (isInitiator) {
     		S = S1;
+		} else { 
+    		S = S2;		// Use S2 for the recipient	
 		}
     	
     	/*
@@ -267,7 +295,7 @@ public class ECCKeyExchangeActivity extends Activity {
      * @param isResponse True if responding to a key exchange, false if initiating key exchange
      * @return true if the public key is verified to be valid
      */
-    public boolean verify_publickey(Digest digest, byte[] signedPubKey, boolean isResponse)
+    public boolean verify_publickey(Digest digest, byte[] signedPubKey, boolean isInitiator)
     {
     	/*
     	 * The shared information to use for verifying the public key
@@ -285,10 +313,10 @@ public class ECCKeyExchangeActivity extends Activity {
     	 * Set the shared information as S1 if initiating key exchange, S2 if
     	 * responding to key exchange
     	 */
-    	if (isResponse) {
-    		S = S2;
-		} else { 
+    	if (isInitiator) {
     		S = S1;
+		} else { 
+    		S = S2;		// Use S2 for the recipient	
 		}
     	
     	/*
@@ -311,12 +339,10 @@ public class ECCKeyExchangeActivity extends Activity {
 		 */
 		if (are_same(calcSignature, origSignature))
 		{
-			Toast.makeText(getApplicationContext(), "Valid signature", Toast.LENGTH_LONG).show();
 			return true;
 		}
 		else
 		{
-			Toast.makeText(getApplicationContext(), "INVALID SIGNATURE!", Toast.LENGTH_LONG).show();
 			return false;
 		}
     }
@@ -355,5 +381,21 @@ public class ECCKeyExchangeActivity extends Activity {
         
         // Verify Bob signed public key
         verify_publickey(new SHA256Digest(), signedPubKey, false);
+        
+        
+        // Execute the key exchange test
+        ECCKeyExchangeTests eccKeyExchangeTests = new ECCKeyExchangeTests();
+        
+        // Execute the block cipher test
+        try
+		{
+        	eccKeyExchangeTests.keyexchange_test(alice, bob, getApplicationContext());
+			eccKeyExchangeTests.blockcipher_test(alice, bob, getApplicationContext());
+		} catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
     }
 }
