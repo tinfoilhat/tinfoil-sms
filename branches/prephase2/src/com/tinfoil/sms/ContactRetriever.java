@@ -26,7 +26,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 public class ContactRetriever {
-	
+	private static final String dateColumn = "date DESC";
 	private static Pattern p = Pattern.compile("^[+]1.{10}");
 	private static final int LIMIT = 50;
 	
@@ -36,17 +36,25 @@ public class ContactRetriever {
 	 * @return : List<String[]>, a list of String arrays that contain
 	 * the number, name, and the message. 
 	 */
+	//public static List<String[]> getSMS(Context c, int amount) {
 	public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
 		final String[] projection = new String[]{"address", "body"};
 		Uri uri = Uri.parse("content://mms-sms/conversations/");
-		Cursor cur = c.getContentResolver().query(uri, projection, null, null, null);
+		Cursor cur = c.getContentResolver().query(uri, projection, null, null, dateColumn);
 
-		while (cur.moveToNext()) {
+		//int i = 0;
+		while (cur.moveToNext())
+		{
+			/*if (amount!=0 && i > amount)
+			{
+				break;
+			}*/
 			String address = cur.getString(cur.getColumnIndex("address"));
 			String name = nameHelper(address, c);
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
 			sms.add(new String[] {address, name, body});
+			//i++;
 		}
 		cur.close();
 		return sms;
@@ -59,7 +67,7 @@ public class ContactRetriever {
 	 * the number, name, and the message.
 	 */
 	public static List<String[]> getPersonSMS(Context c) {
-		String dateColumn = "date DESC";
+		
 		final String[] projection = new String[]{"address", "body", "type"};
 		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/");

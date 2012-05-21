@@ -343,11 +343,11 @@ public class DBAccessor {
 	public ArrayList<TrustedContact> getAllRows()
 	{		
 		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
+		Cursor cur = db.query("trusted_contact", null,
 				null, null, null, null, KEY_ID);
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
-		
+				
 		if (cur.moveToFirst())
         {
 			int i = 0;

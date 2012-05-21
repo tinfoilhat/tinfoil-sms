@@ -52,7 +52,6 @@ public class TrustedContact {
 		this.key = key;
 		this.verified = verified;
 		this.numbers = new ArrayList<String>();
-		this.numbers.add(primaryNumber);
 	}
 	
 	/**
@@ -70,7 +69,10 @@ public class TrustedContact {
 		this.primaryNumber = primaryNumber;
 		this.key = key;
 		this.verified = verified;
-		this.numbers = numbers;
+		for (int i = 0; i<numbers.size(); i++)
+		{
+			this.numbers.add(numbers.get(i));
+		}
 	}
 	
 	/**
@@ -158,6 +160,15 @@ public class TrustedContact {
 		return numbers.get(index);
 	}
 	
+	/**
+	 * Access a contact's number from their contact list
+	 * @return : ArrayList<String>
+	 */
+	public ArrayList<String> getNumber()
+	{
+		return numbers;
+	}
+	
 	public int getNumberSize()
 	{
 		return numbers.size();
@@ -165,7 +176,7 @@ public class TrustedContact {
 	
 	public boolean isNumbersEmpty()
 	{
-		if (numbers.size() <= 1)
+		if (numbers != null && numbers.size() <= 1)
 		{
 			return true;
 		}
@@ -179,6 +190,18 @@ public class TrustedContact {
 	public void setPrimaryNumber(String primaryNumber)
 	{
 		this.primaryNumber = primaryNumber;
+	}
+	
+	public int findPrimaryNumber()
+	{
+		for (int i = 0; i < numbers.size(); i++)
+		{
+			if (numbers.get(i).equalsIgnoreCase(primaryNumber))
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 	
 	/**

@@ -32,13 +32,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class ManageContactsActivity extends Activity {
-	private static final String KEY = "test123";
+	private final String KEY = "test123";
 	private final int VERIFY = 2;
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;
+	
+	
+	
     /** Called when the activity is first created. */
-	//private ListView mContactList;
-
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact);
@@ -231,15 +232,28 @@ public class ManageContactsActivity extends Activity {
 			}
 			return true;
 		case R.id.delete:
+		{
 			if (tc!=null)
 			{
-				startActivity(new Intent(this, RemoveContactsActivity.class));
+				startActivity(new Intent(getApplicationContext(), RemoveContactsActivity.class));
 			}
 			else
 			{
 				//**Note need an alert message here
 				Toast.makeText(this, "You need to have contacts before you can delete them!", Toast.LENGTH_SHORT);
 			}
+			return true;
+		}
+		case R.id.edit_number:
+		{
+			if (tc!=null)
+			{
+				ManageNumbersActivity.contact = tc.get(0);
+				startActivity(new Intent(getBaseContext(), ManageNumbersActivity.class));
+				
+			}
+			return true;
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}

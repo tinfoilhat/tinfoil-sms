@@ -27,7 +27,7 @@
         android:id="@+id/black_space"
         android:layout_width="fill_parent"
         android:layout_height="5dp"
-        android:layout_above="@+id/linearLayout1"
+        android:layout_above="@+id/new_message_field"
         android:layout_marginTop="10pt"
         android:background="#000000">
         

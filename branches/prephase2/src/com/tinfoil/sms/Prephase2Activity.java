@@ -71,19 +71,9 @@ public class Prephase2Activity extends Activity {
 		list.setBackgroundColor(color.black);
 		*/
 		
+		//msgList = ContactRetriever.getSMS(this, 10);
 		msgList = ContactRetriever.getSMS(this);
 
-		/*ArrayList<TextView> messageList = new ArrayList<TextView>();//new TextView(this);
-		
-		for (int i = 0; i < msgList.size();i++)
-		{
-			messageList.add((TextView)findViewById(R.id.textView1));
-		}*/
-		// Toast.makeText(getApplicationContext(), "Here", Toast.LENGTH_SHORT).show();
-		/*list.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.test_list_item, 
-				(ContactRetriever.messageMaker(msgList))));*/
-		//Toast.makeText(this, msgList.get )
 		ContactAdapter adapter = new ContactAdapter(this, R.layout.listview_item_row, msgList);
 		
 		
@@ -187,8 +177,10 @@ public class Prephase2Activity extends Activity {
 		// The BroadcastReceiver needs to be registered before use.
 		IntentFilter SMSfilter = new IntentFilter(SMS_RECEIVED);
 		this.registerReceiver(SMSbr, SMSfilter);
-
 	}
+	
+	
+
 	
 	/**
 	 * Updates the list of the messages in the main inbox and in 
@@ -197,6 +189,7 @@ public class Prephase2Activity extends Activity {
 	 */
 	private void updateList()
 	{
+		//msgList = ContactRetriever.getSMS(this, 0);
 		msgList = ContactRetriever.getSMS(this);
 		list.setAdapter(new ContactAdapter(this, R.layout.listview_item_row, msgList));
 		if (Prephase2Activity.selectedNumber != null)

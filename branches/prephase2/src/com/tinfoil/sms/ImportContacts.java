@@ -35,7 +35,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ImportContacts extends Activity {
@@ -57,7 +56,7 @@ public class ImportContacts extends Activity {
         tc = new ArrayList<TrustedContact>();
                 
         //String number=null;
-        ArrayList<String> number = new ArrayList<String>();
+        ArrayList<String> number;
         String name;
         //ArrayList<String> value = new ArrayList<String>();
         
@@ -66,10 +65,9 @@ public class ImportContacts extends Activity {
         Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
         Cursor cur = managedQuery(mContacts, columnsC, null, null, Contacts.DISPLAY_NAME);
         
-        //Hashtable<String,ArrayList<String>> ActualSender = new Hashtable<String,ArrayList<String>>();
-        //int i = 0;
         if (cur.moveToFirst()) {
                 do {
+                	number = new ArrayList<String>();
                 		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
                 		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
                 		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
@@ -94,24 +92,19 @@ public class ImportContacts extends Activity {
                         	if (!Prephase2Activity.dba.inDatabase(number))
                         	{
                         		//Toast.makeText(getApplicationContext(),""+Prephase2Activity.dba.inDatabase(number) , Toast.LENGTH_SHORT).show();
-                        		//ActualSender.put(name, number);
                         		tc.add(new TrustedContact(name, -1, number));
                         	}
                         }
-                        //i++;
-                        number.clear();
+                        number = null;
                 } while (cur.moveToNext());
         }
-        cur.close();
+        //cur.close();
         
         if (tc != null && tc.size() > 0)
         {
         	disable = false;
         	importList.setAdapter(new ArrayAdapter<String>(this, 
 					android.R.layout.simple_list_item_multiple_choice, getNames()));
-			
-        	
-	        //importList.setItemsCanFocus(false);
 	        
 	        importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         }
@@ -120,10 +113,6 @@ public class ImportContacts extends Activity {
         	disable = true;
         	importList.setAdapter(new ArrayAdapter<String>(this, 
 					android.R.layout.simple_list_item_1, getNames()));
-			
-	        //importList.setItemsCanFocus(false);
-	        
-	        //importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         }
         
         confirm.setOnClickListener(new View.OnClickListener() {
