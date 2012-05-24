@@ -25,10 +25,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-public class ContactRetriever {
+public abstract class ContactRetriever {
 	private static final String dateColumn = "date DESC";
-	private static Pattern p = Pattern.compile("^[+]1.{10}");
+	private static final Pattern p = Pattern.compile("^[+]1.{10}");
 	private static final int LIMIT = 50;
+	private static final String USER_NAME = "Me";
 	
 	/**
 	 * Get the list of 1 messages per unique contact for the main window
@@ -76,6 +77,7 @@ public class ContactRetriever {
 				"' or address = '+1" + format(Prephase2Activity.selectedNumber) +
 				"' or address = '1" + format(Prephase2Activity.selectedNumber) + "'", 
 				null, dateColumn);
+		
 		int i = 0;
 		while (cur.moveToNext()) {
 			if (i == LIMIT)
@@ -91,7 +93,7 @@ public class ContactRetriever {
 			}
 			else if (type.equalsIgnoreCase("2"))
 			{
-				name = "Me"; 
+				name = USER_NAME; 
 			}
 			
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));

@@ -96,7 +96,7 @@ public class DBAccessor {
 		//}
 		
 	}
-	
+
 	/**
 	 * Add a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to

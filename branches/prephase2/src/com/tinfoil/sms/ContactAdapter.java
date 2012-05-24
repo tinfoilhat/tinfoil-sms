@@ -29,17 +29,19 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-public class ContactAdapter extends ArrayAdapter<String[]>{
+public class ContactAdapter extends ArrayAdapter<String>{
 
     Context context; 
     int layoutResourceId;    
-    List<String[]> data = null;
+    List<String> data = null;
+    //private String primary;
     
-    public ContactAdapter(Context context, int layoutResourceId, List<String[]> data) {
+    public ContactAdapter(Context context, int layoutResourceId, List<String> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
+        //this.primary = primary;
     }
 
     @Override
@@ -53,8 +55,8 @@ public class ContactAdapter extends ArrayAdapter<String[]>{
             row = inflater.inflate(layoutResourceId, parent, false);
             
             holder = new ContactHolder();
-            holder.c_number = (EditText)row.findViewById(R.id.new_number);
-            holder.primary = (RadioButton)row.findViewById(R.id.primary_number);
+            holder.number = (TextView)row.findViewById(R.id.stored_number);
+            //holder.radioButton = (RadioButton)row.findViewById(R.id.primary_number);
             
             row.setTag(holder);
         }
@@ -63,28 +65,26 @@ public class ContactAdapter extends ArrayAdapter<String[]>{
             holder = (ContactHolder)row.getTag();
         }
         
-        String number[] = data.get(position);
+        String number = data.get(position);
         if (number != null)
         {
-        	holder.c_number.setText(number[0]);
-        	if (number[1].equalsIgnoreCase("primary"))
+        	holder.number.setText(number);
+        	//holder.radioButton.setChecked(true);
+        	/*if (number.equalsIgnoreCase(primary))
         	{
-        		holder.primary.setChecked(true);
+        		holder.radioButton.setChecked(true);
         	}
-        	else
+        	//else
         	{
-        		holder.primary.setChecked(false);
-        	}
+        		holder.radioButton.setChecked(false);
+        	}*/
         }
-        //holder.c_name.setText(contact[1]);
-        //holder.c_message.setText(contact[2]);
-        
         return row;
     }
     
     static class ContactHolder
     {
-    	EditText c_number;
-    	RadioButton primary;
+    	TextView number;
+    	//RadioButton radioButton;
     }
 }

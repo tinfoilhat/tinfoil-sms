@@ -4,24 +4,11 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal"
     android:padding="10dp" >
-
-    <EditText
-        android:id="@+id/new_number"
+    
+     <TextView android:id="@+id/stored_number"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/primary_number"
-        android:inputType="phone">
-        <requestFocus />
-    </EditText>
-
-    <RadioButton
-        android:id="@+id/primary_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/editText1"
-        android:layout_alignBottom="@+id/editText1"
-        android:layout_alignParentRight="true" />
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/c_name"
+        android:textSize="16dp"/>
 
 </RelativeLayout>

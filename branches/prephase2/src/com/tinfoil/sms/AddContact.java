@@ -18,31 +18,117 @@
 
 package com.tinfoil.sms;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * A class for adding a contact to the tinfoil-sms database
  *
  */
 public class AddContact extends Activity {
+	private ListView listView;
+	public static TrustedContact editTc;
+	private TrustedContact contactEdit;
 	Button add;
 	EditText contactName;
-	EditText contactNumber; 
+	EditText contactNumber;
+	Button addNumber;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addcontact);
-                
+        setContentView(R.layout.add_contact);
+        
+        //contactNumber = new EditText(this);
+        listView = (ListView)findViewById(R.id.contact_numbers);
+        addNumber = (Button) findViewById(R.id.add_new_number);
+        
+        contactEdit = editTc;
+        editTc = null;
+        
+        update(null);
+        
+        addNumber.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				final EditText input = new EditText(getBaseContext());
+				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+				builder.setMessage("Enter the new number:")
+				       .setCancelable(true)
+				       .setView(input)
+				       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				        	   String value = input.getText().toString();
+				        	   update(value);
+				        	   input.setText("");
+				           }})
+				        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+									    // Canceled.
+							}});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+		});
+        
+        listView.setOnItemClickListener(new OnItemClickListener()
+		{
+        	public void onItemClick(AdapterView<?> parent, View view,
+        			final int position, long id) {
+        		
+				final EditText input = new EditText(getBaseContext());
+				input.setText(contactEdit.getNumber(position));
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+				builder.setMessage("Edit:")
+				       .setCancelable(true)
+				       .setView(input)
+				       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				        	   contactEdit.setNumber(position, input.getText().toString());
+				        	   update(null);
+				        	   input.setText("");
+				           }})
+				        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+									    // Canceled.
+							}});
+				AlertDialog alert = builder.create();
+				alert.show();						
+			}
+		});
+        
         add = (Button) findViewById(R.id.add);
-        contactName = (EditText) findViewById(R.id.contact_name);
+        contactName = (EditText) findViewById(R.id.contact_name); 
         contactNumber = (EditText) findViewById(R.id.contact_number);
-        contactNumber.setText(SendMessageActivity.newNumber);
-        SendMessageActivity.newNumber = "";
+        
+        if (contactEdit != null)
+        {
+        	if (contactEdit.getName() != null)
+        	{
+        		contactName.setText(contactEdit.getName());
+        	}
+        }
+        
+        if (SendMessageActivity.newNumber != null)
+        {
+        	contactNumber.setText(SendMessageActivity.newNumber);
+        	SendMessageActivity.newNumber = "";
+        }
+        
         
         add.setOnClickListener(new View.OnClickListener() {
 			
@@ -73,4 +159,78 @@ public class AddContact extends Activity {
         
 	}
 	
+	public void update(String newKey)
+	{
+		if (newKey != null)
+		{
+			contactEdit.addNumber(newKey);
+		}
+		
+		if (contactEdit != null)
+        {
+        	//populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
+	        listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit.getNumber()));
+        }
+        else
+        {
+        	ArrayList<String> numbers = new ArrayList<String>();
+    		numbers.add("");
+    			listView.setAdapter(new ContactAdapter(this, R.layout.add_number, 
+            			numbers));
+        }
+
+        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
+        listView.setItemsCanFocus(false);
+
+        //Set the mode to single or multiple choice, (should match top choice)
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+	}
+	/*
+	 * public class AddContact extends Activity {
+		Button add;
+		EditText contactName;
+		EditText contactNumber; 
+		
+		public void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        setContentView(R.layout.addcontact);
+	                
+	        add = (Button) findViewById(R.id.add);
+	        contactName = (EditText) findViewById(R.id.contact_name);
+	        contactNumber = (EditText) findViewById(R.id.contact_number);
+	        contactNumber.setText(SendMessageActivity.newNumber);
+	        SendMessageActivity.newNumber = "";
+	        
+	        add.setOnClickListener(new View.OnClickListener() {
+				
+				public void onClick(View v) {
+					String name = contactName.getText().toString();
+					String number = contactNumber.getText().toString();
+					
+					if (name.length() > 0 && number.length() > 0)
+					{
+						//Need to add to android contact's database, and check to see if it isnt already there
+						if (!Prephase2Activity.dba.conflict(number))
+						{
+							Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
+							Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
+							
+							contactNumber.setText("");
+							contactName.setText("");
+						}
+						else
+						{
+							
+							//**Note need an alert message here
+							Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
+						}
+					}
+				}
+			});       
+	        
+		}
+		
+	}
+	*/
+
 }

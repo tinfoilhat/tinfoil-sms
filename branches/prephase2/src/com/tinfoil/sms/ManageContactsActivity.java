@@ -37,8 +37,6 @@ public class ManageContactsActivity extends Activity {
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;
 	
-	
-	
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,8 +207,14 @@ public class ManageContactsActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add:
-			startActivity(new Intent(this, AddContact.class));
+		{
+			if (tc != null)
+			{
+				AddContact.editTc = tc.get(0);
+				startActivity(new Intent(this, AddContact.class));
+			}
 			return true;
+		}
 		case R.id.all:
 			if (tc!=null)
 			{
@@ -248,6 +252,7 @@ public class ManageContactsActivity extends Activity {
 		{
 			if (tc!=null)
 			{
+				//Need to find a place to activate this activity.
 				ManageNumbersActivity.contact = tc.get(0);
 				startActivity(new Intent(getBaseContext(), ManageNumbersActivity.class));
 				
