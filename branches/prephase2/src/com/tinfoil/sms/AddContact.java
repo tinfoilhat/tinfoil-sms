@@ -28,6 +28,7 @@ import android.text.Editable;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -83,6 +84,26 @@ public class AddContact extends Activity {
 				alert.show();
 			}
 		});
+        
+        /*listView.setOnLongClickListener(new OnLongClickListener() {
+			
+			public boolean onLongClick(View v) {
+				
+				return false;
+			}
+		});*/
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener(){
+
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+        			int position, long id) {
+				contactEdit.setPrimaryNumber(contactEdit.getNumber(position));
+				Toast.makeText(getBaseContext(), contactEdit.getPrimaryNumber() + " Set to Primary", Toast.LENGTH_SHORT).show();
+				//update(null);
+				return true;
+			}
+        	
+        });
         
         listView.setOnItemClickListener(new OnItemClickListener()
 		{
