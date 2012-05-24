@@ -99,7 +99,7 @@ public class AddContact extends Activity {
         			int position, long id) {
 				contactEdit.setPrimaryNumber(contactEdit.getNumber(position));
 				Toast.makeText(getBaseContext(), contactEdit.getPrimaryNumber() + " Set to Primary", Toast.LENGTH_SHORT).show();
-				//update(null);
+				update(null);
 				return true;
 			}
         	
@@ -190,14 +190,15 @@ public class AddContact extends Activity {
 		if (contactEdit != null)
         {
         	//populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-	        listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit.getNumber()));
+	        //listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit.getNumber()));
+			listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
         }
         else
         {
         	ArrayList<String> numbers = new ArrayList<String>();
     		numbers.add("");
     			listView.setAdapter(new ContactAdapter(this, R.layout.add_number, 
-            			numbers));
+            			new TrustedContact("", 0, numbers)));
         }
 
         //Not setting focus on a particular list item, (focus is then left to default at the top of the page)

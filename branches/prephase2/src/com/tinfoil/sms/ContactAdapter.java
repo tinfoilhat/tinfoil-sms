@@ -33,14 +33,16 @@ public class ContactAdapter extends ArrayAdapter<String>{
 
     Context context; 
     int layoutResourceId;    
-    List<String> data = null;
+    //List<String> data = null;
+    TrustedContact data = null;
     //private String primary;
     
-    public ContactAdapter(Context context, int layoutResourceId, List<String> data) {
-        super(context, layoutResourceId, data);
+    //public ContactAdapter(Context context, int layoutResourceId, List<String> data) {
+    public ContactAdapter(Context context, int layoutResourceId, TrustedContact tc) {
+        super(context, layoutResourceId, tc.getNumber());
         this.layoutResourceId = layoutResourceId;
         this.context = context;
-        this.data = data;
+        this.data = tc;
         //this.primary = primary;
     }
 
@@ -56,7 +58,7 @@ public class ContactAdapter extends ArrayAdapter<String>{
             
             holder = new ContactHolder();
             holder.number = (TextView)row.findViewById(R.id.stored_number);
-            //holder.radioButton = (RadioButton)row.findViewById(R.id.primary_number);
+            holder.primary = (TextView)row.findViewById(R.id.primary_number);
             
             row.setTag(holder);
         }
@@ -65,19 +67,18 @@ public class ContactAdapter extends ArrayAdapter<String>{
             holder = (ContactHolder)row.getTag();
         }
         
-        String number = data.get(position);
+        String number = data.getNumber(position);
         if (number != null)
         {
         	holder.number.setText(number);
-        	//holder.radioButton.setChecked(true);
-        	/*if (number.equalsIgnoreCase(primary))
+        	if (data.getPrimaryNumber().equalsIgnoreCase(number))
         	{
-        		holder.radioButton.setChecked(true);
+        		holder.primary.setText("Primary");
         	}
-        	//else
+        	else
         	{
-        		holder.radioButton.setChecked(false);
-        	}*/
+        		holder.primary.setText("");
+        	}
         }
         return row;
     }
@@ -85,6 +86,7 @@ public class ContactAdapter extends ArrayAdapter<String>{
     static class ContactHolder
     {
     	TextView number;
+    	TextView primary;
     	//RadioButton radioButton;
     }
 }
