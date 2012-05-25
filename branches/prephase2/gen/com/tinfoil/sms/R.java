@@ -20,7 +20,7 @@ public final class R {
         public static final int black_space=0x7f070017;
         public static final int c_message=0x7f07000e;
         public static final int c_name=0x7f07000d;
-        public static final int compose=0x7f070023;
+        public static final int compose=0x7f070022;
         public static final int confirm=0x7f07000c;
         public static final int contact_list=0x7f070009;
         public static final int contact_name=0x7f070001;
@@ -28,10 +28,9 @@ public final class R {
         public static final int contact_number_list=0x7f07000a;
         public static final int contact_numbers=0x7f070003;
         public static final int conversation_list=0x7f070010;
-        public static final int delete=0x7f070021;
+        public static final int delete=0x7f070020;
         public static final int delete_cont=0x7f07001c;
-        public static final int edit_number=0x7f07001f;
-        public static final int exchange=0x7f070022;
+        public static final int exchange=0x7f070021;
         public static final int import_contact_list=0x7f07000b;
         public static final int linearLayout2=0x7f070012;
         public static final int main_message_view=0x7f07000f;
@@ -45,11 +44,11 @@ public final class R {
         public static final int new_message_send=0x7f07001a;
         public static final int number=0x7f070002;
         public static final int primary_number=0x7f070007;
-        public static final int remove=0x7f070020;
+        public static final int remove=0x7f07001f;
         public static final int removeable_contact_list=0x7f07001b;
         public static final int rm_import=0x7f07001e;
         public static final int send=0x7f070014;
-        public static final int settings=0x7f070024;
+        public static final int settings=0x7f070023;
         public static final int stored_number=0x7f070006;
     }
     public static final class layout {

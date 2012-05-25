@@ -46,7 +46,7 @@ public class AddContact extends Activity {
 	private TrustedContact contactEdit;
 	Button add;
 	EditText contactName;
-	EditText contactNumber;
+	//EditText contactNumber;
 	Button addNumber;
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,6 @@ public class AddContact extends Activity {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
         			int position, long id) {
 				contactEdit.setPrimaryNumber(contactEdit.getNumber(position));
-				Toast.makeText(getBaseContext(), contactEdit.getPrimaryNumber() + " Set to Primary", Toast.LENGTH_SHORT).show();
 				update(null);
 				return true;
 			}
@@ -134,7 +133,7 @@ public class AddContact extends Activity {
         
         add = (Button) findViewById(R.id.add);
         contactName = (EditText) findViewById(R.id.contact_name); 
-        contactNumber = (EditText) findViewById(R.id.contact_number);
+        //contactNumber = (EditText) findViewById(R.id.contact_number);
         
         if (contactEdit != null)
         {
@@ -144,36 +143,32 @@ public class AddContact extends Activity {
         	}
         }
         
-        if (SendMessageActivity.newNumber != null)
-        {
-        	contactNumber.setText(SendMessageActivity.newNumber);
-        	SendMessageActivity.newNumber = "";
-        }
-        
-        
         add.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				String name = contactName.getText().toString();
-				String number = contactNumber.getText().toString();
+				//String number = contactNumber.getText().toString();
 				
-				if (name.length() > 0 && number.length() > 0)
+				if (name.length() > 0 && contactEdit.getPrimaryNumber().length() > 0)
 				{
 					//Need to add to android contact's database, and check to see if it isnt already there
-					if (!Prephase2Activity.dba.conflict(number))
-					{
-						Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
+					//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
+					//{
+						//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
+						//Prephase2Activity.dba.addRow(contactEdit);
+						Prephase2Activity.dba.updateRow(contactEdit, contactEdit.getPrimaryNumber());
 						Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
-						
-						contactNumber.setText("");
-						contactName.setText("");
-					}
-					else
-					{
+						contactEdit = null;
+						finish();
+						//contactNumber.setText("");
+						//contactName.setText("");
+					//}
+					//else
+					//{
 						
 						//**Note need an alert message here
-						Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
-					}
+					//	Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
+					//}
 				}
 			}
 		});       

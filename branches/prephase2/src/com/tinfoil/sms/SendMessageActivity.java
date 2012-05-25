@@ -35,7 +35,7 @@ public class SendMessageActivity extends Activity {
 	Button sendSMS;
 	EditText phoneBox;
     EditText messageBox;
-    public static String newNumber;
+    //public static String newNumber;
         
     //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -82,7 +82,7 @@ public class SendMessageActivity extends Activity {
 						}
 						if (Prephase2Activity.dba.getRow(ContactRetriever.format(number)) == null)
 						{
-							newNumber = number;
+							AddContact.editTc = new TrustedContact("", number, null , 0);
 							
 							//Toast.makeText(getBaseContext(), newNumber, Toast.LENGTH_SHORT).show();
 							AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);

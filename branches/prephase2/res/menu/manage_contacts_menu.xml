@@ -1,7 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	
     
-    <item android:id="@+id/edit_number" android:title="Edit Numbers" />
     <item android:id="@+id/all" android:title="Select All" />
     <item android:id="@+id/remove" android:title="Remove All" />
     <item android:id="@+id/add" android:title="Add Contact" />

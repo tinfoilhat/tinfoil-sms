@@ -60,12 +60,12 @@ public class ManageContactsActivity extends Activity {
         			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getPrimaryNumber()))
 	        		{
         				change(position, false);
-	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts\n" + tc.get(position).getPrimaryNumber(), Toast.LENGTH_SHORT).show();
 	        		}
 	        		else
 	        		{
 	        			change(position, true);
-	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts\n" + tc.get(position).getPrimaryNumber(), Toast.LENGTH_SHORT).show();
 	        		}
         		}
         		else
@@ -248,7 +248,7 @@ public class ManageContactsActivity extends Activity {
 			}
 			return true;
 		}
-		case R.id.edit_number:
+		/*case R.id.edit_number:
 		{
 			if (tc!=null)
 			{
@@ -258,7 +258,7 @@ public class ManageContactsActivity extends Activity {
 				
 			}
 			return true;
-		}
+		}*/
 		default:
 			return super.onOptionsItemSelected(item);
 		}

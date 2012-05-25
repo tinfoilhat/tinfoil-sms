@@ -34,7 +34,7 @@ public class DBAccessor {
 	public static final String KEY_KEY = "key";
 	public static final String KEY_VERIFIED = "verified";
 	
-	public static final String KEY_REFERNECE = "reference";
+	public static final String KEY_REFERENCE = "reference";
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -51,24 +51,6 @@ public class DBAccessor {
 		//cr = c.getContentResolver();
 	}
 	
-	/**
-	 * Checks if a contact already has the given number
-	 * @param number : String, a phone number
-	 * @return : boolean
-	 * true if their is a conflict
-	 * false if there is not a conflict
-	 */
-	public boolean conflict (String number)
-	{
-		TrustedContact tc = getRow(number);
-		if (tc == null)
-		{
-			return false;
-		}
-		return true;
-		
-	}
-
 	/**
 	 * Adds a row to the contacts table, trusted_contact
 	 * @param name : String the name of the contact
@@ -110,7 +92,7 @@ public class DBAccessor {
 			ContentValues cv = new ContentValues();
 				
 			//add given values to a row
-	        cv.put(KEY_REFERNECE, reference);
+	        cv.put(KEY_REFERENCE, reference);
 	        cv.put(KEY_NUMBER, number);
 	
 	        //Insert the row into the database
@@ -145,9 +127,10 @@ public class DBAccessor {
 	        close();
 	        if (!tc.isNumbersEmpty())
 	        {
+	        	int id = getId(tc.getPrimaryNumber());
 	        	for (int i = 0; i< tc.getNumberSize();i++)
 	        	{
-	        		addRow(getId(tc.getPrimaryNumber()), ContactRetriever.format(tc.getNumber(i)));
+	        		addRow(id, ContactRetriever.format(tc.getNumber(i)));
 	        	}
 	        }
 	              
@@ -272,15 +255,14 @@ public class DBAccessor {
 	/**
 	 * Access the information stored in the database of a contact who has a certain number
 	 * with the columns: name, number, key, verified.
-	 * @param number : String the number of the contact to retrieve 
+	 * @param number : String the primary number of the contact to retrieve 
 	 * @return TrustedContact, the row of data.
 	 */
-	public TrustedContact getRow(String number)
+	/*public TrustedContact getRow(String primaryNumber)
 	{		
 		open();
-		//new String[] {KEY_ID, KEY_NAME, KEY_NUMBER, KEY_KEY, KEY_VERIFIED}
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
-				"number = "+ number, null, null, null, null);
+				KEY_NUMBER +" = " + primaryNumber, null, null, null, null);
 		
 		if (cur.moveToFirst())
         { 	
@@ -292,7 +274,7 @@ public class DBAccessor {
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
 					null, null, null, null);
 
@@ -309,15 +291,45 @@ public class DBAccessor {
         }
 		close(cur);
 		return null;
-	}
+	}*/
 	
-	public TrustedContact getNumbers(TrustedContact tc, int id)
-	{
+	/**
+	 * Access the information stored in the database of a contact who has a certain number
+	 * with the columns: name, number, key, verified.
+	 * @param number : String the number of the contact to retrieve 
+	 * @return TrustedContact, the row of data.
+	 */
+	public TrustedContact getRow(String number)
+	{		
 		open();
-		Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
+		
+		/* If the number isn't found a primary number, might be better to just search this 
+		 * db first then find the reference number, then search other db for id, thus searching
+		 * through all numbers, cause primary numbers can change quite easily.
+		 */
+		Cursor idCur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, 
+				new String[] {KEY_REFERENCE, KEY_NUMBER}, KEY_NUMBER + " = " + number,
+				null, null, null, null);
+		int id = 0;
+		if (idCur.moveToFirst())
+		{
+			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
+		}
+		idCur.close();
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
+				KEY_ID +" = " + id, null, null, null, null);
+		
+		if (cur.moveToFirst())
+        { 	
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
+					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
+			
+			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
+			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
 					null, null, null, null);
 
@@ -327,10 +339,12 @@ public class DBAccessor {
 				{
 					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
 				}while(pCur.moveToNext());
-				close(pCur);
-				return tc;
+				pCur.close();
 			}
-		close(pCur);
+			close(cur);
+			return tc;
+        }
+		close(cur);
 		return null;
 	}
 	
@@ -360,7 +374,7 @@ public class DBAccessor {
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 						new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERNECE + " AND " + 
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
 						null, null, null, null);
 
@@ -399,16 +413,17 @@ public class DBAccessor {
 		
 	/**
 	 * Deletes the rows with the given number
-	 * @param number : String, the number of the contact to be deleted
+	 * @param number : String, the primary number of the contact to be deleted 
 	 */
 	public void removeRow(String number)
 	{
+		number = ContactRetriever.format(number);
+		int id = getId(number);
 		open();
-		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, "number = " +number, null);
+		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_NUMBER + " = " + number, null);
+		db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
 		close();
 	}
-	
-	//public void addTrusted()
 
 	/**
 	 * Checks if the given number is a trusted contact's number
@@ -422,12 +437,12 @@ public class DBAccessor {
 	 */
 	public boolean isTrustedContact (String number)
 	{
-		TrustedContact tc = getRow(number);
+		//TrustedContact tc = getRow(number);
 		
-		if (tc == null)
-		{
-			tc = getRow(ContactRetriever.format(number));
-		}
+		//if (tc == null)
+		//{
+		TrustedContact tc = getRow(ContactRetriever.format(number));
+		//}
 		if (tc != null)
 		{
 			if (!tc.isKeyNull() && tc.getVerified() == 2)
