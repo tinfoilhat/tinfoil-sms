@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
@@ -66,6 +67,8 @@ public class AddContact extends Activity {
 			
 			public void onClick(View v) {
 				final EditText input = new EditText(getBaseContext());
+				//android:inputType="phone"
+				input.setInputType(InputType.TYPE_CLASS_PHONE);
 				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
 				builder.setMessage("Enter the new number:")
 				       .setCancelable(true)
@@ -97,8 +100,8 @@ public class AddContact extends Activity {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
         			int position, long id) {
-				contactEdit.setPrimaryNumber(contactEdit.getNumber(position));
-				update(null);
+				/*contactEdit.setPrimaryNumber(contactEdit.getNumber(position));
+				update(null);*/
 				return true;
 			}
         	
@@ -111,6 +114,7 @@ public class AddContact extends Activity {
         		
 				final EditText input = new EditText(getBaseContext());
 				input.setText(contactEdit.getNumber(position));
+				input.setInputType(InputType.TYPE_CLASS_PHONE);
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
 				builder.setMessage("Edit:")
