@@ -24,14 +24,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -45,6 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class AddContact extends Activity {
 	private ListView listView;
 	public static TrustedContact editTc;
+	public static boolean addContact;
 	private TrustedContact contactEdit;
 	Button add;
 	EditText contactName;
@@ -55,14 +53,19 @@ public class AddContact extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
         
+        
+        
         //Sets the keyboard to not pop-up until a text area is selected 
       	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
       	
         //contactNumber = new EditText(this);
         listView = (ListView)findViewById(R.id.contact_numbers);
         addNumber = (Button) findViewById(R.id.add_new_number);
+        if (!addContact)
+        {
+        	contactEdit = editTc;
+       	}
         
-        contactEdit = editTc;
         editTc = null;
         
         update(null);
@@ -115,27 +118,29 @@ public class AddContact extends Activity {
 		{
         	public void onItemClick(AdapterView<?> parent, View view,
         			final int position, long id) {
-        		
-				final EditText input = new EditText(getBaseContext());
-				input.setText(contactEdit.getNumber(position));
-				input.setInputType(InputType.TYPE_CLASS_PHONE);
-				
-				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-				builder.setMessage("Edit:")
-				       .setCancelable(true)
-				       .setView(input)
-				       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				           public void onClick(DialogInterface dialog, int id) {
-				        	   contactEdit.setNumber(position, input.getText().toString());
-				        	   update(null);
-				        	   input.setText("");
-				           }})
-				        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-									    // Canceled.
-							}});
-				AlertDialog alert = builder.create();
-				alert.show();						
+        		if (contactEdit != null)
+        		{
+        			final EditText input = new EditText(getBaseContext());
+					input.setText(contactEdit.getNumber(position));
+					input.setInputType(InputType.TYPE_CLASS_PHONE);
+					
+					AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+					builder.setMessage("Edit:")
+					       .setCancelable(true)
+					       .setView(input)
+					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   contactEdit.setNumber(position, input.getText().toString());
+					        	   update(null);
+					        	   input.setText("");
+					           }})
+					        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+										    // Canceled.
+								}});
+					AlertDialog alert = builder.create();
+					alert.show();
+        		}
 			}
 		});
         
@@ -155,22 +160,62 @@ public class AddContact extends Activity {
 			
 			public void onClick(View v) {
 				String name = contactName.getText().toString();
-				//String number = contactNumber.getText().toString();
+				boolean empty = false;
+				if (name == null)
+				{
+					if (!contactEdit.isNumbersEmpty())
+					{
+						name = contactEdit.getANumber();
+					}
+					else
+					{
+						empty = true;
+					}
+				}
+				{
+					contactEdit.setName(name);
+				}
+
 				
-				if (name.length() > 0 && !contactEdit.isNumbersEmpty())
+				if (!empty && contactEdit.getName().length() > 0 && !contactEdit.isNumbersEmpty())
 				{
 					//Need to add to android contact's database, and check to see if it isnt already there
 					//Need to figure a way to update when it is a contact that is being updated and to 
 					//add when it is a contact that is being added
 					
-					//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
-					//{
-						//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
-						//Prephase2Activity.dba.addRow(contactEdit);
+					if (addContact)
+					{
+						//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
+						if (!Prephase2Activity.dba.inDatabase(contactEdit.getANumber()))
+						{
+							//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
+							
+							Prephase2Activity.dba.addRow(contactEdit);
+							contactEdit = null;
+							finish();
+							//contactNumber.setText("");
+							//contactName.setText("");
+						}
+						else
+						{
+							
+							//**Note need an alert message here
+							Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
+						}
+					}
+					else
+					{
 						Prephase2Activity.dba.updateRow(contactEdit, contactEdit.getNumber(0));
 						Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
 						contactEdit = null;
 						finish();
+					}
+					
+					//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
+					//{
+						//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
+						//Prephase2Activity.dba.addRow(contactEdit);
+						
 						//contactNumber.setText("");
 						//contactName.setText("");
 					//}
@@ -180,6 +225,10 @@ public class AddContact extends Activity {
 						//**Note need an alert message here
 					//	Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
 					//}
+				}else
+				{					
+					//**Note need an alert message here
+					Toast.makeText(getBaseContext(), "Insufficient information provided", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});       
@@ -201,10 +250,11 @@ public class AddContact extends Activity {
         }
         else
         {
-        	ArrayList<String> numbers = new ArrayList<String>();
-    		numbers.add("");
+        	//ArrayList<String> numbers = new ArrayList<String>();
+    		contactEdit = new TrustedContact("");
     			listView.setAdapter(new ContactAdapter(this, R.layout.add_number, 
-            			new TrustedContact("", 0, numbers)));
+            			contactEdit));
+    		
         }
 
         //Not setting focus on a particular list item, (focus is then left to default at the top of the page)

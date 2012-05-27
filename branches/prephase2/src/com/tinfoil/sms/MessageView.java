@@ -187,14 +187,16 @@ public class MessageView extends Activity {
 				if (Prephase2Activity.dba.isTrustedContact(ContactRetriever.format
 						(Prephase2Activity.selectedNumber)))
 				{
-					tc.setKey(null);
-					tc.setVerified(0);
+					//tc.setKey(null);
+					tc.clearKey();
+					//tc.setVerified(0);
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 				else
 				{
-					tc.setKey(KEY);
-					tc.setVerified(VERIFY);
+					//tc.setKey(KEY);
+					tc.setKey();
+					//tc.setVerified(VERIFY);
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 			}

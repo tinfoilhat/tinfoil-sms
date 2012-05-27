@@ -52,9 +52,7 @@ public class ManageContactsActivity extends Activity {
 		{
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
-        		//Note: the key does not actually affect the encryption currently
-        		//In order to send a encrypted message a contact must have a key
-        		
+        		        		
         		if (tc != null)
         		{
         			//if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getPrimaryNumber()))
@@ -91,8 +89,9 @@ public class ManageContactsActivity extends Activity {
 	 */
 	private void remove(int position)
 	{
-		tc.get(position).setKey(null);
-		tc.get(position).setVerified(0);
+		//tc.get(position).setKey(null);
+		tc.get(position).clearKey();
+		//tc.get(position).setVerified(0);
 	}
 	
 	/**
@@ -103,8 +102,9 @@ public class ManageContactsActivity extends Activity {
 	 */
 	private void add(int position)
 	{
-		tc.get(position).setKey(KEY);
-		tc.get(position).setVerified(VERIFY);
+		//tc.get(position).setKey(KEY);
+		tc.get(position).setKey();
+		//tc.get(position).setVerified(VERIFY);
 	}
 	
 	/**
@@ -212,7 +212,8 @@ public class ManageContactsActivity extends Activity {
 		{
 			if (tc != null)
 			{
-				AddContact.editTc = tc.get(0);
+				AddContact.addContact = true;
+				//AddContact.editTc = tc.get(0);
 				startActivity(new Intent(this, AddContact.class));
 			}
 			return true;
@@ -243,24 +244,8 @@ public class ManageContactsActivity extends Activity {
 			{
 				startActivity(new Intent(getApplicationContext(), RemoveContactsActivity.class));
 			}
-			else
-			{
-				//**Note need an alert message here
-				Toast.makeText(this, "You need to have contacts before you can delete them!", Toast.LENGTH_SHORT);
-			}
 			return true;
 		}
-		/*case R.id.edit_number:
-		{
-			if (tc!=null)
-			{
-				//Need to find a place to activate this activity.
-				ManageNumbersActivity.contact = tc.get(0);
-				startActivity(new Intent(getBaseContext(), ManageNumbersActivity.class));
-				
-			}
-			return true;
-		}*/
 		default:
 			return super.onOptionsItemSelected(item);
 		}

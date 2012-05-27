@@ -32,35 +32,25 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	//private String primaryNumber; //Need to remove
 	private String key;		//Need to remove, is more or less to represent shared key 
-	private int verified;	//Need to remove, is mostly not used except in import contacts,
-							//used to keep track of which contacts are already imported
-							//could be replaced by a boolean value.
 	private ArrayList<String> numbers;
 	//Need to add:
 	//public key
 	//signature
 	//s1
 	//s2
-	//shared key
-	
-	
+			
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
 	 * @param key The contact's public key used to encrypt message sent to this contact
-	 * @param verified A identifier used to help maintain state during the key exchange.
 	 */
-	//public TrustedContact (String name, String primaryNumber, String key, int verified)
-	public TrustedContact (String name, String key, int verified)
+	public TrustedContact (String name, String key)
 	{
 		this.name = name;
-		//this.primaryNumber = primaryNumber;
 		this.key = key;
-		this.verified = verified;
 		this.numbers = new ArrayList<String>();
 	}
 	
@@ -69,15 +59,12 @@ public class TrustedContact {
 	 * 
 	 * @param name The contact's name 
 	 * @param key The contact's public key used to encrypt message sent to this contact
-	 * @param verified A identifier used to help maintain state during the key exchange.
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name,  String key, int verified, ArrayList<String> numbers)
+	public TrustedContact (String name, String key, ArrayList<String> numbers)
 	{
 		this.name = name;
-		//this.primaryNumber = primaryNumber;
 		this.key = key;
-		this.verified = verified;
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(numbers.get(i));
@@ -88,15 +75,12 @@ public class TrustedContact {
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
-	 * @param verified A identifier used to help maintain state during the key exchange.
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, int verified, ArrayList<String> numbers)
+	public TrustedContact (String name, ArrayList<String> numbers)
 	{
 		this.name = name;
-		//this.primaryNumber = numbers.get(0);	//Set the first number as default
 		this.key = null;
-		this.verified = verified;
 		this.numbers = numbers;
 	}
 	
@@ -109,9 +93,8 @@ public class TrustedContact {
 	public TrustedContact (String name)
 	{
 		this.name = name;
-		//this.primaryNumber = null;
 		this.key = null;
-		this.verified = 0;
+		this.numbers = new ArrayList<String>();
 	}
 	
 	/**
@@ -131,16 +114,7 @@ public class TrustedContact {
 	{
 		this.name = name;
 	}
-	
-	/**
-	 * Access the contact's primaryNumber
-	 * @return : String
-	 */
-	/*public String getPrimaryNumber()
-	{
-		return primaryNumber;
-	}*/
-	
+
 	public String getANumber()
 	{
 		for (int i = 0; i < numbers.size(); i++)
@@ -190,40 +164,27 @@ public class TrustedContact {
 		return numbers;
 	}
 	
+	/**
+	 * Get the number of numbers a contact has.
+	 * @return : int the number of numbers
+	 */
 	public int getNumberSize()
 	{
 		return numbers.size();
 	}
 	
+	/**
+	 * Whether the contact has numbers or not
+	 * @return : boolean, true if the contact has no numbers
+	 */
 	public boolean isNumbersEmpty()
 	{
-		if (numbers == null)
+		if (numbers == null || numbers.size() < 1)
 		{
 			return true;
 		}
 		return false;
 	}
-	
-	/**
-	 * Set the contact's primaryNumber
-	 * @param primaryNumber : String
-	 */
-	/*public void setPrimaryNumber(String primaryNumber)
-	{
-		this.primaryNumber = primaryNumber;
-	}*/
-	
-	/*public int findPrimaryNumber()
-	{
-		for (int i = 0; i < numbers.size(); i++)
-		{
-			if (numbers.get(i).equalsIgnoreCase(primaryNumber))
-			{
-				return i;
-			}
-		}
-		return -1;
-	}*/
 	
 	/**
 	 * Access the key
@@ -232,7 +193,8 @@ public class TrustedContact {
 	 */
 	public String getKey()
 	{
-		return "test123";
+		return key;
+		//return "test123";
 	}
 	
 	/**
@@ -240,9 +202,14 @@ public class TrustedContact {
 	 * @param key : String this should only be 
 	 * changed when an exchange is underway
 	 */
-	public void setKey(String key)
+	public void setKey()
 	{
-		this.key = key;
+		this.key = "test123";
+	}
+	
+	public void clearKey()
+	{
+		this.key = null;
 	}
 	
 	public boolean isKeyNull()
@@ -253,31 +220,4 @@ public class TrustedContact {
 		}
 		return false;
 	}
-	
-	/**
-	 * Access the verified value
-	 * @return : int can be 0, 1 or 2 
-	 * 0 indicates no key received, (sending plain text)
-	 * 1 indicates sent a key, initiating the exchange, (sending plain text)
-	 * 2 indicates received key and continued exchange
-	 * OR received contact's key after sending (previously being a 1)
-	 * when verified == 2 the key exchange is complete and encrypted texts are sent
-	 * 
-	 */
-	public int getVerified()
-	{
-		return verified;
-	}
-	
-	/**
-	 * Set the verified value
-	 * @param verified : int can be 0, 1 or 2 indicating
-	 * not received a key, sent a key initiating exchange, 
-	 * or send key upon receiving a key continuing exchange
-	 */
-	public void setVerified(int verified)
-	{
-		this.verified = verified;
-	}
-
 }

@@ -123,7 +123,8 @@ public class DBAccessor {
 	        cv.put(KEY_NAME, tc.getName());
 	        //cv.put(KEY_NUMBER, tc.getPrimaryNumber());
 	        cv.put(KEY_KEY, tc.getKey());
-	        cv.put(KEY_VERIFIED, tc.getVerified());
+	        //cv.put(KEY_KEY, (String) null);
+	        //cv.put(KEY_VERIFIED, tc.getVerified());
 	        
 	        //Insert the row into the database
 	        open();
@@ -331,10 +332,12 @@ public class DBAccessor {
         { 	
 			/*TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
-					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));*/
+					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 					cur.getString(cur.getColumnIndex(KEY_KEY)),
-					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
+					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));*/
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+					cur.getString(cur.getColumnIndex(KEY_KEY)));
 			
 			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -380,10 +383,13 @@ public class DBAccessor {
 			{
 				/*tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 						cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
-						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));*/
+						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));
 				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 						cur.getString(cur.getColumnIndex(KEY_KEY)),
-						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));
+						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));*/
+				String key = cur.getString(cur.getColumnIndex(KEY_KEY));
+				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+						key));
 				
 				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -477,7 +483,7 @@ public class DBAccessor {
 		//}
 		if (tc != null)
 		{
-			if (!tc.isKeyNull() && tc.getVerified() == 2)
+			if (!tc.isKeyNull())// && tc.getVerified() == 2)
 			{
 				return true;
 			}

@@ -36,12 +36,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class ImportContacts extends Activity {
 	Button confirm;
 	private ListView importList;
 	private ArrayList<TrustedContact> tc;
 	private boolean disable;
+	private ArrayList<Boolean> inDb;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,8 @@ public class ImportContacts extends Activity {
         String columnsC[] = new String[] { Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER};
         Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
         Cursor cur = managedQuery(mContacts, columnsC, null, null, Contacts.DISPLAY_NAME);
+        
+        inDb = new ArrayList<Boolean>();
         
         if (cur.moveToFirst()) {
                 do {
@@ -93,8 +97,9 @@ public class ImportContacts extends Activity {
                         	if (!Prephase2Activity.dba.inDatabase(number))
                         	{
                         		//Toast.makeText(getApplicationContext(),""+Prephase2Activity.dba.inDatabase(number) , Toast.LENGTH_SHORT).show();
-                        		tc.add(new TrustedContact(name, -1, number));
-                        		
+                        		tc.add(new TrustedContact(name, number));
+                        		inDb.add(false);
+                        		                        		
                         	}
                         }
                         number = null;
@@ -125,7 +130,8 @@ public class ImportContacts extends Activity {
         		{
         			for (int i = 0; i<tc.size();i++)
 	        		{        			
-	        			if (tc.get(i).getVerified() == 0)
+	        			//if (tc.get(i).getVerified() == 0)
+        				if (inDb.get(i))
 	        			{
 	        				//Toast.makeText(getApplicationContext(), tc.get(i).getName(), Toast.LENGTH_SHORT).show();
 	        				Prephase2Activity.dba.addRow(tc.get(i));
@@ -134,7 +140,7 @@ public class ImportContacts extends Activity {
 	        		finish();
         		}
 			}
-        });   
+        });    	
                 
         importList.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> parent, View view,
@@ -150,25 +156,30 @@ public class ImportContacts extends Activity {
 	
 	public void remove (int position)
 	{
-		tc.get(position).setVerified(-1);
+		//tc.get(position).setVerified(-1);
+		inDb.set(position, false);
 	}
 	
 	public void add(int position)
 	{
-		tc.get(position).setVerified(0);
+		//tc.get(position).setVerified(0);
+		inDb.set(position, true);
 	}
 	
 	public void change(int position)
 	{
 		if (tc != null)
 		{
-			if (tc.get(position).getVerified() == -1)
+			//if (tc.get(position).getVerified() == -1)
+			if (inDb.get(position))
 			{
-				add(position);
+				//add(position);
+				remove(position);
 			}
 			else
 			{
-				remove(position);
+				//remove(position);
+				add(position);
 			}
 		}
 	}
