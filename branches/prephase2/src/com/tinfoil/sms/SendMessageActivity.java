@@ -93,6 +93,7 @@ public class SendMessageActivity extends Activity {
 							        	   //AddContact.editTc = new TrustedContact("", number, null , 0);
 							        	   		AddContact.editTc = new TrustedContact("");
 							        	   		AddContact.editTc.addNumber(number);
+							        	   		AddContact.addContact = false;
 							        		   SendMessageActivity.this.startActivity(new Intent(
 							        				   SendMessageActivity.this, AddContact.class));
 							        	   finish();

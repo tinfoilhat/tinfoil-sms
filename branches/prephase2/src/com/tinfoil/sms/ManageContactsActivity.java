@@ -25,8 +25,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -46,6 +48,21 @@ public class ManageContactsActivity extends Activity {
         listView = (ListView)findViewById(R.id.contact_list);
         
         update();
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener(){
+
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+        			int position, long id) {
+				
+				AddContact.addContact = false;
+				AddContact.editTc = tc.get(position);
+				ManageContactsActivity.this.startActivity(new Intent
+						(ManageContactsActivity.this, AddContact.class));
+				
+				return true; //This stops other on click effects from happening after this one.
+			}
+        	
+        });
                
         //Create what happens when you click on a button
         listView.setOnItemClickListener(new OnItemClickListener()
