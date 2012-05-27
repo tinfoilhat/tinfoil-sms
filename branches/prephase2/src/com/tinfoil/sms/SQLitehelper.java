@@ -26,8 +26,12 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	private static final int DATABASE_VERSION = 2;
+	public static final String USER_TABLE_NAME = "user";
     public static final String TRUSTED_TABLE_NAME = "trusted_contact";
     public static final String NUMBERS_TABLE_NAME = "numbers";
+    private static final String USER_TABLE_CREATE =
+            "CREATE TABLE " + USER_TABLE_NAME + 
+            " (public_key BLOB, private_key BLOB, fingerprint BLOB);";
     private static final String TRUSTED_TABLE_CREATE =
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 
                 " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, number TEXT, key TEXT, verified INTEGER);";
@@ -43,10 +47,12 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TRUSTED_TABLE_CREATE);
         db.execSQL(NUMBERS_TABLE_CREATE);
+        db.execSQL(USER_TABLE_CREATE);
     }
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("DROP TABLE IF EXISTS "+ USER_TABLE_CREATE);
 		db.execSQL("DROP TABLE IF EXISTS "+ TRUSTED_TABLE_CREATE);
 		db.execSQL("DROP TABLE IF EXISTS "+ NUMBERS_TABLE_CREATE);
 		onCreate(db);

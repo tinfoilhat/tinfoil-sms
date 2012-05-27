@@ -153,14 +153,17 @@ public class AddContact extends Activity {
 				String name = contactName.getText().toString();
 				//String number = contactNumber.getText().toString();
 				
-				if (name.length() > 0 && contactEdit.getPrimaryNumber().length() > 0)
+				if (name.length() > 0 && !contactEdit.isNumbersEmpty())
 				{
 					//Need to add to android contact's database, and check to see if it isnt already there
+					//Need to figure a way to update when it is a contact that is being updated and to 
+					//add when it is a contact that is being added
+					
 					//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
 					//{
 						//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
 						//Prephase2Activity.dba.addRow(contactEdit);
-						Prephase2Activity.dba.updateRow(contactEdit, contactEdit.getPrimaryNumber());
+						Prephase2Activity.dba.updateRow(contactEdit, contactEdit.getNumber(0));
 						Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
 						contactEdit = null;
 						finish();

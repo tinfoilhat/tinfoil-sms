@@ -32,10 +32,12 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	private String primaryNumber;
-	private String key;
-	private int verified;
+	private String primaryNumber; //Need to remove
+	private String key;		//Need to remove
+	private int verified;	//Need to remove
 	private ArrayList<String> numbers;
+	
+	
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -132,6 +134,18 @@ public class TrustedContact {
 		return primaryNumber;
 	}
 	
+	public String getANumber()
+	{
+		for (int i = 0; i < numbers.size(); i++)
+		{
+			if (numbers.get(i) != null)
+			{
+				return numbers.get(i);
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Set a number in the contact's numbers list
 	 * @param index : int the index of the number
@@ -176,7 +190,7 @@ public class TrustedContact {
 	
 	public boolean isNumbersEmpty()
 	{
-		if (numbers != null && numbers.size() <= 1)
+		if (numbers == null)
 		{
 			return true;
 		}

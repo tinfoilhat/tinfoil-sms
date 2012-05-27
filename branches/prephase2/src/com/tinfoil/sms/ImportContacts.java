@@ -80,7 +80,8 @@ public class ImportContacts extends Activity {
                 				//number = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
                 				do
                 				{
-                					number.add(pCur.getString(pCur.getColumnIndex(Phone.NUMBER)));
+                					number.add(ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
+                							Phone.NUMBER))));
                 				} while (pCur.moveToNext());
                 			}
                 			pCur.close();
@@ -93,6 +94,7 @@ public class ImportContacts extends Activity {
                         	{
                         		//Toast.makeText(getApplicationContext(),""+Prephase2Activity.dba.inDatabase(number) , Toast.LENGTH_SHORT).show();
                         		tc.add(new TrustedContact(name, -1, number));
+                        		
                         	}
                         }
                         number = null;

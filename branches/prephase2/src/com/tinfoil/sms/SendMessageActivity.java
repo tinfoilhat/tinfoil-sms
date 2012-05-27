@@ -57,7 +57,7 @@ public class SendMessageActivity extends Activity {
         {
 			public void onClick(View v) 
 			{
-		        String number = phoneBox.getText().toString();
+		        final String number = phoneBox.getText().toString();
 				String text = messageBox.getText().toString();
 				
 				if (number.length() > 0 && text.length() > 0)
@@ -82,7 +82,7 @@ public class SendMessageActivity extends Activity {
 						}
 						if (Prephase2Activity.dba.getRow(ContactRetriever.format(number)) == null)
 						{
-							AddContact.editTc = new TrustedContact("", number, null , 0);
+							
 							
 							//Toast.makeText(getBaseContext(), newNumber, Toast.LENGTH_SHORT).show();
 							AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
@@ -90,7 +90,9 @@ public class SendMessageActivity extends Activity {
 							       .setCancelable(false)
 							       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							           public void onClick(DialogInterface dialog, int id) {
-							        	   
+							        	   //AddContact.editTc = new TrustedContact("", number, null , 0);
+							        	   		AddContact.editTc = new TrustedContact("", "", null , 0);
+							        	   		AddContact.editTc.addNumber(number);
 							        		   SendMessageActivity.this.startActivity(new Intent(
 							        				   SendMessageActivity.this, AddContact.class));
 							        	   finish();

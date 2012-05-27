@@ -65,7 +65,6 @@ public class RemoveContactsActivity extends Activity {
         		
         		toggle(position);
         		
-
         	}});
 
         delete.setOnClickListener(new View.OnClickListener(){
@@ -75,10 +74,12 @@ public class RemoveContactsActivity extends Activity {
 					for (int i = 0; i < tc.size(); i++)
 					{
 						//**Note need an alert message here
-						Toast.makeText(getBaseContext(), ""+ tc.get(i).getPrimaryNumber(), Toast.LENGTH_LONG);
+						//Toast.makeText(getBaseContext(), ""+ tc.get(i).getPrimaryNumber(), Toast.LENGTH_LONG);
+						
 						if (contact[i])
 						{
 							Prephase2Activity.dba.removeRow(tc.get(i).getPrimaryNumber());
+							//Prephase2Activity.dba.removeRow(tc.get(i).getANumber());
 						}
 					}
 					update();

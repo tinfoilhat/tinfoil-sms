@@ -28,6 +28,10 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class DBAccessor {
 	
+	public static final String KEY_PUBLIC_KEY = "public_key";
+	public static final String KEY_PRIVATE_KEY = "private_key";
+	public static final String KEY_FINGERPRINT = "fingerprint";
+	
 	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
 	public static final String KEY_NUMBER = "number";
@@ -128,6 +132,7 @@ public class DBAccessor {
 	        if (!tc.isNumbersEmpty())
 	        {
 	        	int id = getId(tc.getPrimaryNumber());
+	        	//int id = getId(tc.getNumber(0));
 	        	for (int i = 0; i< tc.getNumberSize();i++)
 	        	{
 	        		addRow(id, ContactRetriever.format(tc.getNumber(i)));
@@ -210,7 +215,7 @@ public class DBAccessor {
 	{
 		for (int i = 0; i<number.size(); i++)
 		{
-			TrustedContact tc =getRow(ContactRetriever.format(number.get(i)));
+			TrustedContact tc = getRow(ContactRetriever.format(number.get(i)));
 			if (tc != null)
 			{
 				return true;
@@ -357,7 +362,7 @@ public class DBAccessor {
 	public ArrayList<TrustedContact> getAllRows()
 	{		
 		open();
-		Cursor cur = db.query("trusted_contact", null,
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
 				null, null, null, null, KEY_ID);
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
@@ -385,7 +390,7 @@ public class DBAccessor {
 						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
 					}while(pCur.moveToNext());
 					pCur.close();
-					return tc;
+					//return tc;
 				}
 								
 				i++;
@@ -397,6 +402,21 @@ public class DBAccessor {
 		close(cur);
 		return null;
 	}
+	
+	public TrustedContact getUserRow()
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, null,
+				null, null, null, null, null);
+		if (cur.moveToFirst())
+		{
+			//get public, private and fingerprint, and set the name to "ME" 
+		}
+		
+		close(cur);
+		return null;
+	}
+	
 	
 	/**
 	 * Update all of the values in a row

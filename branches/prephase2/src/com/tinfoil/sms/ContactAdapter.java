@@ -71,14 +71,15 @@ public class ContactAdapter extends ArrayAdapter<String>{
         if (number != null)
         {
         	holder.number.setText(number);
-        	if (data.getPrimaryNumber().equalsIgnoreCase(number))
+        	holder.primary.setText("Number");
+        	/*if (data.getPrimaryNumber().equalsIgnoreCase(number))
         	{
         		holder.primary.setText("Primary");
         	}
         	else
         	{
         		holder.primary.setText("");
-        	}
+        	}*/
         }
         return row;
     }
