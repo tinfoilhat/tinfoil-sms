@@ -78,8 +78,8 @@ public class RemoveContactsActivity extends Activity {
 						
 						if (contact[i])
 						{
-							Prephase2Activity.dba.removeRow(tc.get(i).getPrimaryNumber());
-							//Prephase2Activity.dba.removeRow(tc.get(i).getANumber());
+							//Prephase2Activity.dba.removeRow(tc.get(i).getPrimaryNumber());
+							Prephase2Activity.dba.removeRow(tc.get(i).getANumber());
 						}
 					}
 					update();

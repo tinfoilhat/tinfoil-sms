@@ -91,7 +91,7 @@ public class SendMessageActivity extends Activity {
 							       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							           public void onClick(DialogInterface dialog, int id) {
 							        	   //AddContact.editTc = new TrustedContact("", number, null , 0);
-							        	   		AddContact.editTc = new TrustedContact("", "", null , 0);
+							        	   		AddContact.editTc = new TrustedContact("", null , 0);
 							        	   		AddContact.editTc.addNumber(number);
 							        		   SendMessageActivity.this.startActivity(new Intent(
 							        				   SendMessageActivity.this, AddContact.class));

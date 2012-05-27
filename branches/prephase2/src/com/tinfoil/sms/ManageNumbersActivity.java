@@ -55,8 +55,8 @@ public class ManageNumbersActivity extends Activity {
         		
         		if (!tc.isNumbersEmpty())
         		{
-        			tc.setPrimaryNumber(tc.getNumber(position));
-        			setPrimary();
+        			//tc.setPrimaryNumber(tc.getNumber(position));
+        			//setPrimary();
         			//Toast.makeText(getBaseContext(), tc.getPrimaryNumber(), Toast.LENGTH_SHORT).show();
         		}
         		else
@@ -70,10 +70,10 @@ public class ManageNumbersActivity extends Activity {
 	}
 	
 	
-	private void setPrimary()
+	/*private void setPrimary()
 	{
 		listView.setItemChecked(tc.findPrimaryNumber(), true);
-	}
+	}*/
 	
 	/**
 	 * Updates the list of contacts
@@ -90,7 +90,7 @@ public class ManageNumbersActivity extends Activity {
 
 	        //Set the mode to single or multiple choice, (should match top choice)
 	        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-	        setPrimary();
+	        //setPrimary();
 	    }
         else 
         {

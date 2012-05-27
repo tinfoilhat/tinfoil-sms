@@ -116,22 +116,22 @@ public class DBAccessor {
 		//Check if name, number or key contain any ';'
 		//if (!conflict(tc.getPrimaryNumber()))
 		//{
-			tc.setPrimaryNumber(ContactRetriever.format(tc.getPrimaryNumber()));
+			//tc.setPrimaryNumber(ContactRetriever.format(tc.getPrimaryNumber()));
 			ContentValues cv = new ContentValues();
 			
 			//add given values to a row
 	        cv.put(KEY_NAME, tc.getName());
-	        cv.put(KEY_NUMBER, tc.getPrimaryNumber());
+	        //cv.put(KEY_NUMBER, tc.getPrimaryNumber());
 	        cv.put(KEY_KEY, tc.getKey());
 	        cv.put(KEY_VERIFIED, tc.getVerified());
 	        
 	        //Insert the row into the database
 	        open();
-	        db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
+	        int id = (int) db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
 	        close();
 	        if (!tc.isNumbersEmpty())
 	        {
-	        	int id = getId(tc.getPrimaryNumber());
+	        	//int id = getId(tc.getPrimaryNumber());
 	        	//int id = getId(tc.getNumber(0));
 	        	for (int i = 0; i< tc.getNumberSize();i++)
 	        	{
@@ -144,11 +144,14 @@ public class DBAccessor {
 	private int getId(String number)
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {"id"},
-				"number = "+ number, null, null, null, null);
+		/*Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {"id"},
+				"name = "+ name, null, null, null, null);*/
+		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[] {KEY_REFERENCE},
+				KEY_NUMBER + " = "+ number, null, null, null, null);
+		
 		if (cur.moveToFirst())
 		{
-			int id = cur.getInt(cur.getColumnIndex("id"));
+			int id = cur.getInt(cur.getColumnIndex((KEY_REFERENCE)));
 			close(cur);
 			return id;
 		}
@@ -326,8 +329,11 @@ public class DBAccessor {
 		
 		if (cur.moveToFirst())
         { 	
-			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+			/*TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
+					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));*/
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+					cur.getString(cur.getColumnIndex(KEY_KEY)),
 					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
 			
 			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
@@ -372,9 +378,13 @@ public class DBAccessor {
 			int i = 0;
 			do
 			{
-				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+				/*tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 						cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
+						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));*/
+				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+						cur.getString(cur.getColumnIndex(KEY_KEY)),
 						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));
+				
 				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 						new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
@@ -389,10 +399,11 @@ public class DBAccessor {
 					{
 						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
 					}while(pCur.moveToNext());
-					pCur.close();
+					//pCur.close();
 					//return tc;
 				}
-								
+				
+				pCur.close();			
 				i++;
 			}while (cur.moveToNext());
 			
@@ -440,7 +451,8 @@ public class DBAccessor {
 		number = ContactRetriever.format(number);
 		int id = getId(number);
 		open();
-		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_NUMBER + " = " + number, null);
+		//db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_NUMBER + " = " + number, null);
+		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
 		db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
 		close();
 	}

@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	private String primaryNumber; //Need to remove
+	//private String primaryNumber; //Need to remove
 	private String key;		//Need to remove
 	private int verified;	//Need to remove
 	private ArrayList<String> numbers;
@@ -47,10 +47,11 @@ public class TrustedContact {
 	 * @param key The contact's public key used to encrypt message sent to this contact
 	 * @param verified A identifier used to help maintain state during the key exchange.
 	 */
-	public TrustedContact (String name, String primaryNumber, String key, int verified)
+	//public TrustedContact (String name, String primaryNumber, String key, int verified)
+	public TrustedContact (String name, String key, int verified)
 	{
 		this.name = name;
-		this.primaryNumber = primaryNumber;
+		//this.primaryNumber = primaryNumber;
 		this.key = key;
 		this.verified = verified;
 		this.numbers = new ArrayList<String>();
@@ -65,10 +66,10 @@ public class TrustedContact {
 	 * @param verified A identifier used to help maintain state during the key exchange.
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, String primaryNumber, String key, int verified, ArrayList<String> numbers)
+	public TrustedContact (String name,  String key, int verified, ArrayList<String> numbers)
 	{
 		this.name = name;
-		this.primaryNumber = primaryNumber;
+		//this.primaryNumber = primaryNumber;
 		this.key = key;
 		this.verified = verified;
 		for (int i = 0; i<numbers.size(); i++)
@@ -87,7 +88,7 @@ public class TrustedContact {
 	public TrustedContact (String name, int verified, ArrayList<String> numbers)
 	{
 		this.name = name;
-		this.primaryNumber = numbers.get(0);	//Set the first number as default
+		//this.primaryNumber = numbers.get(0);	//Set the first number as default
 		this.key = null;
 		this.verified = verified;
 		this.numbers = numbers;
@@ -102,7 +103,7 @@ public class TrustedContact {
 	public TrustedContact (String name)
 	{
 		this.name = name;
-		this.primaryNumber = null;
+		//this.primaryNumber = null;
 		this.key = null;
 		this.verified = 0;
 	}
@@ -129,10 +130,10 @@ public class TrustedContact {
 	 * Access the contact's primaryNumber
 	 * @return : String
 	 */
-	public String getPrimaryNumber()
+	/*public String getPrimaryNumber()
 	{
 		return primaryNumber;
-	}
+	}*/
 	
 	public String getANumber()
 	{
@@ -201,12 +202,12 @@ public class TrustedContact {
 	 * Set the contact's primaryNumber
 	 * @param primaryNumber : String
 	 */
-	public void setPrimaryNumber(String primaryNumber)
+	/*public void setPrimaryNumber(String primaryNumber)
 	{
 		this.primaryNumber = primaryNumber;
-	}
+	}*/
 	
-	public int findPrimaryNumber()
+	/*public int findPrimaryNumber()
 	{
 		for (int i = 0; i < numbers.size(); i++)
 		{
@@ -216,7 +217,7 @@ public class TrustedContact {
 			}
 		}
 		return -1;
-	}
+	}*/
 	
 	/**
 	 * Access the key
