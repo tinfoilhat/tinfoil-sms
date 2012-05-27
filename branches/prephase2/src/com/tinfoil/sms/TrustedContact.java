@@ -33,9 +33,17 @@ public class TrustedContact {
 	
 	private String name;
 	//private String primaryNumber; //Need to remove
-	private String key;		//Need to remove
-	private int verified;	//Need to remove
+	private String key;		//Need to remove, is more or less to represent shared key 
+	private int verified;	//Need to remove, is mostly not used except in import contacts,
+							//used to keep track of which contacts are already imported
+							//could be replaced by a boolean value.
 	private ArrayList<String> numbers;
+	//Need to add:
+	//public key
+	//signature
+	//s1
+	//s2
+	//shared key
 	
 	
 	
@@ -43,7 +51,6 @@ public class TrustedContact {
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
-	 * @param primaryNumber The contact's primaryNumber
 	 * @param key The contact's public key used to encrypt message sent to this contact
 	 * @param verified A identifier used to help maintain state during the key exchange.
 	 */
@@ -61,7 +68,6 @@ public class TrustedContact {
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
-	 * @param primaryNumber The contact's primaryNumber
 	 * @param key The contact's public key used to encrypt message sent to this contact
 	 * @param verified A identifier used to help maintain state during the key exchange.
 	 * @param numbers A list of numbers that are associated to the contact.
@@ -226,7 +232,7 @@ public class TrustedContact {
 	 */
 	public String getKey()
 	{
-		return key;
+		return "test123";
 	}
 	
 	/**

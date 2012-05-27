@@ -56,7 +56,10 @@ public class MessageView extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.messageviewer);
+		
+		//Sets the keyboard to not pop-up until a text area is selected 
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		
 		Prephase2Activity.dba = new DBAccessor(this);
 	
 		Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);

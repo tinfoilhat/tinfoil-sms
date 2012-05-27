@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -54,6 +55,9 @@ public class AddContact extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
         
+        //Sets the keyboard to not pop-up until a text area is selected 
+      	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+      	
         //contactNumber = new EditText(this);
         listView = (ListView)findViewById(R.id.contact_numbers);
         addNumber = (Button) findViewById(R.id.add_new_number);
@@ -182,11 +186,11 @@ public class AddContact extends Activity {
         
 	}
 	
-	public void update(String newKey)
+	public void update(String newNumber)
 	{
-		if (newKey != null)
+		if (newNumber != null)
 		{
-			contactEdit.addNumber(newKey);
+			contactEdit.addNumber(newNumber);
 		}
 		
 		if (contactEdit != null)
