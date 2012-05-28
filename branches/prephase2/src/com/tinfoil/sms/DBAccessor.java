@@ -91,7 +91,7 @@ public class DBAccessor {
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : String the number 
 	 */
-	public void addRow (int reference, String number)
+	private void addRow (int reference, String number)
 	{
 		//Check if name, number or key contain any ';'
 		//if (!conflict(number))
@@ -110,6 +110,133 @@ public class DBAccessor {
 		//}
 		
 	}
+	
+	/**
+	 * Add a row to the shared_information table.
+	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param s1 : String the first shared information
+	 * @param s2 : String the second shared information
+	 */
+	private void addSharedInfo (int reference, String s1, String s2)
+	{
+		//Check if name, number or key contain any ';'
+		//if (!conflict(number))
+		//{
+			ContentValues cv = new ContentValues();
+				
+			//add given values to a row
+	        cv.put(KEY_REFERENCE, reference);
+	        cv.put(KEY_SHARED_INFO_1, s1);
+	        cv.put(KEY_SHARED_INFO_2, s2);
+	
+	        //Insert the row into the database
+	        open();
+	        db.insert(SQLitehelper.SHARED_INFO_TABLE_NAME, null, cv);
+	        close();
+		//}
+		
+	}
+	
+	/**
+	 * Add a row to the shared_information table.
+	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param bookPath : String the path for looking up the book source
+	 * @param bookInversePath : String the path for looking up the inverse book source
+	 */
+	private void addBookPath (int reference, String bookPath, String bookInversePath)
+	{
+		//Check if name, number or key contain any ';'
+		//if (!conflict(number))
+		//{
+			ContentValues cv = new ContentValues();
+				
+			//add given values to a row
+	        cv.put(KEY_REFERENCE, reference);
+	        cv.put(KEY_SHARED_INFO_1, bookPath);
+	        cv.put(KEY_SHARED_INFO_2, bookInversePath);
+	
+	        //Insert the row into the database
+	        open();
+	        db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
+	        close();
+		//}
+		
+	}
+	
+	private void removeBook (int reference)
+	{
+		if (!bookIsDefault(reference))
+		{
+			open();
+			db.delete(SQLitehelper.BOOK_PATHS_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
+			close();
+		}
+		
+	}
+	
+	/** 
+	 * Used for updating the book paths, will not delete the default row
+	 * @param reference
+	 * @param bookPath
+	 * @param bookInversePath
+	 */
+	public void updateBookPaths(int reference, String bookPath, String bookInversePath)
+	{
+		removeBook(reference);
+		addBookPath(reference, bookPath, bookInversePath);
+	}
+	
+	private boolean bookIsDefault(int reference)
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
+				new String[] {KEY_REFERENCE, KEY_BOOK_PATH}, KEY_REFERENCE + " = " + reference,
+				null, null, null, null);
+		if (cur.moveToFirst())
+		{
+			close(cur);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Used to retrieve the book paths
+	 * @param reference
+	 * @return
+	 */
+	public String getBookPath(int reference)
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
+				new String[] {KEY_REFERENCE, KEY_BOOK_PATH}, KEY_REFERENCE + " = " + reference,
+				null, null, null, null);
+		if (cur.moveToFirst())
+		{
+			//Found the reference number in the database
+			String bookPath = cur.getString(cur.getColumnIndex(KEY_BOOK_PATH));
+			close(cur);
+			return bookPath;
+		}
+		else
+		{
+			cur.close();
+			//Reference not found, return the default
+			Cursor dCur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
+					new String[] {KEY_REFERENCE, KEY_BOOK_PATH}, KEY_REFERENCE + " = " + 0,
+					null, null, null, null);
+			if (dCur.moveToFirst())
+			{
+				String bookPath = dCur.getString(dCur.getColumnIndex(KEY_BOOK_PATH));
+				close(dCur);
+				return bookPath;
+			}
+			close(dCur);
+		}
+		return null;
+	}
+	
+	
 	
 	/**
 	 * Adds a trusted contact to the database
