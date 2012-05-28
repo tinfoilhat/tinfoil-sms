@@ -152,7 +152,7 @@ public class Prephase2Activity extends Activity {
 										messages[0].getMessageBody(), INBOX);
 								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),	
 										Encryption.aes_decrypt(dba.getRow(ContactRetriever.format
-										(address)).getKey(), messages[0].getMessageBody()), INBOX);
+										(address)).getPublicKey(), messages[0].getMessageBody()), INBOX);
 								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 								updateList();
 							} catch (Exception e) {

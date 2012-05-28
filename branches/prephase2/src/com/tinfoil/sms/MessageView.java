@@ -38,14 +38,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-
+//**Might be a good idea for this activity to extend the main activity, prephase2Activity. 
 public class MessageView extends Activity {
-	private static final String KEY = "test123";
-	private final int VERIFY = 2;
+	
 	Button sendSMS;
 	EditText messageBox;
-	static ListView list2;
-	static List<String[]> msgList2;
+	public static ListView list2;
+	public static List<String[]> msgList2;
 	
 	//Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -105,12 +104,12 @@ public class MessageView extends Activity {
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
 							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(
-									Prephase2Activity.dba.getRow(ContactRetriever.format(Prephase2Activity.selectedNumber)).getKey(),
-									text));							
+									Prephase2Activity.dba.getRow(ContactRetriever.format(
+											Prephase2Activity.selectedNumber)).getPublicKey(), text));							
 							
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
 									Encryption.aes_encrypt(Prephase2Activity.dba.getRow(ContactRetriever.format
-									(Prephase2Activity.selectedNumber)).getKey(), text), Prephase2Activity.SENT);
+									(Prephase2Activity.selectedNumber)).getPublicKey(), text), Prephase2Activity.SENT);
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
 									 text, Prephase2Activity.SENT);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
@@ -175,10 +174,6 @@ public class MessageView extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.exchange:
-			//Doesn't work right now
-			item.setChecked(!item.isChecked());
-			//
-			
 			//Add to trusted Contact list
 			TrustedContact tc = Prephase2Activity.dba.getRow(ContactRetriever.format
 					(Prephase2Activity.selectedNumber));
@@ -187,16 +182,12 @@ public class MessageView extends Activity {
 				if (Prephase2Activity.dba.isTrustedContact(ContactRetriever.format
 						(Prephase2Activity.selectedNumber)))
 				{
-					//tc.setKey(null);
-					tc.clearKey();
-					//tc.setVerified(0);
+					tc.clearPublicKey();
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 				else
 				{
-					//tc.setKey(KEY);
-					tc.setKey();
-					//tc.setVerified(VERIFY);
+					tc.setPublicKey();
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 			}

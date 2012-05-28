@@ -30,15 +30,21 @@ public class DBAccessor {
 	
 	public static final String KEY_PUBLIC_KEY = "public_key";
 	public static final String KEY_PRIVATE_KEY = "private_key";
-	public static final String KEY_FINGERPRINT = "fingerprint";
+	public static final String KEY_SIGNATURE = "signature";
+	
+	public static final String KEY_SHARED_INFO_1 = "shared_info_1";
+	public static final String KEY_SHARED_INFO_2 = "shared_info_2";
+
+	public static final String KEY_BOOK_PATH = "book_path";
+	public static final String KEY_BOOK_INVERSE_PATH = "book_inverse_path";
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
-	public static final String KEY_NUMBER = "number";
-	public static final String KEY_KEY = "key";
-	public static final String KEY_VERIFIED = "verified";
+		
+	//public static final String KEY_KEY = "key";
 	
 	public static final String KEY_REFERENCE = "reference";
+	public static final String KEY_NUMBER = "number";
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -58,11 +64,9 @@ public class DBAccessor {
 	/**
 	 * Adds a row to the contacts table, trusted_contact
 	 * @param name : String the name of the contact
-	 * @param number : String the number for the contact
 	 * @param key : String the contact's public key, null if not received
-	 * @param verified : int whether the user's public key has been given to the contact, 0 if not sent
 	 */
-	public void addRow (String name, String number, String key, int verified)
+	public void addRow (String name, String publicKey, byte[] signature)
 	{
 		//Check if name, number or key contain any ';'
 		//if (!conflict(number))
@@ -71,9 +75,8 @@ public class DBAccessor {
 				
 			//add given values to a row
 	        cv.put(KEY_NAME, name);
-	        cv.put(KEY_NUMBER, number);
-	        cv.put(KEY_KEY, key);
-	        cv.put(KEY_VERIFIED, verified);
+	        cv.put(KEY_PUBLIC_KEY, publicKey);
+	        cv.put(KEY_SIGNATURE, signature);
 	
 	        //Insert the row into the database
 	        open();
@@ -98,6 +101,7 @@ public class DBAccessor {
 			//add given values to a row
 	        cv.put(KEY_REFERENCE, reference);
 	        cv.put(KEY_NUMBER, number);
+	        
 	
 	        //Insert the row into the database
 	        open();
@@ -108,7 +112,7 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Adds a row to the contacts table, trusted_contact
+	 * Adds a trusted contact to the database
 	 * @param tc : TrustedContact contains all the required information for the contact
 	 */
 	public void addRow (TrustedContact tc)
@@ -116,15 +120,12 @@ public class DBAccessor {
 		//Check if name, number or key contain any ';'
 		//if (!conflict(tc.getPrimaryNumber()))
 		//{
-			//tc.setPrimaryNumber(ContactRetriever.format(tc.getPrimaryNumber()));
 			ContentValues cv = new ContentValues();
 			
 			//add given values to a row
 	        cv.put(KEY_NAME, tc.getName());
-	        //cv.put(KEY_NUMBER, tc.getPrimaryNumber());
-	        cv.put(KEY_KEY, tc.getKey());
-	        //cv.put(KEY_KEY, (String) null);
-	        //cv.put(KEY_VERIFIED, tc.getVerified());
+	        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
+	        cv.put(KEY_SIGNATURE, tc.getSignature());
 	        
 	        //Insert the row into the database
 	        open();
@@ -132,8 +133,6 @@ public class DBAccessor {
 	        close();
 	        if (!tc.isNumbersEmpty())
 	        {
-	        	//int id = getId(tc.getPrimaryNumber());
-	        	//int id = getId(tc.getNumber(0));
 	        	for (int i = 0; i< tc.getNumberSize();i++)
 	        	{
 	        		addRow(id, ContactRetriever.format(tc.getNumber(i)));
@@ -145,8 +144,6 @@ public class DBAccessor {
 	private int getId(String number)
 	{
 		open();
-		/*Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {"id"},
-				"name = "+ name, null, null, null, null);*/
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[] {KEY_REFERENCE},
 				KEY_NUMBER + " = "+ number, null, null, null, null);
 		
@@ -264,58 +261,13 @@ public class DBAccessor {
 	/**
 	 * Access the information stored in the database of a contact who has a certain number
 	 * with the columns: name, number, key, verified.
-	 * @param number : String the primary number of the contact to retrieve 
-	 * @return TrustedContact, the row of data.
-	 */
-	/*public TrustedContact getRow(String primaryNumber)
-	{		
-		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
-				KEY_NUMBER +" = " + primaryNumber, null, null, null, null);
-		
-		if (cur.moveToFirst())
-        { 	
-			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
-					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
-			
-			int id = cur.getInt(cur.getColumnIndex(KEY_ID));
-			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
-					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
-					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
-					null, null, null, null);
-
-			if (pCur.moveToFirst())
-			{
-				do
-				{
-					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
-				}while(pCur.moveToNext());
-				pCur.close();
-			}
-			close(cur);
-			return tc;
-        }
-		close(cur);
-		return null;
-	}*/
-	
-	/**
-	 * Access the information stored in the database of a contact who has a certain number
-	 * with the columns: name, number, key, verified.
 	 * @param number : String the number of the contact to retrieve 
 	 * @return TrustedContact, the row of data.
 	 */
 	public TrustedContact getRow(String number)
 	{		
 		open();
-		
-		/* If the number isn't found a primary number, might be better to just search this 
-		 * db first then find the reference number, then search other db for id, thus searching
-		 * through all numbers, cause primary numbers can change quite easily.
-		 */
+
 		Cursor idCur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, 
 				new String[] {KEY_REFERENCE, KEY_NUMBER}, KEY_NUMBER + " = " + number,
 				null, null, null, null);
@@ -330,14 +282,11 @@ public class DBAccessor {
 		
 		if (cur.moveToFirst())
         { 	
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+					cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
+					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)));
 			/*TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
-					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));
-			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_KEY)),
-					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));*/
-			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_KEY)));
+					cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)));*/
 			
 			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -381,15 +330,11 @@ public class DBAccessor {
 			int i = 0;
 			do
 			{
+				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
+						cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
+						cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
 				/*tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-						cur.getString(cur.getColumnIndex(KEY_NUMBER)), cur.getString(cur.getColumnIndex(KEY_KEY)),
-						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));
-				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-						cur.getString(cur.getColumnIndex(KEY_KEY)),
-						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));*/
-				String key = cur.getString(cur.getColumnIndex(KEY_KEY));
-				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-						key));
+						cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY))));*/
 				
 				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -483,7 +428,7 @@ public class DBAccessor {
 		//}
 		if (tc != null)
 		{
-			if (!tc.isKeyNull())// && tc.getVerified() == 2)
+			if (!tc.isPublicKeyNull())// && tc.getVerified() == 2)
 			{
 				return true;
 			}
