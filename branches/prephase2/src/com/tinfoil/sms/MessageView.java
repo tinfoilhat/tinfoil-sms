@@ -38,7 +38,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-
+//**Might be a good idea for this activity to extend the main activity, prephase2Activity. 
 public class MessageView extends Activity {
 	
 	Button sendSMS;
@@ -105,11 +105,11 @@ public class MessageView extends Activity {
 						{
 							sendSMS(Prephase2Activity.selectedNumber, Encryption.aes_encrypt(
 									Prephase2Activity.dba.getRow(ContactRetriever.format(
-											Prephase2Activity.selectedNumber)).getKey(), text));							
+											Prephase2Activity.selectedNumber)).getPublicKey(), text));							
 							
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
 									Encryption.aes_encrypt(Prephase2Activity.dba.getRow(ContactRetriever.format
-									(Prephase2Activity.selectedNumber)).getKey(), text), Prephase2Activity.SENT);
+									(Prephase2Activity.selectedNumber)).getPublicKey(), text), Prephase2Activity.SENT);
 							Prephase2Activity.sendToSelf(getBaseContext(), Prephase2Activity.selectedNumber,
 									 text, Prephase2Activity.SENT);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
@@ -182,14 +182,12 @@ public class MessageView extends Activity {
 				if (Prephase2Activity.dba.isTrustedContact(ContactRetriever.format
 						(Prephase2Activity.selectedNumber)))
 				{
-					//tc.setKey(null);
-					tc.clearKey();
+					tc.clearPublicKey();
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 				else
 				{
-					//tc.setKey(KEY);
-					tc.setKey();
+					tc.setPublicKey();
 					Prephase2Activity.dba.updateRow(tc, Prephase2Activity.selectedNumber);
 				}
 			}

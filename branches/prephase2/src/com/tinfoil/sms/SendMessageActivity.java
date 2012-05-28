@@ -71,7 +71,7 @@ public class SendMessageActivity extends Activity {
 								Prephase2Activity.sharedPrefs.getBoolean("enable", true))
 						{
 							sendSMS(number, Encryption.aes_encrypt(Prephase2Activity.dba.getRow
-									(ContactRetriever.format(number)).getKey(), text));
+									(ContactRetriever.format(number)).getPublicKey(), text));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else

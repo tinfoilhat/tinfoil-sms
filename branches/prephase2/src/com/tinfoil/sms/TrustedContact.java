@@ -24,16 +24,16 @@ import java.util.ArrayList;
  * A class for storing information retrieved or to be stored in the database. 
  * 
  * @param name The contact's name 
- * @param number The contact's number
- * @param key The contact's public key used to encrypt message sent to this contact
- * @param verified A identifier used to help maintain state during the key exchange.
+ * @param publicKey The contact's public key used to encrypt message sent to this contact
+ * @param numbers an array list of numbers for the contact.
  * 
  */
 public class TrustedContact {
 	
 	private String name;
-	private String key;		//Need to remove, is more or less to represent shared key 
+	private String publicKey;		//Need to remove, is more or less to represent shared key 
 	private ArrayList<String> numbers;
+	private byte[] signature;
 	//Need to add:
 	//public key
 	//signature
@@ -45,30 +45,33 @@ public class TrustedContact {
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
-	 * @param key The contact's public key used to encrypt message sent to this contact
+	 * @param publicKey The contact's public key used to encrypt message sent to this contact
 	 */
-	public TrustedContact (String name, String key)
+	//public TrustedContact (String name, String publicKey)
+	public TrustedContact (String name, String publicKey, byte[] signature)
 	{
 		this.name = name;
-		this.key = key;
+		this.publicKey = publicKey;
 		this.numbers = new ArrayList<String>();
+		this.signature = null;
 	}
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
 	 * @param name The contact's name 
-	 * @param key The contact's public key used to encrypt message sent to this contact
+	 * @param publicKey The contact's public key used to encrypt message sent to this contact
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, String key, ArrayList<String> numbers)
+	public TrustedContact (String name, String publicKey, ArrayList<String> numbers)
 	{
 		this.name = name;
-		this.key = key;
+		this.publicKey = publicKey;
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(numbers.get(i));
 		}
+		this.signature = null;
 	}
 	
 	/**
@@ -80,8 +83,9 @@ public class TrustedContact {
 	public TrustedContact (String name, ArrayList<String> numbers)
 	{
 		this.name = name;
-		this.key = null;
+		this.publicKey = null;
 		this.numbers = numbers;
+		this.signature = null;
 	}
 	
 	
@@ -93,8 +97,9 @@ public class TrustedContact {
 	public TrustedContact (String name)
 	{
 		this.name = name;
-		this.key = null;
+		this.publicKey = null;
 		this.numbers = new ArrayList<String>();
+		this.signature = null;
 	}
 	
 	/**
@@ -114,6 +119,16 @@ public class TrustedContact {
 	{
 		this.name = name;
 	}
+	
+	public byte[] getSignature()
+	{
+		return signature;
+	}
+	
+	/*public void setSignature(byte[] signature)
+	{
+		this.signature = signature;
+	}*/
 
 	public String getANumber()
 	{
@@ -187,34 +202,31 @@ public class TrustedContact {
 	}
 	
 	/**
-	 * Access the key
-	 * @return : String the contact's public key 
+	 * Access the publicKey
+	 * @return : String the contact's public publicKey 
 	 * used for encrypting messages
 	 */
-	public String getKey()
+	public String getPublicKey()
 	{
-		return key;
-		//return "test123";
+		return publicKey;
 	}
 	
 	/**
-	 * Set the contact's public key
-	 * @param key : String this should only be 
-	 * changed when an exchange is underway
+	 * Set the contact's public publicKey
 	 */
-	public void setKey()
+	public void setPublicKey()
 	{
-		this.key = "test123";
+		this.publicKey = "test123";
 	}
 	
-	public void clearKey()
+	public void clearPublicKey()
 	{
-		this.key = null;
+		this.publicKey = null;
 	}
-	
-	public boolean isKeyNull()
+
+	public boolean isPublicKeyNull()
 	{
-		if (key == null)
+		if (publicKey == null)
 		{
 			return true;
 		}
