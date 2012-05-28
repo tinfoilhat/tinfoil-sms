@@ -49,7 +49,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     private static final String TRUSTED_TABLE_CREATE =
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, key TEXT);";
+                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, public_key BLOB, fingerprint BLOB);";
     
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 

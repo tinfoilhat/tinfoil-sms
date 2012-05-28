@@ -40,8 +40,8 @@ public class DBAccessor {
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
-	public static final String KEY_KEY = "key";
-	//public static final String KEY_VERIFIED = "verified";
+		
+	//public static final String KEY_KEY = "key";
 	
 	public static final String KEY_REFERENCE = "reference";
 	public static final String KEY_NUMBER = "number";
@@ -66,7 +66,7 @@ public class DBAccessor {
 	 * @param name : String the name of the contact
 	 * @param key : String the contact's public key, null if not received
 	 */
-	public void addRow (String name, String key)
+	public void addRow (String name, String publicKey)
 	{
 		//Check if name, number or key contain any ';'
 		//if (!conflict(number))
@@ -76,7 +76,8 @@ public class DBAccessor {
 			//add given values to a row
 	        cv.put(KEY_NAME, name);
 	        //cv.put(KEY_NUMBER, number);
-	        cv.put(KEY_KEY, key);
+	        //cv.put(KEY_KEY, key);
+	        cv.put(KEY_PUBLIC_KEY, publicKey);
 	        //cv.put(KEY_VERIFIED, verified);
 	
 	        //Insert the row into the database
@@ -126,7 +127,8 @@ public class DBAccessor {
 			//add given values to a row
 	        cv.put(KEY_NAME, tc.getName());
 	        //cv.put(KEY_NUMBER, tc.getPrimaryNumber());
-	        cv.put(KEY_KEY, tc.getKey());
+	        //cv.put(KEY_KEY, tc.getKey());
+	        cv.put(KEY_PUBLIC_KEY, tc.getKey());
 	        //cv.put(KEY_KEY, (String) null);
 	        //cv.put(KEY_VERIFIED, tc.getVerified());
 	        
@@ -341,7 +343,7 @@ public class DBAccessor {
 					cur.getString(cur.getColumnIndex(KEY_KEY)),
 					cur.getInt(cur.getColumnIndex(KEY_VERIFIED)));*/
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_KEY)));
+					cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)));
 			
 			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -391,7 +393,7 @@ public class DBAccessor {
 				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 						cur.getString(cur.getColumnIndex(KEY_KEY)),
 						cur.getInt(cur.getColumnIndex(KEY_VERIFIED))));*/
-				String key = cur.getString(cur.getColumnIndex(KEY_KEY));
+				String key = cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY));
 				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 						key));
 				
