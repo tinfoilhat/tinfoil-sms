@@ -29,7 +29,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class RemoveContactsActivity extends Activity {
 	private ListView listView;
@@ -37,7 +36,6 @@ public class RemoveContactsActivity extends Activity {
 	private ArrayList<TrustedContact> tc;
 	Button delete;
     /** Called when the activity is first created. */
-	//private ListView mContactList;
 
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -34,8 +33,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class ManageContactsActivity extends Activity {
-	private final String KEY = "test123";
-	private final int VERIFY = 2;
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;
 	

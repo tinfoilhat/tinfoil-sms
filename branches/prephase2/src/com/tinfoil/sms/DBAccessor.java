@@ -30,15 +30,21 @@ public class DBAccessor {
 	
 	public static final String KEY_PUBLIC_KEY = "public_key";
 	public static final String KEY_PRIVATE_KEY = "private_key";
-	public static final String KEY_FINGERPRINT = "fingerprint";
+	public static final String KEY_SIGNATURE = "signature";
+	
+	public static final String KEY_SHARED_INFO_1 = "shared_info_1";
+	public static final String KEY_SHARED_INFO_2 = "shared_info_2";
+
+	public static final String KEY_BOOK_PATH = "book_path";
+	public static final String KEY_BOOK_INVERSE_PATH = "book_inverse_path";
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
-	public static final String KEY_NUMBER = "number";
 	public static final String KEY_KEY = "key";
-	public static final String KEY_VERIFIED = "verified";
+	//public static final String KEY_VERIFIED = "verified";
 	
 	public static final String KEY_REFERENCE = "reference";
+	public static final String KEY_NUMBER = "number";
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -58,11 +64,9 @@ public class DBAccessor {
 	/**
 	 * Adds a row to the contacts table, trusted_contact
 	 * @param name : String the name of the contact
-	 * @param number : String the number for the contact
 	 * @param key : String the contact's public key, null if not received
-	 * @param verified : int whether the user's public key has been given to the contact, 0 if not sent
 	 */
-	public void addRow (String name, String number, String key, int verified)
+	public void addRow (String name, String key)
 	{
 		//Check if name, number or key contain any ';'
 		//if (!conflict(number))
@@ -71,9 +75,9 @@ public class DBAccessor {
 				
 			//add given values to a row
 	        cv.put(KEY_NAME, name);
-	        cv.put(KEY_NUMBER, number);
+	        //cv.put(KEY_NUMBER, number);
 	        cv.put(KEY_KEY, key);
-	        cv.put(KEY_VERIFIED, verified);
+	        //cv.put(KEY_VERIFIED, verified);
 	
 	        //Insert the row into the database
 	        open();

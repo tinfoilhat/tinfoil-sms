@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class ManageNumbersActivity extends Activity {
 	private ListView listView;
@@ -68,12 +67,6 @@ public class ManageNumbersActivity extends Activity {
         	}});
         
 	}
-	
-	
-	/*private void setPrimary()
-	{
-		listView.setItemChecked(tc.findPrimaryNumber(), true);
-	}*/
 	
 	/**
 	 * Updates the list of contacts

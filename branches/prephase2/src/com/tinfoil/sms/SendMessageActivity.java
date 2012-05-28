@@ -35,7 +35,6 @@ public class SendMessageActivity extends Activity {
 	Button sendSMS;
 	EditText phoneBox;
     EditText messageBox;
-    //public static String newNumber;
         
     //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };

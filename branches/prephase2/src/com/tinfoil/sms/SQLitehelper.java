@@ -29,12 +29,28 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	public static final String USER_TABLE_NAME = "user";
     public static final String TRUSTED_TABLE_NAME = "trusted_contact";
     public static final String NUMBERS_TABLE_NAME = "numbers";
+    
+    public static final String SHARED_INFO_TABLE_NAME = "shared_information";
+    public static final String BOOK_PATHS_TABLE_NAME = "book_paths";
+    
+    private static final String SHARED_INFO_TABLE_CREATE =
+            "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER," +
+            " shared_info_1 TEXT, shared_info_2 TEXT);";
+    private static final String BOOK_PATHS_TABLE_CREATE =
+            "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER," +
+            " book_path TEXT, book_inverse_path TEXT);";
+    
+    
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + 
             " (public_key BLOB, private_key BLOB, fingerprint BLOB);";
+    
     private static final String TRUSTED_TABLE_CREATE =
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, number TEXT, key TEXT, verified INTEGER);";
+                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, key TEXT);";
+    
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT);";
@@ -48,13 +64,17 @@ public class SQLitehelper extends SQLiteOpenHelper {
         db.execSQL(TRUSTED_TABLE_CREATE);
         db.execSQL(NUMBERS_TABLE_CREATE);
         db.execSQL(USER_TABLE_CREATE);
+        db.execSQL(SHARED_INFO_TABLE_CREATE);
+        db.execSQL(BOOK_PATHS_TABLE_CREATE);
     }
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("DROP TABLE IF EXISTS "+ USER_TABLE_CREATE);
-		db.execSQL("DROP TABLE IF EXISTS "+ TRUSTED_TABLE_CREATE);
-		db.execSQL("DROP TABLE IF EXISTS "+ NUMBERS_TABLE_CREATE);
+		db.execSQL("DROP TABLE IF EXISTS "+ USER_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS "+ TRUSTED_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS "+ NUMBERS_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS "+ SHARED_INFO_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS "+ BOOK_PATHS_TABLE_NAME);
 		onCreate(db);
 		
 	}
