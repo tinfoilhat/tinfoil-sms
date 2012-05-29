@@ -37,6 +37,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER," +
             " shared_info_1 TEXT, shared_info_2 TEXT);";
+    
     private static final String BOOK_PATHS_TABLE_CREATE =
             "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER," +
@@ -45,7 +46,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + 
-            " (public_key BLOB, private_key BLOB, fingerprint BLOB);";
+            " (public_key BLOB, private_key BLOB, signature BLOB);";
     
     private static final String TRUSTED_TABLE_CREATE =
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 

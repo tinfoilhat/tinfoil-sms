@@ -4,22 +4,13 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal"
     android:padding="10dp" >
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="Name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
+    
     <EditText
         android:id="@+id/contact_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/name" >
+        android:hint="name" >
 
         <requestFocus />
     </EditText>
@@ -38,17 +29,18 @@
         android:id="@+id/contact_numbers"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_above="@+id/add_new_number"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/number" >
+
     </ListView>
 
     <Button
         android:id="@+id/add_new_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/contact_numbers"
-        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/contact_numbers"
+        android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/add"
         android:text="Add Number" />
 
@@ -58,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/add_new_number"
         android:layout_alignBottom="@+id/add_new_number"
-        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/contact_numbers"
         android:text="Save" />
-
+    
 </RelativeLayout>

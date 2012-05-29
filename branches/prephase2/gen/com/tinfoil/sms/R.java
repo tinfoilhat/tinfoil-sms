@@ -14,8 +14,8 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int add=0x7f070005;
-        public static final int add_new_number=0x7f070004;
+        public static final int add=0x7f070004;
+        public static final int add_new_number=0x7f070003;
         public static final int all=0x7f07001d;
         public static final int black_space=0x7f070017;
         public static final int c_message=0x7f07000e;
@@ -23,10 +23,10 @@ public final class R {
         public static final int compose=0x7f070022;
         public static final int confirm=0x7f07000c;
         public static final int contact_list=0x7f070009;
-        public static final int contact_name=0x7f070001;
+        public static final int contact_name=0x7f070000;
         public static final int contact_number=0x7f070008;
         public static final int contact_number_list=0x7f07000a;
-        public static final int contact_numbers=0x7f070003;
+        public static final int contact_numbers=0x7f070002;
         public static final int conversation_list=0x7f070010;
         public static final int delete=0x7f070020;
         public static final int delete_cont=0x7f07001c;
@@ -36,20 +36,20 @@ public final class R {
         public static final int main_message_view=0x7f07000f;
         public static final int message=0x7f070013;
         public static final int message_list=0x7f070011;
-        public static final int name=0x7f070000;
+        public static final int name=0x7f070007;
         public static final int new_message_field=0x7f070018;
         public static final int new_message_message=0x7f070019;
         public static final int new_message_number=0x7f070016;
         public static final int new_message_number_field=0x7f070015;
         public static final int new_message_send=0x7f07001a;
-        public static final int number=0x7f070002;
-        public static final int primary_number=0x7f070007;
+        public static final int number=0x7f070001;
+        public static final int primary_number=0x7f070006;
         public static final int remove=0x7f07001f;
         public static final int removeable_contact_list=0x7f07001b;
         public static final int rm_import=0x7f07001e;
         public static final int send=0x7f070014;
         public static final int settings=0x7f070023;
-        public static final int stored_number=0x7f070006;
+        public static final int stored_number=0x7f070005;
     }
     public static final class layout {
         public static final int add_contact=0x7f030000;

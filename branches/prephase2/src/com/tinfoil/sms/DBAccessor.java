@@ -73,36 +73,11 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Adds a row to the contacts table, trusted_contact
-	 * @param name : String the name of the contact
-	 * @param key : String the contact's public key, null if not received
-	 */
-	public void addRow (String name, String publicKey, byte[] signature)
-	{
-		//Check if name, number or key contain any ';'
-		//if (!conflict(number))
-		//{
-			ContentValues cv = new ContentValues();
-				
-			//add given values to a row
-	        cv.put(KEY_NAME, name);
-	        cv.put(KEY_PUBLIC_KEY, publicKey);
-	        cv.put(KEY_SIGNATURE, signature);
-	
-	        //Insert the row into the database
-	        open();
-	        db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
-	        close();
-		//}
-		
-	}
-
-	/**
 	 * Add a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : String the number 
 	 */
-	private void addRow (int reference, String number)
+	private void addNumbersRow (int reference, String number)
 	{
 		//Check if name, number or key contain any ';'
 		//if (!conflict(number))
@@ -255,7 +230,7 @@ public class DBAccessor {
 		
 	}
 	
-	private void resetBookPath (int reference)
+	public void resetBookPath (int reference)
 	{
 		if (!bookIsDefault(reference))
 		{
@@ -338,27 +313,26 @@ public class DBAccessor {
 	 */
 	public void addRow (TrustedContact tc)
 	{
-		//Check if name, number or key contain any ';'
-		//if (!conflict(tc.getPrimaryNumber()))
-		//{
-			ContentValues cv = new ContentValues();
-			
-			//add given values to a row
-	        cv.put(KEY_NAME, tc.getName());
-	        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
-	        cv.put(KEY_SIGNATURE, tc.getSignature());
-	        
-	        //Insert the row into the database
-	        open();
-	        int id = (int) db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
-	        close();
-	        if (!tc.isNumbersEmpty())
-	        {
-	        	for (int i = 0; i< tc.getNumberSize();i++)
-	        	{
-	        		addRow(id, ContactRetriever.format(tc.getNumber(i)));
-	        	}
-	        }
+		ContentValues cv = new ContentValues();
+		
+		//add given values to a row
+        cv.put(KEY_NAME, tc.getName());
+        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
+        cv.put(KEY_SIGNATURE, tc.getSignature());
+        
+        //Insert the row into the database
+        open();
+        int id = (int) db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
+        close();
+        if (!tc.isNumbersEmpty())
+        {
+        	for (int i = 0; i< tc.getNumberSize();i++)
+        	{
+        		addNumbersRow(id, ContactRetriever.format(tc.getNumber(i)));
+        	}
+        }
+        updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
+        updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
 	              
 	}
 	
@@ -504,10 +478,8 @@ public class DBAccessor {
 		if (cur.moveToFirst())
         { 	
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
+					cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
 					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)));
-			/*TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)));*/
 			
 			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -526,6 +498,13 @@ public class DBAccessor {
 				pCur.close();
 			}
 			close(cur);
+			String columns[] = getBookPath(id);
+			tc.setBookPath(columns[0]);
+			tc.setBookInversePath(columns[1]);
+			
+			columns = getSharedInfo(id);
+			tc.setSharedInfo1(columns[0]);
+			tc.setSharedInfo2(columns[1]);
 			return tc;
         }
 		close(cur);
@@ -552,10 +531,8 @@ public class DBAccessor {
 			do
 			{
 				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-						cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
+						cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
 						cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
-				/*tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-						cur.getString(cur.getColumnIndex(KEY_PUBLIC_KEY))));*/
 				
 				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
@@ -575,7 +552,15 @@ public class DBAccessor {
 					//return tc;
 				}
 				
-				pCur.close();			
+				pCur.close();
+				String columns[] = getBookPath(id);
+				tc.get(i).setBookPath(columns[0]);
+				tc.get(i).setBookInversePath(columns[1]);
+				
+				columns = getSharedInfo(id);
+				tc.get(i).setSharedInfo1(columns[0]);
+				tc.get(i).setSharedInfo2(columns[1]);
+				
 				i++;
 			}while (cur.moveToNext());
 			
@@ -586,18 +571,56 @@ public class DBAccessor {
 		return null;
 	}
 	
-	public TrustedContact getUserRow()
+	public void setUser(User user)
+	{
+		if (!isKeyGen())
+		{
+			ContentValues cv = new ContentValues();
+			
+			//add given values to a row
+	        cv.put(KEY_PUBLIC_KEY, user.getPublicKey());
+	        cv.put(KEY_PRIVATE_KEY, user.getPrivateKey());
+	        cv.put(KEY_SIGNATURE, user.getSignature());
+	        
+	        //Insert the row into the database
+	        open();
+	        db.insert(SQLitehelper.USER_TABLE_NAME, null, cv);
+	        close();
+		}
+	}
+	
+	public User getUserRow()
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, null,
+		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, 
+				new String[] {KEY_PUBLIC_KEY, KEY_PRIVATE_KEY, KEY_SIGNATURE},
 				null, null, null, null, null);
 		if (cur.moveToFirst())
 		{
-			//get public, private and fingerprint, and set the name to "ME" 
+			
+			User user = new User(cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
+					cur.getBlob(cur.getColumnIndex(KEY_PRIVATE_KEY)), 
+					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)));
+			close(cur);
+			return user;
 		}
 		
 		close(cur);
 		return null;
+	}
+	
+	public boolean isKeyGen()
+	{
+		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, 
+				new String[] {KEY_PUBLIC_KEY},
+				null, null, null, null, null);
+		if (cur.moveToFirst())
+		{
+			close(cur);
+			return true;
+		}
+		close(cur);
+		return false;
 	}
 	
 	
@@ -655,7 +678,5 @@ public class DBAccessor {
 			}
 		}
 		return false;
-	}
-	
-	
+	}	
 }

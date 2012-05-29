@@ -73,13 +73,11 @@ public class ManageContactsActivity extends Activity {
         			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getANumber()))
         			{
         				change(position, false);
-	        			//Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts\n" + tc.get(position).getPrimaryNumber(), Toast.LENGTH_SHORT).show();
-        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 	        		}
 	        		else
 	        		{
 	        			change(position, true);
-	        			//Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts\n" + tc.get(position).getPrimaryNumber(), Toast.LENGTH_SHORT).show();
 	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 	        		}
         		}
@@ -135,7 +133,7 @@ public class ManageContactsActivity extends Activity {
 		{
 			remove(position);
 		}
-		//Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getPrimaryNumber());
+
 		Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getANumber());
 	}
 	
@@ -147,7 +145,6 @@ public class ManageContactsActivity extends Activity {
 	{
 		for (int i = 0; i < tc.size();i++)
 		{				
-			//if (Prephase2Activity.dba.isTrustedContact(tc.get(i).getPrimaryNumber()))
 			if (Prephase2Activity.dba.isTrustedContact(tc.get(i).getANumber()))
 			{
 				listView.setItemChecked(i, true);

@@ -31,9 +31,14 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	private String publicKey;		//Need to remove, is more or less to represent shared key 
+	//private String publicKey;		//Need to remove, is more or less to represent shared key 
+	private byte[] publicKey;		//Need to remove, is more or less to represent shared key
 	private ArrayList<String> numbers;
 	private byte[] signature;
+	private String s1;
+	private String s2;
+	private String bookPath;
+	private String bookInversePath;
 	//Need to add:
 	//public key
 	//signature
@@ -47,13 +52,16 @@ public class TrustedContact {
 	 * @param name The contact's name 
 	 * @param publicKey The contact's public key used to encrypt message sent to this contact
 	 */
-	//public TrustedContact (String name, String publicKey)
-	public TrustedContact (String name, String publicKey, byte[] signature)
+	public TrustedContact (String name, byte[] publicKey, byte[] signature)
 	{
 		this.name = name;
 		this.publicKey = publicKey;
 		this.numbers = new ArrayList<String>();
 		this.signature = null;
+		this.s1 = null;
+		this.s2 = null;
+		this.bookPath = null;
+		this.bookInversePath = null;
 	}
 	
 	/**
@@ -63,7 +71,7 @@ public class TrustedContact {
 	 * @param publicKey The contact's public key used to encrypt message sent to this contact
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, String publicKey, ArrayList<String> numbers)
+	public TrustedContact (String name, byte[] publicKey, ArrayList<String> numbers)
 	{
 		this.name = name;
 		this.publicKey = publicKey;
@@ -72,6 +80,10 @@ public class TrustedContact {
 			this.numbers.add(numbers.get(i));
 		}
 		this.signature = null;
+		this.s1 = null;
+		this.s2 = null;
+		this.bookPath = null;
+		this.bookInversePath = null;
 	}
 	
 	/**
@@ -86,6 +98,10 @@ public class TrustedContact {
 		this.publicKey = null;
 		this.numbers = numbers;
 		this.signature = null;
+		this.s1 = null;
+		this.s2 = null;
+		this.bookPath = null;
+		this.bookInversePath = null;
 	}
 	
 	
@@ -100,6 +116,10 @@ public class TrustedContact {
 		this.publicKey = null;
 		this.numbers = new ArrayList<String>();
 		this.signature = null;
+		this.s1 = null;
+		this.s2 = null;
+		this.bookPath = null;
+		this.bookInversePath = null;
 	}
 	
 	/**
@@ -129,6 +149,46 @@ public class TrustedContact {
 	{
 		this.signature = signature;
 	}*/
+	
+	public void setSharedInfo1(String s1)
+	{
+		this.s1 = s1;
+	}
+	
+	public String getSharedInfo1()
+	{
+		return s1;
+	}
+	
+	public void setSharedInfo2(String s2)
+	{
+		this.s2 = s2;
+	}
+	
+	public String getSharedInfo2()
+	{
+		return s2;
+	}
+	
+	public void setBookPath(String bookPath)
+	{
+		this.bookPath = bookPath;
+	}
+	
+	public String getBookPath()
+	{
+		return bookPath;
+	}
+	
+	public void setBookInversePath(String bookInversePath)
+	{
+		this.bookInversePath = bookInversePath;
+	}
+	
+	public String getBookInversePath()
+	{
+		return bookInversePath;
+	}
 
 	public String getANumber()
 	{
@@ -208,7 +268,11 @@ public class TrustedContact {
 	 */
 	public String getPublicKey()
 	{
-		return publicKey;
+		if (isPublicKeyNull())
+		{
+			return null;
+		}
+		return new String(publicKey);
 	}
 	
 	/**
@@ -216,7 +280,7 @@ public class TrustedContact {
 	 */
 	public void setPublicKey()
 	{
-		this.publicKey = "test123";
+		this.publicKey = ("test123").getBytes();
 	}
 	
 	public void clearPublicKey()

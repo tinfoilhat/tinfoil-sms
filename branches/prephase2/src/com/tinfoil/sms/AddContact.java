@@ -21,6 +21,7 @@ package com.tinfoil.sms;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -50,22 +51,23 @@ public class AddContact extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
-        
-        
-        
+
         //Sets the keyboard to not pop-up until a text area is selected 
       	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
       	
         //contactNumber = new EditText(this);
-        listView = (ListView)findViewById(R.id.contact_numbers);
+        
+      	listView = (ListView)findViewById(R.id.contact_numbers);
         addNumber = (Button) findViewById(R.id.add_new_number);
         if (!addContact)
         {
         	contactEdit = editTc;
        	}
-        
-        editTc = null;
-        
+        else
+        {
+        	contactEdit = new TrustedContact("");
+        }
+                
         update(null);
         
         addNumber.setOnClickListener(new View.OnClickListener() {
@@ -92,25 +94,6 @@ public class AddContact extends Activity {
 				alert.show();
 			}
 		});
-        
-        /*listView.setOnLongClickListener(new OnLongClickListener() {
-			
-			public boolean onLongClick(View v) {
-				
-				return false;
-			}
-		});*/
-        
-        listView.setOnItemLongClickListener(new OnItemLongClickListener(){
-
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-        			int position, long id) {
-				/*contactEdit.setPrimaryNumber(contactEdit.getNumber(position));
-				update(null);*/
-				return true;
-			}
-        	
-        });
         
         listView.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -143,9 +126,8 @@ public class AddContact extends Activity {
 		});
         
         add = (Button) findViewById(R.id.add);
-        contactName = (EditText) findViewById(R.id.contact_name); 
-        //contactNumber = (EditText) findViewById(R.id.contact_number);
-        
+        contactName = (EditText) findViewById(R.id.contact_name);
+       
         if (contactEdit != null)
         {
         	if (contactEdit.getName() != null)
@@ -173,65 +155,62 @@ public class AddContact extends Activity {
 				{
 					contactEdit.setName(name);
 				}
-
 				
 				if (!empty && contactEdit.getName().length() > 0 && !contactEdit.isNumbersEmpty())
 				{
-					//Need to add to android contact's database, and check to see if it isnt already there
-					//Need to figure a way to update when it is a contact that is being updated and to 
-					//add when it is a contact that is being added
-					
 					if (addContact)
 					{
-						//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
 						if (!Prephase2Activity.dba.inDatabase(contactEdit.getANumber()))
 						{
-							//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
-							
 							Prephase2Activity.dba.addRow(contactEdit);
 							contactEdit = null;
+					        editTc = null;
 							finish();
-							//contactNumber.setText("");
-							//contactName.setText("");
 						}
 						else
 						{
-							
-							//**Note need an alert message here
-							Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
+							AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+							builder.setMessage("Contact is already in the database")
+							       .setCancelable(true)
+							       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							        	   
+							           }})
+							        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int whichButton) {
+												    // Canceled.
+										}});
+							AlertDialog alert = builder.create();
+							alert.show();
 						}
 					}
 					else
 					{
 						Prephase2Activity.dba.updateRow(contactEdit, contactEdit.getNumber(0));
-						Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
 						contactEdit = null;
+				        editTc = null;
 						finish();
 					}
-					
-					//if (!Prephase2Activity.dba.inDatabase(contactEdit.getPrimaryNumber()))
-					//{
-						//Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
-						//Prephase2Activity.dba.addRow(contactEdit);
-						
-						//contactNumber.setText("");
-						//contactName.setText("");
-					//}
-					//else
-					//{
-						
-						//**Note need an alert message here
-					//	Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
-					//}
 				}else
 				{					
-					//**Note need an alert message here
-					Toast.makeText(getBaseContext(), "Insufficient information provided", Toast.LENGTH_SHORT).show();
+					AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+					builder.setMessage("Insufficient information provided")
+					       .setCancelable(true)
+					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   
+					           }})
+					        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+										    // Canceled.
+								}});
+					AlertDialog alert = builder.create();
+					alert.show();
 				}
 			}
-		});       
-        
-	}
+		}); 
+  	}
 	
 	public void update(String newNumber)
 	{
@@ -243,15 +222,13 @@ public class AddContact extends Activity {
 		if (contactEdit != null)
         {
         	//populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-	        //listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit.getNumber()));
-			listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
+	        listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
         }
         else
         {
         	//ArrayList<String> numbers = new ArrayList<String>();
     		contactEdit = new TrustedContact("");
-    			listView.setAdapter(new ContactAdapter(this, R.layout.add_number, 
-            			contactEdit));
+    		listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
     		
         }
 
@@ -261,52 +238,4 @@ public class AddContact extends Activity {
         //Set the mode to single or multiple choice, (should match top choice)
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
-	/*
-	 * public class AddContact extends Activity {
-		Button add;
-		EditText contactName;
-		EditText contactNumber; 
-		
-		public void onCreate(Bundle savedInstanceState) {
-	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.addcontact);
-	                
-	        add = (Button) findViewById(R.id.add);
-	        contactName = (EditText) findViewById(R.id.contact_name);
-	        contactNumber = (EditText) findViewById(R.id.contact_number);
-	        contactNumber.setText(SendMessageActivity.newNumber);
-	        SendMessageActivity.newNumber = "";
-	        
-	        add.setOnClickListener(new View.OnClickListener() {
-				
-				public void onClick(View v) {
-					String name = contactName.getText().toString();
-					String number = contactNumber.getText().toString();
-					
-					if (name.length() > 0 && number.length() > 0)
-					{
-						//Need to add to android contact's database, and check to see if it isnt already there
-						if (!Prephase2Activity.dba.conflict(number))
-						{
-							Prephase2Activity.dba.addRow(name, ContactRetriever.format(number), null, 0);
-							Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
-							
-							contactNumber.setText("");
-							contactName.setText("");
-						}
-						else
-						{
-							
-							//**Note need an alert message here
-							Toast.makeText(getBaseContext(), "A contact already has that number", Toast.LENGTH_SHORT).show();
-						}
-					}
-				}
-			});       
-	        
-		}
-		
-	}
-	*/
-
 }
