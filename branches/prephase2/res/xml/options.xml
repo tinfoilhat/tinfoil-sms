@@ -18,7 +18,7 @@
         
         <PreferenceScreen 
 	        android:title="Import Contacts"
-	        android:key="import_contacts">
+	        android:key="import_contacts" android:summary="Import Trusted Contacts from phone">
                 <intent
              		android:action="android.intent.action.VIEW"
              		android:targetPackage="com.tinfoil.sms"

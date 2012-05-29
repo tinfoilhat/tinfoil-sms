@@ -40,11 +40,15 @@ public class DBAccessor {
 	
 	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
-		
-	//public static final String KEY_KEY = "key";
-	
+
 	public static final String KEY_REFERENCE = "reference";
 	public static final String KEY_NUMBER = "number";
+	
+	private static final String DEFAULT_BOOK_PATH = "path/path";
+	private static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
+	
+	private static final String DEFAULT_S1 = "Initiator";
+	private static final String DEFAULT_S2 = "Receiver";
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -58,6 +62,13 @@ public class DBAccessor {
 	{
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
+		
+		if (bookIsDefault(0) && sharedInfoIsDefault(0))
+		{
+			addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
+			addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
+		}
+				
 		//cr = c.getContentResolver();
 	}
 	
@@ -137,6 +148,87 @@ public class DBAccessor {
 		
 	}
 	
+	/** 
+	 * Used for updating the shared information, will not delete the default row
+	 * @param reference
+	 * @param bookPath
+	 * @param bookInversePath
+	 */
+	public void updateSharedInfo(int reference, String s1, String s2)
+	{
+		resetSharedInfo(reference);
+		addSharedInfo(reference, s1, s2);
+	}
+	
+	/**
+	 * Resets the shared information to the default shared information
+	 * @param reference : int the reference id for the contact
+	 */
+	public void resetSharedInfo (int reference)
+	{
+		if (!sharedInfoIsDefault(reference))
+		{
+			open();
+			db.delete(SQLitehelper.SHARED_INFO_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
+			close();
+		}
+		
+	}
+	
+	private boolean sharedInfoIsDefault(int reference)
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
+				new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
+				KEY_REFERENCE + " = " + reference, null, null, null, null);
+		if (cur.moveToFirst())
+		{
+			close(cur);
+			return false;
+		}
+		close(cur);
+		return true;
+	}
+	
+	/**
+	 * Used to retrieve the book paths
+	 * @param reference
+	 * @return : String[2] the book path, and the book inverse path 
+	 */
+	public String[] getSharedInfo(int reference)
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
+				new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
+				KEY_REFERENCE + " = " + reference, null, null, null, null);
+		
+		if (cur.moveToFirst())
+		{
+			//Found the reference number in the database
+			String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_1)),
+					cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_2))};
+			close(cur);
+			return sharedInfo;
+		}
+		else
+		{
+			cur.close();
+			//Reference not found, return the default
+			Cursor dCur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
+					new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
+					KEY_REFERENCE + " = " + 0, null, null, null, null);
+			if (dCur.moveToFirst())
+			{
+				String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_1)),
+						cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_2))};
+				close(dCur);
+				return sharedInfo;
+			}
+			close(dCur);
+		}
+		return null;
+	}
+	
 	/**
 	 * Add a row to the shared_information table.
 	 * @param reference : int the reference id of the contact the number belongs to
@@ -152,8 +244,8 @@ public class DBAccessor {
 				
 			//add given values to a row
 	        cv.put(KEY_REFERENCE, reference);
-	        cv.put(KEY_SHARED_INFO_1, bookPath);
-	        cv.put(KEY_SHARED_INFO_2, bookInversePath);
+	        cv.put(KEY_BOOK_PATH, bookPath);
+	        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
 	
 	        //Insert the row into the database
 	        open();
@@ -163,7 +255,7 @@ public class DBAccessor {
 		
 	}
 	
-	private void removeBook (int reference)
+	private void resetBookPath (int reference)
 	{
 		if (!bookIsDefault(reference))
 		{
@@ -182,7 +274,7 @@ public class DBAccessor {
 	 */
 	public void updateBookPaths(int reference, String bookPath, String bookInversePath)
 	{
-		removeBook(reference);
+		resetBookPath(reference);
 		addBookPath(reference, bookPath, bookInversePath);
 	}
 	
@@ -190,53 +282,55 @@ public class DBAccessor {
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_BOOK_PATH}, KEY_REFERENCE + " = " + reference,
-				null, null, null, null);
+				new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH},
+				KEY_REFERENCE + " = " + reference, null, null, null, null);
 		if (cur.moveToFirst())
 		{
 			close(cur);
 			return false;
 		}
+		close(cur);
 		return true;
 	}
 	
 	/**
 	 * Used to retrieve the book paths
 	 * @param reference
-	 * @return
+	 * @return : String[2] the book path, and the book inverse path 
 	 */
-	public String getBookPath(int reference)
+	public String[] getBookPath(int reference)
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_BOOK_PATH}, KEY_REFERENCE + " = " + reference,
-				null, null, null, null);
+				new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH}, 
+				KEY_REFERENCE + " = " + reference, null, null, null, null);
+		
 		if (cur.moveToFirst())
 		{
 			//Found the reference number in the database
-			String bookPath = cur.getString(cur.getColumnIndex(KEY_BOOK_PATH));
+			String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(KEY_BOOK_PATH)),
+					cur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
 			close(cur);
-			return bookPath;
+			return bookPaths;
 		}
 		else
 		{
 			cur.close();
 			//Reference not found, return the default
 			Cursor dCur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-					new String[] {KEY_REFERENCE, KEY_BOOK_PATH}, KEY_REFERENCE + " = " + 0,
-					null, null, null, null);
+					new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH},
+					KEY_REFERENCE + " = " + 0, null, null, null, null);
 			if (dCur.moveToFirst())
 			{
-				String bookPath = dCur.getString(dCur.getColumnIndex(KEY_BOOK_PATH));
+				String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(KEY_BOOK_PATH)),
+						cur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
 				close(dCur);
-				return bookPath;
+				return bookPaths;
 			}
 			close(dCur);
 		}
 		return null;
 	}
-	
-	
 	
 	/**
 	 * Adds a trusted contact to the database
