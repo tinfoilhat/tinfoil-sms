@@ -91,9 +91,6 @@ public class Prephase2Activity extends Activity {
 			}
 		});
 		
-		// String actualNumber = "5555215556";
-		// dba.addRow("billy", actualNumber, "12345", 2);
-
 		final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 		SMSbr = new BroadcastReceiver() {
 
@@ -102,6 +99,7 @@ public class Prephase2Activity extends Activity {
 				// Called every time a new sms is received
 				Bundle bundle = intent.getExtras();
 				if (bundle != null) {
+					
 					// This will put every new message into a array of
 					// SmsMessages. The message is received as a pdu,
 					// and needs to be converted to a SmsMessage, if you want to
@@ -120,28 +118,12 @@ public class Prephase2Activity extends Activity {
 						 * messages[0].getMessageBody() + "'";
 						 */
 
-						/*TrustedContact tc =
-						dba.getRow(messages[0].getOriginatingAddress());
-						Toast.makeText(getBaseContext(),tc.getName() + "\n" +
-						tc.getNumber() + "\n" + tc.getKey() +"\n"+
-						tc.getVerified(), Toast.LENGTH_SHORT).show();
-						Toast.makeText(getBaseContext(),messages[0].getOriginatingAddress(),
-						Toast.LENGTH_SHORT).show();
-						*/
-						
-						
 						String address = messages[0].getOriginatingAddress();
-						/*mess = mess.substring(1);
-						Toast.makeText(getBaseContext(),address.substring(1), Toast.LENGTH_SHORT).show();
-						Toast.makeText(getBaseContext(),dba.getRow(address.substring(1)).getNumber(), Toast.LENGTH_SHORT).show();
-						*/
-						
+												
 						// Only expects encrypted messages from trusted contacts in the secure state
 						if (dba.isTrustedContact((address))) {
 							Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
 							Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-							
-							//TrustedContact tc = dba.getRow(address);
 							
 							/*
 							 * Now send the decrypted message to ourself, set
@@ -178,7 +160,6 @@ public class Prephase2Activity extends Activity {
 		// The BroadcastReceiver needs to be registered before use.
 		IntentFilter SMSfilter = new IntentFilter(SMS_RECEIVED);
 		this.registerReceiver(SMSbr, SMSfilter);
-		//SMSfilter.
 	}
 		
 	/**
@@ -188,7 +169,6 @@ public class Prephase2Activity extends Activity {
 	 */
 	private void updateList()
 	{
-		//msgList = ContactRetriever.getSMS(this, 0);
 		msgList = ContactRetriever.getSMS(this);
 		list.setAdapter(new MessageAdapter(this, R.layout.listview_item_row, msgList));
 		if (Prephase2Activity.selectedNumber != null)
@@ -210,7 +190,7 @@ public class Prephase2Activity extends Activity {
 	protected void onDestroy()
 	{
 		dba.close();
-		unregisterReceiver(SMSbr);
+		//unregisterReceiver(SMSbr);
 		super.onDestroy();
 	}
 	

@@ -21,17 +21,14 @@ package com.tinfoil.sms;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
@@ -45,7 +42,6 @@ public class AddContact extends Activity {
 	private TrustedContact contactEdit;
 	Button add;
 	EditText contactName;
-	//EditText contactNumber;
 	Button addNumber;
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +70,6 @@ public class AddContact extends Activity {
 			
 			public void onClick(View v) {
 				final EditText input = new EditText(getBaseContext());
-				//android:inputType="phone"
 				input.setInputType(InputType.TYPE_CLASS_PHONE);
 				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
 				builder.setMessage("Enter the new number:")
@@ -88,7 +83,7 @@ public class AddContact extends Activity {
 				           }})
 				        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
-									    // Canceled.
+								dialog.cancel();    // Canceled.
 							}});
 				AlertDialog alert = builder.create();
 				alert.show();
@@ -117,7 +112,7 @@ public class AddContact extends Activity {
 					           }})
 					        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-										    // Canceled.
+								dialog.cancel();// Canceled.
 								}});
 					AlertDialog alert = builder.create();
 					alert.show();
@@ -178,7 +173,7 @@ public class AddContact extends Activity {
 							           }})
 							        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int whichButton) {
-												    // Canceled.
+										dialog.cancel(); // Canceled.
 										}});
 							AlertDialog alert = builder.create();
 							alert.show();
@@ -187,7 +182,6 @@ public class AddContact extends Activity {
 					else
 					{
 						Prephase2Activity.dba.updateRow(contactEdit, contactEdit.getNumber(0));
-						//Toast.makeText(getBaseContext(), "Contact Added", Toast.LENGTH_SHORT).show();
 						contactEdit = null;
 				        editTc = null;
 						finish();
@@ -203,7 +197,7 @@ public class AddContact extends Activity {
 					           }})
 					        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-										    // Canceled.
+								dialog.cancel();// Canceled.
 								}});
 					AlertDialog alert = builder.create();
 					alert.show();
@@ -221,8 +215,7 @@ public class AddContact extends Activity {
 		
 		if (contactEdit != null)
         {
-        	//populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
-	        listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
+        	listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
         }
         else
         {

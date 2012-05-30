@@ -391,8 +391,10 @@ public class DBAccessor {
 	private int getId(String number)
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[] {KEY_REFERENCE},
-				KEY_NUMBER + " = "+ number, null, null, null, null);
+		Cursor cur = db.rawQuery("SELECT " + KEY_REFERENCE + " FROM " + 
+		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
+		/*Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[] {KEY_REFERENCE},
+				KEY_NUMBER + " = "+ number, null, null, null, null);*/
 		
 		if (cur.moveToFirst())
 		{
@@ -514,10 +516,11 @@ public class DBAccessor {
 	public TrustedContact getRow(String number)
 	{		
 		open();
-
-		Cursor idCur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, 
+		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + ", " + KEY_NUMBER + " FROM "
+				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
+		/*Cursor idCur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, 
 				new String[] {KEY_REFERENCE, KEY_NUMBER}, KEY_NUMBER + " = " + number,
-				null, null, null, null);
+				null, null, null, null);*/
 		int id = 0;
 		if (idCur.moveToFirst())
 		{
