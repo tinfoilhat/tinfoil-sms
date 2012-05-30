@@ -18,6 +18,8 @@
 
 package com.tinfoil.sms;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -26,15 +28,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class SendMessageActivity extends Activity {
 	Button sendSMS;
-	EditText phoneBox;
+	//EditText phoneBox;
+	AutoCompleteTextView phoneBox;
     EditText messageBox;
+    private ArrayList<TrustedContact> tc;
         
     //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -49,9 +57,26 @@ public class SendMessageActivity extends Activity {
         
         Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
+        tc = Prephase2Activity.dba.getAllRows();
+        
+        phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
+	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+	    		R.layout.auto_complete_list_item, ContactRetriever.contactDisplayMaker(tc));
+	    phoneBox.setAdapter(adapter);
+	    
         sendSMS = (Button) findViewById(R.id.new_message_send);
-        phoneBox = (EditText) findViewById(R.id.new_message_number);
+        //phoneBox = (EditText) findViewById(R.id.new_message_number);
         messageBox = (EditText) findViewById(R.id.new_message_message);
+        
+        
+        phoneBox.addTextChangedListener(new TextWatcher(){
+            public void afterTextChanged(Editable s) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+            public void onTextChanged(CharSequence s, int start, int before, int count){
+            	
+            }
+        });
+        
         sendSMS.setOnClickListener(new View.OnClickListener()
         {
 			public void onClick(View v) 

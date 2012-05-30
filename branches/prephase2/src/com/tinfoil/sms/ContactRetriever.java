@@ -104,6 +104,20 @@ public abstract class ContactRetriever {
 		return sms;
 	}
 	
+	public static List<String> contactDisplayMaker(List<TrustedContact> tc)
+	{
+		List<String> contacts = new ArrayList<String>();
+		for (int i = 0; i < tc.size(); i++)
+		{
+			for (int j = 0; j < tc.get(i).getNumberSize(); j++)
+			{
+				contacts.add(tc.get(i).getName() + ", " +tc.get(i).getNumber(j));
+			}
+		}
+		
+		return contacts;
+	}
+	
 	/**
 	 * Takes the information stored in the String array and 
 	 * formats the display that the user will see.

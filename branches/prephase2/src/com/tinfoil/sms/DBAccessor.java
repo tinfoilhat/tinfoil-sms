@@ -623,6 +623,28 @@ public class DBAccessor {
 		return null;
 	}
 	
+	/*public ArrayList<String> getAllContactNames()
+	{		
+		open();
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {KEY_NAME},
+				null, null, null, null, null);
+		
+		ArrayList<String> tc = new ArrayList<String>();
+				
+		if (cur.moveToFirst())
+        {
+			do
+			{
+				tc.add(cur.getString(cur.getColumnIndex(KEY_NAME)));
+			}while (cur.moveToNext());
+			
+			close(cur);
+			return tc;
+        }
+		close(cur);
+		return null;
+	}*/
+	
 	public void setUser(User user)
 	{
 		if (!isKeyGen())
@@ -663,9 +685,8 @@ public class DBAccessor {
 	
 	public boolean isKeyGen()
 	{
-		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, 
-				new String[] {KEY_PUBLIC_KEY},
-				null, null, null, null, null);
+		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, new String[]
+				{KEY_PUBLIC_KEY}, null, null, null, null, null);
 		if (cur.moveToFirst())
 		{
 			close(cur);

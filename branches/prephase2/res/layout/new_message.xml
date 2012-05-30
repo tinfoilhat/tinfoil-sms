@@ -13,14 +13,13 @@
         android:layout_alignParentTop="true"
         android:background="#000000" >
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/new_message_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="To" >
-
             <requestFocus />
-        </EditText>
+        </AutoCompleteTextView>
     </LinearLayout>
 
     <LinearLayout
