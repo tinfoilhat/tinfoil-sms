@@ -43,6 +43,7 @@ public class SendMessageActivity extends Activity {
 	AutoCompleteTextView phoneBox;
     EditText messageBox;
     private ArrayList<TrustedContact> tc;
+    private TrustedContact newCont;
         
     //Change the password here or give a user possibility to change it
     //private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58 };
@@ -56,7 +57,7 @@ public class SendMessageActivity extends Activity {
         Prephase2Activity.dba = new DBAccessor(this);
         
         Prephase2Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
+        newCont = new TrustedContact(null);
         tc = Prephase2Activity.dba.getAllRows();
         
         phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
@@ -68,9 +69,34 @@ public class SendMessageActivity extends Activity {
         //phoneBox = (EditText) findViewById(R.id.new_message_number);
         messageBox = (EditText) findViewById(R.id.new_message_message);
         
-        
+        /*String s = "Billy, 12345676432";
+        String[] ss = s.split(", ");
+        System.out.println(ss[0] + "X" + ss[1]);*/
+
         phoneBox.addTextChangedListener(new TextWatcher(){
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            	String []info = s.toString().split(", ");
+            	//phoneBox.setText(info[0]);
+            	
+            	if (!info[0].equalsIgnoreCase(s.toString()))
+            	{
+            		newCont.setName(info[0]);
+            		newCont.setNumber(0, info[1]);
+            	}
+            	else
+            	{
+            		//Warning this could be a word, there is nothing protected it from them
+            		//entering a name that is not in the database. (message will not send though)
+            		if (newCont.isNumbersEmpty())
+            		{
+            			newCont.addNumber(info[0]);
+            		}
+            		else
+            		{
+            			newCont.setNumber(0, info[0]);
+            		}
+            	}
+            }
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
             public void onTextChanged(CharSequence s, int start, int before, int count){
             	
@@ -81,7 +107,10 @@ public class SendMessageActivity extends Activity {
         {
 			public void onClick(View v) 
 			{
-		        final String number = phoneBox.getText().toString();
+				final String number = newCont.getNumber(0);
+						
+		        //final String number = phoneBox.getText().toString();
+				
 				String text = messageBox.getText().toString();
 				
 				if (number.length() > 0 && text.length() > 0)
