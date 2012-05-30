@@ -47,6 +47,7 @@ public class Prephase2Activity extends Activity {
 	private static List<String[]> msgList;
 	static String selectedNumber;
 	private ListView list;
+	private BroadcastReceiver SMSbr;
 	
 	// Change the password here or give a user possibility to change it
 	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
@@ -94,7 +95,7 @@ public class Prephase2Activity extends Activity {
 		// dba.addRow("billy", actualNumber, "12345", 2);
 
 		final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
-		BroadcastReceiver SMSbr = new BroadcastReceiver() {
+		SMSbr = new BroadcastReceiver() {
 
 			@Override
 			public void onReceive(Context context, Intent intent) {
@@ -177,11 +178,9 @@ public class Prephase2Activity extends Activity {
 		// The BroadcastReceiver needs to be registered before use.
 		IntentFilter SMSfilter = new IntentFilter(SMS_RECEIVED);
 		this.registerReceiver(SMSbr, SMSfilter);
+		//SMSfilter.
 	}
-	
-	
-
-	
+		
 	/**
 	 * Updates the list of the messages in the main inbox and in 
 	 * the secondary inbox that the user last viewed, or is viewing
@@ -211,6 +210,7 @@ public class Prephase2Activity extends Activity {
 	protected void onDestroy()
 	{
 		dba.close();
+		unregisterReceiver(SMSbr);
 		super.onDestroy();
 	}
 	
