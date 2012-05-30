@@ -172,7 +172,12 @@ public class DBAccessor {
 	 */
 	public String[] getSharedInfo(int reference)
 	{
-		open();
+		boolean open = true;
+		if(!db.isOpen())
+		{
+			open = false;
+			open();
+		}
 		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
 				new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
 				KEY_REFERENCE + " = " + reference, null, null, null, null);
@@ -182,7 +187,14 @@ public class DBAccessor {
 			//Found the reference number in the database
 			String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_1)),
 					cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_2))};
-			close(cur);
+			if (open)
+			{
+				cur.close();
+			}
+			else
+			{
+				close(cur);
+			}
 			return sharedInfo;
 		}
 		else
@@ -196,14 +208,28 @@ public class DBAccessor {
 			{
 				String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_1)),
 						cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_2))};
-				close(dCur);
+				if (open)
+				{
+					dCur.close();
+				}
+				else
+				{
+					close(dCur);
+				}
 				return sharedInfo;
 			}
-			close(dCur);
+			if (open)
+			{
+				dCur.close();
+			}
+			else
+			{
+				close(dCur);
+			}
 		}
 		return null;
 	}
-	
+		
 	/**
 	 * Add a row to the shared_information table.
 	 * @param reference : int the reference id of the contact the number belongs to
@@ -275,7 +301,12 @@ public class DBAccessor {
 	 */
 	public String[] getBookPath(int reference)
 	{
-		open();
+		boolean open = true;
+		if (!db.isOpen())
+		{
+			open = false;
+			open();
+		}
 		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
 				new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH}, 
 				KEY_REFERENCE + " = " + reference, null, null, null, null);
@@ -285,7 +316,14 @@ public class DBAccessor {
 			//Found the reference number in the database
 			String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(KEY_BOOK_PATH)),
 					cur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
-			close(cur);
+			if (open)
+			{
+				cur.close();
+			}
+			else
+			{
+				close(cur);
+			}
 			return bookPaths;
 		}
 		else
@@ -299,10 +337,24 @@ public class DBAccessor {
 			{
 				String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(KEY_BOOK_PATH)),
 						cur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
-				close(dCur);
+				if (open)
+				{
+					dCur.close();
+				}
+				else
+				{
+					close(dCur);
+				}
 				return bookPaths;
 			}
-			close(dCur);
+			if (open)
+			{
+				dCur.close();
+			}
+			else
+			{
+				close(dCur);
+			}
 		}
 		return null;
 	}
