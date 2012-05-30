@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 public class SendMessageActivity extends Activity {
 	Button sendSMS;
-	//EditText phoneBox;
 	AutoCompleteTextView phoneBox;
     EditText messageBox;
     private ArrayList<TrustedContact> tc;
@@ -66,12 +65,7 @@ public class SendMessageActivity extends Activity {
 	    phoneBox.setAdapter(adapter);
 	    
         sendSMS = (Button) findViewById(R.id.new_message_send);
-        //phoneBox = (EditText) findViewById(R.id.new_message_number);
         messageBox = (EditText) findViewById(R.id.new_message_message);
-        
-        /*String s = "Billy, 12345676432";
-        String[] ss = s.split(", ");
-        System.out.println(ss[0] + "X" + ss[1]);*/
 
         phoneBox.addTextChangedListener(new TextWatcher(){
             public void afterTextChanged(Editable s) {
@@ -86,7 +80,7 @@ public class SendMessageActivity extends Activity {
             	else
             	{
             		//Warning this could be a word, there is nothing protected it from them
-            		//entering a name that is not in the database. (message will not send though)
+            		//entering a name that is not in the database. (message will not send)
             		if (newCont.isNumbersEmpty())
             		{
             			newCont.addNumber(info[0]);
@@ -108,9 +102,6 @@ public class SendMessageActivity extends Activity {
 			public void onClick(View v) 
 			{
 				final String number = newCont.getNumber(0);
-						
-		        //final String number = phoneBox.getText().toString();
-				
 				String text = messageBox.getText().toString();
 				
 				if (number.length() > 0 && text.length() > 0)
@@ -144,14 +135,14 @@ public class SendMessageActivity extends Activity {
 							       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							           public void onClick(DialogInterface dialog, int id) {
 							        	   //AddContact.editTc = new TrustedContact("", number, null , 0);
-							        	   		AddContact.editTc = new TrustedContact("");
-							        	   		AddContact.editTc.addNumber(number);
-							        	   		AddContact.addContact = false;
-							        		   SendMessageActivity.this.startActivity(new Intent(
+							        	   	AddContact.editTc = new TrustedContact("");
+							        	   	AddContact.editTc.addNumber(number);
+							        	   	AddContact.addContact = false;
+							        	   	SendMessageActivity.this.startActivity(new Intent(
 							        				   SendMessageActivity.this, AddContact.class));
-							        	   finish();
+							        	   	finish();
 							           }})
-							       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+							       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							               public void onClick(DialogInterface dialog, int id) {
 							                   dialog.cancel();
 							              }
