@@ -173,9 +173,10 @@ public class Prephase2Activity extends Activity {
 		list.setAdapter(new MessageAdapter(this, R.layout.listview_item_row, msgList));
 		if (Prephase2Activity.selectedNumber != null)
 		{
-			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
+			/*MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
 			MessageView.list2.setAdapter(new MessageAdapter(this,
-					R.layout.listview_full_item_row, MessageView.msgList2));
+					R.layout.listview_full_item_row, MessageView.msgList2));*/
+			MessageView.updateList(this);
 		}
 		
 	}
