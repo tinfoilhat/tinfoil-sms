@@ -275,6 +275,7 @@ public class ECCKeyExchangeActivity extends Activity {
 		 */
 		digest.update(digestInput, 0, digestInput.length);
 		digest.doFinal(signedPubKey, encodedPubKey.length);
+		digest.reset();
 		
 		return signedPubKey;
     }
@@ -332,6 +333,7 @@ public class ECCKeyExchangeActivity extends Activity {
 		 */
 		digest.update(digestInput, 0, digestInput.length);
 		digest.doFinal(calcSignature, 0);
+		digest.reset();
 		
 		/*
 		 * Verify that the calculated signature matches the signature of the
