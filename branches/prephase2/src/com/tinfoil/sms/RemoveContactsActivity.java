@@ -34,16 +34,15 @@ public class RemoveContactsActivity extends Activity {
 	private ListView listView;
 	private boolean [] contact;
 	private ArrayList<TrustedContact> tc;
-	Button delete;
+	private Button delete;
+	
     /** Called when the activity is first created. */
-
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.remove_contacts);
-        
-        
+                
         delete = (Button)findViewById(R.id.delete_cont);
-        //Linking the ListView object to the appropriate listview from the xml file.
+
         listView = (ListView)findViewById(R.id.removeable_contact_list);
         
         update();
@@ -71,12 +70,8 @@ public class RemoveContactsActivity extends Activity {
 				{
 					for (int i = 0; i < tc.size(); i++)
 					{
-						//**Note need an alert message here
-						//Toast.makeText(getBaseContext(), ""+ tc.get(i).getPrimaryNumber(), Toast.LENGTH_LONG);
-						
 						if (contact[i])
 						{
-							//Prephase2Activity.dba.removeRow(tc.get(i).getPrimaryNumber());
 							Prephase2Activity.dba.removeRow(tc.get(i).getANumber());
 						}
 					}
@@ -115,10 +110,8 @@ public class RemoveContactsActivity extends Activity {
 	        	names[i] = tc.get(i).getName();
 	        }
 	
-	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
 	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
 	
-	        //Set the mode to single or multiple choice, (should match top choice)
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		}
 		else 

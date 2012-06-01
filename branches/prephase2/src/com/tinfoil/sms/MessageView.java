@@ -20,7 +20,6 @@ package com.tinfoil.sms;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
