@@ -35,7 +35,7 @@ import android.widget.Toast;
 public class ManageContactsActivity extends Activity {
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;
-	
+
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +50,12 @@ public class ManageContactsActivity extends Activity {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
         			int position, long id) {
-				
+
 				AddContact.addContact = false;
 				AddContact.editTc = tc.get(position);
 				ManageContactsActivity.this.startActivity(new Intent
 						(ManageContactsActivity.this, AddContact.class));
-				
+
 				return true; //This stops other on click effects from happening after this one.
 			}
         	
@@ -69,52 +69,27 @@ public class ManageContactsActivity extends Activity {
         		        		
         		if (tc != null)
         		{
-        			//if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getPrimaryNumber()))
         			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getANumber()))
         			{
+        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
         				change(position, false);
-	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 	        		}
 	        		else
 	        		{
-	        			change(position, true);
 	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+	        			change(position, true);
 	        		}
         		}
         		else
         		{
         			//Go to add contact
         			startActivity(new Intent(getBaseContext(), AddContact.class));
-        			//finish();
         		}
 
         	}});
         
 	}
-	
-	
-	/**
-	 * Sets Contact to the not trusted state. Secure messages 
-	 * will not be sent or expected from this contact. 
-	 * @param position : int, the position on the list of
-	 * contacts.
-	 */
-	private void remove(int position)
-	{
-		tc.get(position).clearPublicKey();
-	}
-	
-	/**
-	 * Sets Contact to the trusted state. Secure messages 
-	 * will be sent and expected from this contact. 
-	 * @param position : int, the position on the list of
-	 * contacts.
-	 */
-	private void add(int position)
-	{
-		tc.get(position).setPublicKey();
-	}
-	
+
 	/**
 	 * Used to toggle the contact from being in or out of
 	 * the trusted state.
@@ -127,16 +102,16 @@ public class ManageContactsActivity extends Activity {
 	{
 		if (add)
 		{
-			add(position);
+			tc.get(position).setPublicKey();
 		}
 		else
 		{
-			remove(position);
+			tc.get(position).clearPublicKey();
 		}
 
 		Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getANumber());
 	}
-	
+
 	/**
 	 * Reinitialises the list to ensure contacts that are
 	 * trusted are selected.
@@ -155,7 +130,7 @@ public class ManageContactsActivity extends Activity {
 			}
 		}
 	}
-	
+
 	/**
 	 * Updates the list of contacts
 	 */
@@ -179,7 +154,7 @@ public class ManageContactsActivity extends Activity {
 	        listView.setItemsCanFocus(false);
 
 	        //listView.set
-	        
+
 	        //Set the mode to single or multiple choice, (should match top choice)
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	        initList();
@@ -205,14 +180,14 @@ public class ManageContactsActivity extends Activity {
 		update();
 		super.onResume();
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.manage_contacts_menu, menu);
 		return true;		
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add:
@@ -260,4 +235,3 @@ public class ManageContactsActivity extends Activity {
 	}
 
 }
-

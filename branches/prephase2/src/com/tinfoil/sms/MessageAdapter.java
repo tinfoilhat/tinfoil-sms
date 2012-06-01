@@ -29,9 +29,9 @@ import android.widget.TextView;
 
 public class MessageAdapter extends ArrayAdapter<String[]>{
 
-    Context context; 
-    int layoutResourceId;    
-    List<String[]> data = null;
+    private Context context; 
+    private int layoutResourceId;    
+    private List<String[]> data = null;
     
     public MessageAdapter(Context context, int layoutResourceId, List<String[]> data) {
         super(context, layoutResourceId, data);

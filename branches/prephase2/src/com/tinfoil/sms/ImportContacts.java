@@ -20,7 +20,6 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,7 +37,7 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ImportContacts extends Activity {
-	Button confirm;
+	private Button confirm;
 	private ListView importList;
 	private ArrayList<TrustedContact> tc;
 	private boolean disable;
@@ -50,16 +49,9 @@ public class ImportContacts extends Activity {
         
         confirm = (Button) findViewById(R.id.confirm);
         importList = (ListView)findViewById(R.id.import_contact_list);
-        ContentResolver cr = getContentResolver();
-        
-        //**NOTE we should limit the columns retrieved by this query
-        //Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         tc = new ArrayList<TrustedContact>();
-                
-        //String number=null;
         ArrayList<String> number;
         String name;
-        //ArrayList<String> value = new ArrayList<String>();
         
         String columnsN[] = new String[] { Phone.NUMBER};
         String columnsC[] = new String[] { Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER};
@@ -75,12 +67,11 @@ public class ImportContacts extends Activity {
                 		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
                 		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
                 		{
-                			Cursor pCur = cr.query(Phone.CONTENT_URI, 
+                			Cursor pCur = getContentResolver().query(Phone.CONTENT_URI, 
                 					columnsN, Phone.CONTACT_ID +" = ?", 
                 	 	 		    new String[]{id}, null);
                 			if (pCur.moveToFirst())
                 			{
-                				//number = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
                 				do
                 				{
                 					number.add(ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
@@ -95,16 +86,13 @@ public class ImportContacts extends Activity {
                         	
                         	if (!Prephase2Activity.dba.inDatabase(number))
                         	{
-                        		//Toast.makeText(getApplicationContext(),""+Prephase2Activity.dba.inDatabase(number) , Toast.LENGTH_SHORT).show();
                         		tc.add(new TrustedContact(name, number));
                         		inDb.add(false);
-                        		                        		
                         	}
                         }
                         number = null;
                 } while (cur.moveToNext());
         }
-        //cur.close();
         
         if (tc != null && tc.size() > 0)
         {
@@ -129,10 +117,8 @@ public class ImportContacts extends Activity {
         		{
         			for (int i = 0; i<tc.size();i++)
 	        		{        			
-	        			//if (tc.get(i).getVerified() == 0)
         				if (inDb.get(i))
 	        			{
-	        				//Toast.makeText(getApplicationContext(), tc.get(i).getName(), Toast.LENGTH_SHORT).show();
 	        				Prephase2Activity.dba.addRow(tc.get(i));
 	        			}
 	        		}
@@ -155,13 +141,11 @@ public class ImportContacts extends Activity {
 	
 	public void remove (int position)
 	{
-		//tc.get(position).setVerified(-1);
 		inDb.set(position, false);
 	}
 	
 	public void add(int position)
 	{
-		//tc.get(position).setVerified(0);
 		inDb.set(position, true);
 	}
 	
@@ -169,15 +153,12 @@ public class ImportContacts extends Activity {
 	{
 		if (tc != null)
 		{
-			//if (tc.get(position).getVerified() == -1)
 			if (inDb.get(position))
 			{
-				//add(position);
 				remove(position);
 			}
 			else
 			{
-				//remove(position);
 				add(position);
 			}
 		}

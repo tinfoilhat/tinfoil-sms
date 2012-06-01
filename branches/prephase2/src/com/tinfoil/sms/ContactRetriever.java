@@ -20,10 +20,14 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 
 public abstract class ContactRetriever {
 	private static final String dateColumn = "date DESC";
@@ -37,25 +41,18 @@ public abstract class ContactRetriever {
 	 * @return : List<String[]>, a list of String arrays that contain
 	 * the number, name, and the message. 
 	 */
-	//public static List<String[]> getSMS(Context c, int amount) {
 	public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
 		final String[] projection = new String[]{"address", "body"};
 		Uri uri = Uri.parse("content://mms-sms/conversations/");
 		Cursor cur = c.getContentResolver().query(uri, projection, null, null, dateColumn);
 
-		//int i = 0;
 		while (cur.moveToNext())
 		{
-			/*if (amount!=0 && i > amount)
-			{
-				break;
-			}*/
 			String address = cur.getString(cur.getColumnIndex("address"));
 			String name = nameHelper(address, c);
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
 			sms.add(new String[] {address, name, body});
-			//i++;
 		}
 		cur.close();
 		return sms;
@@ -73,17 +70,18 @@ public abstract class ContactRetriever {
 		List<String[]> sms = new ArrayList<String[]>();
 		Uri uriSMSURI = Uri.parse("content://sms/");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, projection, 
-				"address = '" + format(Prephase2Activity.selectedNumber) + 
-				"' or address = '+1" + format(Prephase2Activity.selectedNumber) +
-				"' or address = '1" + format(Prephase2Activity.selectedNumber) + "'", 
-				null, dateColumn);
+				"address = ? or address = ? or address = ?",
+				new String[] {format(Prephase2Activity.selectedNumber),
+				"+1" + format(Prephase2Activity.selectedNumber),
+				"1" + format(Prephase2Activity.selectedNumber)},
+				dateColumn + " LIMIT " + LIMIT);
 		
-		int i = 0;
+		//int i = 0;
 		while (cur.moveToNext()) {
-			if (i == LIMIT)
+			/*if (i == LIMIT)
 			{
 				break;
-			}
+			}*/
 			String address = cur.getString(cur.getColumnIndex("address"));
 			String type = cur.getString(cur.getColumnIndex("type"));
 			String name ="";
@@ -98,7 +96,7 @@ public abstract class ContactRetriever {
 			
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
 			sms.add(new String[] {address, name, body});
-			i++;
+			//i++;
 		}
 		cur.close();
 		return sms;
@@ -214,4 +212,19 @@ public abstract class ContactRetriever {
 		
 		return number;
 	}
+	
+	/**
+     * Sends the given message to the phone with the given number
+     * @param number : String, the number of the phone that the message is sent to
+     * @param message : String, the message, encrypted that will be sent to the contact
+     */
+    public static void sendSMS (Context c, String number, String message)
+    {
+    	PendingIntent pi = PendingIntent.getActivity(c, 0, new Intent(c, Object.class), 0);
+        SmsManager sms = SmsManager.getDefault();
+        
+        //this is the function that does all the magic
+        sms.sendTextMessage(number, null, message, pi, null);
+    	
+    }
 }

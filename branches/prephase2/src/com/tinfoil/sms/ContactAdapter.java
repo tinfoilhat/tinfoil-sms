@@ -27,13 +27,10 @@ import android.widget.TextView;
 
 public class ContactAdapter extends ArrayAdapter<String>{
 
-    Context context; 
-    int layoutResourceId;    
-    //List<String> data = null;
-    TrustedContact data = null;
-    //private String primary;
+    private Context context; 
+    private int layoutResourceId;    
+    private TrustedContact data = null;
     
-    //public ContactAdapter(Context context, int layoutResourceId, List<String> data) {
     public ContactAdapter(Context context, int layoutResourceId, TrustedContact tc) {
         super(context, layoutResourceId, tc.getNumber());
         this.layoutResourceId = layoutResourceId;
@@ -68,14 +65,6 @@ public class ContactAdapter extends ArrayAdapter<String>{
         {
         	holder.number.setText(number);
         	holder.primary.setText("Number");
-        	/*if (data.getPrimaryNumber().equalsIgnoreCase(number))
-        	{
-        		holder.primary.setText("Primary");
-        	}
-        	else
-        	{
-        		holder.primary.setText("");
-        	}*/
         }
         return row;
     }
@@ -84,6 +73,5 @@ public class ContactAdapter extends ArrayAdapter<String>{
     {
     	TextView number;
     	TextView primary;
-    	//RadioButton radioButton;
     }
 }

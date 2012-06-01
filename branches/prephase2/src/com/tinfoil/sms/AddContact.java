@@ -36,13 +36,13 @@ import android.widget.AdapterView.OnItemClickListener;
  *
  */
 public class AddContact extends Activity {
-	private ListView listView;
 	public static TrustedContact editTc;
 	public static boolean addContact;
 	private TrustedContact contactEdit;
-	Button add;
-	EditText contactName;
-	Button addNumber;
+	private ListView listView;
+	private Button add;
+	private EditText contactName;
+	private Button addNumber;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +112,7 @@ public class AddContact extends Activity {
 					           }})
 					        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-								dialog.cancel();// Canceled.
+									dialog.cancel();// Canceled.
 								}});
 					AlertDialog alert = builder.create();
 					alert.show();
@@ -147,6 +147,7 @@ public class AddContact extends Activity {
 						empty = true;
 					}
 				}
+				else
 				{
 					contactEdit.setName(name);
 				}
@@ -219,16 +220,13 @@ public class AddContact extends Activity {
         }
         else
         {
-        	//ArrayList<String> numbers = new ArrayList<String>();
-    		contactEdit = new TrustedContact("");
+        	contactEdit = new TrustedContact("");
     		listView.setAdapter(new ContactAdapter(this, R.layout.add_number, contactEdit));
     		
         }
 
-        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
         listView.setItemsCanFocus(false);
 
-        //Set the mode to single or multiple choice, (should match top choice)
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
 }

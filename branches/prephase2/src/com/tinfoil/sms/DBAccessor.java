@@ -686,6 +686,10 @@ public class DBAccessor {
 		return null;
 	}
 	
+	/**
+	 * Used to determine if the user's key has been generated
+	 * @return
+	 */
 	public boolean isKeyGen()
 	{
 		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, new String[]
@@ -722,7 +726,6 @@ public class DBAccessor {
 		number = ContactRetriever.format(number);
 		int id = getId(number);
 		open();
-		//db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_NUMBER + " = " + number, null);
 		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
 		db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
 		close();
@@ -740,12 +743,7 @@ public class DBAccessor {
 	 */
 	public boolean isTrustedContact (String number)
 	{
-		//TrustedContact tc = getRow(number);
-		
-		//if (tc == null)
-		//{
 		TrustedContact tc = getRow(ContactRetriever.format(number));
-		//}
 		if (tc != null)
 		{
 			if (!tc.isPublicKeyNull())// && tc.getVerified() == 2)
