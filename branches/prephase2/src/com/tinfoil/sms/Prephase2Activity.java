@@ -40,19 +40,14 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Prephase2Activity extends Activity {
-	static DBAccessor dba;
+	public static DBAccessor dba;
 	public static final String INBOX = "content://sms/inbox";
 	public static final String SENT = "content://sms/sent";
-	static SharedPreferences sharedPrefs;
+	public static SharedPreferences sharedPrefs;
+	public static String selectedNumber;
 	private static List<String[]> msgList;
-	static String selectedNumber;
 	private ListView list;
 	private BroadcastReceiver SMSbr;
-	
-	// Change the password here or give a user possibility to change it
-	// private static final byte[] PASSWORD = new byte[]{ 0x20, 0x32, 0x34,
-	// 0x47, (byte) 0x84, 0x33, 0x58 };
-	//private static final String PASSWORD = "test123";
 
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -136,13 +131,18 @@ public class Prephase2Activity extends Activity {
 								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),	
 										Encryption.aes_decrypt(dba.getRow(ContactRetriever.format
 										(address)).getPublicKey(), messages[0].getMessageBody()), INBOX);
+								
 								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 								updateList();
-							} catch (Exception e) {
+							} 
+							catch (Exception e) 
+							{
 								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 								e.printStackTrace();
 							}
-						} else {
+						}
+						else
+						{
 							Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
 							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 							sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),
@@ -176,7 +176,6 @@ public class Prephase2Activity extends Activity {
 			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
 			MessageView.list2.setAdapter(new MessageAdapter(this,
 					R.layout.listview_full_item_row, MessageView.msgList2));
-			//MessageView.updateList(this);
 		}
 		
 	}
@@ -229,7 +228,14 @@ public class Prephase2Activity extends Activity {
 		ContentValues values = new ContentValues();
 		values.put("address", srcNumber);
 		values.put("body", decMessage);
-		values.put("read", true); //Stops native sms client from saying messages are new.
+		
+		//Stops native sms client from saying messages are new.
+		values.put("read", true); 
+
+		/* Sets used to determine who sent the message, 
+		 * if type == 2 then it is sent from the user
+		 * if type == 1 it has been sent by the contact
+		 */
 		if (dest.equalsIgnoreCase(SENT))
 		{
 			values.put("type", "2");
@@ -238,6 +244,7 @@ public class Prephase2Activity extends Activity {
 		{
 			values.put("type", "1");
 		}
+		
 		c.getContentResolver().insert(Uri.parse(dest), values);
 	}
 }

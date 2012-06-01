@@ -52,45 +52,45 @@ public class ImportContacts extends Activity {
         tc = new ArrayList<TrustedContact>();
         ArrayList<String> number;
         String name;
-        
-        String columnsN[] = new String[] { Phone.NUMBER};
-        String columnsC[] = new String[] { Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER};
+       
         Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
-        Cursor cur = managedQuery(mContacts, columnsC, null, null, Contacts.DISPLAY_NAME);
+        Cursor cur = managedQuery(mContacts, new String[] {Contacts._ID, 
+        		Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER},
+        		null, null, Contacts.DISPLAY_NAME);
         
         inDb = new ArrayList<Boolean>();
         
         if (cur.moveToFirst()) {
                 do {
                 	number = new ArrayList<String>();
-                		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
-                		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
-                		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
-                		{
-                			Cursor pCur = getContentResolver().query(Phone.CONTENT_URI, 
-                					columnsN, Phone.CONTACT_ID +" = ?", 
-                	 	 		    new String[]{id}, null);
-                			if (pCur.moveToFirst())
-                			{
-                				do
-                				{
-                					number.add(ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
-                							Phone.NUMBER))));
-                				} while (pCur.moveToNext());
-                			}
-                			pCur.close();
-                		}
-                		
-                        if(number!=null)
-                        {
-                        	
-                        	if (!Prephase2Activity.dba.inDatabase(number))
-                        	{
-                        		tc.add(new TrustedContact(name, number));
-                        		inDb.add(false);
-                        	}
-                        }
-                        number = null;
+            		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
+            		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
+            		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
+            		{
+            			Cursor pCur = getContentResolver().query(Phone.CONTENT_URI, 
+            					new String[] { Phone.NUMBER}, Phone.CONTACT_ID +" = ?", 
+            	 	 		    new String[]{id}, null);
+            			if (pCur.moveToFirst())
+            			{
+            				do
+            				{
+            					number.add(ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
+            							Phone.NUMBER))));
+            				} while (pCur.moveToNext());
+            			}
+            			pCur.close();
+            		}
+            		
+                    if(number!=null)
+                    {
+                    	
+                    	if (!Prephase2Activity.dba.inDatabase(number))
+                    	{
+                    		tc.add(new TrustedContact(name, number));
+                    		inDb.add(false);
+                    	}
+                    }
+                    number = null;
                 } while (cur.moveToNext());
         }
         

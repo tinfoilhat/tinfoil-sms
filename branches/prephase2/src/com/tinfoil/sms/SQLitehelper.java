@@ -26,6 +26,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	private static final int DATABASE_VERSION = 2;
+	
 	public static final String USER_TABLE_NAME = "user";
     public static final String TRUSTED_TABLE_NAME = "trusted_contact";
     public static final String NUMBERS_TABLE_NAME = "numbers";

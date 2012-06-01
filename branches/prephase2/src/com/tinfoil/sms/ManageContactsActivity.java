@@ -41,7 +41,6 @@ public class ManageContactsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact);
         
-        //Linking the ListView object to the appropriate listview from the xml file.
         listView = (ListView)findViewById(R.id.contact_list);
         
         update();
@@ -91,12 +90,11 @@ public class ManageContactsActivity extends Activity {
 	}
 
 	/**
-	 * Used to toggle the contact from being in or out of
-	 * the trusted state.
-	 * @param position : int, the position on the list of
-	 * contacts.
-	 * @param add : boolean, if true the contact will be
-	 * added. If false the contact will be removed.
+	 * Used to toggle the contact from being in or out of the 
+	 * trusted state.
+	 * @param position : int, the position on the list of contacts.
+	 * @param add : boolean, if true the contact will be added.
+	 * If false the contact will be removed.
 	 */
 	public void change(int position, boolean add)
 	{
@@ -147,15 +145,10 @@ public class ManageContactsActivity extends Activity {
 	        	names[i] = tc.get(i).getName();
 	        }
 
-	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
 	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
 
-	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
 	        listView.setItemsCanFocus(false);
 
-	        //listView.set
-
-	        //Set the mode to single or multiple choice, (should match top choice)
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	        initList();
         }
@@ -164,10 +157,8 @@ public class ManageContactsActivity extends Activity {
         	names = new String[1];
         	names[0] = "Add a Contact";
         	        
-	        //populates listview with the declared strings, an option is also given for it to be multiple choice (check boxes), or single list (radio buttons) 
 	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
 
-	        //Not setting focus on a particular list item, (focus is then left to default at the top of the page)
 	        listView.setItemsCanFocus(false);
         }
 	}
@@ -195,7 +186,6 @@ public class ManageContactsActivity extends Activity {
 			if (tc != null)
 			{
 				AddContact.addContact = true;
-				//AddContact.editTc = tc.get(0);
 				startActivity(new Intent(this, AddContact.class));
 			}
 			return true;
