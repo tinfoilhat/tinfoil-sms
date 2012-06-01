@@ -164,8 +164,8 @@ public class Steganography
 			System.out.println("Random number " + i + " BOB: " + new BigInteger(random1));
 			System.out.println("Random number " + i + " ALICE: " + new BigInteger(random2));
 			
-			System.out.println("Random BIGINT" + i + " BOB: " + isaac1.nextBigInteger());
-			System.out.println("Random BIGINT" + i + " ALICE: " + isaac2.nextBigInteger());
+			System.out.println("Random BIGINT " + i + " BOB: " + isaac1.nextBigInteger());
+			System.out.println("Random BIGINT " + i + " ALICE: " + isaac2.nextBigInteger());
 		}
 	}
 }
