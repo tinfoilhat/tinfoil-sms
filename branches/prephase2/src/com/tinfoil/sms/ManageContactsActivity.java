@@ -69,50 +69,25 @@ public class ManageContactsActivity extends Activity {
         		        		
         		if (tc != null)
         		{
-        			//if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getPrimaryNumber()))
         			if (Prephase2Activity.dba.isTrustedContact(tc.get(position).getANumber()))
         			{
+        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
         				change(position, false);
-	        			Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 	        		}
 	        		else
 	        		{
-	        			change(position, true);
 	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+	        			change(position, true);
 	        		}
         		}
         		else
         		{
         			//Go to add contact
         			startActivity(new Intent(getBaseContext(), AddContact.class));
-        			//finish();
         		}
 
         	}});
         
-	}
-
-
-	/**
-	 * Sets Contact to the not trusted state. Secure messages 
-	 * will not be sent or expected from this contact. 
-	 * @param position : int, the position on the list of
-	 * contacts.
-	 */
-	private void remove(int position)
-	{
-		tc.get(position).clearPublicKey();
-	}
-
-	/**
-	 * Sets Contact to the trusted state. Secure messages 
-	 * will be sent and expected from this contact. 
-	 * @param position : int, the position on the list of
-	 * contacts.
-	 */
-	private void add(int position)
-	{
-		tc.get(position).setPublicKey();
 	}
 
 	/**
@@ -127,11 +102,11 @@ public class ManageContactsActivity extends Activity {
 	{
 		if (add)
 		{
-			add(position);
+			tc.get(position).setPublicKey();
 		}
 		else
 		{
-			remove(position);
+			tc.get(position).clearPublicKey();
 		}
 
 		Prephase2Activity.dba.updateRow(tc.get(position),tc.get(position).getANumber());

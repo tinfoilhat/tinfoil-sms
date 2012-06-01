@@ -41,8 +41,8 @@ public class MessageView extends Activity {
 	
 	private Button sendSMS;
 	private EditText messageBox;
-	private static ListView list2;
-	private static List<String[]> msgList2;
+	public static ListView list2;
+	public static List<String[]> msgList2;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -110,7 +110,7 @@ public class MessageView extends Activity {
 									text, Prephase2Activity.SENT);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						updateList(MessageView.this);
+						updateList();
 						
 					}
 			        catch ( Exception e ) 
@@ -135,10 +135,10 @@ public class MessageView extends Activity {
 		
     }   
     
-    public static void updateList(Context c)
+    public void updateList()
     {
-    	MessageView.msgList2 = ContactRetriever.getPersonSMS(c);
-		MessageView.list2.setAdapter(new MessageAdapter(c,
+    	MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
+		MessageView.list2.setAdapter(new MessageAdapter(this,
 				R.layout.listview_full_item_row, MessageView.msgList2));
     }
     

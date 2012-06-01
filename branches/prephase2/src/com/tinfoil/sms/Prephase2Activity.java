@@ -173,10 +173,10 @@ public class Prephase2Activity extends Activity {
 		list.setAdapter(new MessageAdapter(this, R.layout.listview_item_row, msgList));
 		if (Prephase2Activity.selectedNumber != null)
 		{
-			/*MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
+			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
 			MessageView.list2.setAdapter(new MessageAdapter(this,
-					R.layout.listview_full_item_row, MessageView.msgList2));*/
-			MessageView.updateList(this);
+					R.layout.listview_full_item_row, MessageView.msgList2));
+			//MessageView.updateList(this);
 		}
 		
 	}
@@ -229,6 +229,7 @@ public class Prephase2Activity extends Activity {
 		ContentValues values = new ContentValues();
 		values.put("address", srcNumber);
 		values.put("body", decMessage);
+		values.put("read", true); //Stops native sms client from saying messages are new.
 		if (dest.equalsIgnoreCase(SENT))
 		{
 			values.put("type", "2");
