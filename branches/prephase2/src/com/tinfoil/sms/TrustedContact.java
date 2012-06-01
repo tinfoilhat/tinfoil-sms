@@ -31,20 +31,13 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	//private String publicKey;		//Need to remove, is more or less to represent shared key 
-	private byte[] publicKey;		//Need to remove, is more or less to represent shared key
+	private byte[] publicKey;		
 	private ArrayList<String> numbers;
 	private byte[] signature;
 	private String s1;
 	private String s2;
 	private String bookPath;
 	private String bookInversePath;
-	//Need to add:
-	//public key
-	//signature
-	//s1
-	//s2
-			
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 

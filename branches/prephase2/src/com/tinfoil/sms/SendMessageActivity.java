@@ -114,7 +114,7 @@ public class SendMessageActivity extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						if (Prephase2Activity.dba.getRow(ContactRetriever.format(number)) == null)
+						if (!Prephase2Activity.dba.inDatabase(number))
 						{
 
 							AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);

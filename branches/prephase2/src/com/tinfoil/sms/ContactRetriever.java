@@ -102,6 +102,12 @@ public abstract class ContactRetriever {
 		return sms;
 	}
 	
+	/**
+	 * Create an array of Strings to display for the auto-complete
+	 * @param tc : List<TrustedContact> all the TrustedContacts
+	 * @return : List<String> a list of all the contacts and their numbers
+	 * for the auto complete list.
+	 */
 	public static List<String> contactDisplayMaker(List<TrustedContact> tc)
 	{
 		List<String> contacts = new ArrayList<String>();
@@ -131,20 +137,6 @@ public abstract class ContactRetriever {
 			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
 		}
 		return messageList;
-	}
-	
-	public static List<String> messageLimiter(List<String> sms)
-	{
-		final int LENGTH = 46;
-		for (int i = 0; i < sms.size();i++)
-		{
-			if (sms.get(i).length() > LENGTH)
-			{
-				sms.set(i, sms.get(i).substring(0, LENGTH));
-			}
-			
-		}
-		return sms;
 	}
 	
 	/**

@@ -79,21 +79,17 @@ public class DBAccessor {
 	 */
 	private void addNumbersRow (int reference, String number)
 	{
-		//Check if name, number or key contain any ';'
-		//if (!conflict(number))
-		//{
-			ContentValues cv = new ContentValues();
-				
-			//add given values to a row
-	        cv.put(KEY_REFERENCE, reference);
-	        cv.put(KEY_NUMBER, number);
-	        
-	
-	        //Insert the row into the database
-	        open();
-	        db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
-	        close();
-		//}
+		ContentValues cv = new ContentValues();
+			
+		//add given values to a row
+        cv.put(KEY_REFERENCE, reference);
+        cv.put(KEY_NUMBER, number);
+        
+
+        //Insert the row into the database
+        open();
+        db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
+        close();
 		
 	}
 	
@@ -105,22 +101,17 @@ public class DBAccessor {
 	 */
 	private void addSharedInfo (int reference, String s1, String s2)
 	{
-		//Check if name, number or key contain any ';'
-		//if (!conflict(number))
-		//{
-			ContentValues cv = new ContentValues();
-				
-			//add given values to a row
-	        cv.put(KEY_REFERENCE, reference);
-	        cv.put(KEY_SHARED_INFO_1, s1);
-	        cv.put(KEY_SHARED_INFO_2, s2);
-	
-	        //Insert the row into the database
-	        open();
-	        db.insert(SQLitehelper.SHARED_INFO_TABLE_NAME, null, cv);
-	        close();
-		//}
-		
+		ContentValues cv = new ContentValues();
+			
+		//add given values to a row
+        cv.put(KEY_REFERENCE, reference);
+        cv.put(KEY_SHARED_INFO_1, s1);
+        cv.put(KEY_SHARED_INFO_2, s2);
+
+        //Insert the row into the database
+        open();
+        db.insert(SQLitehelper.SHARED_INFO_TABLE_NAME, null, cv);
+        close();
 	}
 	
 	/** 
@@ -150,6 +141,13 @@ public class DBAccessor {
 		
 	}
 	
+	/**
+	 * Check if the shared info is the default shared info
+	 * @param reference : int the id of the contact
+	 * @return : boolean
+	 * true if the shared info is the default
+	 * false if the shared info is not the default
+	 */
 	private boolean sharedInfoIsDefault(int reference)
 	{
 		open();
@@ -238,24 +236,24 @@ public class DBAccessor {
 	 */
 	private void addBookPath (int reference, String bookPath, String bookInversePath)
 	{
-		//Check if name, number or key contain any ';'
-		//if (!conflict(number))
-		//{
-			ContentValues cv = new ContentValues();
-				
-			//add given values to a row
-	        cv.put(KEY_REFERENCE, reference);
-	        cv.put(KEY_BOOK_PATH, bookPath);
-	        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
-	
-	        //Insert the row into the database
-	        open();
-	        db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
-	        close();
-		//}
+		ContentValues cv = new ContentValues();
+			
+		//add given values to a row
+        cv.put(KEY_REFERENCE, reference);
+        cv.put(KEY_BOOK_PATH, bookPath);
+        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
+
+        //Insert the row into the database
+        open();
+        db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
+        close();
 		
 	}
 	
+	/**
+	 * Sets the book path back to the default path
+	 * @param reference : int the id of the contact
+	 */
 	public void resetBookPath (int reference)
 	{
 		if (!bookIsDefault(reference))
@@ -279,6 +277,13 @@ public class DBAccessor {
 		addBookPath(reference, bookPath, bookInversePath);
 	}
 	
+	/**
+	 * Finds out whether the contact has an entry in the book path database.
+	 * @param reference : int the id of the contact
+	 * @return : boolean 
+	 * true if the book path is the default
+	 * false if the book path is not the default
+	 */
 	private boolean bookIsDefault(int reference)
 	{
 		open();
@@ -365,27 +370,29 @@ public class DBAccessor {
 	 */
 	public void addRow (TrustedContact tc)
 	{
-		ContentValues cv = new ContentValues();
-		
-		//add given values to a row
-        cv.put(KEY_NAME, tc.getName());
-        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
-        cv.put(KEY_SIGNATURE, tc.getSignature());
-        
-        //Insert the row into the database
-        open();
-        int id = (int) db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
-        close();
-        if (!tc.isNumbersEmpty())
-        {
-        	for (int i = 0; i< tc.getNumberSize();i++)
-        	{
-        		addNumbersRow(id, ContactRetriever.format(tc.getNumber(i)));
-        	}
-        }
-        updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
-        updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
-	              
+		if (!inDatabase(tc.getNumber()))
+		{
+			ContentValues cv = new ContentValues();
+			
+			//add given values to a row
+	        cv.put(KEY_NAME, tc.getName());
+	        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
+	        cv.put(KEY_SIGNATURE, tc.getSignature());
+	        
+	        //Insert the row into the database
+	        open();
+	        int id = (int) db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
+	        close();
+	        if (!tc.isNumbersEmpty())
+	        {
+	        	for (int i = 0; i< tc.getNumberSize();i++)
+	        	{
+	        		addNumbersRow(id, ContactRetriever.format(tc.getNumber(i)));
+	        	}
+	        }
+	        updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
+	        updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
+		}	              
 	}
 	
 	private int getId(String number)
@@ -393,9 +400,7 @@ public class DBAccessor {
 		open();
 		Cursor cur = db.rawQuery("SELECT " + KEY_REFERENCE + " FROM " + 
 		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
-		/*Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[] {KEY_REFERENCE},
-				KEY_NUMBER + " = "+ number, null, null, null, null);*/
-		
+
 		if (cur.moveToFirst())
 		{
 			int id = cur.getInt(cur.getColumnIndex((KEY_REFERENCE)));
@@ -406,67 +411,18 @@ public class DBAccessor {
 		return 0;
 	}
 	
-	
 	/**
-	 * **Note Still a working project
-	 * This will be used to sync the contacts in tinfoil-sms's
-	 * database with the contacts in the native database.
-	 * @param name : String, the name of the contact to be added
-	 * @param number : String, the number of the contact to be added
-	 * @return : String
+	 * Check to see if any of the given numbers is already in the database
+	 * @param number : ArrayList<String> of numbers
+	 * @return : boolean 
+	 * true if the number is in the database already 
+	 * false if the number is not found the database
 	 */
-	/*public String nativeContact (String name, String number)
-	{
-		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
-		null, null, null, null);
-		//ContactsContract.Contacts.DISPLAY_NAME +" = " + name,
-		while (cur.moveToNext())
-		{
-			String id = cur.getString(
-					cur.getColumnIndex(ContactsContract.Contacts._ID));
-			String found_name = cur.getString(
-		            cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-			if (found_name.equalsIgnoreCase(name))
-			{
-		        Cursor pCur = cr.query(
-		 	 		    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-		 	 		    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-		 	 		    new String[]{id}, null);
-		        if (pCur.moveToNext())
-		        {
-		        	String tempNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-		        	if (tempNumber.equalsIgnoreCase(number))
-		        	{
-		        		return "Contact is already in dba";
-		        	}
-		        	else
-		        	{
-		        		return "Found " + found_name + " X" + tempNumber + "X " + number;
-		        	}
-		        }
-		        else
-		        {
-		        	return "Found " + found_name;
-		        }
-			
-			}
-			else 
-			{
-				break;
-			}
-		}
-		
-		//Need to use Content Provider to add stuff to android's db
-		
-		return "Found Nothing!";
-	}*/
-	
 	public boolean inDatabase(ArrayList<String> number)
 	{
 		for (int i = 0; i<number.size(); i++)
 		{
-			TrustedContact tc = getRow(ContactRetriever.format(number.get(i)));
-			if (tc != null)
+			if (inDatabase(number.get(i)))
 			{
 				return true;
 			}
@@ -474,6 +430,13 @@ public class DBAccessor {
 		return false;
 	}
 	
+	/**
+	 * Checks if the contact is already in the database
+	 * @param number
+	 * @return: boolean 
+	 * true if the number is in the database already 
+	 * false if the number is not found the database
+	 */
 	public boolean inDatabase(String number)
 	{
 		if (getRow(ContactRetriever.format(number)) == null)
@@ -518,9 +481,7 @@ public class DBAccessor {
 		open();
 		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + ", " + KEY_NUMBER + " FROM "
 				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
-		/*Cursor idCur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_NUMBER}, KEY_NUMBER + " = " + number,
-				null, null, null, null);*/
+
 		int id = 0;
 		if (idCur.moveToFirst())
 		{
@@ -535,8 +496,7 @@ public class DBAccessor {
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 					cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
 					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)));
-			
-			//id = cur.getInt(cur.getColumnIndex(KEY_ID));
+			cur.close();
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
@@ -550,13 +510,15 @@ public class DBAccessor {
 				{
 					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
 				}while(pCur.moveToNext());
-				pCur.close();
 			}
-			close(cur);
+			close(pCur);
+			
+			//Retrieve the book paths
 			String columns[] = getBookPath(id);
 			tc.setBookPath(columns[0]);
 			tc.setBookInversePath(columns[1]);
 			
+			//Retrieve the shared information
 			columns = getSharedInfo(id);
 			tc.setSharedInfo1(columns[0]);
 			tc.setSharedInfo2(columns[1]);
@@ -568,7 +530,6 @@ public class DBAccessor {
 	
 	/**
 	 * Get all of the rows in the database with the columns
-	 * name, number, key, verified.	
 	 * @return : ArrayList<TrustedContact>, a list of all the
 	 * contacts in the database
 	 */
@@ -590,8 +551,9 @@ public class DBAccessor {
 						cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
 				
 				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
-				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
-						new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
+				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
+						SQLitehelper.NUMBERS_TABLE_NAME, new String[]
+						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -603,15 +565,15 @@ public class DBAccessor {
 					{
 						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
 					}while(pCur.moveToNext());
-					//pCur.close();
-					//return tc;
 				}
-				
 				pCur.close();
+				
+				//Retrieve the book paths
 				String columns[] = getBookPath(id);
 				tc.get(i).setBookPath(columns[0]);
 				tc.get(i).setBookInversePath(columns[1]);
 				
+				//Retrieve the shared information
 				columns = getSharedInfo(id);
 				tc.get(i).setSharedInfo1(columns[0]);
 				tc.get(i).setSharedInfo2(columns[1]);
@@ -626,28 +588,11 @@ public class DBAccessor {
 		return null;
 	}
 	
-	/*public ArrayList<String> getAllContactNames()
-	{		
-		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[] {KEY_NAME},
-				null, null, null, null, null);
-		
-		ArrayList<String> tc = new ArrayList<String>();
-				
-		if (cur.moveToFirst())
-        {
-			do
-			{
-				tc.add(cur.getString(cur.getColumnIndex(KEY_NAME)));
-			}while (cur.moveToNext());
-			
-			close(cur);
-			return tc;
-        }
-		close(cur);
-		return null;
-	}*/
-	
+	/**
+	 * Store the user's public key, private key and signature.
+	 * ***Can only be set Once
+	 * @param user : User 
+	 */
 	public void setUser(User user)
 	{
 		if (!isKeyGen())
@@ -666,6 +611,10 @@ public class DBAccessor {
 		}
 	}
 	
+	/**
+	 * Get the user's public key, private key and signature
+	 * @return
+	 */
 	public User getUserRow()
 	{
 		open();
@@ -688,12 +637,14 @@ public class DBAccessor {
 	
 	/**
 	 * Used to determine if the user's key has been generated
-	 * @return
+	 * @return : boolean
+	 * true if there is a key already in the database,
+	 * false if there is no key in the database.
 	 */
 	public boolean isKeyGen()
 	{
 		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, new String[]
-				{KEY_PUBLIC_KEY}, null, null, null, null, null);
+				{KEY_PUBLIC_KEY, KEY_PUBLIC_KEY, KEY_SIGNATURE}, null, null, null, null, null);
 		if (cur.moveToFirst())
 		{
 			close(cur);
@@ -708,27 +659,35 @@ public class DBAccessor {
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
+	 * If a contact is not deleted properly they are not added.
 	 */
 	public void updateRow (TrustedContact tc, String number)
 	{
-		open();
-		removeRow(ContactRetriever.format(number));
-		addRow(tc);
-		close();
+		if (removeRow(ContactRetriever.format(number)))
+		{
+			addRow(tc);
+		}
 	}
 		
 	/**
 	 * Deletes the rows with the given number
-	 * @param number : String, the primary number of the contact to be deleted 
+	 * @param number : String, the primary number of the contact to be deleted
+	 * @return : boolean
+	 * true if the contacts were deleted properly
+	 * false if the contacts were not deleted properly
 	 */
-	public void removeRow(String number)
+	public boolean removeRow(String number)
 	{
-		number = ContactRetriever.format(number);
-		int id = getId(number);
+		int id = getId(ContactRetriever.format(number));
 		open();
-		db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
-		db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		int num = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
+		int num2 = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
 		close();
+		if (num == 0 || num2 == 0)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**

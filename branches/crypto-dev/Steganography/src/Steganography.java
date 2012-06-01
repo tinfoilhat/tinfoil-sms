@@ -153,7 +153,7 @@ public class Steganography
 		isaac2.init(true, new KeyParameter(seed));
 		*/
 		
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < 100000; ++i)
 		{
 			isaac1.nextBytes(random1);
 			isaac2.nextBytes(random2);

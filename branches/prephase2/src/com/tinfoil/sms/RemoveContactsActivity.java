@@ -81,6 +81,11 @@ public class RemoveContactsActivity extends Activity {
 			}});
 	}
 	
+	/**
+	 * Toggle the contact's status from to be deleted to not be deleted
+	 * or from not be deleted to be deleted
+	 * @param i : the contact that is selected
+	 */
 	public void toggle(int i)
 	{
 		if (!contact[i])

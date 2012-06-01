@@ -66,7 +66,7 @@ public class MessageView extends Activity {
 		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				
+				//Still thinking about what to add
 			}
 		});
 		
