@@ -41,7 +41,7 @@ public abstract class ContactRetriever {
 	 * @return : List<String[]>, a list of String arrays that contain
 	 * the number, name, and the message. 
 	 */
-	public static List<String[]> getSMS(Context c) {
+	/*public static List<String[]> getSMS(Context c) {
 		List<String[]> sms = new ArrayList<String[]>();
 		final String[] projection = new String[]{"address", "body"};
 		Uri uri = Uri.parse("content://mms-sms/conversations/");
@@ -55,6 +55,30 @@ public abstract class ContactRetriever {
 			sms.add(new String[] {address, name, body});
 		}
 		cur.close();
+		return sms;
+	}*/
+	
+	public static List<String[]> getSMS(Context c)
+	{
+		Uri uriSMSURI = Uri.parse("content://sms/conversations/");
+		Uri uriSMS = Uri.parse("content://sms/");
+		Cursor cur = c.getContentResolver().query(uriSMSURI, new String[]{"thread_id", "snippet"}, null,
+				null, null);
+		Cursor nCur = null;
+		
+		List<String[]> sms = new ArrayList<String[]>();
+		
+		while (cur.moveToNext()) {
+			String body = cur.getString(cur.getColumnIndex("snippet"));
+			nCur = c.getContentResolver().query(uriSMS, new String[]{"address"}, "thread_id = ?",
+					new String[] {cur.getString(cur.getColumnIndex("thread_id"))}, null);
+			if (nCur.moveToFirst())
+			{
+				String address = nCur.getString(nCur.getColumnIndex("address"));
+				String name = nameHelper(address, c);
+				sms.add(new String[] {address, name, body});
+			}
+		}
 		return sms;
 	}
 	
