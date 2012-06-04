@@ -114,7 +114,10 @@ public class SteganographyActivity
 		byte[] seed = new byte[32];
 		byte[] random1 = new byte[32];
 		byte[] random2 = new byte[32];
-
+		
+		int aliceKey;
+		int bobKey;
+		
 		int length;
 		boolean sequenceMatch = true;
 		
@@ -387,5 +390,25 @@ public class SteganographyActivity
 		}
 		
 		System.out.println("Total time to sort COLLATION KEY data: " + (endTime-startTime) + " milliseconds");
+		
+		
+		
+		/*
+		 * Quick test of the hashtable functions and miller-rabin primality tests
+		 */
+		
+		for (int i = 0; i < 30; ++i)
+		{
+			aliceKey = isaac1.nextInt();
+			bobKey = isaac2.nextInt();
+			
+			System.out.println("Alice probe: " + HashTable.getProbe(aliceKey, 190366));
+			System.out.println("Alice double hash interval: " + HashTable.getInterval(aliceKey));
+			
+			System.out.println("Bob probe: " + HashTable.getProbe(bobKey, 190366));
+			System.out.println("Bog double hash interval: " + HashTable.getInterval(bobKey));
+
+		}
+		System.out.println("Co-prime bucketSize " + HashTable.getCoPrime(190366));
 	}
 }

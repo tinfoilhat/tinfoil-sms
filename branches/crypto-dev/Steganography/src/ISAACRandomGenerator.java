@@ -177,6 +177,7 @@ public class ISAACRandomGenerator implements RandomGenerator
 		this.engine.processBytes(in, 0, len, bytes, start);
 	}
 	
+	
 	/*
 	 * Since most PRNG are used for NUMBERS it seems prudent to add an additional
 	 * function to return randomly generated data as BigInteger instead of having to
@@ -194,5 +195,25 @@ public class ISAACRandomGenerator implements RandomGenerator
 		this.engine.processBytes(in, 0, in.length, out, 0);
 		
 		return new BigInteger(out);
+	}
+	
+	
+	/*
+	 * Since most PRNG are used for NUMBERS it seems prudent to add an additional
+	 * function to return randomly generated data as int instead of having to
+	 * always convert manually from bytes.
+	 * 
+	 * @return int A randomly generated number
+	 */
+	public int nextInt()
+	{
+		// 256-bit number, this is much larger than long
+		byte[] in = new byte[32];
+		byte[] out = new byte[32];
+		
+		// Generate the random number and return the converted BigInteger number'
+		this.engine.processBytes(in, 0, in.length, out, 0);
+		
+		return new BigInteger(out).intValue();
 	}
 }
