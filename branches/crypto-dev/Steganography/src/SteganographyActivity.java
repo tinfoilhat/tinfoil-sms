@@ -35,6 +35,12 @@ public class SteganographyActivity
 	    Security.insertProviderAt(new BouncyCastleProvider(), 1);
 	}
 	
+	// Number of random elements
+	private static final int NUMBER_RANDOM_ELEMENTS = 10000;
+	
+	// Minimum size of the dictionary
+	private static final int MIN_DICT_SIZE = 65537; 
+	
 	/*
 	 * are_same A function which checks if two array of bytes are identical
 	 * 
@@ -104,59 +110,34 @@ public class SteganographyActivity
         return fileLines;
     }
 
-	
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */ 
-	public static void main(String[] args) throws Exception
+    
+	/*
+	 * Simple function which returns a hexadecimal string with a minimum fixed
+	 * width given a value to convert to hex.
+	 */
+	public static String fixedWidthHex(int value, int minWidth)
 	{
-		byte[] seed = new byte[32];
-		byte[] random1 = new byte[32];
-		byte[] random2 = new byte[32];
+		String leadingZeros = "";
 		
-		int aliceKey;
-		int bobKey;
+		for (int i = Integer.toHexString(value).length(); i < minWidth; ++i)
+		{
+			leadingZeros += "0";
+		}
 		
-		int length;
+		return leadingZeros + Integer.toHexString(value).toUpperCase();
+	}
+    
+	
+	/*
+	 * Simple function to test that the random number generators generate the
+	 * same sequence of values give a shared seed from the SDF
+	 */
+	public static void randomSequenceTest(byte[] shared_seed)
+	{
 		boolean sequenceMatch = true;
-		
-		final int NUMBER_RANDOM_ELEMENTS = 1000;
 		
 		List<BigInteger> randomSequence1 = new ArrayList();
 		List<BigInteger> randomSequence2 = new ArrayList();
-		
-		/*
-		 * Create a list of values to be sorted
-		 */
-		Integer[] unsortedNum = new Integer[NUMBER_RANDOM_ELEMENTS];
-		
-		// Calculate the time it takes to parse the file
-		long startTime = System.currentTimeMillis();
-		
-		String[] unsortedStr = readLines("src/test_inv_dict.txt");
-		
-		long endTime = System.currentTimeMillis();
-		
-		System.out.println("Total time to store file in string array: " + (endTime-startTime) + " milliseconds");
-		
-		CollationKey[] unsortedKeys = new CollationKey[unsortedStr.length];
-		
-		
-		/*
-		 *  Inititialize the seed derivative function parameters with the
-		 *  parameters S1 & S2
-		 */
-		SDFParameters paramSDF = new SDFParameters("test1", "test");
-		
-		// Generate the seed using SHA256 digest
-		SDFGenerator generatorSDF = new SDFGenerator(new SHA256Digest());
-		generatorSDF.init(paramSDF);
-		length = generatorSDF.generateBytes(seed, 0, 0);
-		
-		System.out.println("LENGTH: " + length);
-		System.out.println("SEED: " + new String(Hex.encode(seed)));
-		
 		
 		/*
 		 * Simulate two separate users generating a sequence of random numbers using 
@@ -165,19 +146,18 @@ public class SteganographyActivity
 		ISAACRandomGenerator isaac1 = new ISAACRandomGenerator();
 		ISAACRandomGenerator isaac2 = new ISAACRandomGenerator();
 		
-		isaac1.init(new ISAACEngine(), seed);
-		isaac2.init(new ISAACEngine(), seed);
-		
+		isaac1.init(new ISAACEngine(), shared_seed);
+		isaac2.init(new ISAACEngine(), shared_seed);
 		
 		/*
 		 * Generate two separate sequences of random data and verify the two sequences are identical
 		 */
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < NUMBER_RANDOM_ELEMENTS; ++i)
 		{
 			randomSequence1.add(isaac1.nextBigInteger());
 		}
 		
-		for (int j = 0; j < 3; ++j)
+		for (int j = 0; j < NUMBER_RANDOM_ELEMENTS; ++j)
 		{
 			randomSequence2.add(isaac2.nextBigInteger());
 		}
@@ -201,10 +181,10 @@ public class SteganographyActivity
 		if (sequenceMatch)
 		{
 			System.out.println("The sequences match, here is the list of random data in the sequence:\n");
-			for (BigInteger randomNum : randomSequence1)
+			/*for (BigInteger randomNum : randomSequence1)
 			{
 				System.out.println(randomNum);
-			}
+			}*/
 		}
 		else
 		{
@@ -217,7 +197,23 @@ public class SteganographyActivity
 			}
 		}
 		
-		
+		System.out.println("LENGTH: " + shared_seed.length);
+		System.out.println("SEED: " + new String(Hex.encode(shared_seed)));
+	}
+	
+	
+	/*
+	 * Function which tests the FastQuickSort implementation by verifying that
+	 * it properly sorts a collection of random numbers
+	 */
+	public static void randomNumSortTest() throws Exception
+	{
+		boolean sequenceMatch = true;
+		Integer[] unsortedNum = new Integer[NUMBER_RANDOM_ELEMENTS];
+	
+		// Used for calculating execution times
+		long startTime = 0;
+		long endTime = 0;
 		
 		/*
 		 * Simulate a sequence of random numbers to sort with FastQuickSort 
@@ -241,7 +237,6 @@ public class SteganographyActivity
 		/*
 		 * Verify that the sequence is actually ordered with a simple linear comparison
 		 */
-		sequenceMatch = true;
 		for (int i  = 0; i < unsortedNum.length - 1; ++i)
 		{
 			/*
@@ -272,37 +267,27 @@ public class SteganographyActivity
 		
 		System.out.println("Total time to sort numerical data: " + (endTime-startTime) + " milliseconds");
 	
+	}
+	
+	
+	/*
+	 * Function which tests the FastQuickSort implementation by verifying that
+	 * it properly sorts a collection of strings
+	 */
+	@SuppressWarnings("unchecked")
+	public static void randomStringSortTest(String[] unsortedStr, Collator collator) throws Exception
+	{
+		boolean sequenceMatch = true;
 		
-		/*
-		 * Simulate a sequence of random strings to sort with FastQuickSort 
-		 */
-		
-		// Define the collator locale and parameters for sorting strings
-		Collator collator = Collator.getInstance(Locale.US);
-		
-		/* Set the collator decomposition parameters and comparison strength
-		 * For more detail on the different decompositions and comparison strengths
-		 * 
-		 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/text/Collator.html
-		 */
-		collator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
-		collator.setStrength(Collator.PRIMARY);
-		
-		
-		/*
-		 * Simulate an unsorted collection of Collation keys for the strings to be sorted 
-		 */
-		for (int i = 0; i < unsortedStr.length; ++i)
-		{
-			unsortedKeys[i] = collator.getCollationKey(unsortedStr[i]);
-		}
-		
+		// Used for calculating execution times
+		long startTime = 0;
+		long endTime = 0;
 		
 		// Calculate the time it takes to sort the string data
 		startTime = System.currentTimeMillis();
 		
 		// Sort the strings with quicksort
-		//FastQuickSort.sort(unsortedStr, (Comparator)collator);
+		FastQuickSort.sort(unsortedStr, (Comparator)collator);
 		
 		endTime = System.currentTimeMillis();
 		
@@ -310,7 +295,7 @@ public class SteganographyActivity
 		/*
 		 * Verify that the string sequence is actually ordered with a simple linear comparison
 		 */
-		sequenceMatch = true;
+
 		for (int i  = 0; i < unsortedStr.length - 1; ++i)
 		{
 			/*
@@ -333,16 +318,30 @@ public class SteganographyActivity
 		else
 		{
 			System.out.println("The string sequence is NOT SORTED PROPERLY!");
+		
+			for (int i  = 0; i < unsortedStr.length; ++i)
+			{
+				System.out.println(unsortedStr[i]);
+			}
 		}
-		/*for (int i  = 0; i < unsortedStr.length - 1; ++i)
-		{
-			System.out.println(unsortedStr[i]);
-		}*/
 		
 		System.out.println("Total time to sort STRING data: " + (endTime-startTime) + " milliseconds");
-		 
-		 
+	}
+
+	
+	
+	/*
+	 * Function which tests the FastQuickSort implementation by verifying that
+	 * it properly sorts a collection of strings stored as CollationKeys
+	 */
+	@SuppressWarnings("unchecked")
+	public static void randomKeysSortTest(CollationKey[] unsortedKeys) throws Exception
+	{
+		boolean sequenceMatch = true;
 		
+		// Used for calculating execution times
+		long startTime = 0;
+		long endTime = 0;
 		
 		/*
 		 * COLLATION KEYS TEST, HAS THE SAME UNSORTED VALUES AS STRING TEST
@@ -360,7 +359,6 @@ public class SteganographyActivity
 		/*
 		 * Verify that the collation keys sequence is actually ordered with a simple linear comparison
 		 */
-		sequenceMatch = true;
 		for (int i  = 0; i < unsortedKeys.length - 1; ++i)
 		{
 			/*
@@ -383,21 +381,101 @@ public class SteganographyActivity
 		else
 		{
 			System.out.println("The COLLATION KEY sequence is NOT SORTED PROPERLY!");
-		}
-		for (int i  = 0; i < unsortedKeys.length - 1; ++i)
-		{
-			System.out.println(unsortedKeys[i].getSourceString());
+			
+			for (int i  = 0; i < unsortedKeys.length; ++i)
+			{
+				System.out.println(unsortedKeys[i].getSourceString());
+			}
 		}
 		
 		System.out.println("Total time to sort COLLATION KEY data: " + (endTime-startTime) + " milliseconds");
+	}
+	
+	
+	/**
+	 * @param args
+	 * @throws Exception 
+	 */ 
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws Exception
+	{
+		byte[] seed = new byte[32];
+		byte[] random1 = new byte[32];
+		byte[] random2 = new byte[32];
 		
+		int aliceKey;
+		int bobKey;
+		
+		int length;
+		boolean sequenceMatch = true;
+		
+		// Steganography dictionaries
+		String[] uniqueDictionary = new String[MIN_DICT_SIZE];
+		CollationKey[] inverseDictionary = new CollationKey[MIN_DICT_SIZE];
+		
+		
+		// Calculate the time it takes to parse the file
+		long startTime = System.currentTimeMillis();
+		
+		String[] masterDictionary = readLines("src/base_dictionary.txt");
+		
+		
+		
+		long endTime = System.currentTimeMillis();
+		
+		System.out.println("Total time to store file in string array: " + (endTime-startTime) + " milliseconds");
+		
+		CollationKey[] unsortedKeys = new CollationKey[masterDictionary.length];
+		
+		
+		/*
+		 *  Inititialize the seed derivative function parameters with the
+		 *  parameters S1 & S2
+		 */
+		SDFParameters paramSDF = new SDFParameters("test1", "test");
+		
+		// Generate the seed using SHA256 digest
+		SDFGenerator generatorSDF = new SDFGenerator(new SHA256Digest());
+		generatorSDF.init(paramSDF);
+		length = generatorSDF.generateBytes(seed, 0, 0);
+		
+		ISAACRandomGenerator isaac1 = new ISAACRandomGenerator();
+		ISAACRandomGenerator isaac2 = new ISAACRandomGenerator();
+		
+		isaac1.init(new ISAACEngine(), seed);
+		isaac2.init(new ISAACEngine(), seed);
+		
+		
+		/*
+		 * Simulate a sequence of random strings to sort with FastQuickSort 
+		 */
+		
+		// Define the collator locale and parameters for sorting strings
+		Collator collator = Collator.getInstance(Locale.US);
+		
+		/* Set the collator decomposition parameters and comparison strength
+		 * For more detail on the different decompositions and comparison strengths
+		 * 
+		 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/text/Collator.html
+		 */
+		collator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
+		collator.setStrength(Collator.PRIMARY);
+		
+		
+		/*
+		 * Simulate an unsorted collection of Collation keys for the strings to be sorted 
+		 
+		for (int i = 0; i < masterDictionary.length; ++i)
+		{
+			unsortedKeys[i] = collator.getCollationKey(masterDictionary[i]);
+		}*/
 		
 		
 		/*
 		 * Quick test of the hashtable functions and miller-rabin primality tests
-		 */
+		 
 		
-		for (int i = 0; i < 30; ++i)
+		for (int i = 0; i < 1; ++i)
 		{
 			aliceKey = isaac1.nextInt();
 			bobKey = isaac2.nextInt();
@@ -410,5 +488,33 @@ public class SteganographyActivity
 
 		}
 		System.out.println("Co-prime bucketSize " + HashTable.getCoPrime(190366));
+		
+		//System.out.println("00" + Integer.toHexString(200).toUpperCase());
+		System.out.println(fixedWidthHex(8,4));
+	*/
+		
+		
+		/*
+		 * Test that the Steganography class properly generates the unique dictionary and
+		 * inverse dictionary given the master dictionary
+		 */
+		startTime = System.currentTimeMillis();
+		Steganography.generateDict(uniqueDictionary, inverseDictionary, masterDictionary, (Comparator)collator, isaac1);
+		endTime = System.currentTimeMillis();
+		
+		// Display results
+		for (int i  = 0; i < uniqueDictionary.length - 1; ++i)
+		{
+			System.out.println(uniqueDictionary[i]);
+
+		}
+		
+		for (int i = 0; i < inverseDictionary.length; ++i)
+		{
+			System.out.println(inverseDictionary[i].getSourceString());
+		}
+		
+		System.out.println("Total time to generate the unique dictionary and inverse dictionary " + (endTime-startTime) + " milliseconds");
+		
 	}
 }

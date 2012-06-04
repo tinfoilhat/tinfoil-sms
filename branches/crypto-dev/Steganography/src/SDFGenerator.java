@@ -84,6 +84,8 @@ public class SDFGenerator implements DerivationFunction
      * @param outOff The offset in the output buffer to populate
      * @param len The length of the output, if no length specified size of digest is used
      * 
+     * @return The length of random bytes generated
+     * 
      * @throws IllegalArgumentException if the size of the request will cause an overflow.
      * @throws DataLengthException if the out buffer is too small.
      */
