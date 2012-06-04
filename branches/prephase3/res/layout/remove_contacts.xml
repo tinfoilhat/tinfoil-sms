@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ListView
+        android:id="@+id/removeable_contact_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/delete_cont"
+        android:layout_alignParentTop="true" >
+
+    </ListView>
+
+    <Button
+        android:id="@+id/delete_cont"
+        android:layout_width="fill_parent"
+        android:layout_height="20pt"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:clickable="true"
+        android:text="Delete Contacts" />
+
+</RelativeLayout>

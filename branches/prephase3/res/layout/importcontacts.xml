@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
+
+    <ListView
+        android:id="@+id/import_contact_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/confirm"
+        android:layout_alignParentTop="true" >
+
+    </ListView>
+    
+    <Button 
+        android:id="@+id/confirm"
+        android:layout_width="fill_parent"
+        android:layout_height="20pt"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:clickable="true"
+        android:text="Import Contacts" />
+
+</RelativeLayout>

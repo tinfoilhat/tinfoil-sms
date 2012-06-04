@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+    
+    <EditText
+        android:id="@+id/contact_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:hint="name" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/contact_name"
+        android:layout_below="@+id/contact_name"
+        android:layout_marginTop="16dp"
+        android:text="Number"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/contact_numbers"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_above="@+id/add_new_number"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/number" >
+
+    </ListView>
+
+    <Button
+        android:id="@+id/add_new_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/contact_numbers"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/add"
+        android:text="Add Number" />
+
+    <Button
+        android:id="@+id/add"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/add_new_number"
+        android:layout_alignBottom="@+id/add_new_number"
+        android:layout_alignRight="@+id/contact_numbers"
+        android:text="Save" />
+    
+</RelativeLayout>
