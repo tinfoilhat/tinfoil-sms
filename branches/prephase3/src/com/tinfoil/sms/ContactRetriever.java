@@ -32,6 +32,7 @@ import android.telephony.SmsManager;
 public abstract class ContactRetriever {
 	private static final String dateColumn = "date DESC";
 	private static final Pattern p = Pattern.compile("^[+]1.{10}");
+	private static final Pattern numOnly = Pattern.compile("\\W");
 	private static final int LIMIT = 50;
 	private static final String USER_NAME = "Me";
 	
@@ -275,7 +276,8 @@ public abstract class ContactRetriever {
 		{
 			number = number.substring(2);
 		}
-		number = number.replaceAll("-", "");
+		//number = number.replaceAll("[\(\)\-\s]", "");
+		number = number.replaceAll(numOnly.pattern(), "");
 		
 		return number;
 	}

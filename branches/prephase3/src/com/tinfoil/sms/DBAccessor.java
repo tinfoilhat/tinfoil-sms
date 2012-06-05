@@ -56,7 +56,7 @@ public class DBAccessor {
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
 	//private ContentResolver cr;
-	
+
 	/**
 	 * Creates a database that is read and write
 	 * @param c	: Context, where the database is available
@@ -126,8 +126,11 @@ public class DBAccessor {
 	 */
 	public void updateSharedInfo(int reference, String s1, String s2)
 	{
-		resetSharedInfo(reference);
-		addSharedInfo(reference, s1, s2);
+		if (s1 != null || s2 != null)
+		{
+			resetSharedInfo(reference);
+			addSharedInfo(reference, s1, s2);
+		}
 	}
 	
 	/**
@@ -277,8 +280,11 @@ public class DBAccessor {
 	 */
 	public void updateBookPaths(int reference, String bookPath, String bookInversePath)
 	{
-		resetBookPath(reference);
-		addBookPath(reference, bookPath, bookInversePath);
+		if (bookPath != null || bookInversePath != null)
+		{
+			resetBookPath(reference);
+			addBookPath(reference, bookPath, bookInversePath);
+		}
 	}
 	
 	/**
