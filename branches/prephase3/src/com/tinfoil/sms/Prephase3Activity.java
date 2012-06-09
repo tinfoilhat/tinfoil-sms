@@ -49,7 +49,7 @@ public class Prephase3Activity extends Activity {
 	private static List<String[]> msgList;
 	private ListView list;
 	//private BroadcastReceiver SMSbr;
-	private BootReceiver boot = new BootReceiver();
+	private MessageReceiver boot = new MessageReceiver();
 	
 	//private NotificationManager nm;
 
