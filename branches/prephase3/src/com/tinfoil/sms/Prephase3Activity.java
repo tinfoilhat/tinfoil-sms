@@ -20,6 +20,7 @@ package com.tinfoil.sms;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,12 +48,16 @@ public class Prephase3Activity extends Activity {
 	public static String selectedNumber;
 	private static List<String[]> msgList;
 	private ListView list;
-	private BroadcastReceiver SMSbr;
+	//private BroadcastReceiver SMSbr;
+	private BootReceiver boot = new BootReceiver();
+	
+	//private NotificationManager nm;
 
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		startService(new Intent (this, MessageService.class));
 		dba = new DBAccessor(this);
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -85,81 +90,6 @@ public class Prephase3Activity extends Activity {
 				startActivity(new Intent (getBaseContext(), MessageView.class));
 			}
 		});
-		
-		final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
-		SMSbr = new BroadcastReceiver() {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				// Called every time a new sms is received
-				Bundle bundle = intent.getExtras();
-				if (bundle != null) {
-					
-					// This will put every new message into a array of
-					// SmsMessages. The message is received as a pdu,
-					// and needs to be converted to a SmsMessage, if you want to
-					// get information about the message.
-					Object[] pdus = (Object[]) bundle.get("pdus");
-					final SmsMessage[] messages = new SmsMessage[pdus.length];
-					for (int i = 0; i < pdus.length; i++) {
-						messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-					}
-
-					if (messages.length > -1) {
-						
-						/* Shows a Toast with the phone number of the sender, and the message.
-						 * String smsToast = "New SMS received from " +
-						 * messages[0].getOriginatingAddress() + "\n'Test" +
-						 * messages[0].getMessageBody() + "'";
-						 */
-
-						String address = messages[0].getOriginatingAddress();
-												
-						// Only expects encrypted messages from trusted contacts in the secure state
-						if (dba.isTrustedContact((address))) {
-							Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
-							Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-							
-							/*
-							 * Now send the decrypted message to ourself, set
-							 * the source address of the message to the original
-							 * sender of the message
-							 */
-							try {
-								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(), 
-										messages[0].getMessageBody(), INBOX);
-								sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),	
-										Encryption.aes_decrypt(dba.getRow(ContactRetriever.format
-										(address)).getPublicKey(), messages[0].getMessageBody()), INBOX);
-								
-								Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
-								updateList();
-							} 
-							catch (Exception e) 
-							{
-								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
-								e.printStackTrace();
-							}
-						}
-						else
-						{
-							Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
-							Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-							sendToSelf(getBaseContext(), messages[0].getOriginatingAddress(),
-									messages[0].getMessageBody(), INBOX);
-							updateList();
-						}
-					}
-				}
-
-				// Prevent other applications from seeing the message received
-				this.abortBroadcast();
-
-			}
-		};
-		// The BroadcastReceiver needs to be registered before use.
-		IntentFilter SMSfilter = new IntentFilter(SMS_RECEIVED);
-		this.registerReceiver(SMSbr, SMSfilter);
 	}
 		
 	/**

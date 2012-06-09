@@ -30,6 +30,8 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class DBAccessor {
 	
+	public static final String KEY_ID = "id";
+	public static final String KEY_NAME = "name";
 	public static final String KEY_PUBLIC_KEY = "public_key";
 	public static final String KEY_PRIVATE_KEY = "private_key";
 	public static final String KEY_SIGNATURE = "signature";
@@ -39,9 +41,6 @@ public class DBAccessor {
 
 	public static final String KEY_BOOK_PATH = "book_path";
 	public static final String KEY_BOOK_INVERSE_PATH = "book_inverse_path";
-	
-	public static final String KEY_ID = "id";
-	public static final String KEY_NAME = "name";
 
 	public static final String KEY_REFERENCE = "reference";
 	public static final String KEY_NUMBER = "number";
@@ -171,7 +170,7 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Used to retrieve the book paths
+	 * Used to retrieve the shared information
 	 * @param reference
 	 * @return : String[2] the book path, and the book inverse path 
 	 */
@@ -211,8 +210,8 @@ public class DBAccessor {
 					KEY_REFERENCE + " = " + 0, null, null, null, null);
 			if (dCur.moveToFirst())
 			{
-				String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_1)),
-						cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_2))};
+				String sharedInfo[] = new String[] {dCur.getString(dCur.getColumnIndex(KEY_SHARED_INFO_1)),
+						dCur.getString(dCur.getColumnIndex(KEY_SHARED_INFO_2))};
 				if (open)
 				{
 					dCur.close();
@@ -350,8 +349,8 @@ public class DBAccessor {
 					KEY_REFERENCE + " = " + 0, null, null, null, null);
 			if (dCur.moveToFirst())
 			{
-				String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(KEY_BOOK_PATH)),
-						cur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
+				String bookPaths[] = new String[] {dCur.getString(dCur.getColumnIndex(KEY_BOOK_PATH)),
+						dCur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
 				if (open)
 				{
 					dCur.close();
