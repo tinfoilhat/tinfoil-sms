@@ -39,6 +39,14 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
         this.context = context;
         this.data = data;
     }
+    
+    public void addData(List<String[]> data)
+    {
+    	for (int i = 0; i < data.size(); i++)
+    	{
+    		this.add(data.get(i));
+    	}
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

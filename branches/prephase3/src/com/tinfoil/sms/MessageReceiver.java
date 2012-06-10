@@ -9,6 +9,7 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
+	public static boolean myActivityStarted = false;
 	
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,7 +58,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
 									Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
 									(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
-							
+							Prephase3Activity.updateList(context);
 							Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 						} 
 						catch (Exception e) 
@@ -72,14 +73,13 @@ public class MessageReceiver extends BroadcastReceiver {
 						Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
+						//Prephase3Activity.updateList(context);
 					}
 				}
 			}
 
-			// Prevent other applications from seeing the message received
-			Toast.makeText(context, ""+ this.getAbortBroadcast(), Toast.LENGTH_LONG).show();
+			// Prevent other applications from seeing the message received			
 			this.abortBroadcast();
-			Toast.makeText(context, ""+ this.getAbortBroadcast(), Toast.LENGTH_LONG).show();
 			
     	}
 }

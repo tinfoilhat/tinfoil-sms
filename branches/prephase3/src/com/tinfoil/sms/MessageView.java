@@ -42,6 +42,7 @@ public class MessageView extends Activity {
 	private EditText messageBox;
 	public static ListView list2;
 	public static List<String[]> msgList2;
+	public static MessageAdapter messages;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -58,9 +59,8 @@ public class MessageView extends Activity {
         
 		list2 = (ListView) findViewById(R.id.message_list);
 		msgList2 = ContactRetriever.getPersonSMS(this);
-		
-		list2.setAdapter(new MessageAdapter(this,
-				R.layout.listview_full_item_row, msgList2));
+		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2);
+		list2.setAdapter(messages);
 		list2.setItemsCanFocus(false);
 
 		list2.setOnItemClickListener(new OnItemClickListener() {
@@ -136,9 +136,9 @@ public class MessageView extends Activity {
     
     public void updateList()
     {
-    	MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-		MessageView.list2.setAdapter(new MessageAdapter(this,
-				R.layout.listview_full_item_row, MessageView.msgList2));
+    	msgList2 = ContactRetriever.getPersonSMS(this);
+    	messages.clear();
+    	messages.addData(msgList2);
     }
     
     protected void onStart()

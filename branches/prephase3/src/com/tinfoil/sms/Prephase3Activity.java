@@ -42,13 +42,13 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Prephase3Activity extends Activity {
 	public static DBAccessor dba;
+	public static MessageAdapter conversations;
 	public static final String INBOX = "content://sms/inbox";
 	public static final String SENT = "content://sms/sent";
 	public static SharedPreferences sharedPrefs;
 	public static String selectedNumber;
 	private static List<String[]> msgList;
-	private ListView list;
-	//private BroadcastReceiver SMSbr;
+	private static ListView list;
 	private MessageReceiver boot = new MessageReceiver();
 	
 	//private NotificationManager nm;
@@ -59,8 +59,8 @@ public class Prephase3Activity extends Activity {
 		setContentView(R.layout.main);
 		startService(new Intent (this, MessageService.class));
 		dba = new DBAccessor(this);
-
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		//MessageReceiver.myActivityStarted = true;
 
 		list = (ListView) findViewById(R.id.conversation_list);
 		
@@ -74,13 +74,12 @@ public class Prephase3Activity extends Activity {
 		
 		//msgList = ContactRetriever.getSMS(this, 10);
 		msgList = ContactRetriever.getSMS(this);
-
-		MessageAdapter adapter = new MessageAdapter(this, R.layout.listview_item_row, msgList);
-		
+		conversations = new MessageAdapter(this, R.layout.listview_item_row, msgList);		
 		
 		//View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
         //list.addHeaderView(header);
-		list.setAdapter(adapter);
+		
+		list.setAdapter(conversations);
         
 		//Load up the conversation with the contact selected
 		list.setOnItemClickListener(new OnItemClickListener() {
@@ -97,29 +96,33 @@ public class Prephase3Activity extends Activity {
 	 * the secondary inbox that the user last viewed, or is viewing
 	 * @param list : ListView, the ListView for this activity to update the message list
 	 */
-	private void updateList()
+	public static void updateList(Context context)
 	{
-		msgList = ContactRetriever.getSMS(this);
-		list.setAdapter(new MessageAdapter(this, R.layout.listview_item_row, msgList));
-		if (Prephase3Activity.selectedNumber != null)
-		{
-			MessageView.msgList2 = ContactRetriever.getPersonSMS(this);
-			MessageView.list2.setAdapter(new MessageAdapter(this,
-					R.layout.listview_full_item_row, MessageView.msgList2));
-		}
-		
+		//if (!MessageReceiver.myActivityStarted)
+		//{
+			msgList = ContactRetriever.getSMS(context);
+			conversations.clear();
+			conversations.addData(msgList);
+			if (Prephase3Activity.selectedNumber != null)
+			{
+				MessageView.msgList2 = ContactRetriever.getPersonSMS(context);
+				MessageView.messages.clear();
+				MessageView.messages.addData(MessageView.msgList2);
+			}
+		//}
 	}
 	
 	protected void onResume()
 	{
 		Prephase3Activity.selectedNumber = null;
-		updateList();
+		updateList(this);
 		super.onResume();
 	}
 	
 	protected void onDestroy()
 	{
 		dba.close();
+		MessageReceiver.myActivityStarted = false;
 		//unregisterReceiver(SMSbr);
 		super.onDestroy();
 	}
@@ -159,7 +162,7 @@ public class Prephase3Activity extends Activity {
 		values.put("address", srcNumber);
 		values.put("body", decMessage);
 		
-		//Stops native sms client from saying messages are new.
+		//Stops native sms client from reading messages as new.
 		values.put("read", true); 
 
 		/* Sets used to determine who sent the message, 
