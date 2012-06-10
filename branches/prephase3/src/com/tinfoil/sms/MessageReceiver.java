@@ -52,12 +52,28 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * the source address of the message to the original
 						 * sender of the message
 						 */
+						TrustedContact trustedContact = Prephase3Activity.dba.getRow(ContactRetriever.format
+								(address));
+						//trustedContact.setLastMessage(ContactRetriever.format(address), "0000");
 						try {
 							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
 									messages[0].getMessageBody(), Prephase3Activity.INBOX);
-							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
+							
+							/*Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
 									Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
 									(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
+									*/
+							
+							//TrustedContact trustedContact = Prephase3Activity.dba.getRow(ContactRetriever.format
+								//	(address));
+							String secretMessage = Encryption.aes_decrypt(trustedContact.getPublicKey(), messages[0].getMessageBody());
+							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
+									secretMessage , Prephase3Activity.INBOX);
+							
+							//trustedContact.setLastMessage(ContactRetriever.format(address), secretMessage);
+							
+							//Prephase3Activity.dba.updateRow(trustedContact, ContactRetriever.format(address));
+							
 							Prephase3Activity.updateList(context);
 							Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 						} 
@@ -73,7 +89,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
-						//Prephase3Activity.updateList(context);
+						Prephase3Activity.updateList(context);
 					}
 				}
 			}

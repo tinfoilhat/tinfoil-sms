@@ -125,7 +125,8 @@ public class DBAccessor {
 	 */
 	public void updateSharedInfo(int reference, String s1, String s2)
 	{
-		if (s1 != null || s2 != null)
+		if ((s1 != null || s2 != null) && (!s1.equalsIgnoreCase(DEFAULT_S1)
+				|| !s2.equalsIgnoreCase(DEFAULT_S2)))
 		{
 			resetSharedInfo(reference);
 			addSharedInfo(reference, s1, s2);
@@ -279,7 +280,8 @@ public class DBAccessor {
 	 */
 	public void updateBookPaths(int reference, String bookPath, String bookInversePath)
 	{
-		if (bookPath != null || bookInversePath != null)
+		if ((bookPath != null || bookInversePath != null) && (!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)
+				|| !bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
 		{
 			resetBookPath(reference);
 			addBookPath(reference, bookPath, bookInversePath);

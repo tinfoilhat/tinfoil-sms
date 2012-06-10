@@ -251,6 +251,24 @@ public class TrustedContact {
 	 * @param index : int the index of the number
 	 * @param number : String the new number
 	 */
+	public void setLastMessage(String number, String lastMessage)
+	{
+		for (int i = 0; i < this.numbers.size(); i++)
+		{
+			if (this.getNumber(i).equalsIgnoreCase(number))
+			{
+				this.lastMessage.set(i, lastMessage);
+				break;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Set a number in the contact's numbers list
+	 * @param index : int the index of the number
+	 * @param number : String the new number
+	 */
 	public void setLastMessage(int index, String lastMessage)
 	{
 		this.lastMessage.set(index, lastMessage);
