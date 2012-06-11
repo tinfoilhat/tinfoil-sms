@@ -100,6 +100,9 @@ public class MessageView extends Activity {
 									(Prephase3Activity.selectedNumber)).getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
+							
+							Prephase3Activity.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
+							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
@@ -107,6 +110,7 @@ public class MessageView extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
+							Prephase3Activity.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList();

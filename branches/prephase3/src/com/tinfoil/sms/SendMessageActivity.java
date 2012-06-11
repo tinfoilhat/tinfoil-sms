@@ -122,12 +122,16 @@ public class SendMessageActivity extends Activity {
 									Prephase3Activity.dba.getRow(ContactRetriever.format(number))
 									.getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
+							
+							Prephase3Activity.dba.UpdateLastMessage(ContactRetriever.format(number), text);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
+							Prephase3Activity.dba.UpdateLastMessage(ContactRetriever.format(number), text);
+							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						if (!Prephase3Activity.dba.inDatabase(number))
