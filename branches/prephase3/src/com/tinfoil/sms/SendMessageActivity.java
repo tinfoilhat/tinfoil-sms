@@ -84,10 +84,7 @@ public class SendMessageActivity extends Activity {
             	}
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-            public void onTextChanged(CharSequence s, int start, int before, int count){
-            	
-            }
-        });
+            public void onTextChanged(CharSequence s, int start, int before, int count){}});
         
         sendSMS.setOnClickListener(new View.OnClickListener()
         {
@@ -128,12 +125,11 @@ public class SendMessageActivity extends Activity {
 							        	   	SendMessageActivity.this.startActivity(new Intent(
 							        				   SendMessageActivity.this, AddContact.class));
 							        	   	finish();
-							           }})
+							        	   	}})
 							       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							               public void onClick(DialogInterface dialog, int id) {
 							                   dialog.cancel();
-							              }
-							          });
+							              }});
 							AlertDialog alert = builder.create();
 							alert.show();
 						}

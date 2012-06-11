@@ -92,7 +92,6 @@ public class ImportContacts extends Activity {
             					{
             						lastMessage.add(null);
             					}
-            					//NEED TO ADD the last message (the latest message) for each phone number
             				} while (pCur.moveToNext());
             			}
             			pCur.close();

@@ -78,6 +78,7 @@ public class DBAccessor {
 	 * Add a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : String the number 
+	 * @param lastMessage : String the last message sent or received from number
 	 */
 	private void addNumbersRow (int reference, String number,String lastMessage)
 	{
@@ -97,7 +98,7 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Add a row to the numbers table.
+	 * Update a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : String the number 
 	 */
@@ -112,20 +113,21 @@ public class DBAccessor {
         cv.put(KEY_REFERENCE, reference);
         cv.put(KEY_NUMBER, number);
         cv.put(KEY_LAST_MESSAGE, lastMessage);
-        
 
         //Insert the row into the database
         open();
-        db.delete(SQLitehelper.NUMBERS_TABLE_NAME, "number = ?", 
-        		new String[] {number});
-        db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
+        if (db.delete(SQLitehelper.NUMBERS_TABLE_NAME, "number = ?", 
+        		new String[] {number}) > 0)
+        {
+        	db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);	
+        }
         close();
 		
 	}
 	
 	/**
 	 * Add a row to the shared_information table.
-	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param reference : int the id of the contact
 	 * @param s1 : String the first shared information
 	 * @param s2 : String the second shared information
 	 */
@@ -146,14 +148,15 @@ public class DBAccessor {
 	
 	/** 
 	 * Used for updating the shared information, will not delete the default row
-	 * @param reference
-	 * @param bookPath
-	 * @param bookInversePath
+	 * @param reference : int the id of the contact
+	 * @param s1 : String the first shared information
+	 * @param s2 : String the second shared information
 	 */
 	public void updateSharedInfo(int reference, String s1, String s2)
 	{
 		if ((s1 != null || s2 != null) && (!s1.equalsIgnoreCase(DEFAULT_S1)
-				|| !s2.equalsIgnoreCase(DEFAULT_S2)))
+				|| !s2.equalsIgnoreCase(DEFAULT_S2))) //||(!s1.equalsIgnoreCase(DEFAULT_S2)
+				//|| !s2.equalsIgnoreCase(DEFAULT_S1))))
 		{
 			resetSharedInfo(reference);
 			addSharedInfo(reference, s1, s2);
@@ -166,7 +169,7 @@ public class DBAccessor {
 	 */
 	public void resetSharedInfo (int reference)
 	{
-		if (!sharedInfoIsDefault(reference))
+		if (reference != 0 && !sharedInfoIsDefault(reference) )
 		{
 			open();
 			db.delete(SQLitehelper.SHARED_INFO_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
@@ -199,8 +202,8 @@ public class DBAccessor {
 	
 	/**
 	 * Used to retrieve the shared information
-	 * @param reference
-	 * @return : String[2] the book path, and the book inverse path 
+	 * @param reference : int the reference id for the contact
+	 * @return : String[2] s1 and s2
 	 */
 	public String[] getSharedInfo(int reference)
 	{
@@ -264,7 +267,7 @@ public class DBAccessor {
 		
 	/**
 	 * Add a row to the shared_information table.
-	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param reference : int the id of the contact
 	 * @param bookPath : String the path for looking up the book source
 	 * @param bookInversePath : String the path for looking up the inverse book source
 	 */
@@ -301,13 +304,14 @@ public class DBAccessor {
 	
 	/** 
 	 * Used for updating the book paths, will not delete the default row
-	 * @param reference
-	 * @param bookPath
-	 * @param bookInversePath
+	 * @param reference : int the id of the contact
+	 * @param bookPath : String the path for looking up the book source
+	 * @param bookInversePath : String the path for looking up the inverse book source
 	 */
 	public void updateBookPaths(int reference, String bookPath, String bookInversePath)
 	{
-		if ((bookPath != null || bookInversePath != null) && (!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)
+		if ((bookPath != null || bookInversePath != null) && 
+				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)
 				|| !bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
 		{
 			resetBookPath(reference);
@@ -339,7 +343,7 @@ public class DBAccessor {
 	
 	/**
 	 * Used to retrieve the book paths
-	 * @param reference
+	 * @param reference : int the id of the contact
 	 * @return : String[2] the book path, and the book inverse path 
 	 */
 	public String[] getBookPath(int reference)
@@ -379,7 +383,7 @@ public class DBAccessor {
 			if (dCur.moveToFirst())
 			{
 				String bookPaths[] = new String[] {dCur.getString(dCur.getColumnIndex(KEY_BOOK_PATH)),
-						dCur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
+						dCur.getString(dCur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
 				if (open)
 				{
 					dCur.close();
@@ -423,7 +427,7 @@ public class DBAccessor {
 	        close();
 	        if (!tc.isNumbersEmpty())
 	        {
-	        	for (int i = 0; i< tc.getNumberSize();i++)
+	        	for (int i = 0; i< tc.getNumber().size();i++)
 	        	{
 	        		addNumbersRow(id, ContactRetriever.format(tc.getNumber(i)), tc.getLastMessage(i));
 	        	}
@@ -433,6 +437,11 @@ public class DBAccessor {
 		}	              
 	}
 	
+	/**
+	 * Returns the id of the contact with the given number
+	 * @param number : String the number of the contact
+	 * @return : int the id for the contact with the given number
+	 */
 	private int getId(String number)
 	{
 		open();
@@ -470,7 +479,7 @@ public class DBAccessor {
 	
 	/**
 	 * Checks if the contact is already in the database
-	 * @param number
+	 * @param number : String a number for the contact
 	 * @return: boolean 
 	 * true if the number is in the database already 
 	 * false if the number is not found the database
@@ -494,6 +503,7 @@ public class DBAccessor {
 	
 	/**
 	 * Close the database
+	 * @param cur : Cursor, the cursor to close 
 	 */
 	public void close(Cursor cur)
 	{
@@ -502,12 +512,22 @@ public class DBAccessor {
 		db.close();
 	}
 	
+	/**
+	 * Close the database
+	 */
 	public void close()
 	{
 		//contactDatabase.close();
 		db.close();
 	}
 	
+	/**
+	 * Get all of the last messages sent from every contact.
+	 * **Will be used in the future to make the list of
+	 * conversations on the main page
+	 * @return : List<String[]> the information need to 
+	 * display the conversations.
+	 */
 	public List<String[]>  getConversations()
 	{
 		open();

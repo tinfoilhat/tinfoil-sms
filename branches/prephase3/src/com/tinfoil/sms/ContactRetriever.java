@@ -146,13 +146,8 @@ public abstract class ContactRetriever {
 				"+1" + format(Prephase3Activity.selectedNumber),
 				"1" + format(Prephase3Activity.selectedNumber)},
 				dateColumn + " LIMIT " + LIMIT);
-		
-		//int i = 0;
+
 		while (cur.moveToNext()) {
-			/*if (i == LIMIT)
-			{
-				break;
-			}*/
 			String address = cur.getString(cur.getColumnIndex("address"));
 			String type = cur.getString(cur.getColumnIndex("type"));
 			String name ="";
@@ -167,7 +162,6 @@ public abstract class ContactRetriever {
 			
 			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
 			sms.add(new String[] {address, name, body});
-			//i++;
 		}
 		cur.close();
 		return sms;
@@ -184,7 +178,7 @@ public abstract class ContactRetriever {
 		List<String> contacts = new ArrayList<String>();
 		for (int i = 0; i < tc.size(); i++)
 		{
-			for (int j = 0; j < tc.get(i).getNumberSize(); j++)
+			for (int j = 0; j < tc.get(i).getNumber().size(); j++)
 			{
 				contacts.add(tc.get(i).getName() + ", " +tc.get(i).getNumber(j));
 			}
