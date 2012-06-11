@@ -357,7 +357,11 @@ public class TrustedContact {
 	 */
 	public String getLastMessage(int index)
 	{
-		return lastMessage.get(index);
+		if (index < lastMessage.size())
+		{
+			return lastMessage.get(index);
+		}
+		return null;
 	}
 	
 	/**

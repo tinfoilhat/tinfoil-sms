@@ -19,6 +19,8 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -37,6 +39,7 @@ import android.widget.Toast;
 public class SendMessageActivity extends Activity {
 	private Button sendSMS;
 	private AutoCompleteTextView phoneBox;
+	private EditText phone;
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
@@ -51,16 +54,22 @@ public class SendMessageActivity extends Activity {
         Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         newCont = new TrustedContact(null);
         tc = Prephase3Activity.dba.getAllRows();
-        
-        phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
-	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
-	    		R.layout.auto_complete_list_item, ContactRetriever.contactDisplayMaker(tc));
-	    phoneBox.setAdapter(adapter);
-	    
-        sendSMS = (Button) findViewById(R.id.new_message_send);
-        messageBox = (EditText) findViewById(R.id.new_message_message);
 
-        phoneBox.addTextChangedListener(new TextWatcher(){
+    	phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
+    	List <String> contact;
+    	if (tc != null)
+    	{
+    		contact =ContactRetriever.contactDisplayMaker(tc);
+    	}
+    	else
+    	{
+    		contact = null;
+    	}
+    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.auto_complete_list_item, contact);
+    		
+    	phoneBox.setAdapter(adapter);
+    	
+    	phoneBox.addTextChangedListener(new TextWatcher(){
             public void afterTextChanged(Editable s) {
             	String []info = s.toString().split(", ");
             	
@@ -71,7 +80,7 @@ public class SendMessageActivity extends Activity {
             	}
             	else
             	{
-            		//Warning this could be a word, there is nothing protected it from them
+            		//**Warning this could be a word, there is nothing protected it from them
             		//entering a name that is not in the database. (message will not send)
             		if (newCont.isNumbersEmpty())
             		{
@@ -84,7 +93,11 @@ public class SendMessageActivity extends Activity {
             	}
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-            public void onTextChanged(CharSequence s, int start, int before, int count){}});
+            public void onTextChanged(CharSequence s, int start, int before, int count){}
+        });
+      	    
+        sendSMS = (Button) findViewById(R.id.new_message_send);
+        messageBox = (EditText) findViewById(R.id.new_message_message);
         
         sendSMS.setOnClickListener(new View.OnClickListener()
         {
@@ -102,13 +115,19 @@ public class SendMessageActivity extends Activity {
 						if (Prephase3Activity.dba.isTrustedContact(number) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							ContactRetriever.sendSMS(getBaseContext(), number, Encryption.aes_encrypt(Prephase3Activity.dba.getRow
-									(ContactRetriever.format(number)).getPublicKey(), text));
+							ContactRetriever.sendSMS(getBaseContext(), number, Encryption.aes_encrypt(
+									Prephase3Activity.dba.getRow(ContactRetriever.format(number))
+									.getPublicKey(), text));
+							Prephase3Activity.sendToSelf(getBaseContext(), number, Encryption.aes_encrypt(
+									Prephase3Activity.dba.getRow(ContactRetriever.format(number))
+									.getPublicKey(), text), Prephase3Activity.SENT);
+							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
+							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						if (!Prephase3Activity.dba.inDatabase(number))
@@ -121,9 +140,9 @@ public class SendMessageActivity extends Activity {
 							           public void onClick(DialogInterface dialog, int id) {
 							        	   	AddContact.editTc = new TrustedContact("");
 							        	   	AddContact.editTc.addNumber(number);
-							        	   	AddContact.addContact = false;
+							        	   	AddContact.addContact = true;
 							        	   	SendMessageActivity.this.startActivity(new Intent(
-							        				   SendMessageActivity.this, AddContact.class));
+							        	   			SendMessageActivity.this, AddContact.class));
 							        	   	finish();
 							        	   	}})
 							       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

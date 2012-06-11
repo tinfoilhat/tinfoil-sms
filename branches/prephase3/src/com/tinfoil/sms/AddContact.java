@@ -55,7 +55,8 @@ public class AddContact extends Activity {
         
       	listView = (ListView)findViewById(R.id.contact_numbers);
         addNumber = (Button) findViewById(R.id.add_new_number);
-        if (!addContact)
+        
+        if (!addContact || editTc != null)
         {
         	contactEdit = editTc;
        	}
