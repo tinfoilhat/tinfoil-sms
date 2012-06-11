@@ -88,7 +88,7 @@ public abstract class ContactRetriever {
 		Uri uriSMSURI = Uri.parse("content://sms/conversations/");
 		Uri uriSMS = Uri.parse("content://sms/inbox");
 		Cursor cur = c.getContentResolver().query(uriSMSURI, new String[]{"thread_id", "snippet"}, null,
-				null, null);
+				null, dateColumn);
 		Cursor nCur = null;
 		Cursor sCur = null;
 		

@@ -57,7 +57,7 @@ public class Prephase3Activity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		startService(new Intent (this, MessageService.class));
+		//startService(new Intent (this, MessageService.class));
 		dba = new DBAccessor(this);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		//MessageReceiver.myActivityStarted = true;
@@ -163,7 +163,8 @@ public class Prephase3Activity extends Activity {
 		values.put("body", decMessage);
 		
 		//Stops native sms client from reading messages as new.
-		values.put("read", true); 
+		//***Note this is temporarily commented until we implement our own notification system
+		//values.put("read", true); 
 
 		/* Sets used to determine who sent the message, 
 		 * if type == 2 then it is sent from the user
