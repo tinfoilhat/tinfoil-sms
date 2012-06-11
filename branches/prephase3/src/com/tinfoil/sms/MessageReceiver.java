@@ -70,6 +70,8 @@ public class MessageReceiver extends BroadcastReceiver {
 							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
 									secretMessage , Prephase3Activity.INBOX);
 							
+							
+							Prephase3Activity.dba.UpdateLastMessage(address, secretMessage);
 							//trustedContact.setLastMessage(ContactRetriever.format(address), secretMessage);
 							
 							//Prephase3Activity.dba.updateRow(trustedContact, ContactRetriever.format(address));

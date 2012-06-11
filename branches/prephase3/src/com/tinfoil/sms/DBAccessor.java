@@ -97,6 +97,33 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Add a row to the numbers table.
+	 * @param reference : int the reference id of the contact the number belongs to
+	 * @param number : String the number 
+	 */
+	public void UpdateLastMessage(String number,String lastMessage)
+	{
+		number = ContactRetriever.format(number);
+		int reference = getId(number);
+		
+		ContentValues cv = new ContentValues();
+			
+		//add given values to a row
+        cv.put(KEY_REFERENCE, reference);
+        cv.put(KEY_NUMBER, number);
+        cv.put(KEY_LAST_MESSAGE, lastMessage);
+        
+
+        //Insert the row into the database
+        open();
+        db.delete(SQLitehelper.NUMBERS_TABLE_NAME, "number = ?", 
+        		new String[] {number});
+        db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
+        close();
+		
+	}
+	
+	/**
 	 * Add a row to the shared_information table.
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param s1 : String the first shared information
