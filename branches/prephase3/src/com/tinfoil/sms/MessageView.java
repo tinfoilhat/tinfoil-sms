@@ -53,7 +53,7 @@ public class MessageView extends Activity {
 		//Sets the keyboard to not pop-up until a text area is selected 
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
-		Prephase3Activity.dba = new DBAccessor(this);
+		MessageService.dba = new DBAccessor(this);
 	
 		Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
@@ -87,21 +87,21 @@ public class MessageView extends Activity {
 						messageBox.setText("");
 																		
 						//Only expects encrypted messages from trusted contacts in the secure state
-						if (Prephase3Activity.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
+						if (MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
 							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
-									Encryption.aes_encrypt(Prephase3Activity.dba.getRow(
+									Encryption.aes_encrypt(MessageService.dba.getRow(
 									ContactRetriever.format(Prephase3Activity.selectedNumber))
 									.getPublicKey(), text));							
 							
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									Encryption.aes_encrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
+									Encryption.aes_encrypt(MessageService.dba.getRow(ContactRetriever.format
 									(Prephase3Activity.selectedNumber)).getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
 							
-							Prephase3Activity.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
+							MessageService.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
@@ -110,7 +110,7 @@ public class MessageView extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
-							Prephase3Activity.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
+							MessageService.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList(getBaseContext());
@@ -168,20 +168,20 @@ public class MessageView extends Activity {
 		switch (item.getItemId()) {
 		case R.id.exchange:
 			//Add to trusted Contact list
-			TrustedContact tc = Prephase3Activity.dba.getRow(ContactRetriever.format
+			TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)
 			{
-				if (Prephase3Activity.dba.isTrustedContact(ContactRetriever.format
+				if (MessageService.dba.isTrustedContact(ContactRetriever.format
 						(Prephase3Activity.selectedNumber)))
 				{
 					tc.clearPublicKey();
-					Prephase3Activity.dba.updateRow(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
 				else
 				{
 					tc.setPublicKey();
-					Prephase3Activity.dba.updateRow(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
 			}
 			

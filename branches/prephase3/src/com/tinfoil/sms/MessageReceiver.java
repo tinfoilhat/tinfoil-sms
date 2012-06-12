@@ -34,6 +34,10 @@ public class MessageReceiver extends BroadcastReceiver {
     	//Intent i = new Intent(context, Prephase3Activity.class);
     	//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     	//context.startActivity(i);
+
+    	Intent serviceIntent = new Intent(context, MessageService.class);
+    	context.startService(serviceIntent);
+    	//Toast.makeText(context, ""+context.startService(serviceIntent).getClassName(), Toast.LENGTH_LONG).show();
     	
     	// Called every time a new sms is received
 			Bundle bundle = intent.getExtras();
@@ -60,7 +64,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					String address = messages[0].getOriginatingAddress();
 											
 					// Only expects encrypted messages from trusted contacts in the secure state
-					if (Prephase3Activity.dba.isTrustedContact((address))) {
+					if (MessageService.dba.isTrustedContact((address))) {
 						Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
 						Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 						
@@ -69,7 +73,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * the source address of the message to the original
 						 * sender of the message
 						 */
-						TrustedContact trustedContact = Prephase3Activity.dba.getRow(ContactRetriever.format
+						TrustedContact trustedContact = MessageService.dba.getRow(ContactRetriever.format
 								(address));
 						//trustedContact.setLastMessage(ContactRetriever.format(address), "0000");
 						try {
@@ -88,7 +92,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									secretMessage , Prephase3Activity.INBOX);
 							
 							
-							Prephase3Activity.dba.UpdateLastMessage(address, secretMessage);
+							MessageService.dba.UpdateLastMessage(address, secretMessage);
 							//trustedContact.setLastMessage(ContactRetriever.format(address), secretMessage);
 							
 							//Prephase3Activity.dba.updateRow(trustedContact, ContactRetriever.format(address));

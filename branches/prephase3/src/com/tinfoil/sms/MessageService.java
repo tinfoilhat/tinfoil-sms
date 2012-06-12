@@ -28,6 +28,8 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class MessageService extends Service {
+	public static DBAccessor dba;
+	
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -38,6 +40,7 @@ public class MessageService extends Service {
 	 @Override
      public void onCreate() {
 		 Toast.makeText(this, "My Service Created", Toast.LENGTH_LONG).show();
+		 dba = new DBAccessor(this);
 		 //super.onCreate();
      }
 

@@ -100,7 +100,7 @@ public class ImportContacts extends Activity {
                     if(number!=null)
                     {
                     	
-                    	if (!Prephase3Activity.dba.inDatabase(number))
+                    	if (!MessageService.dba.inDatabase(number))
                     	{
                     		tc.add(new TrustedContact(name, number, lastMessage));
                     		inDb.add(false);
@@ -136,7 +136,7 @@ public class ImportContacts extends Activity {
 	        		{        			
         				if (inDb.get(i))
 	        			{
-	        				Prephase3Activity.dba.addRow(tc.get(i));
+        					MessageService.dba.addRow(tc.get(i));
 	        			}
 	        		}
 	        		finish();

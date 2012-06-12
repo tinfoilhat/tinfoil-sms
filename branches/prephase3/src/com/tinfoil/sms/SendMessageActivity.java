@@ -49,11 +49,11 @@ public class SendMessageActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_message);
         
-        Prephase3Activity.dba = new DBAccessor(this);
+        MessageService.dba = new DBAccessor(this);
         
         Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         newCont = new TrustedContact(null);
-        tc = Prephase3Activity.dba.getAllRows();
+        tc = MessageService.dba.getAllRows();
 
     	phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
     	List <String> contact;
@@ -112,29 +112,29 @@ public class SendMessageActivity extends Activity {
 					try
 					{
                     	//Only expects encrypted messages from trusted contacts in the secure state
-						if (Prephase3Activity.dba.isTrustedContact(number) && 
+						if (MessageService.dba.isTrustedContact(number) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
 							ContactRetriever.sendSMS(getBaseContext(), number, Encryption.aes_encrypt(
-									Prephase3Activity.dba.getRow(ContactRetriever.format(number))
+									MessageService.dba.getRow(ContactRetriever.format(number))
 									.getPublicKey(), text));
 							Prephase3Activity.sendToSelf(getBaseContext(), number, Encryption.aes_encrypt(
-									Prephase3Activity.dba.getRow(ContactRetriever.format(number))
+									MessageService.dba.getRow(ContactRetriever.format(number))
 									.getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							
-							Prephase3Activity.dba.UpdateLastMessage(ContactRetriever.format(number), text);
+							MessageService.dba.UpdateLastMessage(ContactRetriever.format(number), text);
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
-							Prephase3Activity.dba.UpdateLastMessage(ContactRetriever.format(number), text);
+							MessageService.dba.UpdateLastMessage(ContactRetriever.format(number), text);
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						if (!Prephase3Activity.dba.inDatabase(number))
+						if (!MessageService.dba.inDatabase(number))
 						{
 
 							AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
