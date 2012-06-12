@@ -20,6 +20,7 @@ package com.tinfoil.sms;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -35,14 +36,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-//**Might be a good idea for this activity to extend the main activity, prephase2Activity. 
 public class MessageView extends Activity {
 	
 	private Button sendSMS;
 	private EditText messageBox;
-	public static ListView list2;
-	public static List<String[]> msgList2;
-	public static MessageAdapter messages;
+	private static ListView list2;
+	private static List<String[]> msgList2;
+	private static MessageAdapter messages;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -113,7 +113,7 @@ public class MessageView extends Activity {
 							Prephase3Activity.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						updateList();
+						updateList(getBaseContext());
 						
 					}
 			        catch ( Exception e ) 
@@ -138,16 +138,17 @@ public class MessageView extends Activity {
 		
     }   
     
-    public void updateList()
+    public static void updateList(Context context)
     {
-    	msgList2 = ContactRetriever.getPersonSMS(this);
+    	msgList2 = ContactRetriever.getPersonSMS(context);
     	messages.clear();
     	messages.addData(msgList2);
     }
     
-    protected void onStart()
+    protected void onStop()
     {
-		super.onStart();
+    	Prephase3Activity.selectedNumber = null;
+		super.onStop();
     }
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);

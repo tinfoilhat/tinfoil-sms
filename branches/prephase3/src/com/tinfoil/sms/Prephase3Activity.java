@@ -105,9 +105,7 @@ public class Prephase3Activity extends Activity {
 			conversations.addData(msgList);
 			if (Prephase3Activity.selectedNumber != null)
 			{
-				MessageView.msgList2 = ContactRetriever.getPersonSMS(context);
-				MessageView.messages.clear();
-				MessageView.messages.addData(MessageView.msgList2);
+				MessageView.updateList(context);
 			}
 		//}
 	}
