@@ -27,8 +27,9 @@ public class TrustedContact {
 	
 	private String name;
 	private byte[] publicKey;		
-	private ArrayList<String> numbers;
-	private ArrayList<String> lastMessage;
+	//private ArrayList<String> numbers;
+	//private ArrayList<String> lastMessage;
+	private ArrayList<Number> numbers;
 	private byte[] signature;
 	private String s1;
 	private String s2;
@@ -40,13 +41,14 @@ public class TrustedContact {
 	 * 
 	 * @param name The contact's name 
 	 * @param publicKey The contact's public key used to encrypt message sent to this contact
+	 * @param signature The contact's signature
 	 */
 	public TrustedContact (String name, byte[] publicKey, byte[] signature)
 	{
 		this.name = name;
 		this.publicKey = publicKey;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -65,11 +67,11 @@ public class TrustedContact {
 	{
 		this.name = name;
 		this.publicKey = publicKey;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
-			this.numbers.add(numbers.get(i));
+			this.numbers.add(new Number (numbers.get(i)));
 		}
 		this.signature = null;
 		this.s1 = null;
@@ -84,20 +86,20 @@ public class TrustedContact {
 	 * @param name The contact's name 
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, ArrayList<String> numbers, ArrayList<String> lastMessage)
+	public TrustedContact (String name, ArrayList<Number> numbers)
 	{
 		this.name = name;
 		this.publicKey = null;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(numbers.get(i));
 		}
-		for (int i = 0; i<lastMessage.size(); i++)
+		/*for (int i = 0; i<lastMessage.size(); i++)
 		{
 			this.lastMessage.add(lastMessage.get(i));
-		}
+		}*/
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -115,8 +117,8 @@ public class TrustedContact {
 	{
 		this.name = name;
 		this.publicKey = null;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -268,7 +270,7 @@ public class TrustedContact {
 		{
 			if (numbers.get(i) != null)
 			{
-				return numbers.get(i);
+				return numbers.get(i).getNumber();
 			}
 		}
 		return null;
@@ -281,7 +283,7 @@ public class TrustedContact {
 	 */
 	public void setNumber(int index, String number)
 	{
-		this.numbers.set(index, number);
+		this.numbers.get(index).setNumber(number);
 	}
 	
 	/**
@@ -290,7 +292,16 @@ public class TrustedContact {
 	 */
 	public void addNumber(String number)
 	{
-		this.numbers.add(number);
+		this.numbers.add(new Number(number));
+	}
+	
+	/**
+	 * Add a number to the contact's numbers list
+	 * @param number : String
+	 */
+	public void addNumber(String number, String lastMessage)
+	{
+		this.numbers.add(new Number(number, lastMessage));
 	}
 	
 	/**
@@ -299,16 +310,31 @@ public class TrustedContact {
 	 */
 	public String getNumber(int index)
 	{
-		return numbers.get(index);
+		return numbers.get(index).getNumber();
 	}
 	
 	/**
 	 * Access a contact's number from their contact list
 	 * @return : ArrayList<String>
 	 */
-	public ArrayList<String> getNumber()
+	public ArrayList<Number> getNumber()
 	{
 		return numbers;
+	}
+	
+	/**
+	 * Access a contact's number from their contact list
+	 * @return : ArrayList<String>
+	 */
+	public ArrayList<String> getNumbers()
+	{
+		ArrayList<String> num = new ArrayList<String>();
+		
+		for (int i =0; i < numbers.size(); i++)
+		{
+			num.add(numbers.get(i).getNumber());
+		}
+		return num;
 	}
 	
 	/**
@@ -322,7 +348,7 @@ public class TrustedContact {
 		{
 			if (this.getNumber(i).equalsIgnoreCase(number))
 			{
-				this.lastMessage.set(i, lastMessage);
+				this.numbers.get(i).setLastMessage(lastMessage);
 				break;
 			}
 		}
@@ -336,20 +362,20 @@ public class TrustedContact {
 	 */
 	public void setLastMessage(int index, String lastMessage)
 	{
-		this.lastMessage.set(index, lastMessage);
+		this.numbers.get(index).setLastMessage(lastMessage);
 	}
 	
 	/**
 	 * Add last message to the contact's numbers list
 	 * @param number : String
 	 */
-	public void addLastMessage(String lastMessage)
+	/*public void addLastMessage(String lastMessage)
 	{
-		if (this.lastMessage.size() < this.numbers.size())
+		if (this.numbers.size() < this.numbers.size())
 		{
-			this.lastMessage.add(lastMessage);
+			this.numbers.add(lastMessage);
 		}
-	}
+	}*/
 	
 	/**
 	 * Access a contact's number from their contact list
@@ -357,9 +383,9 @@ public class TrustedContact {
 	 */
 	public String getLastMessage(int index)
 	{
-		if (index < lastMessage.size())
+		if (index < numbers.size())
 		{
-			return lastMessage.get(index);
+			return numbers.get(index).getLastMessage();
 		}
 		return null;
 	}
@@ -421,4 +447,6 @@ public class TrustedContact {
 		}
 		return false;
 	}
+	
+	
 }

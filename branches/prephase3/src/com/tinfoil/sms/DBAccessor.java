@@ -465,11 +465,11 @@ public class DBAccessor {
 	 * true if the number is in the database already 
 	 * false if the number is not found the database
 	 */
-	public boolean inDatabase(ArrayList<String> number)
+	public boolean inDatabase(ArrayList<Number> number)
 	{
 		for (int i = 0; i<number.size(); i++)
 		{
-			if (inDatabase(number.get(i)))
+			if (inDatabase(number.get(i).getNumber()))
 			{
 				return true;
 			}
@@ -592,8 +592,9 @@ public class DBAccessor {
 			{
 				do
 				{
-					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
-					tc.addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
+					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+							pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
+					//tc.addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 				}while(pCur.moveToNext());
 			}
 			close(pCur);
@@ -649,8 +650,9 @@ public class DBAccessor {
 				{
 					do
 					{
-						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)));
-						tc.get(i).addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
+						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+								pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
+						//tc.get(i).addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 					}while(pCur.moveToNext());
 				}
 				pCur.close();
