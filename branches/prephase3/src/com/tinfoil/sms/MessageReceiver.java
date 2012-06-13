@@ -39,86 +39,82 @@ public class MessageReceiver extends BroadcastReceiver {
     	context.startService(serviceIntent);
     	//Toast.makeText(context, ""+context.startService(serviceIntent).getClassName(), Toast.LENGTH_LONG).show();
     	
-    	// Called every time a new sms is received
-			Bundle bundle = intent.getExtras();
-			if (bundle != null) {
-				
-				// This will put every new message into a array of
-				// SmsMessages. The message is received as a pdu,
-				// and needs to be converted to a SmsMessage, if you want to
-				// get information about the message.
-				Object[] pdus = (Object[]) bundle.get("pdus");
-				final SmsMessage[] messages = new SmsMessage[pdus.length];
-				for (int i = 0; i < pdus.length; i++) {
-					messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-				}
-
-				if (messages.length > -1) {
-					
-					/* Shows a Toast with the phone number of the sender, and the message.
-					 * String smsToast = "New SMS received from " +
-					 * messages[0].getOriginatingAddress() + "\n'Test" +
-					 * messages[0].getMessageBody() + "'";
-					 */
-
-					String address = messages[0].getOriginatingAddress();
-											
-					// Only expects encrypted messages from trusted contacts in the secure state
-					if (MessageService.dba.isTrustedContact((address))) {
-						Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
-						Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-						
-						/*
-						 * Now send the decrypted message to ourself, set
-						 * the source address of the message to the original
-						 * sender of the message
-						 */
-						TrustedContact trustedContact = MessageService.dba.getRow(ContactRetriever.format
-								(address));
-						//trustedContact.setLastMessage(ContactRetriever.format(address), "0000");
-						try {
-							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
-									messages[0].getMessageBody(), Prephase3Activity.INBOX);
-							
-							/*Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
-									Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
-									(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
-									*/
-							
-							//TrustedContact trustedContact = Prephase3Activity.dba.getRow(ContactRetriever.format
-								//	(address));
-							String secretMessage = Encryption.aes_decrypt(trustedContact.getPublicKey(), messages[0].getMessageBody());
-							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
-									secretMessage , Prephase3Activity.INBOX);
-							
-							
-							MessageService.dba.UpdateLastMessage(address, secretMessage);
-							//trustedContact.setLastMessage(ContactRetriever.format(address), secretMessage);
-							
-							//Prephase3Activity.dba.updateRow(trustedContact, ContactRetriever.format(address));
-							
-							Prephase3Activity.updateList(context);
-							Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
-						} 
-						catch (Exception e) 
-						{
-							Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
-							e.printStackTrace();
-						}
-					}
-					else
-					{
-						Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
-						Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
-								messages[0].getMessageBody(), Prephase3Activity.INBOX);
-						Prephase3Activity.updateList(context);
-					}
-				}
+    	Bundle bundle = intent.getExtras();
+		if (bundle != null) {
+			
+			// This will put every new message into a array of
+			// SmsMessages. The message is received as a pdu,
+			// and needs to be converted to a SmsMessage, if you want to
+			// get information about the message.
+			Object[] pdus = (Object[]) bundle.get("pdus");
+			final SmsMessage[] messages = new SmsMessage[pdus.length];
+			for (int i = 0; i < pdus.length; i++) {
+				messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
 			}
 
-			// Prevent other applications from seeing the message received			
-			this.abortBroadcast();
-			
-    	}
+			if (messages.length > -1) {
+				
+				/* Shows a Toast with the phone number of the sender, and the message.
+				 * String smsToast = "New SMS received from " +
+				 * messages[0].getOriginatingAddress() + "\n'Test" +
+				 * messages[0].getMessageBody() + "'";
+				 */
+				if (MessageService.dba == null)
+				{
+					//Sometimes the dba will not be initilized by the service this will catch it for those times
+					MessageService.dba = new DBAccessor(context);
+				}
+				String address = messages[0].getOriginatingAddress();
+										
+				// Only expects encrypted messages from trusted contacts in the secure state
+				if (MessageService.dba.isTrustedContact((address))) {
+					Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
+					
+					/*
+					 * Now send the decrypted message to ourself, set
+					 * the source address of the message to the original
+					 * sender of the message
+					 */
+					try {
+						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
+								messages[0].getMessageBody(), Prephase3Activity.INBOX);
+						
+						/*Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
+								Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
+								(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
+								*/
+
+						String secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
+								ContactRetriever.format(address)).getPublicKey(), 
+								messages[0].getMessageBody());
+						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
+								secretMessage , Prephase3Activity.INBOX);
+						
+						//Updates the last message recieved
+						MessageService.dba.UpdateLastMessage(address, secretMessage);
+						
+						Prephase3Activity.updateList(context);
+						Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
+					} 
+					catch (Exception e) 
+					{
+						Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
+					Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
+					Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
+							messages[0].getMessageBody(), Prephase3Activity.INBOX);
+					Prephase3Activity.updateList(context);
+				}
+			}
+		}
+
+		// Prevent other applications from seeing the message received			
+		this.abortBroadcast();
+	}
 }

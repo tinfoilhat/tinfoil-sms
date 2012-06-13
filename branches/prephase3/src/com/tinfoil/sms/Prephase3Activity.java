@@ -57,7 +57,6 @@ public class Prephase3Activity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		//startService(new Intent (this, MessageService.class));
 		//dba = new DBAccessor(this);
 		MessageService.dba = new DBAccessor(this);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -73,7 +72,6 @@ public class Prephase3Activity extends Activity {
 		list.setBackgroundColor(color.black);
 		*/
 		
-		//msgList = ContactRetriever.getSMS(this, 10);
 		msgList = ContactRetriever.getSMS(this);
 		conversations = new MessageAdapter(this, R.layout.listview_item_row, msgList);		
 		
@@ -121,6 +119,7 @@ public class Prephase3Activity extends Activity {
 	protected void onDestroy()
 	{
 		MessageService.dba.close();
+		stopService(new Intent(this, MessageService.class));
 		MessageReceiver.myActivityStarted = false;
 		//unregisterReceiver(SMSbr);
 		super.onDestroy();
