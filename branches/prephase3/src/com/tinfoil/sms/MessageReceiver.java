@@ -20,7 +20,6 @@ package com.tinfoil.sms;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
@@ -92,7 +91,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								secretMessage , Prephase3Activity.INBOX);
 						
 						//Updates the last message recieved
-						MessageService.dba.UpdateLastMessage(address, secretMessage);
+						MessageService.dba.UpdateLastMessage(new Number (address, secretMessage, "cell", 0));
 						
 						Prephase3Activity.updateList(context);
 						Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();

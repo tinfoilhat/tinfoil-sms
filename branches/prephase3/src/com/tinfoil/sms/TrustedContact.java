@@ -299,9 +299,9 @@ public class TrustedContact {
 	 * Add a number to the contact's numbers list
 	 * @param number : String
 	 */
-	public void addNumber(String number, String lastMessage)
+	public void addNumber(Number number)
 	{
-		this.numbers.add(new Number(number, lastMessage));
+		this.numbers.add(number);
 	}
 	
 	/**

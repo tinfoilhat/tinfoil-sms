@@ -20,7 +20,6 @@ package com.tinfoil.sms;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
 
 public class MessageService extends Service {
 	public static DBAccessor dba;

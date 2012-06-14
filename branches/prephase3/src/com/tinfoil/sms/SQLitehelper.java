@@ -53,9 +53,14 @@ public class SQLitehelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 
                 " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, public_key BLOB, signature BLOB );";
     
+    /*private static final String NUMBERS_TABLE_CREATE =
+            "CREATE TABLE " + NUMBERS_TABLE_NAME + 
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT, last_message TEXT);";*/
+    
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT, last_message TEXT);";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT," +
+            " type TEXT, last_message TEXT, date INTEGER);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

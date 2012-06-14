@@ -45,6 +45,8 @@ public class DBAccessor {
 	public static final String KEY_REFERENCE = "reference";
 	public static final String KEY_NUMBER = "number";
 	public static final String KEY_LAST_MESSAGE = "last_message";
+	public static final String KEY_TYPE = "type";
+	public static final String KEY_DATE = "date";
 	
 	private static final String DEFAULT_BOOK_PATH = "path/path";
 	private static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
@@ -77,18 +79,18 @@ public class DBAccessor {
 	/**
 	 * Add a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
-	 * @param number : String the number 
-	 * @param lastMessage : String the last message sent or received from number
+	 * @param number : Number the object containing the number, last message, type, and date of last sent
 	 */
-	private void addNumbersRow (int reference, String number,String lastMessage)
+	private void addNumbersRow (int reference, Number number)
 	{
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_NUMBER, number);
-        cv.put(KEY_LAST_MESSAGE, lastMessage);
-        
+        cv.put(KEY_NUMBER, ContactRetriever.format(number.getNumber()));
+        cv.put(KEY_TYPE, number.getType());
+        cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
+        cv.put(KEY_DATE, number.getDate());
 
         //Insert the row into the database
         open();
@@ -100,24 +102,26 @@ public class DBAccessor {
 	/**
 	 * Update a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
-	 * @param number : String the number 
+	 * @param number : Number the object containing the number, last message, type, and date of last sent
 	 */
-	public void UpdateLastMessage(String number,String lastMessage)
+	public void UpdateLastMessage(Number number)
 	{
-		number = ContactRetriever.format(number);
-		int reference = getId(number);
+		number.setNumber(ContactRetriever.format(number.getNumber()));
+		int reference = getId(number.getNumber());
 		
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_NUMBER, number);
-        cv.put(KEY_LAST_MESSAGE, lastMessage);
+        cv.put(KEY_NUMBER, number.getNumber());
+        cv.put(KEY_TYPE, number.getType());
+        cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
+        cv.put(KEY_DATE, number.getDate());
 
         //Insert the row into the database
         open();
         if (db.delete(SQLitehelper.NUMBERS_TABLE_NAME, "number = ?", 
-        		new String[] {number}) > 0)
+        		new String[] {number.getNumber()}) > 0)
         {
         	db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);	
         }
@@ -429,7 +433,7 @@ public class DBAccessor {
 	        {
 	        	for (int i = 0; i< tc.getNumber().size();i++)
 	        	{
-	        		addNumbersRow(id, ContactRetriever.format(tc.getNumber(i)), tc.getLastMessage(i));
+	        		addNumbersRow(id, tc.getNumber().get(i));
 	        	}
 	        }
 	        updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
@@ -539,7 +543,7 @@ public class DBAccessor {
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_LAST_MESSAGE + " IS NOT NULL",
-				null, null, null, null);
+				null, null, null, null); //Order by the date
 		List<String[]> sms = new ArrayList<String[]>();
 		
 		while (cur.moveToNext())
@@ -592,8 +596,10 @@ public class DBAccessor {
 			{
 				do
 				{
-					tc.addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
-							pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
+					tc.addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+							pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)), 
+							pCur.getString(pCur.getColumnIndex(KEY_TYPE)), 
+							pCur.getLong(pCur.getColumnIndex(KEY_DATE))));
 					//tc.addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 				}while(pCur.moveToNext());
 			}
@@ -650,8 +656,10 @@ public class DBAccessor {
 				{
 					do
 					{
-						tc.get(i).addNumber(pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
-								pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
+						tc.get(i).addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+								pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)), 
+								pCur.getString(pCur.getColumnIndex(KEY_TYPE)), 
+								pCur.getLong(pCur.getColumnIndex(KEY_DATE))));
 						//tc.get(i).addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 					}while(pCur.moveToNext());
 				}
@@ -768,6 +776,8 @@ public class DBAccessor {
 	public boolean removeRow(String number)
 	{
 		int id = getId(ContactRetriever.format(number));
+		resetSharedInfo(id);
+		resetBookPath(id);
 		open();
 		int num = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
 		int num2 = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);

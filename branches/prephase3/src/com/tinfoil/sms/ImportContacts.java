@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ImportContacts extends Activity {
@@ -83,11 +84,12 @@ public class ImportContacts extends Activity {
             					
             					Uri uriSMSURI = Uri.parse("content://sms/");
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
-            							{"address", "body"}, "address = ?",new String[]
+            							{"address", "body", "date"}, "address = ?",new String[]
             							{(pCur.getString(pCur.getColumnIndex(Phone.NUMBER)))},
             							"date DESC LIMIT 1");
             					if (mCur.moveToFirst())
             					{
+            						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
             						number.add(new Number (ContactRetriever.format(pCur.getString(
             								pCur.getColumnIndex(Phone.NUMBER))), 
             								mCur.getString(mCur.getColumnIndex("body"))));

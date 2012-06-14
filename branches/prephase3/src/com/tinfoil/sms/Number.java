@@ -1,13 +1,15 @@
 package com.tinfoil.sms;
 
+import java.util.Calendar;
+
 public class Number {
 	
 	private String number;
 	private String lastMessage;
 	private String type;
-	private String date;
+	private long date;
 	
-	public Number (String number, String lastMessage, String type, String date)
+	public Number (String number, String lastMessage, String type, long date)
 	{
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
@@ -21,7 +23,7 @@ public class Number {
 		this.setLastMessage(null);
 		//this.setType(null);
 		this.setType("cell");
-		this.setDate(null);
+		this.setDate(0);
 	}
 	
 	public Number (String number, String lastMessage)
@@ -30,7 +32,7 @@ public class Number {
 		this.setLastMessage(lastMessage);
 		//this.setType(null);
 		this.setType("cell");
-		this.setDate(null);
+		this.setDate(0);
 	}
 
 	/**
@@ -78,17 +80,27 @@ public class Number {
 	/**
 	 * @return the date
 	 */
-	public String getDate() {
+	/*public long getDate() {
 		return date;
+	}*/
+	
+	/**
+	 * @return the date
+	 */
+	public String getDate() {
+		return millisToDate(date);
 	}
 
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(String date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 	
-	
-
+	public static String millisToDate(long currentTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTime);
+        return calendar.getTime().toString();
+    }
 }

@@ -18,9 +18,9 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -83,6 +83,12 @@ public abstract class ContactRetriever {
 		return sms;
 	}*/
 	
+	/**
+	 * Get the list of 1 messages per unique contact for the main window
+	 * @param c : Context
+	 * @return : List<String[]>, a list of String arrays that contain
+	 * the number, name, and the message. 
+	 */
 	public static List<String[]> getSMS(Context c)
 	{
 		Uri uriSMSURI = Uri.parse("content://sms/conversations/");
@@ -289,5 +295,11 @@ public abstract class ContactRetriever {
         //this is the function that does all the magic
         sms.sendTextMessage(number, null, message, pi, null);
     	
+    }
+    
+    public static String millisToDate(long currentTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTime);
+        return calendar.getTime().toString();
     }
 }

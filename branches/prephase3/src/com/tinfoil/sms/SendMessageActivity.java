@@ -20,7 +20,6 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -39,7 +38,6 @@ import android.widget.Toast;
 public class SendMessageActivity extends Activity {
 	private Button sendSMS;
 	private AutoCompleteTextView phoneBox;
-	private EditText phone;
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
@@ -123,14 +121,17 @@ public class SendMessageActivity extends Activity {
 									.getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							
-							MessageService.dba.UpdateLastMessage(ContactRetriever.format(number), text);
+							
+							MessageService.dba.UpdateLastMessage(new Number 
+									(ContactRetriever.format(number), text, "cell", 0));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
-							MessageService.dba.UpdateLastMessage(ContactRetriever.format(number), text);
+							MessageService.dba.UpdateLastMessage(new Number 
+									(ContactRetriever.format(number), text, "cell", 0));
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}

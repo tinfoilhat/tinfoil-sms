@@ -101,7 +101,9 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
 							
-							MessageService.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
+							
+							MessageService.dba.UpdateLastMessage(new Number 
+									(Prephase3Activity.selectedNumber, text, "cell", 0));
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
@@ -110,7 +112,9 @@ public class MessageView extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
-							MessageService.dba.UpdateLastMessage(Prephase3Activity.selectedNumber, text);
+							
+							MessageService.dba.UpdateLastMessage(new Number 
+									(Prephase3Activity.selectedNumber, text, "cell", 0));
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList(getBaseContext());
