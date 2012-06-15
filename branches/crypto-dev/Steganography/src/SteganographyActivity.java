@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -402,12 +404,15 @@ public class SteganographyActivity
 		byte[] seed = new byte[32];
 		byte[] random1 = new byte[32];
 		byte[] random2 = new byte[32];
-		
+	
 		int aliceKey;
 		int bobKey;
 		
 		int length;
 		boolean sequenceMatch = true;
+		
+		byte[] pseudoEncryptedString = new byte[64];
+		String stegotext;
 		
 		// Steganography dictionaries
 		String[] uniqueDictionary = new String[MIN_DICT_SIZE];
@@ -417,7 +422,7 @@ public class SteganographyActivity
 		// Calculate the time it takes to parse the file
 		long startTime = System.currentTimeMillis();
 		
-		String[] masterDictionary = readLines("src/base_dictionary.txt");
+		String[] masterDictionary = readLines("src/master_dictionary2.txt");
 		
 		
 		
@@ -432,18 +437,36 @@ public class SteganographyActivity
 		 *  Inititialize the seed derivative function parameters with the
 		 *  parameters S1 & S2
 		 */
-		SDFParameters paramSDF = new SDFParameters("test1", "test");
+		SDFParameters paramSDF = new SDFParameters("test1", "test2");
 		
 		// Generate the seed using SHA256 digest
 		SDFGenerator generatorSDF = new SDFGenerator(new SHA256Digest());
 		generatorSDF.init(paramSDF);
 		length = generatorSDF.generateBytes(seed, 0, 0);
 		
+		System.out.println("LENGTH: " + seed.length);
+		System.out.println("SEED: " + new String(Hex.encode(seed)));
+		System.out.println("HEX LENGTH: " + new String(Hex.encode(seed)).length());
+		
 		ISAACRandomGenerator isaac1 = new ISAACRandomGenerator();
 		ISAACRandomGenerator isaac2 = new ISAACRandomGenerator();
 		
 		isaac1.init(new ISAACEngine(), seed);
 		isaac2.init(new ISAACEngine(), seed);
+		
+		//byte[] test = Hex.encode(seed);
+		
+		byte[] subTest = new byte[2];
+		
+		System.arraycopy(seed, 0, subTest, 0, 2);
+		
+		ByteBuffer buffer = ByteBuffer.wrap(subTest);
+		buffer.order(ByteOrder.BIG_ENDIAN);  // if you want little-endian
+		int result = buffer.getShort() & 0xFFFF;
+		
+		System.out.println(result);
+		//System.out.println(new String(subTest));
+		//System.out.println(new BigInteger(subTest).intValue());
 		
 		
 		/*
@@ -473,9 +496,10 @@ public class SteganographyActivity
 		
 		/*
 		 * Quick test of the hashtable functions and miller-rabin primality tests
+		 */
 		 
 		
-		for (int i = 0; i < 1; ++i)
+		for (int i = 0; i < 30; ++i)
 		{
 			aliceKey = isaac1.nextInt();
 			bobKey = isaac2.nextInt();
@@ -488,10 +512,6 @@ public class SteganographyActivity
 
 		}
 		System.out.println("Co-prime bucketSize " + HashTable.getCoPrime(190366));
-		
-		//System.out.println("00" + Integer.toHexString(200).toUpperCase());
-		System.out.println(fixedWidthHex(8,4));
-	*/
 		
 		
 		/*
@@ -515,6 +535,27 @@ public class SteganographyActivity
 		}
 		
 		System.out.println("Total time to generate the unique dictionary and inverse dictionary " + (endTime-startTime) + " milliseconds");
+		
+		
+		/*
+		 * Test the steganography obfuscate and deobfuscate, as well as the average length of messages given
+		 * a simulated encrypted content using random generated input
+		 * 
+		 *  Use the seed value to generate a sequence of random bytes as a GOOD test to simulate the encrypted
+		 *  content, concatenate two random numbers to get a 64byte string as a test (since we will support
+		 *  messages of at least 60 chars which is 64 bytes when using block cipher
+		 */
+		for (int i = 0; i < 100; ++i)
+		{
+			// Generate a random "simulated" encrypted message
+			isaac1.nextBytes(pseudoEncryptedString);
+		
+			stegotext = Steganography.obfuscate(pseudoEncryptedString, uniqueDictionary);
+			
+			System.out.println("Encrypted message before steganography: " + new String(Hex.encode(pseudoEncryptedString)));
+			System.out.println(stegotext.length() + " : " + stegotext);
+		}
+
 		
 	}
 }
