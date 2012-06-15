@@ -97,12 +97,9 @@ public abstract class HashTable
 		
 		/*
 		 * Otherwise return the nearest prime number as the co-prime, search for
-		 * the next nearest prime according to the Prime number denisty theorem
-		 * that states the probability of finding a prime number is  1/ln(bucketSize)
-		 * 
-		 *  @see http://en.wikipedia.org/wiki/Prime_number_theorem
+		 * the next nearest prime incrementally until one is found
 		 */
-		for (int i = 1; i <= (int)Math.ceil(Math.log(bucketSize)); ++i)
+		for (int i = 1; i <= (int)Math.ceil(Math.sqrt(bucketSize)); ++i)
 		{
 			/*
 			 * Use the miller-rabin test to determine if the new bucketSize is a
@@ -113,6 +110,7 @@ public abstract class HashTable
 			if (MillerRabin32.miller_rabin_32(bucketSize - i))
 			{
 				newBucketSize = bucketSize - i;
+				break;
 			}
 		}
 		return newBucketSize;
