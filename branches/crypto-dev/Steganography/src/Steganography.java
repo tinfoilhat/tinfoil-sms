@@ -1,6 +1,9 @@
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.CollationKey;
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.regex.Pattern;
 
 import org.spongycastle.crypto.DataLengthException;
 import org.spongycastle.crypto.prng.RandomGenerator;
@@ -116,6 +119,7 @@ public abstract class Steganography
 			key = engine.nextInt();
 			probe = HashTable.getProbe(key, bucketSize);
 			
+			
 			/*
 			 * Probe the value using double hashing, if there is a collision, probe the bucket until
 			 * a unique value is found. Words that have already been used are marked as null.
@@ -148,6 +152,76 @@ public abstract class Steganography
 		FastQuickSort.sort(inverseDictionary);
 	}
 	
+	
+	/*
+	 * Obfuscates the content by generating a stegotext using unique words from the dictionary
+	 * provided. Currently this only provides a minimal level of security-through-obscurity 
+	 * as it only generates a primitive stegotext, which is merely textual data ("words")
+	 * without any evident information.
+	 * 
+	 * @param content The content to be transformed into an obfuscated stegotext
+	 * @param uniqueDictionary A unique dictionary mapping hex values (keys) to words
+	 * 
+	 * @return The stegotext, which is the obfuscated content
+	 * 
+	 * @throws DataLengthException If the content in bytes is not divisible by two, or if
+	 * the unique dictionary does not contain 65,537 or more words, 
+	 * 
+	 * @TODO Research into adding NLP/Information theory support to generate
+	 * stegotext that appears as information rather than just textual data
+	 */
+	public static String obfuscate(byte[] content, String[] uniqueDictionary)
+	{
+		if (content.length % 2 == 1)
+		{
+			throw new DataLengthException("The number of bytes in the content must be a multiple of two!");
+		}
+		if (uniqueDictionary.length < MIN_DICT_SIZE)
+		{
+			throw new DataLengthException("Dictionary and inverse dictionary MUST have at least 65,537 elements or more!");
+		}
+		
+
+		byte[] key = new byte[2];
+		int keyIndex;
+		String word = "";
+		String stegotext = "";
+
+		/*
+		 * For each two bytes of the content look up a unique word in the dictionary 
+		 * matches the key
+		 */
+		for (int i = 0; i < content.length; i += 2)
+		{
+			/*
+			 * Create a byte buffer to convert from bytes to unisgned integer, the bytes are
+			 * ordered as big endian as message content is generated as array of bytes in big endian
+			 */
+			System.arraycopy(content, i, key, 0, 2);
+			ByteBuffer buffer = ByteBuffer.wrap(key);
+			buffer.order(ByteOrder.BIG_ENDIAN);
+			
+			// Get the key as an unsigned short index to lookup in the dictionary
+			keyIndex = buffer.getShort() & 0xFFFF;
+			
+			/*
+			 * Get the unique word value for the key, remove the key and ":" delimeter 
+			 * from the string and add the word to the stegotext
+			 */
+			word = uniqueDictionary[keyIndex];
+			word = word.replaceAll(Pattern.compile("^\\w{4}:").toString(), "");
+			
+			if (i < content.length -2)
+			{
+				stegotext += word + " ";
+			}
+			else
+			{
+				stegotext += word;
+			}
+		}
+		return stegotext;
+	}
 	
 	/*
 	 * Simple function which returns a hexadecimal string with a minimum fixed
