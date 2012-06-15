@@ -29,6 +29,11 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 
+/**
+ * An abstract class used to retrieve contacts information from
+ * the native database and format the data going into tinfoil-sms's
+ * database.
+ */
 public abstract class ContactRetriever {
 	private static final String dateColumn = "date DESC";
 	private static final Pattern p = Pattern.compile("^[+]1.{10}");
@@ -297,11 +302,11 @@ public abstract class ContactRetriever {
     	
     }
     
-    public static String millisToDate(long currentTime) {
+    /*public static String millisToDate(long currentTime) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(currentTime);
         return calendar.getTime().toString();
-    }
+    }*/
     
     
 }

@@ -35,6 +35,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Prephase3Activity is the activity that is launched for the start of the program.
+ * This activity shows all of the conversations the user has with contacts. The list
+ * Will be updated every time a message is received. Upon clicking any of the conversations
+ * MessageView activity will be started with selectedNumber = the contacts number
+ * 
+ * From the menu a user can select 'compose' to start SendMessageActivity to start or continue
+ * a conversation with a contact. 
+ * The user can also select 'settings' which will take them to the main settings page.
+ */
 public class Prephase3Activity extends Activity {
 	//public static DBAccessor dba;
 	public static final String INBOX = "content://sms/inbox";

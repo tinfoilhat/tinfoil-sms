@@ -35,6 +35,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * SendMessageActivity is an activity that allows a user to create a new or
+ * continue an old conversation. If the message is sent to a Trusted Contact
+ * (a contact that has exchanged their key with the user) then it will be
+ * encrypted. If the message is sent to a new contact a pop-up dialog will 
+ * ask the user if they would like to add the contact to tinfoil-sms's 
+ * database. If they user accepts AddContact will be started with
+ * addContact == true and editTc != null
+ */
 public class SendMessageActivity extends Activity {
 	private Button sendSMS;
 	private AutoCompleteTextView phoneBox;

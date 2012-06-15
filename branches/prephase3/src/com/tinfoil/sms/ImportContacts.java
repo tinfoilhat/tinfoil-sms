@@ -37,6 +37,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+* ImportContact activity allows for contacts to be imported from the native
+* database to the tinfoil-sms database. When a contact is imported, a contacts'
+* numbers, last message, date of last message, and type is stored. Once a 
+* contact is imported they cannot be imported until deleted from tinfoil-sms's
+* database. Changes made in the tinfoil-sms database will not apply to the 
+* contact in the native database. An imported contact will appear in the
+* ManageContactsActivity.
+*/
 public class ImportContacts extends Activity {
 	private Button confirm;
 	private ListView importList;

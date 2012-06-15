@@ -1,5 +1,9 @@
 package com.tinfoil.sms;
 
+/**
+ * A class for holding information involving the user.
+ * 
+ */
 public class User {
 	
 	private byte[] publicKey;

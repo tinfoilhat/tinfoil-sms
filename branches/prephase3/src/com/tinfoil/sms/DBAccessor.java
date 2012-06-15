@@ -26,7 +26,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Creates a database that is read and write and provides methods to facilitate the reading and writing to the database. 
+ * Creates a database that is read and write and provides methods to 
+ * facilitate the reading and writing to the database. Table Names
+ * are all from SQLitehelper since they are created in that class.
  */
 public class DBAccessor {
 	
@@ -71,13 +73,12 @@ public class DBAccessor {
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
 		
+		//Create a default row if once does not exist already.
 		if (bookIsDefault(0) && sharedInfoIsDefault(0))
 		{
 			addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
 			addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
 		}
-				
-		//cr = c.getContentResolver();
 	}
 	
 	/**
@@ -515,7 +516,6 @@ public class DBAccessor {
 	public void close(Cursor cur)
 	{
 		cur.close();
-		//contactDatabase.close();
 		db.close();
 	}
 	
@@ -524,7 +524,6 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
-		//contactDatabase.close();
 		db.close();
 	}
 	

@@ -36,6 +36,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+* MessageView activity allows the user to view through all the messages 
+* from or to the defined contact. selectedNumber will equal the contact
+* that the messages belong to. If a message is sent or received the list
+* of messages will be updated and Prephase3Activity's messages will be
+* updated as well.
+*/
 public class MessageView extends Activity {
 	
 	private Button sendSMS;

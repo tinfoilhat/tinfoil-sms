@@ -22,13 +22,17 @@ import java.util.ArrayList;
 
 /**
  * A class for storing information retrieved or to be stored in the database.
+ * 
+ * Through out tinfoil-sms TrustedContact is used to describe the class where
+ * Trusted Contact is used to describe a contact that a key exchange has 
+ * successfully taken place and secure messages are sent and expected.
+ * A TrustedContact != Trusted Contact but a TrustedContact can be a
+ * Trusted Contact, if key != null
  */
 public class TrustedContact {
 	
 	private String name;
 	private byte[] publicKey;		
-	//private ArrayList<String> numbers;
-	//private ArrayList<String> lastMessage;
 	private ArrayList<Number> numbers;
 	private byte[] signature;
 	private String s1;
@@ -91,15 +95,10 @@ public class TrustedContact {
 		this.name = name;
 		this.publicKey = null;
 		this.numbers = new ArrayList<Number>();
-		//this.lastMessage = new ArrayList<String>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(numbers.get(i));
 		}
-		/*for (int i = 0; i<lastMessage.size(); i++)
-		{
-			this.lastMessage.add(lastMessage.get(i));
-		}*/
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -118,7 +117,6 @@ public class TrustedContact {
 		this.name = name;
 		this.publicKey = null;
 		this.numbers = new ArrayList<Number>();
-		//this.lastMessage = new ArrayList<String>();
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -364,18 +362,6 @@ public class TrustedContact {
 	{
 		this.numbers.get(index).setLastMessage(lastMessage);
 	}
-	
-	/**
-	 * Add last message to the contact's numbers list
-	 * @param number : String
-	 */
-	/*public void addLastMessage(String lastMessage)
-	{
-		if (this.numbers.size() < this.numbers.size())
-		{
-			this.numbers.add(lastMessage);
-		}
-	}*/
 	
 	/**
 	 * Access a contact's number from their contact list

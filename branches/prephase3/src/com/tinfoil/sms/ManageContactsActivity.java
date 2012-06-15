@@ -32,6 +32,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+/**
+ * ManageContactActivity is an activity that allows the user to exchange keys, 
+ * edit and delete contacts. A list of contacts will be shown with an check box,
+ * if check then the user is either exchanging or have exchanged keys with the
+ * contact. To edit a contact's information hold down for a long press, which 
+ * will start AddContact activity with addContact == false and editTc != null. A
+ * contact can be added by click 'Add Contact' in the menu this will start the 
+ * AddContact activity with addContact == true and editTc == null. Contacts can
+ * be deleted from tinfoil-sms's database by clicking 'Delete Contact' in the
+ * menu which will start RemoveContactActivity. 
+ */
 public class ManageContactsActivity extends Activity {
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;

@@ -30,6 +30,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+/**
+* RemoveContactActivity is an activity that allows for contacts to be
+* deleted from tinfoil-sms's database.
+* ***Please note that contacts will not be deleted from the native database. 
+*/
 public class RemoveContactsActivity extends Activity {
 	private ListView listView;
 	private boolean [] contact;

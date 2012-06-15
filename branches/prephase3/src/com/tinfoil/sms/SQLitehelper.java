@@ -22,15 +22,19 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * SQLitehelper is used to create the database to store all needed
+ * information for tinfoil-sms.
+ */
 public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	private static final int DATABASE_VERSION = 2;
 	
+	//Table Names
 	public static final String USER_TABLE_NAME = "user";
     public static final String TRUSTED_TABLE_NAME = "trusted_contact";
     public static final String NUMBERS_TABLE_NAME = "numbers";
-    
     public static final String SHARED_INFO_TABLE_NAME = "shared_information";
     public static final String BOOK_PATHS_TABLE_NAME = "book_paths";
     
@@ -52,10 +56,6 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String TRUSTED_TABLE_CREATE =
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 
                 " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, public_key BLOB, signature BLOB );";
-    
-    /*private static final String NUMBERS_TABLE_CREATE =
-            "CREATE TABLE " + NUMBERS_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT, last_message TEXT);";*/
     
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 

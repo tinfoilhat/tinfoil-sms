@@ -116,14 +116,12 @@ public class AddContact extends Activity {
 
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					final int position, long arg3) {
-				//Toast.makeText(getApplicationContext(), "HERE: "+ DBAccessor.TYPES[contactEdit.getNumber().get(position).getType()], Toast.LENGTH_SHORT).show();
 				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
 				builder.setTitle("Phone Type:");
 				//contactEdit.getNumber().get(position).getType();
 				builder.setSingleChoiceItems(DBAccessor.TYPES, contactEdit.getNumber()
 						.get(position).getType(), new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
-				        //Toast.makeText(getApplicationContext(), DBAccessor.TYPES[item], Toast.LENGTH_SHORT).show();
 				    	contactEdit.getNumber().get(position).setType(item);
 				    	update(null);
 				    }

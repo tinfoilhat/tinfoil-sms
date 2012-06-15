@@ -2,6 +2,10 @@ package com.tinfoil.sms;
 
 import java.util.Calendar;
 
+/**
+ * A class used to store information from the numbers table
+ *
+ */
 public class Number {
 	
 	private String number;
