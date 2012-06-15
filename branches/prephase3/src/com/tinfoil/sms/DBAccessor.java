@@ -48,6 +48,10 @@ public class DBAccessor {
 	public static final String KEY_TYPE = "type";
 	public static final String KEY_DATE = "date";
 	
+	public static final int LENGTH = 8;
+	public static String[] TYPES = new String[] {"Home", "Mobile", "Work", "Work Fax",
+    	"Home Fax", "Pager", "Other", "Custom"};
+	
 	private static final String DEFAULT_BOOK_PATH = "path/path";
 	private static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
 	
@@ -288,7 +292,6 @@ public class DBAccessor {
         open();
         db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
         close();
-		
 	}
 	
 	/**
@@ -586,7 +589,9 @@ public class DBAccessor {
 			cur.close();
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
 					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE},
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE,
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_DATE},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -597,8 +602,8 @@ public class DBAccessor {
 				do
 				{
 					tc.addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 							pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)), 
-							pCur.getString(pCur.getColumnIndex(KEY_TYPE)), 
 							pCur.getLong(pCur.getColumnIndex(KEY_DATE))));
 					//tc.addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 				}while(pCur.moveToNext());
@@ -646,7 +651,9 @@ public class DBAccessor {
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 						SQLitehelper.NUMBERS_TABLE_NAME, new String[]
 						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE},
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE,
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_DATE},
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -657,8 +664,8 @@ public class DBAccessor {
 					do
 					{
 						tc.get(i).addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 								pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)), 
-								pCur.getString(pCur.getColumnIndex(KEY_TYPE)), 
 								pCur.getLong(pCur.getColumnIndex(KEY_DATE))));
 						//tc.get(i).addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 					}while(pCur.moveToNext());

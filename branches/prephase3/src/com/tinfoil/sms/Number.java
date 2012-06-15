@@ -6,10 +6,10 @@ public class Number {
 	
 	private String number;
 	private String lastMessage;
-	private String type;
+	private int type;
 	private long date;
 	
-	public Number (String number, String lastMessage, String type, long date)
+	public Number (String number, int type, String lastMessage, long date)
 	{
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
@@ -22,7 +22,7 @@ public class Number {
 		this.setNumber(number);
 		this.setLastMessage(null);
 		//this.setType(null);
-		this.setType("cell");
+		this.setType(1);
 		this.setDate(0);
 	}
 	
@@ -31,7 +31,7 @@ public class Number {
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
 		//this.setType(null);
-		this.setType("cell");
+		this.setType(1);
 		this.setDate(0);
 	}
 
@@ -66,14 +66,14 @@ public class Number {
 	/**
 	 * @return the type
 	 */
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 

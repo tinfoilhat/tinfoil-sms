@@ -26,10 +26,12 @@ import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 /**
  * A class for adding a contact to the tinfoil-sms database
@@ -43,7 +45,23 @@ public class AddContact extends Activity {
 	private Button add;
 	private EditText contactName;
 	private Button addNumber;
+	private static AlertDialog alert;
 	
+	
+	/**
+	 * This Activity is used for adding and editing contacts. The activity is able to identify which one it 
+	 * is doing by the information provided to the activity. If the variable addContact == false then a 
+	 * previously created/imported contact is being edited. Thus editTc != null and will have the contact's 
+	 * information.If addContact == true and editTc == null then a new contact is being added with no 
+	 * previously known information. Finally, if addContact == true and editTc != null then a new contact
+	 * is being added but information is already know about that contact.
+	 * 
+	 * ManageContactsActivity will start with either: addContact == true and editTc == null
+	 * or addContact == false and editTc != null
+	 * SendMessageActivity will start AddContact with: addContact == true and editTc != null
+	 * 
+	 * Once the activity has started if need to contactEdit = editTc. 
+	 */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
@@ -70,6 +88,7 @@ public class AddContact extends Activity {
         addNumber.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
+				
 				final EditText input = new EditText(getBaseContext());
 				input.setInputType(InputType.TYPE_CLASS_PHONE);
 				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
@@ -86,10 +105,35 @@ public class AddContact extends Activity {
 						public void onClick(DialogInterface dialog, int whichButton) {
 								dialog.cancel();    // Canceled.
 							}});
-				AlertDialog alert = builder.create();
+				alert = builder.create();
 				alert.show();
+				
 			}
+				
 		});
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener(){
+
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					final int position, long arg3) {
+				//Toast.makeText(getApplicationContext(), "HERE: "+ DBAccessor.TYPES[contactEdit.getNumber().get(position).getType()], Toast.LENGTH_SHORT).show();
+				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+				builder.setTitle("Phone Type:");
+				//contactEdit.getNumber().get(position).getType();
+				builder.setSingleChoiceItems(DBAccessor.TYPES, contactEdit.getNumber()
+						.get(position).getType(), new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				        //Toast.makeText(getApplicationContext(), DBAccessor.TYPES[item], Toast.LENGTH_SHORT).show();
+				    	contactEdit.getNumber().get(position).setType(item);
+				    	update(null);
+				    }
+				});
+				alert = builder.create();
+				if (alert != null)
+					alert.show();
+				
+				return true;
+			}});
         
         listView.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -115,7 +159,7 @@ public class AddContact extends Activity {
 							public void onClick(DialogInterface dialog, int whichButton) {
 									dialog.cancel();// Canceled.
 								}});
-					AlertDialog alert = builder.create();
+					alert = builder.create();
 					alert.show();
         		}
 			}
@@ -177,7 +221,7 @@ public class AddContact extends Activity {
 									public void onClick(DialogInterface dialog, int whichButton) {
 										dialog.cancel(); // Canceled.
 										}});
-							AlertDialog alert = builder.create();
+							alert = builder.create();
 							alert.show();
 						}
 					}
@@ -201,7 +245,7 @@ public class AddContact extends Activity {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								dialog.cancel();// Canceled.
 								}});
-					AlertDialog alert = builder.create();
+					alert = builder.create();
 					alert.show();
 				}
 			}
@@ -230,4 +274,16 @@ public class AddContact extends Activity {
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
+	
+	/*private int typeToIndex(String type)
+    {
+    	for (int i = 0; i < LENGTH; i++)
+    	{
+    		if (TYPES[i].equalsIgnoreCase(type))
+    		{
+    			return i;
+    		}
+    	}
+    	return -1;
+    }*/
 }

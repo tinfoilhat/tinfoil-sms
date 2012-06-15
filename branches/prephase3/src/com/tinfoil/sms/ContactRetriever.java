@@ -302,4 +302,6 @@ public abstract class ContactRetriever {
         calendar.setTimeInMillis(currentTime);
         return calendar.getTime().toString();
     }
+    
+    
 }

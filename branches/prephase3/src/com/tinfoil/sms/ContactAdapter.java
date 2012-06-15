@@ -61,7 +61,7 @@ public class ContactAdapter extends ArrayAdapter<String>{
         }
         
         String number = data.getNumber(position);
-        String type = data.getNumber().get(position).getType();
+        String type = DBAccessor.TYPES[data.getNumber().get(position).getType()];
         if (number != null)
         {
         	holder.number.setText(number);

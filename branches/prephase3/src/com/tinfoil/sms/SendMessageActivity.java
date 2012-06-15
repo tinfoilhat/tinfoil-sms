@@ -123,7 +123,7 @@ public class SendMessageActivity extends Activity {
 							
 							
 							MessageService.dba.UpdateLastMessage(new Number 
-									(ContactRetriever.format(number), text, "cell", 0));
+									(ContactRetriever.format(number), 1, text, 0));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
@@ -131,7 +131,7 @@ public class SendMessageActivity extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							MessageService.dba.UpdateLastMessage(new Number 
-									(ContactRetriever.format(number), text, "cell", 0));
+									(ContactRetriever.format(number), 1, text, 0));
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
