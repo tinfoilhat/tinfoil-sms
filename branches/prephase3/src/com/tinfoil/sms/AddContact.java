@@ -55,7 +55,8 @@ public class AddContact extends Activity {
         
       	listView = (ListView)findViewById(R.id.contact_numbers);
         addNumber = (Button) findViewById(R.id.add_new_number);
-        if (!addContact)
+        
+        if (!addContact || editTc != null)
         {
         	contactEdit = editTc;
        	}
@@ -156,9 +157,9 @@ public class AddContact extends Activity {
 				{
 					if (addContact)
 					{
-						if (!Prephase3Activity.dba.inDatabase(contactEdit.getANumber()))
+						if (!MessageService.dba.inDatabase(contactEdit.getANumber()))
 						{
-							Prephase3Activity.dba.addRow(contactEdit);
+							MessageService.dba.addRow(contactEdit);
 							contactEdit = null;
 					        editTc = null;
 							finish();
@@ -182,7 +183,7 @@ public class AddContact extends Activity {
 					}
 					else
 					{
-						Prephase3Activity.dba.updateRow(contactEdit, contactEdit.getNumber(0));
+						MessageService.dba.updateRow(contactEdit, contactEdit.getNumber(0));
 						contactEdit = null;
 				        editTc = null;
 						finish();

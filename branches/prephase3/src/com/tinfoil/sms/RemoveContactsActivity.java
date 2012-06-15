@@ -72,7 +72,7 @@ public class RemoveContactsActivity extends Activity {
 					{
 						if (contact[i])
 						{
-							Prephase3Activity.dba.removeRow(tc.get(i).getANumber());
+							MessageService.dba.removeRow(tc.get(i).getANumber());
 						}
 					}
 					update();
@@ -104,7 +104,7 @@ public class RemoveContactsActivity extends Activity {
 	private void update()
 	{
 		String[] names;
-		tc  = Prephase3Activity.dba.getAllRows();
+		tc  = MessageService.dba.getAllRows();
 		
 		if (tc != null)
 		{

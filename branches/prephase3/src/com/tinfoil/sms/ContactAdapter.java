@@ -32,7 +32,7 @@ public class ContactAdapter extends ArrayAdapter<String>{
     private TrustedContact data = null;
     
     public ContactAdapter(Context context, int layoutResourceId, TrustedContact tc) {
-        super(context, layoutResourceId, tc.getNumber());
+        super(context, layoutResourceId, tc.getNumbers());
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = tc;
@@ -51,7 +51,7 @@ public class ContactAdapter extends ArrayAdapter<String>{
             
             holder = new ContactHolder();
             holder.number = (TextView)row.findViewById(R.id.stored_number);
-            holder.primary = (TextView)row.findViewById(R.id.primary_number);
+            holder.type = (TextView)row.findViewById(R.id.primary_number);
             
             row.setTag(holder);
         }
@@ -61,10 +61,11 @@ public class ContactAdapter extends ArrayAdapter<String>{
         }
         
         String number = data.getNumber(position);
+        String type = data.getNumber().get(position).getType();
         if (number != null)
         {
         	holder.number.setText(number);
-        	holder.primary.setText("Number");
+        	holder.type.setText(type);
         }
         return row;
     }
@@ -72,6 +73,6 @@ public class ContactAdapter extends ArrayAdapter<String>{
     static class ContactHolder
     {
     	TextView number;
-    	TextView primary;
+    	TextView type;
     }
 }

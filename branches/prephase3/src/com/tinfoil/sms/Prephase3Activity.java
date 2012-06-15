@@ -18,35 +18,30 @@
 package com.tinfoil.sms;
 
 import java.util.List;
-
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.telephony.SmsMessage;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Prephase3Activity extends Activity {
-	public static DBAccessor dba;
-	public static MessageAdapter conversations;
+	//public static DBAccessor dba;
 	public static final String INBOX = "content://sms/inbox";
 	public static final String SENT = "content://sms/sent";
 	public static SharedPreferences sharedPrefs;
 	public static String selectedNumber;
+	private static MessageAdapter conversations;
 	private static List<String[]> msgList;
 	private static ListView list;
 	private MessageReceiver boot = new MessageReceiver();
@@ -57,10 +52,10 @@ public class Prephase3Activity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		startService(new Intent (this, MessageService.class));
-		dba = new DBAccessor(this);
+		//dba = new DBAccessor(this);
+		MessageService.dba = new DBAccessor(this);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		//MessageReceiver.myActivityStarted = true;
+		MessageReceiver.myActivityStarted = true;
 
 		list = (ListView) findViewById(R.id.conversation_list);
 		
@@ -72,7 +67,6 @@ public class Prephase3Activity extends Activity {
 		list.setBackgroundColor(color.black);
 		*/
 		
-		//msgList = ContactRetriever.getSMS(this, 10);
 		msgList = ContactRetriever.getSMS(this);
 		conversations = new MessageAdapter(this, R.layout.listview_item_row, msgList);		
 		
@@ -98,18 +92,16 @@ public class Prephase3Activity extends Activity {
 	 */
 	public static void updateList(Context context)
 	{
-		//if (!MessageReceiver.myActivityStarted)
-		//{
+		if (MessageReceiver.myActivityStarted)
+		{
 			msgList = ContactRetriever.getSMS(context);
 			conversations.clear();
 			conversations.addData(msgList);
 			if (Prephase3Activity.selectedNumber != null)
 			{
-				MessageView.msgList2 = ContactRetriever.getPersonSMS(context);
-				MessageView.messages.clear();
-				MessageView.messages.addData(MessageView.msgList2);
+				MessageView.updateList(context);
 			}
-		//}
+		}
 	}
 	
 	protected void onResume()
@@ -121,7 +113,8 @@ public class Prephase3Activity extends Activity {
 	
 	protected void onDestroy()
 	{
-		dba.close();
+		MessageService.dba.close();
+		stopService(new Intent(this, MessageService.class));
 		MessageReceiver.myActivityStarted = false;
 		//unregisterReceiver(SMSbr);
 		super.onDestroy();
@@ -163,7 +156,8 @@ public class Prephase3Activity extends Activity {
 		values.put("body", decMessage);
 		
 		//Stops native sms client from reading messages as new.
-		values.put("read", true); 
+		//***Note this is temporarily commented until we implement our own notification system
+		//values.put("read", true); 
 
 		/* Sets used to determine who sent the message, 
 		 * if type == 2 then it is sent from the user

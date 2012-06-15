@@ -40,6 +40,10 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
         this.data = data;
     }
     
+    /**
+     * Add new rows to be formated to the end of the list
+     * @param data : List<String[]> 
+     */
     public void addData(List<String[]> data)
     {
     	for (int i = 0; i < data.size(); i++)

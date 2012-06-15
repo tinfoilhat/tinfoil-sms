@@ -68,7 +68,7 @@ public class ManageContactsActivity extends Activity {
         		        		
         		if (tc != null)
         		{
-        			if (Prephase3Activity.dba.isTrustedContact(tc.get(position).getANumber()))
+        			if (MessageService.dba.isTrustedContact(tc.get(position).getANumber()))
         			{
         				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
         				change(position, false);
@@ -107,7 +107,7 @@ public class ManageContactsActivity extends Activity {
 			tc.get(position).clearPublicKey();
 		}
 
-		Prephase3Activity.dba.updateRow(tc.get(position),tc.get(position).getANumber());
+		MessageService.dba.updateRow(tc.get(position),tc.get(position).getANumber());
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class ManageContactsActivity extends Activity {
 	{
 		for (int i = 0; i < tc.size();i++)
 		{				
-			if (Prephase3Activity.dba.isTrustedContact(tc.get(i).getANumber()))
+			if (MessageService.dba.isTrustedContact(tc.get(i).getANumber()))
 			{
 				listView.setItemChecked(i, true);
     		}
@@ -135,7 +135,7 @@ public class ManageContactsActivity extends Activity {
 	private void update()
 	{
 		String[] names;
-		tc  = Prephase3Activity.dba.getAllRows();
+		tc  = MessageService.dba.getAllRows();
 		if (tc != null)
         {
 	        //The string that is displayed for each item on the list 

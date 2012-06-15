@@ -20,6 +20,7 @@ package com.tinfoil.sms;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -35,14 +36,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-//**Might be a good idea for this activity to extend the main activity, prephase2Activity. 
 public class MessageView extends Activity {
 	
 	private Button sendSMS;
 	private EditText messageBox;
-	public static ListView list2;
-	public static List<String[]> msgList2;
-	public static MessageAdapter messages;
+	private static ListView list2;
+	private static List<String[]> msgList2;
+	private static MessageAdapter messages;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -53,7 +53,7 @@ public class MessageView extends Activity {
 		//Sets the keyboard to not pop-up until a text area is selected 
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
-		Prephase3Activity.dba = new DBAccessor(this);
+		MessageService.dba = new DBAccessor(this);
 	
 		Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
@@ -87,19 +87,24 @@ public class MessageView extends Activity {
 						messageBox.setText("");
 																		
 						//Only expects encrypted messages from trusted contacts in the secure state
-						if (Prephase3Activity.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
+						if (MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
 							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
-									Encryption.aes_encrypt(Prephase3Activity.dba.getRow(
+									Encryption.aes_encrypt(MessageService.dba.getRow(
 									ContactRetriever.format(Prephase3Activity.selectedNumber))
 									.getPublicKey(), text));							
 							
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									Encryption.aes_encrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
+									Encryption.aes_encrypt(MessageService.dba.getRow(ContactRetriever.format
 									(Prephase3Activity.selectedNumber)).getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
+							
+							
+							MessageService.dba.UpdateLastMessage(new Number 
+									(Prephase3Activity.selectedNumber, text, "cell", 0));
+							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
@@ -107,9 +112,12 @@ public class MessageView extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
+							
+							MessageService.dba.UpdateLastMessage(new Number 
+									(Prephase3Activity.selectedNumber, text, "cell", 0));
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
-						updateList();
+						updateList(getBaseContext());
 						
 					}
 			        catch ( Exception e ) 
@@ -134,16 +142,17 @@ public class MessageView extends Activity {
 		
     }   
     
-    public void updateList()
+    public static void updateList(Context context)
     {
-    	msgList2 = ContactRetriever.getPersonSMS(this);
+    	msgList2 = ContactRetriever.getPersonSMS(context);
     	messages.clear();
     	messages.addData(msgList2);
     }
     
-    protected void onStart()
+    protected void onStop()
     {
-		super.onStart();
+    	Prephase3Activity.selectedNumber = null;
+		super.onStop();
     }
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -163,20 +172,20 @@ public class MessageView extends Activity {
 		switch (item.getItemId()) {
 		case R.id.exchange:
 			//Add to trusted Contact list
-			TrustedContact tc = Prephase3Activity.dba.getRow(ContactRetriever.format
+			TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)
 			{
-				if (Prephase3Activity.dba.isTrustedContact(ContactRetriever.format
+				if (MessageService.dba.isTrustedContact(ContactRetriever.format
 						(Prephase3Activity.selectedNumber)))
 				{
 					tc.clearPublicKey();
-					Prephase3Activity.dba.updateRow(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
 				else
 				{
 					tc.setPublicKey();
-					Prephase3Activity.dba.updateRow(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
 			}
 			

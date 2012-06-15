@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ImportContacts extends Activity {
@@ -50,8 +51,9 @@ public class ImportContacts extends Activity {
         confirm = (Button) findViewById(R.id.confirm);
         importList = (ListView)findViewById(R.id.import_contact_list);
         tc = new ArrayList<TrustedContact>();
-        ArrayList<String> number;
-        ArrayList<String> lastMessage;
+        //ArrayList<String> number;
+        ArrayList<Number> number;
+        //ArrayList<String> lastMessage;
         String name;
        
         Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
@@ -63,8 +65,9 @@ public class ImportContacts extends Activity {
         
         if (cur.moveToFirst()) {
                 do {
-                	number = new ArrayList<String>();
-                	lastMessage = new ArrayList<String>();
+                	//number = new ArrayList<String>();
+                	number = new ArrayList<Number>();
+                	//lastMessage = new ArrayList<String>();
             		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
             		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
             		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
@@ -76,23 +79,30 @@ public class ImportContacts extends Activity {
             			{
             				do
             				{
-            					number.add(ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
-            							Phone.NUMBER))));
+            					//number.add(new Number (ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
+            						//	Phone.NUMBER)))));
             					
             					Uri uriSMSURI = Uri.parse("content://sms/");
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
-            							{"address", "body"}, "address = ?",new String[]
+            							{"address", "body", "date"}, "address = ?",new String[]
             							{(pCur.getString(pCur.getColumnIndex(Phone.NUMBER)))},
             							"date DESC LIMIT 1");
             					if (mCur.moveToFirst())
             					{
-            						lastMessage.add(mCur.getString(mCur.getColumnIndex("body")));
+            						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
+            						number.add(new Number (ContactRetriever.format(pCur.getString(
+            								pCur.getColumnIndex(Phone.NUMBER))), 
+            								mCur.getString(mCur.getColumnIndex("body"))));
+            						//number.get(number.size()-1).setLastMessage(
+            							//	mCur.getString(mCur.getColumnIndex("body")));
+            						//lastMessage.add(mCur.getString(mCur.getColumnIndex("body")));
             					}
             					else 
             					{
-            						lastMessage.add(null);
+            						number.add(new Number (ContactRetriever.format(pCur.getString(
+            								pCur.getColumnIndex(Phone.NUMBER)))));
+            						//lastMessage.add(null);
             					}
-            					//NEED TO ADD the last message (the latest message) for each phone number
             				} while (pCur.moveToNext());
             			}
             			pCur.close();
@@ -101,14 +111,14 @@ public class ImportContacts extends Activity {
                     if(number!=null)
                     {
                     	
-                    	if (!Prephase3Activity.dba.inDatabase(number))
+                    	if (!MessageService.dba.inDatabase(number))
                     	{
-                    		tc.add(new TrustedContact(name, number, lastMessage));
+                    		tc.add(new TrustedContact(name, number));
                     		inDb.add(false);
                     	}
                     }
                     number = null;
-                    lastMessage = null;
+                    //lastMessage = null;
                 } while (cur.moveToNext());
         }
         
@@ -137,7 +147,7 @@ public class ImportContacts extends Activity {
 	        		{        			
         				if (inDb.get(i))
 	        			{
-	        				Prephase3Activity.dba.addRow(tc.get(i));
+        					MessageService.dba.addRow(tc.get(i));
 	        			}
 	        		}
 	        		finish();

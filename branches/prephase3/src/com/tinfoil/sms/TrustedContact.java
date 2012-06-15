@@ -21,19 +21,15 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 
 /**
- * A class for storing information retrieved or to be stored in the database. 
- * 
- * @param name The contact's name 
- * @param publicKey The contact's public key used to encrypt message sent to this contact
- * @param numbers an array list of numbers for the contact.
- * 
+ * A class for storing information retrieved or to be stored in the database.
  */
 public class TrustedContact {
 	
 	private String name;
 	private byte[] publicKey;		
-	private ArrayList<String> numbers;
-	private ArrayList<String> lastMessage;
+	//private ArrayList<String> numbers;
+	//private ArrayList<String> lastMessage;
+	private ArrayList<Number> numbers;
 	private byte[] signature;
 	private String s1;
 	private String s2;
@@ -45,13 +41,14 @@ public class TrustedContact {
 	 * 
 	 * @param name The contact's name 
 	 * @param publicKey The contact's public key used to encrypt message sent to this contact
+	 * @param signature The contact's signature
 	 */
 	public TrustedContact (String name, byte[] publicKey, byte[] signature)
 	{
 		this.name = name;
 		this.publicKey = publicKey;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -70,11 +67,11 @@ public class TrustedContact {
 	{
 		this.name = name;
 		this.publicKey = publicKey;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
-			this.numbers.add(numbers.get(i));
+			this.numbers.add(new Number (numbers.get(i)));
 		}
 		this.signature = null;
 		this.s1 = null;
@@ -89,20 +86,20 @@ public class TrustedContact {
 	 * @param name The contact's name 
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, ArrayList<String> numbers, ArrayList<String> lastMessage)
+	public TrustedContact (String name, ArrayList<Number> numbers)
 	{
 		this.name = name;
 		this.publicKey = null;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(numbers.get(i));
 		}
-		for (int i = 0; i<lastMessage.size(); i++)
+		/*for (int i = 0; i<lastMessage.size(); i++)
 		{
 			this.lastMessage.add(lastMessage.get(i));
-		}
+		}*/
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -120,8 +117,8 @@ public class TrustedContact {
 	{
 		this.name = name;
 		this.publicKey = null;
-		this.numbers = new ArrayList<String>();
-		this.lastMessage = new ArrayList<String>();
+		this.numbers = new ArrayList<Number>();
+		//this.lastMessage = new ArrayList<String>();
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -147,6 +144,10 @@ public class TrustedContact {
 		this.name = name;
 	}
 	
+	/**
+	 * Get the signature of the TrustedContact
+	 * @return : byte[] the signature of the trustedContact's key
+	 */
 	public byte[] getSignature()
 	{
 		return signature;
@@ -157,53 +158,119 @@ public class TrustedContact {
 		this.signature = signature;
 	}*/
 	
+	/**
+	 * Shared Information between the user and the contact.
+	 * This information will be used for the key exchange 
+	 * encrypted messages sent. The default value will be
+	 * either 'Initiator' or 'Receiver'
+	 * @param s1 : String, the first piece of shared information
+	 */
 	public void setSharedInfo1(String s1)
 	{
 		this.s1 = s1;
 	}
 	
+	/**
+	 * Shared Information between the user and the contact.
+	 * This information will be used for the key exchange 
+	 * encrypted messages sent. The default value will be
+	 * either 'Initiator' or 'Receiver'
+	 * @return : String, the first piece of shared information
+	 */
 	public String getSharedInfo1()
 	{
 		return s1;
 	}
 	
+	/**
+	 * Shared Information between the user and the contact.
+	 * This information will be used for the key exchange 
+	 * encrypted messages sent. The default value will be
+	 * either 'Initiator' or 'Receiver'
+	 * @param s2 : String, the second piece of shared information
+	 */
 	public void setSharedInfo2(String s2)
 	{
 		this.s2 = s2;
 	}
 	
+	/**
+	 * Shared Information between the user and the contact.
+	 * This information will be used for the key exchange 
+	 * encrypted messages sent. The default value will be
+	 * either 'Initiator' or 'Receiver'
+	 * @return : String, the second piece of shared information
+	 */
 	public String getSharedInfo2()
 	{
 		return s2;
 	}
 	
+	/**
+	 * Book path is used for the Steganography the bookpath
+	 * is the folder path to the entropy source used to map
+	 * encrypted text to obfuscated words. The user will have 
+	 * very little interaction with this.
+	 * @param bookPath : String, the path on the android phone to 
+	 * the entropy source
+	 */
 	public void setBookPath(String bookPath)
 	{
 		this.bookPath = bookPath;
 	}
 	
+	/**
+	 * Book path is used for the Steganography the bookpath
+	 * is the folder path to the entropy source used to map
+	 * encrypted text to obfuscated words. The user will have 
+	 * very little interaction with this.
+	 * @param : String, the path on the android phone to 
+	 * the entropy source
+	 */
 	public String getBookPath()
 	{
 		return bookPath;
 	}
 	
+	/**
+	 * Book path is used for the Steganography the bookInversePath
+	 * is the folder path to the entropy source used to map
+	 * the obfuscated words to encrypted text. The user will have 
+	 * very little interaction with this.
+	 * @param bookInversePath : String, the path on the android  
+	 * phone to the entropy source
+	 */
 	public void setBookInversePath(String bookInversePath)
 	{
 		this.bookInversePath = bookInversePath;
 	}
 	
+	/**
+	 * Book path is used for the Steganography the bookInversePath
+	 * is the folder path to the entropy source used to map
+	 * the obfuscated words to encrypted text. The user will have 
+	 * very little interaction with this.
+	 * @param : String, the path on the android phone to the 
+	 * entropy source
+	 */
 	public String getBookInversePath()
 	{
 		return bookInversePath;
 	}
 
+	/**
+	 * Get any of the numbers for the contact.
+	 * This is used for retrieving a single number
+	 * to be used. 
+	 * @return : String, the first non-null number found
+	 */
 	public String getANumber()
 	{
 		for (int i = 0; i < numbers.size(); i++)
 		{
 			if (numbers.get(i) != null)
 			{
-				return numbers.get(i);
+				return numbers.get(i).getNumber();
 			}
 		}
 		return null;
@@ -216,7 +283,7 @@ public class TrustedContact {
 	 */
 	public void setNumber(int index, String number)
 	{
-		this.numbers.set(index, number);
+		this.numbers.get(index).setNumber(number);
 	}
 	
 	/**
@@ -224,6 +291,15 @@ public class TrustedContact {
 	 * @param number : String
 	 */
 	public void addNumber(String number)
+	{
+		this.numbers.add(new Number(number));
+	}
+	
+	/**
+	 * Add a number to the contact's numbers list
+	 * @param number : String
+	 */
+	public void addNumber(Number number)
 	{
 		this.numbers.add(number);
 	}
@@ -234,22 +310,37 @@ public class TrustedContact {
 	 */
 	public String getNumber(int index)
 	{
-		return numbers.get(index);
+		return numbers.get(index).getNumber();
 	}
 	
 	/**
 	 * Access a contact's number from their contact list
 	 * @return : ArrayList<String>
 	 */
-	public ArrayList<String> getNumber()
+	public ArrayList<Number> getNumber()
 	{
 		return numbers;
 	}
 	
 	/**
-	 * Set a number in the contact's numbers list
-	 * @param index : int the index of the number
-	 * @param number : String the new number
+	 * Access a contact's number from their contact list
+	 * @return : ArrayList<String>
+	 */
+	public ArrayList<String> getNumbers()
+	{
+		ArrayList<String> num = new ArrayList<String>();
+		
+		for (int i =0; i < numbers.size(); i++)
+		{
+			num.add(numbers.get(i).getNumber());
+		}
+		return num;
+	}
+	
+	/**
+	 * Set a lastMessage in the contact's last message list
+	 * @param number : String the number the message came from
+	 * @param number : String the new last message
 	 */
 	public void setLastMessage(String number, String lastMessage)
 	{
@@ -257,7 +348,7 @@ public class TrustedContact {
 		{
 			if (this.getNumber(i).equalsIgnoreCase(number))
 			{
-				this.lastMessage.set(i, lastMessage);
+				this.numbers.get(i).setLastMessage(lastMessage);
 				break;
 			}
 		}
@@ -265,23 +356,26 @@ public class TrustedContact {
 	}
 	
 	/**
-	 * Set a number in the contact's numbers list
+	 * Set a lastMessage in the contact's last message list
 	 * @param index : int the index of the number
-	 * @param number : String the new number
+	 * @param lastMessage : String the new last message
 	 */
 	public void setLastMessage(int index, String lastMessage)
 	{
-		this.lastMessage.set(index, lastMessage);
+		this.numbers.get(index).setLastMessage(lastMessage);
 	}
 	
 	/**
-	 * Add a number to the contact's numbers list
+	 * Add last message to the contact's numbers list
 	 * @param number : String
 	 */
-	public void addLastMessage(String lastMessage)
+	/*public void addLastMessage(String lastMessage)
 	{
-		this.lastMessage.add(lastMessage);
-	}
+		if (this.numbers.size() < this.numbers.size())
+		{
+			this.numbers.add(lastMessage);
+		}
+	}*/
 	
 	/**
 	 * Access a contact's number from their contact list
@@ -289,16 +383,11 @@ public class TrustedContact {
 	 */
 	public String getLastMessage(int index)
 	{
-		return lastMessage.get(index);
-	}
-	
-	/**
-	 * Get the number of numbers a contact has.
-	 * @return : int the number of numbers
-	 */
-	public int getNumberSize()
-	{
-		return numbers.size();
+		if (index < numbers.size())
+		{
+			return numbers.get(index).getLastMessage();
+		}
+		return null;
 	}
 	
 	/**
@@ -336,11 +425,20 @@ public class TrustedContact {
 		this.publicKey = ("test123").getBytes();
 	}
 	
+	/**
+	 * Erases the public key
+	 */
 	public void clearPublicKey()
 	{
 		this.publicKey = null;
 	}
 
+	/**
+	 * Checks if the publickey is null
+	 * @return : boolean
+	 * true if the public key is null,
+	 * false if the public key is not null.
+	 */
 	public boolean isPublicKeyNull()
 	{
 		if (publicKey == null)
@@ -349,4 +447,6 @@ public class TrustedContact {
 		}
 		return false;
 	}
+	
+	
 }
