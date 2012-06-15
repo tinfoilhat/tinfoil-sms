@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Steganography</name>
+	<name>SteganographyActivity</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -18,7 +18,7 @@
 		<link>
 			<name>lib</name>
 			<type>2</type>
-			<location>/home/joseph/source_code/github/tinfoil-sms/branches/crypto-dev/strippedcastle/src</location>
+			<location>/home/jon/source/github/tinfoil-sms/branches/crypto-dev/strippedcastle/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
