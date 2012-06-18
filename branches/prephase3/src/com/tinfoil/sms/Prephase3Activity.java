@@ -77,7 +77,8 @@ public class Prephase3Activity extends Activity {
 		list.setBackgroundColor(color.black);
 		*/
 		
-		msgList = ContactRetriever.getSMS(this);
+		//msgList = ContactRetriever.getSMS(this);
+		msgList = MessageService.dba.getConversations();
 		conversations = new MessageAdapter(this, R.layout.listview_item_row, msgList);		
 		
 		//View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
@@ -104,7 +105,8 @@ public class Prephase3Activity extends Activity {
 	{
 		if (MessageReceiver.myActivityStarted)
 		{
-			msgList = ContactRetriever.getSMS(context);
+			//msgList = ContactRetriever.getSMS(context);
+			msgList = MessageService.dba.getConversations();
 			conversations.clear();
 			conversations.addData(msgList);
 			if (Prephase3Activity.selectedNumber != null)

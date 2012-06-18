@@ -90,17 +90,25 @@ public class ImportContacts extends Activity {
             				{
             					//number.add(new Number (ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
             						//	Phone.NUMBER)))));
-            					
+            					String numb = (pCur.getString(pCur.getColumnIndex(Phone.NUMBER)));
             					Uri uriSMSURI = Uri.parse("content://sms/");
+            					/*Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
+            							{"address", "body"}, "address = ?",new String[]
+            							{numb},	//COPY ContactRetriever.getPersonSMS(this);
+            							"date DESC LIMIT 1");*/
+            					
+            					//This now takes into account the different formats of the numbers. 
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
-            							{"address", "body", "date"}, "address = ?",new String[]
-            							{(pCur.getString(pCur.getColumnIndex(Phone.NUMBER)))},
+            							{"address", "body"}, "address = ? or address = ? or address = ?",
+            							new String[] {ContactRetriever.format(numb),
+            							"+1" + ContactRetriever.format(numb),
+            							"1" + ContactRetriever.format(numb)},
             							"date DESC LIMIT 1");
+            					
             					if (mCur.moveToFirst())
             					{
             						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
-            						number.add(new Number (ContactRetriever.format(pCur.getString(
-            								pCur.getColumnIndex(Phone.NUMBER))), 
+            						number.add(new Number (ContactRetriever.format(numb), 
             								mCur.getString(mCur.getColumnIndex("body"))));
             						//number.get(number.size()-1).setLastMessage(
             							//	mCur.getString(mCur.getColumnIndex("body")));
@@ -108,8 +116,7 @@ public class ImportContacts extends Activity {
             					}
             					else 
             					{
-            						number.add(new Number (ContactRetriever.format(pCur.getString(
-            								pCur.getColumnIndex(Phone.NUMBER)))));
+            						number.add(new Number (ContactRetriever.format(numb)));
             						//lastMessage.add(null);
             					}
             				} while (pCur.moveToNext());

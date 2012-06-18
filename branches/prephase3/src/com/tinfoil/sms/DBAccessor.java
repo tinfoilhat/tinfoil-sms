@@ -544,7 +544,7 @@ public class DBAccessor {
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_LAST_MESSAGE + " IS NOT NULL",
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE + " IS NOT NULL",
 				null, null, null, null); //Order by the date
 		List<String[]> sms = new ArrayList<String[]>();
 		

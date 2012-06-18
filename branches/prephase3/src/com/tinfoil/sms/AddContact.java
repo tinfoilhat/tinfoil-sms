@@ -34,8 +34,18 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 /**
- * A class for adding a contact to the tinfoil-sms database
- *
+ * This Activity is used for adding and editing contacts. The activity is able to identify which one it 
+ * is doing by the information provided to the activity. If the variable addContact == false then a 
+ * previously created/imported contact is being edited. Thus editTc != null and will have the contact's 
+ * information.If addContact == true and editTc == null then a new contact is being added with no 
+ * previously known information. Finally, if addContact == true and editTc != null then a new contact
+ * is being added but information is already know about that contact.
+ * 
+ * ManageContactsActivity will start with either: addContact == true and editTc == null
+ * or addContact == false and editTc != null
+ * SendMessageActivity will start AddContact with: addContact == true and editTc != null
+ * 
+ * Once the activity has started if need to contactEdit = editTc. 
  */
 public class AddContact extends Activity {
 	public static TrustedContact editTc;
@@ -47,21 +57,6 @@ public class AddContact extends Activity {
 	private Button addNumber;
 	private static AlertDialog alert;
 	
-	
-	/**
-	 * This Activity is used for adding and editing contacts. The activity is able to identify which one it 
-	 * is doing by the information provided to the activity. If the variable addContact == false then a 
-	 * previously created/imported contact is being edited. Thus editTc != null and will have the contact's 
-	 * information.If addContact == true and editTc == null then a new contact is being added with no 
-	 * previously known information. Finally, if addContact == true and editTc != null then a new contact
-	 * is being added but information is already know about that contact.
-	 * 
-	 * ManageContactsActivity will start with either: addContact == true and editTc == null
-	 * or addContact == false and editTc != null
-	 * SendMessageActivity will start AddContact with: addContact == true and editTc != null
-	 * 
-	 * Once the activity has started if need to contactEdit = editTc. 
-	 */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
@@ -118,7 +113,6 @@ public class AddContact extends Activity {
 					final int position, long arg3) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
 				builder.setTitle("Phone Type:");
-				//contactEdit.getNumber().get(position).getType();
 				builder.setSingleChoiceItems(DBAccessor.TYPES, contactEdit.getNumber()
 						.get(position).getType(), new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
