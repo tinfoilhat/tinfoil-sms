@@ -18,7 +18,6 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
 import android.app.PendingIntent;

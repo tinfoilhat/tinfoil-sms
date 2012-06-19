@@ -171,6 +171,10 @@ public class Prephase3Activity extends Activity {
 		//***Note this is temporarily commented until we implement our own notification system
 		//values.put("read", true); 
 
+		/**
+		 * Need to:
+		 * 1. Make so that messages received from contacts not in database are ignored and sent to native
+		 */
 		/* Sets used to determine who sent the message, 
 		 * if type == 2 then it is sent from the user
 		 * if type == 1 it has been sent by the contact

@@ -60,10 +60,9 @@ public class ImportContacts extends Activity {
         confirm = (Button) findViewById(R.id.confirm);
         importList = (ListView)findViewById(R.id.import_contact_list);
         tc = new ArrayList<TrustedContact>();
-        //ArrayList<String> number;
         ArrayList<Number> number;
-        //ArrayList<String> lastMessage;
         String name;
+        String id;
        
         Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
         Cursor cur = managedQuery(mContacts, new String[] {Contacts._ID, 
@@ -74,28 +73,22 @@ public class ImportContacts extends Activity {
         
         if (cur.moveToFirst()) {
                 do {
-                	//number = new ArrayList<String>();
+                	
+                	//Still need TODO get date and type of number
                 	number = new ArrayList<Number>();
-                	//lastMessage = new ArrayList<String>();
             		name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
-            		String id  = cur.getString(cur.getColumnIndex(Contacts._ID));
+            		id  = cur.getString(cur.getColumnIndex(Contacts._ID));
             		if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
             		{
-            			Cursor pCur = getContentResolver().query(Phone.CONTENT_URI, 
+            			Cursor pCur = getContentResolver().query(Phone.CONTENT_URI, 	
             					new String[] { Phone.NUMBER}, Phone.CONTACT_ID +" = ?", 
             	 	 		    new String[]{id}, null);
             			if (pCur.moveToFirst())
             			{
             				do
             				{
-            					//number.add(new Number (ContactRetriever.format(pCur.getString(pCur.getColumnIndex(
-            						//	Phone.NUMBER)))));
             					String numb = (pCur.getString(pCur.getColumnIndex(Phone.NUMBER)));
             					Uri uriSMSURI = Uri.parse("content://sms/");
-            					/*Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
-            							{"address", "body"}, "address = ?",new String[]
-            							{numb},	//COPY ContactRetriever.getPersonSMS(this);
-            							"date DESC LIMIT 1");*/
             					
             					//This now takes into account the different formats of the numbers. 
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
@@ -110,14 +103,10 @@ public class ImportContacts extends Activity {
             						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
             						number.add(new Number (ContactRetriever.format(numb), 
             								mCur.getString(mCur.getColumnIndex("body"))));
-            						//number.get(number.size()-1).setLastMessage(
-            							//	mCur.getString(mCur.getColumnIndex("body")));
-            						//lastMessage.add(mCur.getString(mCur.getColumnIndex("body")));
             					}
             					else 
             					{
             						number.add(new Number (ContactRetriever.format(numb)));
-            						//lastMessage.add(null);
             					}
             				} while (pCur.moveToNext());
             			}
@@ -134,9 +123,47 @@ public class ImportContacts extends Activity {
                     	}
                     }
                     number = null;
-                    //lastMessage = null;
                 } while (cur.moveToNext());
         }
+        
+        Uri uriSMSURI = Uri.parse("content://sms/conversations/");
+		Cursor convCur = getContentResolver().query(uriSMSURI, new String[]{"thread_id", "snippet"}, null,
+				null, "date DESC");
+		
+		Number newNumber;
+		
+		while (convCur.moveToNext()) {
+			
+			
+			id = convCur.getString(convCur.getColumnIndex("thread_id"));
+			newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
+			
+			Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
+					new String[]{"address"}, "thread_id = ?",
+					new String[] {id}, "date DESC");
+
+			if (nCur.moveToFirst())
+			{
+				newNumber.setNumber(nCur.getString(nCur.getColumnIndex("address")));
+			}
+			else
+			{
+				
+				Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
+						new String[]{"address"}, "thread_id = ?",
+						new String[] {id}, "date DESC");
+				if (sCur.moveToFirst())
+				{
+					newNumber.setNumber(ContactRetriever.format(sCur.getString(sCur.getColumnIndex("address"))));
+				}
+			}
+			if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber()) 
+					&& !MessageService.dba.inDatabase(newNumber.getNumber()))
+			{
+				tc.add(new TrustedContact(newNumber));
+				inDb.add(false);
+            }
+		}
         
         if (tc != null && tc.size() > 0)
         {

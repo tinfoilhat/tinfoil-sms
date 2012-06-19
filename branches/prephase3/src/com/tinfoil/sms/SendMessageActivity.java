@@ -59,7 +59,7 @@ public class SendMessageActivity extends Activity {
         MessageService.dba = new DBAccessor(this);
         
         Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        newCont = new TrustedContact(null);
+        newCont = new TrustedContact();
         tc = MessageService.dba.getAllRows();
 
     	phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);

@@ -40,6 +40,19 @@ public class TrustedContact {
 	private String bookPath;
 	private String bookInversePath;
 	
+	
+	public TrustedContact ()
+	{
+		this.name = null;
+		this.publicKey = null;
+		this.numbers = new ArrayList<Number>();
+		this.signature = null;
+		this.s1 = null;
+		this.s2 = null;
+		this.bookPath = null;
+		this.bookInversePath = null;
+	}
+	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
 	 * 
@@ -52,7 +65,6 @@ public class TrustedContact {
 		this.name = name;
 		this.publicKey = publicKey;
 		this.numbers = new ArrayList<Number>();
-		//this.lastMessage = new ArrayList<String>();
 		this.signature = null;
 		this.s1 = null;
 		this.s2 = null;
@@ -72,7 +84,6 @@ public class TrustedContact {
 		this.name = name;
 		this.publicKey = publicKey;
 		this.numbers = new ArrayList<Number>();
-		//this.lastMessage = new ArrayList<String>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(new Number (numbers.get(i)));
@@ -106,6 +117,18 @@ public class TrustedContact {
 		this.bookInversePath = null;
 	}
 	
+	public TrustedContact (Number numbers)
+	{
+		this.name = numbers.getNumber();
+		this.publicKey = null;
+		this.numbers = new ArrayList<Number>();
+		this.numbers.add(numbers);
+		this.signature = null;
+		this.s1 = null;
+		this.s2 = null;
+		this.bookPath = null;
+		this.bookInversePath = null;
+	}
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -434,5 +457,19 @@ public class TrustedContact {
 		return false;
 	}
 	
+	public static boolean isNumberUsed(ArrayList<TrustedContact> tc, String number)
+	{
+		for (int i = 0; i < tc.size(); i++)
+		{
+			for (int h = 0; h < tc.get(i).getNumber().size(); h++)
+			{
+				if (number.equalsIgnoreCase(tc.get(i).getNumber(h)))
+				{
+					return true;
+				}
+			}			
+		}		
+		return false;
+	}
 	
 }
