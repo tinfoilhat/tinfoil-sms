@@ -411,11 +411,13 @@ public class SteganographyActivity
 		int length;
 		boolean sequenceMatch = true;
 		
-		byte[] pseudoEncryptedString = new byte[64];
+		byte[] contentBefore = new byte[64];
+		byte[] contentAfter = new byte[64];
 		String stegotext;
 		
 		// Steganography dictionaries
 		String[] uniqueDictionary = new String[MIN_DICT_SIZE];
+		String[] inverseDictString = new String[MIN_DICT_SIZE];
 		CollationKey[] inverseDictionary = new CollationKey[MIN_DICT_SIZE];
 		
 		
@@ -474,15 +476,29 @@ public class SteganographyActivity
 		 */
 		
 		// Define the collator locale and parameters for sorting strings
-		Collator collator = Collator.getInstance(Locale.US);
+		//Collator collator = Collator.getInstance(Locale.US);
 		
 		/* Set the collator decomposition parameters and comparison strength
 		 * For more detail on the different decompositions and comparison strengths
 		 * 
 		 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/text/Collator.html
 		 */
-		collator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
-		collator.setStrength(Collator.PRIMARY);
+		//collator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
+		//collator.setStrength(Collator.PRIMARY);
+		
+		
+		// Define a strict collator for sorting and matching words in the dictionary
+		Collator strictCollator = Collator.getInstance(Locale.US);
+		
+		/* Set the collator decomposition parameters and comparison strength
+		 * For more detail on the different decompositions and comparison strengths
+		 * 
+		 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/text/Collator.html
+		 */
+		strictCollator.setDecomposition(Collator.FULL_DECOMPOSITION);
+		strictCollator.setStrength(Collator.IDENTICAL);
+		
+		
 		
 		
 		/*
@@ -519,7 +535,7 @@ public class SteganographyActivity
 		 * inverse dictionary given the master dictionary
 		 */
 		startTime = System.currentTimeMillis();
-		Steganography.generateDict(uniqueDictionary, inverseDictionary, masterDictionary, (Comparator)collator, isaac1);
+		Steganography.generateDict(uniqueDictionary, inverseDictionary, masterDictionary, (Comparator)strictCollator, isaac1);
 		endTime = System.currentTimeMillis();
 		
 		// Display results
@@ -537,6 +553,12 @@ public class SteganographyActivity
 		System.out.println("Total time to generate the unique dictionary and inverse dictionary " + (endTime-startTime) + " milliseconds");
 		
 		
+		// Convert the inverseDictionary from collationkey to string array as that is how it will be stored on disk
+		for (int i =0; i < inverseDictionary.length; ++i)
+		{
+			inverseDictString[i] = inverseDictionary[i].getSourceString();
+		}
+		
 		/*
 		 * Test the steganography obfuscate and deobfuscate, as well as the average length of messages given
 		 * a simulated encrypted content using random generated input
@@ -545,17 +567,35 @@ public class SteganographyActivity
 		 *  content, concatenate two random numbers to get a 64byte string as a test (since we will support
 		 *  messages of at least 60 chars which is 64 bytes when using block cipher
 		 */
-		for (int i = 0; i < 100; ++i)
-		{
-			// Generate a random "simulated" encrypted message
-			isaac1.nextBytes(pseudoEncryptedString);
-		
-			stegotext = Steganography.obfuscate(pseudoEncryptedString, uniqueDictionary);
-			
-			System.out.println("Encrypted message before steganography: " + new String(Hex.encode(pseudoEncryptedString)));
-			System.out.println(stegotext.length() + " : " + stegotext);
-		}
 
+		for (int i = 0; i < 100000; ++i)
+		{
+			// Generate a random "simulated" encrypted message, this is the initial content
+			isaac1.nextBytes(contentBefore);
+		
+			// Test string, breaks because of daemons conflict
+			//contentBefore = Hex.decode("b904caa129f7a41c28300087d662e00c56cb2f121deac2f9226aea29ec5d4e972e83d41a3377438996b6e97602e0c226f1df6c6266b28cfb218b2040552b33b0");
+			
+			stegotext = Steganography.obfuscate(contentBefore, uniqueDictionary);
+			contentAfter = Steganography.deObfuscate(stegotext, inverseDictString, strictCollator);
+			
+			// Verify that the content is THE EXACT SAME after it has had steganography applied (obfuscated) and then has
+			// been de-obfuscated by the recipient, if they are not the same then the steganography has a SERIOUS FLAW!
+			if (strictCollator.compare(new String(Hex.encode(contentBefore)), new String(Hex.encode(contentAfter))) != 0)
+			{
+				System.out.println("STEGANOGRAPHY FAILED, ORIGINAL CONTENT: " + new String(Hex.encode(contentBefore)) +
+						" AND CONTENT AFTER DE-OBFUSCATE DO NOT MATCH: " + new String(Hex.encode((contentAfter))));
+				sequenceMatch = false;
+			}
+
+			 //System.out.println("Encrypted message before OBFUSCATE: " + new String(Hex.encode(contentBefore)));
+			 //System.out.println("STEGOTEXT: " + stegotext.length() + " : " + stegotext);
+			 //System.out.println("Encrypted message after DE-OBFUSCATE: " + new String(Hex.encode(contentAfter)));
+		}
+		if (sequenceMatch)
+		{
+			System.out.println("STEGANOGRAPHY SUCCEEDED!");
+		}
 		
 	}
 }
