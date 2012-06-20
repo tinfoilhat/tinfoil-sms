@@ -18,6 +18,7 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -114,6 +115,8 @@ public class DBAccessor {
 	 */
 	public void UpdateLastMessage(Number number)
 	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.getTimeInMillis();
 		number.setNumber(ContactRetriever.format(number.getNumber()));
 		int reference = getId(number.getNumber());
 		

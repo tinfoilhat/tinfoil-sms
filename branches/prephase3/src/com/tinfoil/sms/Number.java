@@ -21,14 +21,25 @@ public class Number {
 		this.setDate(date);
 	}
 	
+	/**
+	 * Date set to current time
+	 * @param number
+	 * @param type
+	 * @param lastMessage
+	 */
 	public Number (String number, int type, String lastMessage)
 	{
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
 		this.setType(type);
-		this.setDate(0);
+		this.setDate();
 	}
 	
+	/**
+	 * Date not set
+	 * @param number
+	 * @param type
+	 */
 	public Number (String number, int type)
 	{
 		this.setNumber(number);
@@ -37,6 +48,10 @@ public class Number {
 		this.setDate(0);
 	}
 	
+	/**
+	 * Date not set
+	 * @param number
+	 */
 	public Number (String number)
 	{
 		this.setNumber(number);
@@ -45,6 +60,11 @@ public class Number {
 		this.setDate(0);
 	}
 	
+	/**
+	 * Date not set
+	 * @param number
+	 * @param lastMessage
+	 */
 	public Number (String number, String lastMessage)
 	{
 		this.setNumber(number);
@@ -102,15 +122,8 @@ public class Number {
 	/**
 	 * @return the date
 	 */
-	/*public long getDate() {
+	public long getDate() {
 		return date;
-	}*/
-	
-	/**
-	 * @return the date
-	 */
-	public String getDate() {
-		return millisToDate(date);
 	}
 
 	/**
@@ -118,6 +131,14 @@ public class Number {
 	 */
 	public void setDate(long date) {
 		this.date = date;
+	}
+	
+	/**
+	 * set the date to the current time
+	 */
+	public void setDate() {
+		Calendar calendar = Calendar.getInstance();
+		this.date = calendar.getTimeInMillis();
 	}
 	
 	public static String millisToDate(long currentTime) {

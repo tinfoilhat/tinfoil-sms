@@ -19,6 +19,7 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.Time;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -129,10 +131,9 @@ public class SendMessageActivity extends Activity {
 									MessageService.dba.getRow(ContactRetriever.format(number))
 									.getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
-							
-							
+														
 							MessageService.dba.UpdateLastMessage(new Number 
-									(ContactRetriever.format(number), 1, text, 0));
+									(ContactRetriever.format(number), 1, text));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
@@ -140,7 +141,7 @@ public class SendMessageActivity extends Activity {
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							MessageService.dba.UpdateLastMessage(new Number 
-									(ContactRetriever.format(number), 1, text, 0));
+									(ContactRetriever.format(number), 1, text));
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
