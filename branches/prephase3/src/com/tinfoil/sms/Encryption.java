@@ -31,6 +31,7 @@ import android.util.Base64;
  */
 abstract class Encryption
 {
+	private static final byte[] KEY = ("test123").getBytes();
 	private static final int ROT_SHIFT = 13;
 	private static final String CIPHER_ALGORITHM = "AES";
 	/* Key size in BYTES */
@@ -117,6 +118,11 @@ abstract class Encryption
 		System.arraycopy(hash, 0, key, 0, 15);	
 		
 		return key;
+	}
+	
+	public static byte[] generateKey()
+	{
+		return KEY;
 	}
 }
 

@@ -109,15 +109,21 @@ public class ManageContactsActivity extends Activity {
 	 */
 	public void change(int position, boolean add)
 	{
+		Contact contact;
 		if (add)
 		{
+			//contact = new Contact(tc.get(position).getName(), tc.get(position).getANumber());
+			//contact.setPublicKey();
 			tc.get(position).setPublicKey();
 		}
 		else
 		{
+			//contact = new Contact(tc.get(position).getName(), tc.get(position).getANumber());
+			//contact.clearPublicKey();
 			tc.get(position).clearPublicKey();
 		}
 
+		//MessageService.dba.updateRow(contact);
 		MessageService.dba.updateRow(tc.get(position),tc.get(position).getANumber());
 	}
 

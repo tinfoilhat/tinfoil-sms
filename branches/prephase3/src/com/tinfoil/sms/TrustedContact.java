@@ -431,7 +431,7 @@ public class TrustedContact {
 	 */
 	public void setPublicKey()
 	{
-		this.publicKey = ("test123").getBytes();
+		this.publicKey =  Encryption.generateKey();
 	}
 	
 	/**
