@@ -38,7 +38,8 @@ import android.widget.ListView;
 public class RemoveContactsActivity extends Activity {
 	private ListView listView;
 	private boolean [] contact;
-	private ArrayList<TrustedContact> tc;
+	//private ArrayList<TrustedContact> tc;
+	private ArrayList<Contact> cont;
 	private Button delete;
 	
     /** Called when the activity is first created. */
@@ -52,9 +53,10 @@ public class RemoveContactsActivity extends Activity {
         
         update();
         
-        contact = new boolean 
-        		[tc.size()];
-        for (int i = 0; i < tc.size(); i++)
+        //contact = new boolean [tc.size()];
+        contact = new boolean [cont.size()];
+        //for (int i = 0; i < tc.size(); i++)
+        for (int i = 0; i < cont.size(); i++)
         {
         	contact[i] = false;
         }
@@ -71,13 +73,16 @@ public class RemoveContactsActivity extends Activity {
 
         delete.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
-				if (tc != null)
+				//if (tc != null)
+				if (cont != null)
 				{
-					for (int i = 0; i < tc.size(); i++)
+					//for (int i = 0; i < tc.size(); i++)
+					for (int i = 0; i < cont.size(); i++)
 					{
 						if (contact[i])
 						{
-							MessageService.dba.removeRow(tc.get(i).getANumber());
+							//MessageService.dba.removeRow(tc.get(i).getANumber());
+							MessageService.dba.removeRow(cont.get(i).getNumber());
 						}
 					}
 					update();
@@ -109,15 +114,20 @@ public class RemoveContactsActivity extends Activity {
 	private void update()
 	{
 		String[] names;
-		tc  = MessageService.dba.getAllRows();
+		//tc  = MessageService.dba.getAllRows();
+		cont = MessageService.dba.getAllRowsLimited();
 		
-		if (tc != null)
+		//if (tc != null)
+		if (cont != null)
 		{
 			//The string that is displayed for each item on the list 
-	        names = new String[tc.size()];
-	        for (int i = 0; i < tc.size(); i++)
+	        //names = new String[tc.size()];
+			names = new String[cont.size()];
+	        //for (int i = 0; i < tc.size(); i++)
+			for (int i = 0; i < cont.size(); i++)
 	        {
-	        	names[i] = tc.get(i).getName();
+	        	//names[i] = tc.get(i).getName();
+				names[i] = cont.get(i).getName();
 	        }
 	
 	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
@@ -142,9 +152,11 @@ public class RemoveContactsActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.all:
-			if (tc!=null)
+			//if (tc!=null)
+			if (cont!=null)
 			{
-				for (int i = 0; i < tc.size();i++)
+				//for (int i = 0; i < tc.size();i++)
+				for (int i = 0; i < cont.size();i++)
 				{
 					listView.setItemChecked(i, true);
 					contact[i] = true;
@@ -152,9 +164,11 @@ public class RemoveContactsActivity extends Activity {
 			}
 			return true;
 		case R.id.remove:
-			if (tc!=null)
+			//if (tc!=null)
+			if (cont!=null)
 			{
-				for (int i = 0; i < tc.size();i++)
+				//for (int i = 0; i < tc.size();i++)
+				for (int i = 0; i < cont.size();i++)
 				{
 					listView.setItemChecked(i, false);
 					contact[i] = false;

@@ -88,12 +88,13 @@ public abstract class ContactRetriever {
 	}*/
 	
 	/**
+	 * **Please note No longer used
 	 * Get the list of 1 messages per unique contact for the main window
 	 * @param c : Context
 	 * @return : List<String[]>, a list of String arrays that contain
 	 * the number, name, and the message. 
 	 */
-	public static List<String[]> getSMS(Context c)
+	/*public static List<String[]> getSMS(Context c)
 	{
 		Uri uriSMSURI = Uri.parse("content://sms/conversations/");
 		Uri uriSMS = Uri.parse("content://sms/inbox");
@@ -137,7 +138,7 @@ public abstract class ContactRetriever {
 			sCur.close();
 		}
 		return sms;
-	}
+	}*/
 	
 	/**
 	 * Get a list of messages received from a given number
