@@ -21,12 +21,27 @@ public class Number {
 		this.setDate(date);
 	}
 	
+	public Number (String number, int type, String lastMessage)
+	{
+		this.setNumber(number);
+		this.setLastMessage(lastMessage);
+		this.setType(type);
+		this.setDate(0);
+	}
+	
+	public Number (String number, int type)
+	{
+		this.setNumber(number);
+		this.setLastMessage(null);
+		this.setType(type);
+		this.setDate(0);
+	}
+	
 	public Number (String number)
 	{
 		this.setNumber(number);
 		this.setLastMessage(null);
-		//this.setType(null);
-		this.setType(1);
+		this.setType(DBAccessor.OTHER_INDEX);
 		this.setDate(0);
 	}
 	
@@ -34,8 +49,7 @@ public class Number {
 	{
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
-		//this.setType(null);
-		this.setType(1);
+		this.setType(DBAccessor.OTHER_INDEX);
 		this.setDate(0);
 	}
 
@@ -71,6 +85,10 @@ public class Number {
 	 * @return the type
 	 */
 	public int getType() {
+		if (type > DBAccessor.LENGTH)
+		{
+			return DBAccessor.OTHER_INDEX;
+		}
 		return type;
 	}
 

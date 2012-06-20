@@ -50,9 +50,12 @@ public class DBAccessor {
 	public static final String KEY_TYPE = "type";
 	public static final String KEY_DATE = "date";
 	
-	public static final int LENGTH = 8;
-	public static String[] TYPES = new String[] {"Home", "Mobile", "Work", "Work Fax",
-    	"Home Fax", "Pager", "Other", "Custom"};
+	public static final int LENGTH = 21;
+	public static final int OTHER_INDEX = 7;
+	public static String[] TYPES = new String[] {"", "Home", "Mobile", "Work", "Work Fax",
+    	"Home Fax", "Pager", "Other", "Custom", "Callback", "Car", "Company Main", "ISDN", 
+    	"Main", "Other Fax", "Telex", "TTY TTD", "Work Mobile", "Work Pager", "Assistant", 
+    	"MMS"};
 	
 	private static final String DEFAULT_BOOK_PATH = "path/path";
 	private static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
