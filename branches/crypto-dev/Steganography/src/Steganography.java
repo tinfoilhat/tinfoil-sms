@@ -2,7 +2,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.CollationKey;
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.spongycastle.crypto.DataLengthException;
@@ -26,7 +29,7 @@ import org.spongycastle.crypto.prng.RandomGenerator;
  * any form of statistical analysis or primitive natural language processing by
  * an adversarial computer system.
  * 
- * @TODO Do more research and add support to incorporate information theory and
+ * TODO Do more research and add support to incorporate information theory and
  * natural language processing operations so that stegotext appears as information
  * rather than just textual data.
  */
@@ -75,7 +78,7 @@ public abstract class Steganography
 																		String[] masterDictionary,
 																		Comparator<T> c,
 																		ISAACRandomGenerator engine)
-	throws Exception, DataLengthException, IllegalArgumentException
+		throws Exception, DataLengthException, IllegalArgumentException
 	{
 		/*
 		 * Checks to ensure that the requirements for the dictionaries are met
@@ -133,13 +136,14 @@ public abstract class Steganography
 					 * Add the word from master dictionary to the unique dictionary in the
 					 * format <dictionary index in hex>:<unique word> (ie. 003F:fizzle)
 					 */
-					uniqueDictionary[i] = fixedWidthHex(i, 4) + ":" + uniqueWord;
+					uniqueDictionary[i] = DictionaryUtil.fixedWidthHexString(i, 4) + ":" + uniqueWord;
 					
 					/*
 					 * Add the word from the master dictionary to the inverse lookup for the unique
 					 * dictionary in the format <unique word>:<dictionary index in hex> (ie. fizzle:003F)
 					 */
-					inverseDictionary[i] = ((Collator)c).getCollationKey(uniqueWord + ":" + fixedWidthHex(i, 4));
+					inverseDictionary[i] = ((Collator)c).getCollationKey(uniqueWord + ":"
+										+ DictionaryUtil.fixedWidthHexString(i, 4));
 					
 					// Mark the unique word in the master dictionary as null as it has been used
 					masterDictionary[newProbe] = null;
@@ -167,10 +171,11 @@ public abstract class Steganography
 	 * @throws DataLengthException If the content in bytes is not divisible by two, or if
 	 * the unique dictionary does not contain 65,537 or more words, 
 	 * 
-	 * @TODO Research into adding NLP/Information theory support to generate
+	 * TODO Research into adding NLP/Information theory support to generate
 	 * stegotext that appears as information rather than just textual data
 	 */
 	public static String obfuscate(byte[] content, String[] uniqueDictionary)
+		throws DataLengthException
 	{
 		if (content.length % 2 == 1)
 		{
@@ -223,20 +228,51 @@ public abstract class Steganography
 		return stegotext;
 	}
 	
+	
 	/*
-	 * Simple function which returns a hexadecimal string with a minimum fixed
-	 * width given a value to convert to hex.
+	 * De-obfuscates the stegotext back into the original content by using the unique
+	 * words INVERSE dictionary provided. Currently this only provides a minimal level 
+	 * of security-through-obscurity as the stegotext to be de-obfuscated is merely 
+	 * textual data ("words") without any evident information.
+	 * 
+	 * @param stegotext The obfuscated stegotext to be transformed into the original content
+	 * @param inverseDictionary The INVERSE unique dictionary for mapping words to hex values (keys)
+	 * @param c	The comparator to use for performing comparisons when looking up words in the 
+	 * inverse dictionary
+	 * 
+	 * @return The original content, which is the de-obfuscated stegotext
+	 * 
+	 * @throws DataLengthException If the inverse dictionary does not contain 65,537 or more words
+	 * @throws Exception If there is an error converting from the stegotext to the original content 
+	 * 
+	 * TODO Research into adding NLP/Information theory support to generate stegotext that appears
+	 * as information rather than just textual data
 	 */
-	private static String fixedWidthHex(int value, int minWidth)
+	public static byte[] deObfuscate(String stegotext, String[] inverseDictionary, Collator c)
+		throws DataLengthException, IllegalArgumentException, Exception
 	{
-		String leadingZeros = "";
-		
-		for (int i = Integer.toHexString(value).length(); i < minWidth; ++i)
+		if (inverseDictionary.length < MIN_DICT_SIZE)
 		{
-			leadingZeros += "0";
+			throw new DataLengthException("Dictionary and inverse dictionary MUST have at least 65,537 elements or more!");
 		}
 		
-		return leadingZeros + Integer.toHexString(value).toUpperCase();
+		/*
+		 * Divide the stegotext into a collection of n-grams or words and then map each
+		 * word to the original hex values
+		 */
+		String[] words = stegotext.split("\\s+");
+		byte[] origContent = new byte[words.length * 2];
+		byte[] value;
+		int idx = 0;
+		
+		for (String word : words)
+		{
+			value = DictionaryUtil.getInverseValue(word, inverseDictionary, c);
+			System.arraycopy(value, 0, origContent, idx, value.length);
+			idx += value.length;
+		}
+		return origContent;
 	}
+
 	
 }
