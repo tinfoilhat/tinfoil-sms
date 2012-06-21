@@ -634,39 +634,40 @@ public class DBAccessor {
 	 * Used to retrieve a limited set of information about all the contacts
 	 * This is used to increase the speed of activities such as ManageContactsActivity
 	 * Where all the contacts are needed to be retrieved at once but a small amount of 
-	 * information is actually used. ***NOT TESTED and NOT USED YET
+	 * information is actually used.
 	 * @return ArrayList<Contact> contact
 	 */
 	public ArrayList<Contact> getAllRowsLimited()
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[]
-				{KEY_NAME, KEY_PUBLIC_KEY, KEY_ID},
-				null, null, null, null, KEY_ID);
-		
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
+				SQLitehelper.NUMBERS_TABLE_NAME, new String[]
+				{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE, 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER,
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME,
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_PUBLIC_KEY},
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE,
+				null, null, null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID);
 		ArrayList<Contact> contact = new ArrayList<Contact>();
-				
+		int id = 0;
+		int id2 = -1;
+		
 		if (cur.moveToFirst())
         {
 			do
-			{				
-				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
-				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-						SQLitehelper.NUMBERS_TABLE_NAME, new String[]
-						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER},
-						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
-						null, null, null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " LIMIT 1");
-
-				if (pCur.moveToFirst())
+			{	
+				id = cur.getInt(cur.getColumnIndex(KEY_REFERENCE));
+				if (id != id2)
 				{
+					
+						
 					contact.add(new Contact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 							cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
-							pCur.getString(pCur.getColumnIndex(KEY_NUMBER))));
+							cur.getString(cur.getColumnIndex(KEY_NUMBER))));
+					
 				}
-				pCur.close();
-				
+				id2 = id;
 			}while (cur.moveToNext());
 			
 			close(cur);
@@ -834,6 +835,54 @@ public class DBAccessor {
 			addRow(tc);
 		}
 	}
+	
+	public void updateTrustedRow (TrustedContact tc, String number, int id)
+	{
+		ContentValues cv = new ContentValues();
+		if (id == 0)
+		{
+			id = getId(number);
+		}
+		
+		//Trusted Table
+        cv.put(KEY_NAME, tc.getName());
+        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
+        cv.put(KEY_SIGNATURE, tc.getSignature());
+        
+        open();
+		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, KEY_ID + " = " + id, null);
+		close();
+	}
+	
+	/**
+	 * NEED TO DO IT BASED ON ORDER 
+	 * @param tc
+	 * @param number
+	 * @param id : int the id of the row, 0 if unknown
+	 * @param index
+	 */
+	public void updateNumberRow (TrustedContact tc, String number, int id, int index)
+	{
+		
+		ContentValues cv = new ContentValues();
+		if (id == 0)
+		{
+			id = getId(number);
+		}
+		//Numbers Table
+        cv.put(KEY_REFERENCE, id);
+        cv.put(KEY_NUMBER, tc.getNumber(index));
+        cv.put(KEY_TYPE, tc.getNumber().get(index).getType());
+        cv.put(KEY_LAST_MESSAGE, tc.getNumber().get(index).getLastMessage());
+        cv.put(KEY_DATE, tc.getNumber().get(index).getDate());
+        
+        open();
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " 
+				+ id +" AND " + KEY_NUMBER + " = ?", new String[]
+				{number});
+		close();
+	}
+	
 		
 	/**
 	 * Deletes the rows with the given number

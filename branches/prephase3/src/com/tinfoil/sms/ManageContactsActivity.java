@@ -201,7 +201,7 @@ public class ManageContactsActivity extends Activity {
 		update();
 		super.onResume();
 	}
-
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		MenuInflater inflater = getMenuInflater();
