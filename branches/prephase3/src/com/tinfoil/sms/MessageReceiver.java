@@ -91,7 +91,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								secretMessage , Prephase3Activity.INBOX);
 						
 						//Updates the last message recieved
-						MessageService.dba.UpdateLastMessage(new Number (address, 1, secretMessage));
+						MessageService.dba.updateLastMessage(new Number (address, 1, secretMessage));
 						
 						Prephase3Activity.updateList(context);
 						Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();

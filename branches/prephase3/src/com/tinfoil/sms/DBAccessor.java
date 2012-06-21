@@ -90,7 +90,7 @@ public class DBAccessor {
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : Number the object containing the number, last message, type, and date of last sent
 	 */
-	private void addNumbersRow (int reference, Number number)
+	private void addNumbersRow (long reference, Number number)
 	{
 		ContentValues cv = new ContentValues();
 			
@@ -109,33 +109,33 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO test this to make sure that it properly updates the row with a new message
 	 * Update a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : Number the object containing the number, last message, type, and date of last sent
 	 */
-	public void UpdateLastMessage(Number number)
+	public void updateLastMessage(Number number)
 	{
 		Calendar calendar = Calendar.getInstance();
 		calendar.getTimeInMillis();
 		number.setNumber(ContactRetriever.format(number.getNumber()));
-		int reference = getId(number.getNumber());
+		long reference = getId(number.getNumber());
 		
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_NUMBER, number.getNumber());
-        cv.put(KEY_TYPE, number.getType());
         cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
         cv.put(KEY_DATE, number.getDate());
 
         //Insert the row into the database
         open();
-        if (db.delete(SQLitehelper.NUMBERS_TABLE_NAME, "number = ?", 
+        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, "number = ?", new String[] {number.getNumber()});
+        /*if (db.delete(SQLitehelper.NUMBERS_TABLE_NAME, "number = ?", 
         		new String[] {number.getNumber()}) > 0)
         {
         	db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);	
-        }
+        }*/
         close();
 		
 	}
@@ -146,7 +146,7 @@ public class DBAccessor {
 	 * @param s1 : String the first shared information
 	 * @param s2 : String the second shared information
 	 */
-	private void addSharedInfo (int reference, String s1, String s2)
+	private void addSharedInfo (long reference, String s1, String s2)
 	{
 		ContentValues cv = new ContentValues();
 			
@@ -167,7 +167,7 @@ public class DBAccessor {
 	 * @param s1 : String the first shared information
 	 * @param s2 : String the second shared information
 	 */
-	public void updateSharedInfo(int reference, String s1, String s2)
+	public void updateSharedInfo(long reference, String s1, String s2)
 	{
 		if ((s1 != null || s2 != null) && (!s1.equalsIgnoreCase(DEFAULT_S1)
 				|| !s2.equalsIgnoreCase(DEFAULT_S2))) //||(!s1.equalsIgnoreCase(DEFAULT_S2)
@@ -182,7 +182,7 @@ public class DBAccessor {
 	 * Resets the shared information to the default shared information
 	 * @param reference : int the reference id for the contact
 	 */
-	public void resetSharedInfo (int reference)
+	public void resetSharedInfo (long reference)
 	{
 		if (reference != 0 && !sharedInfoIsDefault(reference) )
 		{
@@ -200,7 +200,7 @@ public class DBAccessor {
 	 * true if the shared info is the default
 	 * false if the shared info is not the default
 	 */
-	private boolean sharedInfoIsDefault(int reference)
+	private boolean sharedInfoIsDefault(long reference)
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
@@ -220,7 +220,7 @@ public class DBAccessor {
 	 * @param reference : int the reference id for the contact
 	 * @return : String[2] s1 and s2
 	 */
-	public String[] getSharedInfo(int reference)
+	public String[] getSharedInfo(long reference)
 	{
 		boolean open = true;
 		if(!db.isOpen())
@@ -286,7 +286,7 @@ public class DBAccessor {
 	 * @param bookPath : String the path for looking up the book source
 	 * @param bookInversePath : String the path for looking up the inverse book source
 	 */
-	private void addBookPath (int reference, String bookPath, String bookInversePath)
+	private void addBookPath (long reference, String bookPath, String bookInversePath)
 	{
 		ContentValues cv = new ContentValues();
 			
@@ -305,7 +305,7 @@ public class DBAccessor {
 	 * Sets the book path back to the default path
 	 * @param reference : int the id of the contact
 	 */
-	public void resetBookPath (int reference)
+	public void resetBookPath (long reference)
 	{
 		if (!bookIsDefault(reference))
 		{
@@ -322,7 +322,7 @@ public class DBAccessor {
 	 * @param bookPath : String the path for looking up the book source
 	 * @param bookInversePath : String the path for looking up the inverse book source
 	 */
-	public void updateBookPaths(int reference, String bookPath, String bookInversePath)
+	public void updateBookPaths(long reference, String bookPath, String bookInversePath)
 	{
 		if ((bookPath != null || bookInversePath != null) && 
 				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)
@@ -340,7 +340,7 @@ public class DBAccessor {
 	 * true if the book path is the default
 	 * false if the book path is not the default
 	 */
-	private boolean bookIsDefault(int reference)
+	private boolean bookIsDefault(long reference)
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
@@ -360,7 +360,7 @@ public class DBAccessor {
 	 * @param reference : int the id of the contact
 	 * @return : String[2] the book path, and the book inverse path 
 	 */
-	public String[] getBookPath(int reference)
+	public String[] getBookPath(long reference)
 	{
 		boolean open = true;
 		if (!db.isOpen())
@@ -437,7 +437,7 @@ public class DBAccessor {
 	        
 	        //Insert the row into the database
 	        open();
-	        int id = (int) db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
+	        long id = db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
 	        close();
 	        if (!tc.isNumbersEmpty())
 	        {
@@ -456,7 +456,7 @@ public class DBAccessor {
 	 * @param number : String the number of the contact
 	 * @return : int the id for the contact with the given number
 	 */
-	private int getId(String number)
+	private long getId(String number)
 	{
 		open();
 		Cursor cur = db.rawQuery("SELECT " + KEY_REFERENCE + " FROM " + 
@@ -464,7 +464,7 @@ public class DBAccessor {
 
 		if (cur.moveToFirst())
 		{
-			int id = cur.getInt(cur.getColumnIndex((KEY_REFERENCE)));
+			long id = cur.getInt(cur.getColumnIndex((KEY_REFERENCE)));
 			close(cur);
 			return id;
 		}
@@ -577,7 +577,7 @@ public class DBAccessor {
 		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + ", " + KEY_NUMBER + " FROM "
 				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
 
-		int id = 0;
+		long id = 0;
 		if (idCur.moveToFirst())
 		{
 			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
@@ -650,8 +650,8 @@ public class DBAccessor {
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE,
 				null, null, null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID);
 		ArrayList<Contact> contact = new ArrayList<Contact>();
-		int id = 0;
-		int id2 = -1;
+		long id = 0;
+		long id2 = -1;
 		
 		if (cur.moveToFirst())
         {
@@ -699,7 +699,7 @@ public class DBAccessor {
 						cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
 						cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
 				
-				int id = cur.getInt(cur.getColumnIndex(KEY_ID));
+				long id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 						SQLitehelper.NUMBERS_TABLE_NAME, new String[]
 						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
@@ -813,7 +813,7 @@ public class DBAccessor {
 	public void updateRow (Contact contact)
 	{
 		ContentValues cv = new ContentValues();
-		int id = getId(contact.getNumber());
+		long id = getId(contact.getNumber());
 		//add given values to a row
         cv.put(KEY_PUBLIC_KEY, contact.getPublicKey());
 		open();
@@ -836,12 +836,26 @@ public class DBAccessor {
 		}
 	}
 	
-	public void updateTrustedRow (TrustedContact tc, String number, int id)
+	/**
+	 * TODO test this and make sure that it works the same as updateRow
+	 * @param tc
+	 * @param number
+	 */
+	public void updateRowTEST (TrustedContact tc, String number)
+	{
+		long id = getId(ContactRetriever.format(number));
+		updateTrustedRow(tc, number, id);
+		updateNumberRow(tc, number, id);
+		updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
+		updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
+	}
+	
+	public void updateTrustedRow (TrustedContact tc, String number, long id)
 	{
 		ContentValues cv = new ContentValues();
 		if (id == 0)
 		{
-			id = getId(number);
+			id = getId(ContactRetriever.format(number));
 		}
 		
 		//Trusted Table
@@ -854,34 +868,65 @@ public class DBAccessor {
 		close();
 	}
 	
+	public void updateNumberRow (TrustedContact tc, String number, long id)
+	{
+		if (id == 0)
+		{
+			id = getId(ContactRetriever.format(number));
+		}
+		open();
+		int num = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		if (num != 0)
+		{
+			for(int i=0; i< tc.getNumber().size(); i++)
+			{
+				addNumbersRow(id, tc.getNumber().get(i));
+			}
+		}
+	}
+
 	/**
-	 * NEED TO DO IT BASED ON ORDER 
+	 * To complicated
 	 * @param tc
 	 * @param number
 	 * @param id : int the id of the row, 0 if unknown
 	 * @param index
 	 */
-	public void updateNumberRow (TrustedContact tc, String number, int id, int index)
+	/*public void updateNumberRow (TrustedContact tc, String number, long id)
 	{
-		
-		ContentValues cv = new ContentValues();
+		//Need to look for the amount of numbers there are in the database and delete the leftovers
 		if (id == 0)
 		{
 			id = getId(number);
 		}
-		//Numbers Table
-        cv.put(KEY_REFERENCE, id);
-        cv.put(KEY_NUMBER, tc.getNumber(index));
-        cv.put(KEY_TYPE, tc.getNumber().get(index).getType());
-        cv.put(KEY_LAST_MESSAGE, tc.getNumber().get(index).getLastMessage());
-        cv.put(KEY_DATE, tc.getNumber().get(index).getDate());
-        
-        open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " 
-				+ id +" AND " + KEY_NUMBER + " = ?", new String[]
-				{number});
-		close();
-	}
+		open();
+		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]
+				{"COUNT(" + KEY_REFERENCE + ")"}, KEY_REFERENCE + " = " + id,
+				null, null, null, null);
+		int size = -2;
+		if (cur.moveToFirst())
+		{
+			size = cur.getInt(0);
+		}
+		close(cur);
+		for (int i =0; i < tc.getNumber().size(); i++)
+		{
+			ContentValues cv = new ContentValues();
+			
+			//Numbers Table
+	        cv.put(KEY_REFERENCE, id);
+	        cv.put(KEY_NUMBER, tc.getNumber(i));
+	        cv.put(KEY_TYPE, tc.getNumber().get(i).getType());
+	        cv.put(KEY_LAST_MESSAGE, tc.getNumber().get(i).getLastMessage());
+	        cv.put(KEY_DATE, tc.getNumber().get(i).getDate());
+	        
+	        open();
+			db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " 
+					+ id +" AND " + KEY_NUMBER + " = ?", new String[]
+					{number});
+			close();
+		}
+	}*/
 	
 		
 	/**
@@ -893,7 +938,7 @@ public class DBAccessor {
 	 */
 	public boolean removeRow(String number)
 	{
-		int id = getId(ContactRetriever.format(number));
+		long id = getId(ContactRetriever.format(number));
 		resetSharedInfo(id);
 		resetBookPath(id);
 		open();

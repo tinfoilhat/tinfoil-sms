@@ -109,7 +109,7 @@ public class MessageView extends Activity {
 									 text, Prephase3Activity.SENT);
 							
 							
-							MessageService.dba.UpdateLastMessage(new Number 
+							MessageService.dba.updateLastMessage(new Number 
 									(Prephase3Activity.selectedNumber, 1, text));
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
@@ -120,7 +120,7 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
 							
-							MessageService.dba.UpdateLastMessage(new Number 
+							MessageService.dba.updateLastMessage(new Number 
 									(Prephase3Activity.selectedNumber, 1, text));
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
