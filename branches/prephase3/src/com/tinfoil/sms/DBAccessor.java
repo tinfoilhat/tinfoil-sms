@@ -820,28 +820,13 @@ public class DBAccessor {
 		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, KEY_ID + " = " + id, null);
 		close();
 	}
-	
-	
+
 	/**
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
-	 * If a contact is not deleted properly they are not added.
 	 */
 	public void updateRow (TrustedContact tc, String number)
-	{
-		if (removeRow(ContactRetriever.format(number)))
-		{
-			addRow(tc);
-		}
-	}
-	
-	/**
-	 * TODO test this and make sure that it works the same as updateRow
-	 * @param tc
-	 * @param number
-	 */
-	public void updateRowTEST (TrustedContact tc, String number)
 	{
 		long id = getId(ContactRetriever.format(number));
 		updateTrustedRow(tc, number, id);
@@ -884,51 +869,7 @@ public class DBAccessor {
 			}
 		}
 	}
-
-	/**
-	 * To complicated
-	 * @param tc
-	 * @param number
-	 * @param id : int the id of the row, 0 if unknown
-	 * @param index
-	 */
-	/*public void updateNumberRow (TrustedContact tc, String number, long id)
-	{
-		//Need to look for the amount of numbers there are in the database and delete the leftovers
-		if (id == 0)
-		{
-			id = getId(number);
-		}
-		open();
-		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]
-				{"COUNT(" + KEY_REFERENCE + ")"}, KEY_REFERENCE + " = " + id,
-				null, null, null, null);
-		int size = -2;
-		if (cur.moveToFirst())
-		{
-			size = cur.getInt(0);
-		}
-		close(cur);
-		for (int i =0; i < tc.getNumber().size(); i++)
-		{
-			ContentValues cv = new ContentValues();
-			
-			//Numbers Table
-	        cv.put(KEY_REFERENCE, id);
-	        cv.put(KEY_NUMBER, tc.getNumber(i));
-	        cv.put(KEY_TYPE, tc.getNumber().get(i).getType());
-	        cv.put(KEY_LAST_MESSAGE, tc.getNumber().get(i).getLastMessage());
-	        cv.put(KEY_DATE, tc.getNumber().get(i).getDate());
-	        
-	        open();
-			db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " 
-					+ id +" AND " + KEY_NUMBER + " = ?", new String[]
-					{number});
-			close();
-		}
-	}*/
 	
-		
 	/**
 	 * Deletes the rows with the given number
 	 * @param number : String, the primary number of the contact to be deleted

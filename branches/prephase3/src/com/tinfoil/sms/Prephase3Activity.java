@@ -19,7 +19,6 @@ package com.tinfoil.sms;
 
 import java.util.List;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -55,8 +54,6 @@ public class Prephase3Activity extends Activity {
 	private static List<String[]> msgList;
 	private static ListView list;
 	private MessageReceiver boot = new MessageReceiver();
-	
-	//private NotificationManager nm;
 
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -169,7 +166,7 @@ public class Prephase3Activity extends Activity {
 		
 		//Stops native sms client from reading messages as new.
 		//***Note this is temporarily commented until we implement our own notification system
-		//values.put("read", true); 
+		values.put("read", true); 
 
 		/**
 		 * Need to:

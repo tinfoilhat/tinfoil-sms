@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
+
 	
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,9 +34,11 @@ public class MessageReceiver extends BroadcastReceiver {
     	//Intent i = new Intent(context, Prephase3Activity.class);
     	//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     	//context.startActivity(i);
-
-    	Intent serviceIntent = new Intent(context, MessageService.class);
-    	context.startService(serviceIntent);
+    	
+    	
+    	//Intent serviceIntent = new Intent(context, MessageService.class);
+    	//context.startService(serviceIntent);
+    	
     	//Toast.makeText(context, ""+context.startService(serviceIntent).getClassName(), Toast.LENGTH_LONG).show();
     	
     	Bundle bundle = intent.getExtras();
@@ -58,62 +61,85 @@ public class MessageReceiver extends BroadcastReceiver {
 				 * messages[0].getOriginatingAddress() + "\n'Test" +
 				 * messages[0].getMessageBody() + "'";
 				 */
+				
+				
+		    	
 				if (MessageService.dba == null)
 				{
 					//Sometimes the dba will not be initilized by the service this will catch it for those times
 					MessageService.dba = new DBAccessor(context);
 				}
 				String address = messages[0].getOriginatingAddress();
-										
+				String secretMessage = null;
+					    	
+		    	//Check if contact is in db
 				// Only expects encrypted messages from trusted contacts in the secure state
-				if (MessageService.dba.isTrustedContact((address))) {
-					Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
-					Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-					
-					/*
-					 * Now send the decrypted message to ourself, set
-					 * the source address of the message to the original
-					 * sender of the message
-					 */
-					try {
-						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
-								messages[0].getMessageBody(), Prephase3Activity.INBOX);
-						
-						/*Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
-								Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
-								(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
-								*/
-
-						String secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
-								ContactRetriever.format(address)).getPublicKey(), 
-								messages[0].getMessageBody());
-						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
-								secretMessage , Prephase3Activity.INBOX);
-						
-						//Updates the last message recieved
-						MessageService.dba.updateLastMessage(new Number (address, 1, secretMessage));
-						
-						Prephase3Activity.updateList(context);
-						Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
-					} 
-					catch (Exception e) 
-					{
-						Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
-						e.printStackTrace();
-					}
-				}
-				else
+				if (MessageService.dba.inDatabase(address))
 				{
-					Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
-					Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-					Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
-							messages[0].getMessageBody(), Prephase3Activity.INBOX);
-					Prephase3Activity.updateList(context);
+					if (MessageService.dba.isTrustedContact((address))) {
+						//Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
+						
+						/*
+						 * Now send the decrypted message to ourself, set
+						 * the source address of the message to the original
+						 * sender of the message
+						 */
+						try {
+							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
+									messages[0].getMessageBody(), Prephase3Activity.INBOX);
+							
+							/*Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
+									Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
+									(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
+									*/
+	
+							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
+									ContactRetriever.format(address)).getPublicKey(), 
+									messages[0].getMessageBody());
+							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
+									secretMessage , Prephase3Activity.INBOX);
+							
+							//Updates the last message recieved
+							MessageService.dba.updateLastMessage(new Number (address, 1, secretMessage));
+							
+							Prephase3Activity.updateList(context);
+							//Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
+						} 
+						catch (Exception e) 
+						{
+							Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
+							e.printStackTrace();
+						}
+					}
+					else
+					{
+						//Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
+						//Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
+						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
+								messages[0].getMessageBody(), Prephase3Activity.INBOX);
+						Prephase3Activity.updateList(context);
+					}
+					
+					MessageService.contentTitle = MessageService.dba.getRow(
+							ContactRetriever.format(address)).getName();
+					if (secretMessage != null)
+					{
+						MessageService.contentText = secretMessage;
+					}
+					else
+					{
+						MessageService.contentText = messages[0].getMessageBody();
+					}
+					Intent serviceIntent = new Intent(context, MessageService.class);
+					context.startService(serviceIntent);
+					this.abortBroadcast();
 				}
+					
 			}
 		}
 
 		// Prevent other applications from seeing the message received			
-		this.abortBroadcast();
+		//this.abortBroadcast();
 	}
 }

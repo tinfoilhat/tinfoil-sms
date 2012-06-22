@@ -41,106 +41,6 @@ public abstract class ContactRetriever {
 	private static final String USER_NAME = "Me";
 	
 	/**
-	 * Get the list of 1 messages per unique contact for the main window
-	 * @param c : Context
-	 * @return : List<String[]>, a list of String arrays that contain
-	 * the number, name, and the message. 
-	 */
-	/*public static List<String[]> getSMS(Context c) {
-		List<String[]> sms = new ArrayList<String[]>();
-		final String[] projection = new String[]{"address", "body"};
-		Uri uri = Uri.parse("content://mms-sms/conversations/");
-		Cursor cur = c.getContentResolver().query(uri, projection, null, null, dateColumn);
-
-		while (cur.moveToNext())
-		{
-			String address = cur.getString(cur.getColumnIndex("address"));
-			String name = nameHelper(address, c);
-			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-			sms.add(new String[] {address, name, body});
-		}
-		cur.close();
-		return sms;
-	}*/
-	
-	/*public static List<String[]> getSMS(Context c)
-	{
-		Uri uriSMSURI = Uri.parse("content://sms/conversations/");
-		Uri uriSMS = Uri.parse("content://sms/sent");
-		Cursor cur = c.getContentResolver().query(uriSMSURI, new String[]{"thread_id", "snippet"}, null,
-				null, null);
-		Cursor nCur = null;
-		
-		List<String[]> sms = new ArrayList<String[]>();
-		
-		while (cur.moveToNext()) {
-			String body = cur.getString(cur.getColumnIndex("snippet"));
-			nCur = c.getContentResolver().query(uriSMS, new String[]{"address"}, "thread_id = ?",
-					new String[] {cur.getString(cur.getColumnIndex("thread_id"))}, null);
-			if (nCur.moveToFirst())
-			{
-				String address = nCur.getString(nCur.getColumnIndex("address"));
-				String name = nameHelper(address, c);
-				sms.add(new String[] {address, name, body});
-			}
-		}
-		return sms;
-	}*/
-	
-	/**
-	 * **Please note No longer used
-	 * Get the list of 1 messages per unique contact for the main window
-	 * @param c : Context
-	 * @return : List<String[]>, a list of String arrays that contain
-	 * the number, name, and the message. 
-	 */
-	/*public static List<String[]> getSMS(Context c)
-	{
-		Uri uriSMSURI = Uri.parse("content://sms/conversations/");
-		Uri uriSMS = Uri.parse("content://sms/inbox");
-		Cursor cur = c.getContentResolver().query(uriSMSURI, new String[]{"thread_id", "snippet"}, null,
-				null, dateColumn);
-		Cursor nCur = null;
-		Cursor sCur = null;
-		
-		List<String[]> sms = new ArrayList<String[]>();
-		
-		while (cur.moveToNext()) {
-			String body = cur.getString(cur.getColumnIndex("snippet"));
-			nCur = c.getContentResolver().query(uriSMS, new String[]{"address"}, "thread_id = ?",
-					new String[] {cur.getString(cur.getColumnIndex("thread_id"))}, null);
-			if (nCur.moveToFirst())
-			{
-				String address = nCur.getString(nCur.getColumnIndex("address"));
-				String name = nameHelper(address, c);
-				sms.add(new String[] {address, name, body});
-			}
-			else
-			{
-				
-				sCur = c.getContentResolver().query(Uri.parse("content://sms/sent"), null, "thread_id = ?",
-						new String[] {cur.getString(cur.getColumnIndex("thread_id"))}, null);
-				if (sCur.moveToFirst())
-				{
-					String address = sCur.getString(sCur.getColumnIndex("address"));
-					String name = nameHelper(address, c);
-					sms.add(new String[] {address, name, body});
-				}
-			}
-		}
-		cur.close();
-		if (nCur != null)
-		{
-			nCur.close();
-		}
-		if (sCur != null)
-		{
-			sCur.close();
-		}
-		return sms;
-	}*/
-	
-	/**
 	 * Get a list of messages received from a given number
 	 * @param c : Context
 	 * @return : List<String[]>, a list of String arrays that contain 
@@ -205,7 +105,7 @@ public abstract class ContactRetriever {
 	 * contains the number, name, and the message.
 	 * @return : List<String>, a list of messages formated.
 	 */
-	public static List<String> messageMaker (List<String[]> sms)
+	/*public static List<String> messageMaker (List<String[]> sms)
 	{
 		List <String> messageList = new ArrayList<String>();
 		for (int i = 0; i < sms.size();i++)
@@ -213,7 +113,7 @@ public abstract class ContactRetriever {
 			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
 		}
 		return messageList;
-	}
+	}*/
 	
 	/**
 	 * Facilitates finding the name. If the name is not found 
@@ -300,13 +200,5 @@ public abstract class ContactRetriever {
         //this is the function that does all the magic
         sms.sendTextMessage(number, null, message, pi, null);
     	
-    }
-    
-    /*public static String millisToDate(long currentTime) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentTime);
-        return calendar.getTime().toString();
-    }*/
-    
-    
+    }   
 }

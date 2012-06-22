@@ -13,6 +13,13 @@ public class Number {
 	private int type;
 	private long date;
 	
+	/**
+	 * 
+	 * @param number
+	 * @param type
+	 * @param lastMessage
+	 * @param date
+	 */
 	public Number (String number, int type, String lastMessage, long date)
 	{
 		this.setNumber(number);

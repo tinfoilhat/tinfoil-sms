@@ -31,7 +31,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 /**
  * This Activity is used for adding and editing contacts. The activity is able to identify which one it 
@@ -266,16 +265,4 @@ public class AddContact extends Activity {
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
-	
-	/*private int typeToIndex(String type)
-    {
-    	for (int i = 0; i < LENGTH; i++)
-    	{
-    		if (TYPES[i].equalsIgnoreCase(type))
-    		{
-    			return i;
-    		}
-    	}
-    	return -1;
-    }*/
 }
