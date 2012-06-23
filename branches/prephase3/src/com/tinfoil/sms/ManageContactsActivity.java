@@ -217,6 +217,7 @@ public class ManageContactsActivity extends Activity {
 			if (contact != null)
 			{
 				AddContact.addContact = true;
+				AddContact.editTc = null;
 				startActivity(new Intent(this, AddContact.class));
 			}
 			return true;
