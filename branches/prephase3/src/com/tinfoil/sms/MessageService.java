@@ -49,11 +49,12 @@ public class MessageService extends Service {
     	 Notification notifyDetails = new Notification(R.drawable.ic_launcher, 
     			 contentTitle + ": " + contentText,System.currentTimeMillis());
     	 Intent notifyIntent = new Intent(this, Prephase3Activity.class);
-    	 PendingIntent in = PendingIntent.getService(this,
+    	 PendingIntent in = PendingIntent.getActivity(this,
     			 0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 		
     	 notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
     	 mNotificationManager.notify(SIMPLE_NOTFICATION_ID, notifyDetails);
-    	 return Service.START_STICKY;
+    	 stopSelf();
+    	 return Service.START_NOT_STICKY;
      }
 }
