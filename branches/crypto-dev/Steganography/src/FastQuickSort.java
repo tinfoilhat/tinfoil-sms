@@ -227,7 +227,7 @@ public abstract class FastQuickSort
 		}
 	}
 	
-	/*
+	/**
 	 * Swaps the values in the array at the indexes provided
 	 * 
 	 * @param  array The array, must be objects that implement Comparable
@@ -243,7 +243,7 @@ public abstract class FastQuickSort
 	}
 	
 	
-	/*
+	/**
 	 * Insertion sort, it is used internally by the quicksort algorithm to sort
 	 * the small partitions of values as insertion sort is faster when there is a
 	 * relatively small amount of values to sort
@@ -276,7 +276,7 @@ public abstract class FastQuickSort
 	}
 	
 	
-	/*
+	/**
 	 * Insertion sort, it is used internally by the quicksort algorithm to sort
 	 * the small partitions of values as insertion sort is faster when there is a
 	 * relatively small amount of values to sort

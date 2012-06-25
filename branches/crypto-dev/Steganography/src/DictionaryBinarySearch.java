@@ -16,7 +16,7 @@ import org.spongycastle.crypto.DataLengthException;
 public abstract class DictionaryBinarySearch
 {
 	
-	/*
+	/**
 	 * The number of steps to take when performing the divergent search,
 	 * if you find that values which exist are still not being found, try
 	 * increasing the number of steps
@@ -24,7 +24,7 @@ public abstract class DictionaryBinarySearch
 	private static final int DIVERGENT_SEARCH_STEPS = 100; 
 
 	
-	/*
+	/**
 	 * Searches for the value specified and returns the index where the first 
 	 * instance of the value provided is found in the sorted array of data.
 	 * 
@@ -63,7 +63,7 @@ public abstract class DictionaryBinarySearch
 	}
 	
 	
-	/*
+	/**
 	 * Searches for the value specified and returns the index where the first 
 	 * instance of the value provided is found in the sorted array of data.
 	 * 
@@ -103,7 +103,7 @@ public abstract class DictionaryBinarySearch
 	}
 	
 	
-	/*
+	/**
 	 * @see #search(String, String[], Collator)
 	 * 
 	 * @param value The value to search for in the sorted data provided
@@ -120,7 +120,7 @@ public abstract class DictionaryBinarySearch
 	}
 	
 	
-	/*
+	/**
 	 * @see #search(String, String[], Pattern, Collator)
 	 * 
 	 * @param value The value to search for in the sorted data provided
@@ -173,7 +173,7 @@ public abstract class DictionaryBinarySearch
 	}
 	
 	
-	/*
+	/**
 	 * 
 	 * Performs a divergent search which searches for the value in opposite
 	 * directions from the index given, the number of steps in each direction
@@ -199,7 +199,7 @@ public abstract class DictionaryBinarySearch
 	}
 	
 	
-	/*
+	/**
 	 * 
 	 * Performs a divergent search which searches for the value in opposite
 	 * directions from the index given, the number of steps in each direction

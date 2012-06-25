@@ -159,7 +159,7 @@ public class SDFGenerator implements DerivationFunction
     }
 
     
-	/*
+	/**
 	 * Returns the digest being used by the SDF
 	 * 
 	 * @return Digest being used
