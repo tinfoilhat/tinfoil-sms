@@ -35,12 +35,6 @@ public class MessageReceiver extends BroadcastReceiver {
     	//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     	//context.startActivity(i);
     	
-    	
-    	//Intent serviceIntent = new Intent(context, MessageService.class);
-    	//context.startService(serviceIntent);
-    	
-    	//Toast.makeText(context, ""+context.startService(serviceIntent).getClassName(), Toast.LENGTH_LONG).show();
-    	
     	Bundle bundle = intent.getExtras();
 		if (bundle != null) {
 			
@@ -101,7 +95,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									secretMessage , Prephase3Activity.INBOX);
 							
 							//Updates the last message recieved
-							MessageService.dba.updateLastMessage(new Number (address, 1, secretMessage));
+							MessageService.dba.updateLastMessage(new Number (address, secretMessage));
 							
 							Prephase3Activity.updateList(context);
 							//Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
@@ -116,13 +110,22 @@ public class MessageReceiver extends BroadcastReceiver {
 					{
 						//Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
 						//Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
-						Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),
+						Prephase3Activity.sendToSelf(context, address,
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
+						
+						MessageService.dba.updateLastMessage(new Number (address, messages[0].getMessageBody()));
+						
 						Prephase3Activity.updateList(context);
 					}
 					
-					MessageService.contentTitle = MessageService.dba.getRow(
-							ContactRetriever.format(address)).getName();
+					/*if(!MessageView.newMessages.contains(ContactRetriever.format(address)))
+					{
+						MessageView.newMessages.add(ContactRetriever.format(address));
+					}*/
+					
+					//MessageService.contentTitle = MessageService.dba.getRow(
+						//	ContactRetriever.format(address)).getName();
+					MessageService.contentTitle = ContactRetriever.format(address);
 					if (secretMessage != null)
 					{
 						MessageService.contentText = secretMessage;

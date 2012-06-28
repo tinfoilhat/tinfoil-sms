@@ -27,7 +27,7 @@ import android.os.IBinder;
 public class MessageService extends Service {
 	public static DBAccessor dba;
 	private NotificationManager mNotificationManager;
-	private int SIMPLE_NOTFICATION_ID =1;
+	//private int SIMPLE_NOTFICATION_ID =1;
 	public static CharSequence contentTitle;
 	public static CharSequence contentText;
 		
@@ -43,18 +43,33 @@ public class MessageService extends Service {
 
      @Override
      public int onStartCommand(Intent intent, int flags, int startId) {
-    	 // TODO make so that the pendingIntent actually works
-    	 // TODO make so that when a user goes to the messages (through pendingIntent or just goes to MessageView) will clear the notifications for that user
-    	 // TODO make so that multiple users can have a notification each
-    	 Notification notifyDetails = new Notification(R.drawable.ic_launcher, 
-    			 contentTitle + ": " + contentText,System.currentTimeMillis());
-    	 Intent notifyIntent = new Intent(this, Prephase3Activity.class);
-    	 PendingIntent in = PendingIntent.getActivity(this,
-    			 0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+    	// TODO make so that when a user goes to the messages (through pendingIntent or just goes to MessageView) will clear the notifications for that user
+    	// TODO make so that multiple users can have a notification each
+    	if (contentTitle != null && contentText != null)
+    	{
+    		int index = -1;
+    		for(int i=0; i< MessageView.newMessages.size();i++)
+    		{
+    			if(MessageView.newMessages.get(i).equalsIgnoreCase(contentTitle.toString()))
+				{
+					index = i;
+				}
+    		}
+    		if (index == -1)
+    		{
+    			index = MessageView.newMessages.size();
+    			MessageView.newMessages.add(contentTitle.toString());
+    		}
+    		Notification notifyDetails = new Notification(R.drawable.ic_launcher, 
+    				contentTitle + ": " + contentText,System.currentTimeMillis());
+			Intent notifyIntent = new Intent(this, Prephase3Activity.class);
+			PendingIntent in = PendingIntent.getActivity(this,
+					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 		
-    	 notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-    	 mNotificationManager.notify(SIMPLE_NOTFICATION_ID, notifyDetails);
-    	 stopSelf();
-    	 return Service.START_NOT_STICKY;
+			notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
+			mNotificationManager.notify(index, notifyDetails);
+     	}
+    	stopSelf();
+    	return Service.START_NOT_STICKY;
      }
 }

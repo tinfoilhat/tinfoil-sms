@@ -17,6 +17,8 @@
 
 package com.tinfoil.sms;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
@@ -44,6 +46,7 @@ import android.widget.AdapterView.OnItemClickListener;
 * updated as well.
 */
 public class MessageView extends Activity {
+	public static ArrayList<String> newMessages = new ArrayList<String>();
 	
 	private Button sendSMS;
 	private EditText messageBox;
@@ -110,7 +113,7 @@ public class MessageView extends Activity {
 							
 							
 							MessageService.dba.updateLastMessage(new Number 
-									(Prephase3Activity.selectedNumber, 1, text));
+									(Prephase3Activity.selectedNumber, text));
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
@@ -121,7 +124,7 @@ public class MessageView extends Activity {
 									text, Prephase3Activity.SENT);
 							
 							MessageService.dba.updateLastMessage(new Number 
-									(Prephase3Activity.selectedNumber, 1, text));
+									(Prephase3Activity.selectedNumber, text));
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList(getBaseContext());

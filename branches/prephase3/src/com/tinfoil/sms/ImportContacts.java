@@ -137,7 +137,7 @@ public class ImportContacts extends Activity {
 		while (convCur.moveToNext()) 
 		{
 			id = convCur.getString(convCur.getColumnIndex("thread_id"));
-			newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
+			newNumber = new Number(convCur.getString(convCur.getColumnIndex("snippet")));
 			
 			Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
 					new String[]{"address", "date"}, "thread_id = ?",

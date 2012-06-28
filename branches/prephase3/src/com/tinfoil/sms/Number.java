@@ -34,13 +34,13 @@ public class Number {
 	 * @param type
 	 * @param lastMessage
 	 */
-	public Number (String number, int type, String lastMessage)
+	/*public Number (String number, int type, String lastMessage)
 	{
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
 		this.setType(type);
 		this.setDate();
-	}
+	}*/
 	
 	/**
 	 * Date not set
@@ -68,7 +68,7 @@ public class Number {
 	}
 	
 	/**
-	 * Date not set
+	 * Date set
 	 * @param number
 	 * @param lastMessage
 	 */
@@ -77,7 +77,7 @@ public class Number {
 		this.setNumber(number);
 		this.setLastMessage(lastMessage);
 		this.setType(DBAccessor.OTHER_INDEX);
-		this.setDate(0);
+		this.setDate();
 	}
 
 	/**
