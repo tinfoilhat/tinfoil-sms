@@ -6,14 +6,14 @@ import java.math.BigInteger;
  */
 public abstract class HashTable
 {
-	/*
+	/**
 	 *  Constant value used in determining the interval for double hashing
 	 *  it MUST be a prime number to minimize collision
 	 */
 	private static final int CONSTANT_INTERVAL = 5;
 	
 	
-	/*
+	/**
 	 * Returns the initial probe value for generating the hash table given the
 	 * key
 	 * 
@@ -37,7 +37,7 @@ public abstract class HashTable
 		return key.mod(BigInteger.valueOf(bucketSize));
 	}
 	
-	/*
+	/**
 	 * Returns the interval for incrementing the probe
 	 */
 	public static int getInterval(int key)
@@ -53,7 +53,7 @@ public abstract class HashTable
 	}
 	
 	
-	/*
+	/**
 	 * Returns the nearest co-prime value for the size of the bucket(s), this
 	 * is due to a fact of number theory where the number of collisions is
 	 * minimized only if both the constant interval and the bucket size are

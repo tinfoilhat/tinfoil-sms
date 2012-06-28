@@ -43,7 +43,7 @@ public class SteganographyActivity
 	// Minimum size of the dictionary
 	private static final int MIN_DICT_SIZE = 65537; 
 	
-	/*
+	/**
 	 * are_same A function which checks if two array of bytes are identical
 	 * 
 	 * @param a first array of bytes
@@ -72,7 +72,7 @@ public class SteganographyActivity
 	    }
 			
 
-	/*
+	/**
 	 * Function which quickly reads the lines from the file into an 
 	 * array of strings
 	 * 
@@ -113,7 +113,7 @@ public class SteganographyActivity
     }
 
     
-	/*
+	/**
 	 * Simple function which returns a hexadecimal string with a minimum fixed
 	 * width given a value to convert to hex.
 	 */
@@ -130,7 +130,7 @@ public class SteganographyActivity
 	}
     
 	
-	/*
+	/**
 	 * Simple function to test that the random number generators generate the
 	 * same sequence of values give a shared seed from the SDF
 	 */
@@ -204,7 +204,7 @@ public class SteganographyActivity
 	}
 	
 	
-	/*
+	/**
 	 * Function which tests the FastQuickSort implementation by verifying that
 	 * it properly sorts a collection of random numbers
 	 */
@@ -272,7 +272,7 @@ public class SteganographyActivity
 	}
 	
 	
-	/*
+	/**
 	 * Function which tests the FastQuickSort implementation by verifying that
 	 * it properly sorts a collection of strings
 	 */
@@ -332,7 +332,7 @@ public class SteganographyActivity
 
 	
 	
-	/*
+	/**
 	 * Function which tests the FastQuickSort implementation by verifying that
 	 * it properly sorts a collection of strings stored as CollationKeys
 	 */

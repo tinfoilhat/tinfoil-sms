@@ -39,7 +39,7 @@ public abstract class Steganography
 	// Minimum size of the dictionary
 	private static final int MIN_DICT_SIZE = 65537; 
 	
-	/*
+	/**
 	 * Generates the unique dictionary and it's inverse dictionary as a subset of the
 	 * master dictionary given the random generator engine. For the comparator it is
 	 * recommended that Collator is used with the master dictionary language locale
@@ -157,7 +157,7 @@ public abstract class Steganography
 	}
 	
 	
-	/*
+	/**
 	 * Obfuscates the content by generating a stegotext using unique words from the dictionary
 	 * provided. Currently this only provides a minimal level of security-through-obscurity 
 	 * as it only generates a primitive stegotext, which is merely textual data ("words")
@@ -229,7 +229,7 @@ public abstract class Steganography
 	}
 	
 	
-	/*
+	/**
 	 * De-obfuscates the stegotext back into the original content by using the unique
 	 * words INVERSE dictionary provided. Currently this only provides a minimal level 
 	 * of security-through-obscurity as the stegotext to be de-obfuscated is merely 

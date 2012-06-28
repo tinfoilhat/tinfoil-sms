@@ -10,7 +10,7 @@ import org.spongycastle.crypto.DataLengthException;
  */
 public abstract class DictionaryUtil
 {
-	/*
+	/**
 	 * Returns the hex value for the the unique word which is the key in the 
 	 * inverse dictionary. It uses binary search to efficiently look up the
 	 * hex value as the dictionary is already sorted, if the inverse dictionary
@@ -68,7 +68,7 @@ public abstract class DictionaryUtil
 	}
 	
 	
-	/*
+	/**
 	 * Simple function which returns a hexadecimal string with a minimum fixed
 	 * width given a value to convert to hex.
 	 * 
@@ -99,7 +99,7 @@ public abstract class DictionaryUtil
 	}
 	
 	
-	/*
+	/**
 	 * Simple utility function which takes a hex string and returns a byte
 	 * array containing the hex values.
 	 * 

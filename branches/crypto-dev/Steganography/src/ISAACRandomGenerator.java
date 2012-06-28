@@ -27,7 +27,7 @@ public class ISAACRandomGenerator implements RandomGenerator
 	}
 	
 	
-	/*
+	/**
 	 * Initialize the ISAAC random generator with an initial seed value.
 	 * Currently only ISAAC engine is supported, but in future ISAAC+ will
 	 * also be supported. The seed value must be specified, future versions
@@ -138,7 +138,7 @@ public class ISAACRandomGenerator implements RandomGenerator
 	}
 
 	
-	/*
+	/**
 	 * Generates a random data using ISAAC stream cipher and populates
 	 * the byte array provided with the random number.
 	 * 
@@ -157,7 +157,7 @@ public class ISAACRandomGenerator implements RandomGenerator
 	}
 
 	
-	/*
+	/**
 	 * Generates a random data using ISAAC stream cipher and populates
 	 * the byte array provided with the random number.
 	 * 
@@ -178,7 +178,7 @@ public class ISAACRandomGenerator implements RandomGenerator
 	}
 	
 	
-	/*
+	/**
 	 * Since most PRNG are used for NUMBERS it seems prudent to add an additional
 	 * function to return randomly generated data as BigInteger instead of having to
 	 * always convert manually from bytes.
@@ -198,7 +198,7 @@ public class ISAACRandomGenerator implements RandomGenerator
 	}
 	
 	
-	/*
+	/**
 	 * Since most PRNG are used for NUMBERS it seems prudent to add an additional
 	 * function to return randomly generated data as int instead of having to
 	 * always convert manually from bytes.
