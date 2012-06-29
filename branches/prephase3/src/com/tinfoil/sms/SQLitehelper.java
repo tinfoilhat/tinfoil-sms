@@ -60,7 +60,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT," +
-            " type INTEGER, last_message TEXT, date INTEGER);";
+            " type INTEGER, last_message TEXT, date INTEGER, unread INTEGER);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -336,6 +336,22 @@ public class TrustedContact {
 	
 	/**
 	 * Access a contact's number from their contact list
+	 * @return : String
+	 */
+	public Number getNumber(String number)
+	{
+		for (int i = 0; i < numbers.size(); i++)
+		{
+			if (numbers.get(i).getNumber().equalsIgnoreCase(ContactRetriever.format(number)))
+			{
+				return numbers.get(i);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Access a contact's number from their contact list
 	 * @return : ArrayList<String>
 	 */
 	public ArrayList<Number> getNumber()

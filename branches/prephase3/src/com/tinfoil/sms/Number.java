@@ -21,6 +21,15 @@ public class Number {
 	 * @param lastMessage
 	 * @param date
 	 */
+	public Number (String number, int type, String lastMessage, long date, int unreadMessageCount)
+	{
+		this.setNumber(number);
+		this.setLastMessage(lastMessage);
+		this.setType(type);
+		this.setDate(date);
+		this.setUnreadMessageCount(unreadMessageCount);
+	}
+	
 	public Number (String number, int type, String lastMessage, long date)
 	{
 		this.setNumber(number);

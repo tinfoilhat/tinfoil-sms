@@ -50,6 +50,7 @@ public class DBAccessor {
 	public static final String KEY_LAST_MESSAGE = "last_message";
 	public static final String KEY_TYPE = "type";
 	public static final String KEY_DATE = "date";
+	public static final String KEY_UNREAD = "unread";
 	
 	public static final int LENGTH = 21;
 	public static final int OTHER_INDEX = 7;
@@ -100,6 +101,7 @@ public class DBAccessor {
         cv.put(KEY_TYPE, number.getType());
         cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
         cv.put(KEY_DATE, number.getDate());
+        cv.put(KEY_UNREAD, number.getUnreadMessageCount());
 
         //Insert the row into the database
         open();
@@ -109,7 +111,6 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO test this to make sure that it properly updates the row with a new message
 	 * Update a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
 	 * @param number : Number the object containing the number, last message, type, and date of last sent
@@ -127,6 +128,7 @@ public class DBAccessor {
         cv.put(KEY_REFERENCE, reference);
         cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
         cv.put(KEY_DATE, number.getDate());
+        cv.put(KEY_UNREAD, number.getUnreadMessageCount());
 
         //Insert the row into the database
         open();
@@ -597,7 +599,8 @@ public class DBAccessor {
 					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE,
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_DATE},
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_DATE,
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD},
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -610,7 +613,8 @@ public class DBAccessor {
 					tc.addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 							pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)), 
-							pCur.getLong(pCur.getColumnIndex(KEY_DATE))));
+							pCur.getLong(pCur.getColumnIndex(KEY_DATE)), 
+							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD))));
 				}while(pCur.moveToNext());
 			}
 			close(pCur);
@@ -705,7 +709,8 @@ public class DBAccessor {
 						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_DATE},
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_DATE,
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD},
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -718,7 +723,8 @@ public class DBAccessor {
 						tc.get(i).addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 								pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)), 
-								pCur.getLong(pCur.getColumnIndex(KEY_DATE))));
+								pCur.getLong(pCur.getColumnIndex(KEY_DATE)), 
+								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD))));
 						//tc.get(i).addLastMessage(pCur.getString(pCur.getColumnIndex(KEY_LAST_MESSAGE)));
 					}while(pCur.moveToNext());
 				}
@@ -908,7 +914,7 @@ public class DBAccessor {
 		TrustedContact tc = getRow(ContactRetriever.format(number));
 		if (tc != null)
 		{
-			if (!tc.isPublicKeyNull())// && tc.getVerified() == 2)
+			if (!tc.isPublicKeyNull())
 			{
 				return true;
 			}
