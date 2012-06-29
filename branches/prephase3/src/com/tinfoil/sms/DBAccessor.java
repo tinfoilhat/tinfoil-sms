@@ -559,6 +559,7 @@ public class DBAccessor {
 				SQLitehelper.NUMBERS_TABLE_NAME, new String[]{
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME,
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD, 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_LAST_MESSAGE},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
@@ -569,9 +570,10 @@ public class DBAccessor {
 		while (cur.moveToNext())
 		{
 			String address = cur.getString(cur.getColumnIndex(KEY_NUMBER));
+			String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
 			String name = cur.getString(cur.getColumnIndex(KEY_NAME));
 			String message = cur.getString(cur.getColumnIndex(KEY_LAST_MESSAGE));
-			sms.add(new String[] {address, name, message});
+			sms.add(new String[] {address, name, message, count});
 		}
 		close(cur);
 		return sms;

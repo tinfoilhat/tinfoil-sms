@@ -51,7 +51,7 @@ public class Prephase3Activity extends Activity {
 	public static final String SENT = "content://sms/sent";
 	public static SharedPreferences sharedPrefs;
 	public static String selectedNumber;
-	private static MessageAdapter conversations;
+	private static ConversationAdapter conversations;
 	private static List<String[]> msgList;
 	private static ListView list;
 	private MessageReceiver boot = new MessageReceiver();
@@ -90,7 +90,7 @@ public class Prephase3Activity extends Activity {
 		
 		//msgList = ContactRetriever.getSMS(this);
 		msgList = MessageService.dba.getConversations();
-		conversations = new MessageAdapter(this, R.layout.listview_item_row, msgList);		
+		conversations = new ConversationAdapter(this, R.layout.listview_item_row, msgList);		
 		
 		//View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
         //list.addHeaderView(header);

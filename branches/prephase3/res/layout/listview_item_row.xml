@@ -8,11 +8,20 @@
     android:background="#FFFFFF">    
     
     <TextView android:id="@+id/c_name"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
         android:textSize="22dp"
-        android:textColor="#000000" />
+        android:textColor="#000000"/>
+    
+    <TextView android:id="@+id/c_count"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/c_name"
+        android:textSize="22dp"
+        android:textColor="#000000"
+        android:textStyle="bold"/>
     
      <TextView android:id="@+id/c_message"
         android:layout_width="fill_parent"

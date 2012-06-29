@@ -99,23 +99,6 @@ public abstract class ContactRetriever {
 	}
 	
 	/**
-	 * Takes the information stored in the String array and 
-	 * formats the display that the user will see.
-	 * @param sms : List<String[]>, a list with a String array that
-	 * contains the number, name, and the message.
-	 * @return : List<String>, a list of messages formated.
-	 */
-	/*public static List<String> messageMaker (List<String[]> sms)
-	{
-		List <String> messageList = new ArrayList<String>();
-		for (int i = 0; i < sms.size();i++)
-		{
-			messageList.add(sms.get(i)[1] + ": " + sms.get(i)[2]);
-		}
-		return messageList;
-	}*/
-	
-	/**
 	 * Facilitates finding the name. If the name is not found 
 	 * it will check again removing possible formatting.
 	 * @param number : String, the number to be looked up to find the contact's name

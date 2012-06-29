@@ -52,21 +52,36 @@ public class MessageService extends Service {
     		contentTitle = dba.getRow(address).getName();
     		Notification notifyDetails = new Notification(R.drawable.ic_launcher, 
     				contentTitle + ": " + contentText,System.currentTimeMillis());
+    		
     		Intent notifyIntent = null;
-    		if (MessageReceiver.myActivityStarted)
+    		PendingIntent in = null;
+    		if (MessageReceiver.myActivityStarted && Prephase3Activity.selectedNumber == null)
     		{
     			notifyIntent = new Intent(getApplicationContext(), MessageView.class);
+    			notifyIntent.putExtra("Notification", address);
+    			in = PendingIntent.getActivity(this,
+    					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+    		}
+    		else if (MessageReceiver.myActivityStarted && Prephase3Activity.selectedNumber != null)
+    		{
+    			//MessageView.
+    			notifyIntent = new Intent(getApplicationContext(), MessageView.class);
+    			notifyIntent.putExtra("Notification", address);
+    			in = PendingIntent.getActivity(this,
+    					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
     		}
     		else
     		{
     			notifyIntent = new Intent(getApplicationContext(), Prephase3Activity.class);
+    			notifyIntent.putExtra("Notification", address);
+    			in = PendingIntent.getActivity(this,
+    					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
     		}
 			
-			notifyIntent.putExtra("Notification", address);
+			/*notifyIntent.putExtra("Notification", address);
 			PendingIntent in = PendingIntent.getActivity(this,
-					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
 			
-		
 			notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
 			mNotificationManager.notify(INDEX, notifyDetails);
 			
