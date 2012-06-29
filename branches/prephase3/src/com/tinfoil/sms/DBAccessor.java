@@ -110,6 +110,16 @@ public class DBAccessor {
 		
 	}
 	
+	public void updateMessageCount(String number, int unreadMessageCount)
+	{
+		//long reference = getId(number.getNumber());
+		ContentValues cv = new ContentValues();
+		cv.put(KEY_UNREAD, unreadMessageCount);
+		open();
+        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, "number = ?", new String[] {number});
+        close();
+	}
+	
 	/**
 	 * Update a row to the numbers table.
 	 * @param reference : int the reference id of the contact the number belongs to
@@ -120,12 +130,12 @@ public class DBAccessor {
 		Calendar calendar = Calendar.getInstance();
 		calendar.getTimeInMillis();
 		number.setNumber(ContactRetriever.format(number.getNumber()));
-		long reference = getId(number.getNumber());
+		//long reference = getId(number.getNumber());
 		
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
-        cv.put(KEY_REFERENCE, reference);
+        //cv.put(KEY_REFERENCE, reference);
         cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
         cv.put(KEY_DATE, number.getDate());
         cv.put(KEY_UNREAD, number.getUnreadMessageCount());

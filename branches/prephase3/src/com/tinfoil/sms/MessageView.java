@@ -60,16 +60,17 @@ public class MessageView extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        //Finds the number of the resently sent message attached to the notification
+        //Finds the number of the recently sent message attached to the notification
         if (this.getIntent().hasExtra("Notification"))
 		{
-			//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
 			Prephase3Activity.selectedNumber = this.getIntent().getStringExtra("Notification");
 			this.getIntent().removeExtra("Notification");
 			MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			//Toast.makeText(this, "X" + selectedNumber + "X", Toast.LENGTH_LONG).show();
-			//startActivity(new Intent(this, MessageView.class));
+			
 		}
+        
+        //All messages are now read since the user has entered the conversation.
+        MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
         
 		setContentView(R.layout.messageviewer);
 		
@@ -78,7 +79,7 @@ public class MessageView extends Activity {
 		
 		MessageService.dba = new DBAccessor(this);
 	
-		Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		//Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
 		list2 = (ListView) findViewById(R.id.message_list);
 		msgList2 = ContactRetriever.getPersonSMS(this);
@@ -170,6 +171,7 @@ public class MessageView extends Activity {
     	msgList2 = ContactRetriever.getPersonSMS(context);
     	messages.clear();
     	messages.addData(msgList2);
+    	MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
     }
     
     protected void onStop()
