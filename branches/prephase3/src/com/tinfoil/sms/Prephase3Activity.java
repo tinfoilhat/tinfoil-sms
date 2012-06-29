@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
@@ -58,9 +59,22 @@ public class Prephase3Activity extends Activity {
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		MessageService.dba = new DBAccessor(this);
+		if (this.getIntent().hasExtra("Notification"))
+		{
+			//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
+			selectedNumber = this.getIntent().getStringExtra("Notification");
+			this.getIntent().removeExtra("Notification");
+			MessageService.mNotificationManager.cancel(MessageService.INDEX);
+			//Toast.makeText(this, "X" + selectedNumber + "X", Toast.LENGTH_LONG).show();
+			startActivity(new Intent(this, MessageView.class));
+		}
+		
 		setContentView(R.layout.main);
 		//dba = new DBAccessor(this);
-		MessageService.dba = new DBAccessor(this);
+		
+		//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
+		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		MessageReceiver.myActivityStarted = true;
 
@@ -91,6 +105,7 @@ public class Prephase3Activity extends Activity {
 				startActivity(new Intent (getBaseContext(), MessageView.class));
 			}
 		});
+		
 	}
 		
 	/**
@@ -98,7 +113,7 @@ public class Prephase3Activity extends Activity {
 	 * the secondary inbox that the user last viewed, or is viewing
 	 * @param list : ListView, the ListView for this activity to update the message list
 	 */
-	public static void updateList(Context context)
+	public static void updateList(Context context, boolean messageViewUpdate)
 	{
 		if (MessageReceiver.myActivityStarted)
 		{
@@ -106,7 +121,7 @@ public class Prephase3Activity extends Activity {
 			msgList = MessageService.dba.getConversations();
 			conversations.clear();
 			conversations.addData(msgList);
-			if (Prephase3Activity.selectedNumber != null)
+			if (Prephase3Activity.selectedNumber != null && messageViewUpdate)
 			{
 				MessageView.updateList(context);
 			}
@@ -115,8 +130,8 @@ public class Prephase3Activity extends Activity {
 	
 	protected void onResume()
 	{
-		Prephase3Activity.selectedNumber = null;
-		updateList(this);
+		//Prephase3Activity.selectedNumber = null;
+		updateList(this, false);
 		super.onResume();
 	}
 	
@@ -165,7 +180,6 @@ public class Prephase3Activity extends Activity {
 		values.put("body", decMessage);
 		
 		//Stops native sms client from reading messages as new.
-		//***Note this is temporarily commented until we implement our own notification system
 		values.put("read", true); 
 
 		/**

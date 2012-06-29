@@ -97,7 +97,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							//Updates the last message recieved
 							MessageService.dba.updateLastMessage(new Number (address, secretMessage));
 							
-							Prephase3Activity.updateList(context);
+							Prephase3Activity.updateList(context, true);
 							//Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 						} 
 						catch (Exception e) 
@@ -115,7 +115,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						
 						MessageService.dba.updateLastMessage(new Number (address, messages[0].getMessageBody()));
 						
-						Prephase3Activity.updateList(context);
+						Prephase3Activity.updateList(context, true);
 					}
 					
 					/*if(!MessageView.newMessages.contains(ContactRetriever.format(address)))

@@ -12,6 +12,7 @@ public class Number {
 	private String lastMessage;
 	private int type;
 	private long date;
+	private int unreadMessageCount = 0;
 	
 	/**
 	 * 
@@ -153,4 +154,20 @@ public class Number {
         calendar.setTimeInMillis(currentTime);
         return calendar.getTime().toString();
     }
+
+	public int getUnreadMessageCount() {
+		return unreadMessageCount;
+	}
+
+	public void setUnreadMessageCount(int unreadMessageCount) {
+		this.unreadMessageCount = unreadMessageCount;
+	}
+	
+	public void resetUnreadMessageCount() {
+		this.unreadMessageCount = 0;
+	}
+	
+	public void addUnreadMessageCount() {
+		this.unreadMessageCount++;
+	}
 }

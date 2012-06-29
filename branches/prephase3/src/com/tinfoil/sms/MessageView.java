@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -46,7 +47,7 @@ import android.widget.AdapterView.OnItemClickListener;
 * updated as well.
 */
 public class MessageView extends Activity {
-	public static ArrayList<String> newMessages = new ArrayList<String>();
+	//public static ArrayList<String> newMessages = new ArrayList<String>(); //Change to just 1 string, see if you can get intent
 	
 	private Button sendSMS;
 	private EditText messageBox;
@@ -58,6 +59,18 @@ public class MessageView extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //Finds the number of the resently sent message attached to the notification
+        if (this.getIntent().hasExtra("Notification"))
+		{
+			//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
+			Prephase3Activity.selectedNumber = this.getIntent().getStringExtra("Notification");
+			this.getIntent().removeExtra("Notification");
+			MessageService.mNotificationManager.cancel(MessageService.INDEX);
+			//Toast.makeText(this, "X" + selectedNumber + "X", Toast.LENGTH_LONG).show();
+			//startActivity(new Intent(this, MessageView.class));
+		}
+        
 		setContentView(R.layout.messageviewer);
 		
 		//Sets the keyboard to not pop-up until a text area is selected 
