@@ -17,16 +17,12 @@
 
 package com.tinfoil.sms;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -209,7 +205,8 @@ public class MessageView extends Activity {
 		switch (item.getItemId()) {
 		case R.id.exchange:
 			//Add to trusted Contact list
-			TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
+			//DOES NOT WORK...
+			/*TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)
 			{
@@ -224,7 +221,7 @@ public class MessageView extends Activity {
 					tc.setPublicKey();
 					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
-			}
+			}*/
 			
 			return true;
 		case R.id.delete:

@@ -762,6 +762,19 @@ public class DBAccessor {
 		return null;
 	}
 	
+	public int getUnreadMessageCount() {
+		open();
+		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{"SUM("+KEY_UNREAD+")"},
+				null, null, null, null, KEY_ID);
+		int count = 0;
+		if (cur.moveToFirst())
+		{
+			count = cur.getInt(0);
+		}
+		close(cur);
+		return count;
+	}
+	
 	/**
 	 * Store the user's public key, private key and signature.
 	 * ***Can only be set Once
