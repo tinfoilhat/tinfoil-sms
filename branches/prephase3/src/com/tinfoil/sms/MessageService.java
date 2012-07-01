@@ -28,6 +28,7 @@ public class MessageService extends Service {
 	public static DBAccessor dba;
 	public static NotificationManager mNotificationManager;
 	//private int SIMPLE_NOTFICATION_ID =1;
+	public static final String notificationIntent = "com.tinfoil.sms.Notifications";
 	public static CharSequence contentTitle;
 	public static CharSequence contentText;
 	public static final int INDEX = 1;
@@ -44,8 +45,8 @@ public class MessageService extends Service {
 
      @Override
      public int onStartCommand(Intent intent, int flags, int startId) {
-    	// TODO make so that when a user goes to the messages (through pendingIntent or just goes to MessageView) will clear the notifications for that user
-    	if (contentTitle != null && contentText != null)
+    	
+    	 if (contentTitle != null && contentText != null)
     	{
 
     		String address = contentTitle.toString();
@@ -53,12 +54,20 @@ public class MessageService extends Service {
     		Notification notifyDetails = new Notification(R.drawable.ic_launcher, 
     				contentTitle + ": " + contentText,System.currentTimeMillis());
     		
+    		//TODO when there is multiple messages the notification Intent will contain either nothing or 
+    		//a word to identify it is to be sent to prephase3Activity only.
+    		
+    		//TODO find out more about intents and figure out to:
+    		//get to a neutral state from any position in program so then it can follow the same procedure each time, 
+    		//(such as closing the program and then starting from a closed state).
+    		//I could consider the main application page (Prephase3Activity) to be the neutral point in the program
+    		
     		Intent notifyIntent = null;
     		PendingIntent in = null;
     		if (MessageReceiver.myActivityStarted && Prephase3Activity.selectedNumber == null)
     		{
     			notifyIntent = new Intent(getApplicationContext(), MessageView.class);
-    			notifyIntent.putExtra("Notification", address);
+    			notifyIntent.putExtra(notificationIntent, address);
     			in = PendingIntent.getActivity(this,
     					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
     		}
@@ -66,14 +75,14 @@ public class MessageService extends Service {
     		{
     			//MessageView.
     			notifyIntent = new Intent(getApplicationContext(), MessageView.class);
-    			notifyIntent.putExtra("Notification", address);
+    			notifyIntent.putExtra(notificationIntent, address);
     			in = PendingIntent.getActivity(this,
     					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
     		}
     		else
     		{
     			notifyIntent = new Intent(getApplicationContext(), Prephase3Activity.class);
-    			notifyIntent.putExtra("Notification", address);
+    			notifyIntent.putExtra(notificationIntent, address);
     			in = PendingIntent.getActivity(this,
     					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
     		}
