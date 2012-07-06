@@ -29,6 +29,7 @@ public class MessageService extends Service {
 	public static NotificationManager mNotificationManager;
 	//private int SIMPLE_NOTFICATION_ID =1;
 	public static final String notificationIntent = "com.tinfoil.sms.Notifications";
+	public static final String multipleNotificationIntent = "com.tinfoil.sms.MultipleNotifications";
 	public static CharSequence contentTitle;
 	public static CharSequence contentText;
 	public static final int INDEX = 1;
@@ -58,6 +59,8 @@ public class MessageService extends Service {
     		Intent notifyIntent = null;
     		PendingIntent in = null;
     		Notification notifyDetails = null;
+
+    		
     		String address = contentTitle.toString();
 
     		if (dba.getUnreadMessageCount() > 1) {
@@ -69,6 +72,7 @@ public class MessageService extends Service {
 
     			//No extra is added so the user will be brought to the main menu
     			notifyIntent = new Intent(getApplicationContext(), Prephase3Activity.class);
+    			notifyIntent.putExtra(multipleNotificationIntent, true);
     			in = PendingIntent.getActivity(this,
     					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
     		}
@@ -77,16 +81,8 @@ public class MessageService extends Service {
     			contentTitle = dba.getRow(address).getName();
 				notifyDetails = new Notification(R.drawable.ic_launcher, 
 						contentTitle + ": " + contentText,System.currentTimeMillis());
-	    		if (MessageReceiver.myActivityStarted && Prephase3Activity.selectedNumber == null)
+	    		if (MessageReceiver.myActivityStarted)
 	    		{
-	    			notifyIntent = new Intent(getApplicationContext(), MessageView.class);
-	    			notifyIntent.putExtra(notificationIntent, address);
-	    			in = PendingIntent.getActivity(this,
-	    					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-	    		}
-	    		else if (MessageReceiver.myActivityStarted && Prephase3Activity.selectedNumber != null)
-	    		{
-	    			//MessageView.
 	    			notifyIntent = new Intent(getApplicationContext(), MessageView.class);
 	    			notifyIntent.putExtra(notificationIntent, address);
 	    			in = PendingIntent.getActivity(this,
@@ -99,6 +95,7 @@ public class MessageService extends Service {
 	    			in = PendingIntent.getActivity(this,
 	    					0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 	    		}
+	    		notifyIntent.putExtra(multipleNotificationIntent, false);
     		}
 			/*notifyIntent.putExtra("Notification", address);
 			PendingIntent in = PendingIntent.getActivity(this,

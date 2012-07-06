@@ -74,8 +74,15 @@ public class MessageView extends Activity {
         	finish();
         }
         
-        //All messages are now read since the user has entered the conversation.
-        MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+        if (MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber) > 0)
+        {
+        	//All messages are now read since the user has entered the conversation.
+        	MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+        	if (MessageService.mNotificationManager != null)
+        	{
+        		MessageService.mNotificationManager.cancel(MessageService.INDEX);
+        	}
+        }
         
 		setContentView(R.layout.messageviewer);
 		

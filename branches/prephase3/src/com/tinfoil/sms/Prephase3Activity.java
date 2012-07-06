@@ -62,6 +62,15 @@ public class Prephase3Activity extends Activity {
 		super.onCreate(savedInstanceState);
 		MessageService.dba = new DBAccessor(this);
 		
+		if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
+		{
+			if (this.getIntent().getBooleanExtra(MessageService.multipleNotificationIntent, false))
+			{
+				MessageService.mNotificationManager.cancel(MessageService.INDEX);
+			}
+			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
+		}
+		
 		//Launches MessageView with the correct number of the notification
 		if (this.getIntent().hasExtra(MessageService.notificationIntent))
 		{
