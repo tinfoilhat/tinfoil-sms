@@ -66,10 +66,12 @@ public class MessageService extends Service {
     		if (dba.getUnreadMessageCount() > 1) {
     			//Might need to change this.
     			contentTitle = dba.getRow(address).getName();
-				contentText = dba.getUnreadMessageCount() + " unread messages";
-				notifyDetails = new Notification(R.drawable.ic_launcher, 
-						contentTitle + ": " + contentText,System.currentTimeMillis());
+    			notifyDetails = new Notification(R.drawable.ic_launcher, 
+						contentTitle + ": " + contentText, System.currentTimeMillis());
 
+				contentTitle = "New Messages";
+				contentText = dba.getUnreadMessageCount() + " unread messages";
+				
     			//No extra is added so the user will be brought to the main menu
     			notifyIntent = new Intent(getApplicationContext(), Prephase3Activity.class);
     			notifyIntent.putExtra(multipleNotificationIntent, true);
