@@ -103,9 +103,14 @@ public class MessageReceiver extends BroadcastReceiver {
 							newMessage.addUnreadMessageCount();
 							MessageService.dba.updateLastMessage(newMessage);*/
 							
-							//TODO ADD new unread message
-							Message newMessage = new Message(secretMessage,true);
-							MessageService.dba.updateLastMessage(newMessage, address);
+							/*Message newMessage = new Message(secretMessage,true);
+							MessageService.dba.updateLastMessage(newMessage, address);*/
+							
+							Message newMessage = new Message(messages[0].getMessageBody(),true);
+							MessageService.dba.addNewMessage(newMessage, address, false);
+							
+							newMessage = new Message(secretMessage,true);
+							MessageService.dba.addNewMessage(newMessage, address, true);
 							
 							Prephase3Activity.updateList(context, true);
 							//Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
@@ -131,9 +136,11 @@ public class MessageReceiver extends BroadcastReceiver {
 						newMessage.addUnreadMessageCount();
 						MessageService.dba.updateLastMessage(newMessage);*/
 						
-						//TODO ADD new unread message
+						/*Message newMessage = new Message(messages[0].getMessageBody(),true);
+						MessageService.dba.updateLastMessage(newMessage, address);*/
+						
 						Message newMessage = new Message(messages[0].getMessageBody(),true);
-						MessageService.dba.updateLastMessage(newMessage, address);
+						MessageService.dba.addNewMessage(newMessage, address);
 						
 						Prephase3Activity.updateList(context, true);
 					}

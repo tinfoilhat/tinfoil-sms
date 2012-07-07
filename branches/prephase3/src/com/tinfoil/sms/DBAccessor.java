@@ -114,24 +114,33 @@ public class DBAccessor {
 		
 	}
 	
+	//TODO store the encrypted messages
 	private void addMessageRow (long reference, Message message)
 	{
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_MESSAGE, ContactRetriever.format(message.getMessage()));
+        cv.put(KEY_MESSAGE, message.getMessage());
         cv.put(KEY_DATE, message.getDate());
-        //cv.put(KEY_LAST_MESSAGE, number.getLastMessage());
-        //cv.put(KEY_DATE, number.getDate());
-        //cv.put(KEY_UNREAD, number.getUnreadMessageCount());
 
         //Insert the row into the database
         open();
-        db.insert(SQLitehelper.MESSAGES_TABLE_NAME, null, cv);
+        Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
+        		KEY_REFERENCE + " = " + reference, null, null, null, null);
+        if (cur.moveToFirst() && cur.getInt(0) >= 50)
+        {
+        	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
+        			"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
+        }
+        else
+        {
+        	db.insert(SQLitehelper.MESSAGES_TABLE_NAME, null, cv);
+        }
         close();
 		
 	}
+	
 	public void updateMessageCount(String number, int unreadMessageCount)
 	{
 		//long reference = getId(number.getNumber());
@@ -169,7 +178,26 @@ public class DBAccessor {
 		
 	}*/
 	
-	public void updateLastMessage(Message message, String number)
+	public void addNewMessage(Message message, String number)
+	{
+		number = ContactRetriever.format(number);
+		addMessageRow(getNumberId(number), message);
+		updateMessageCount(number, getUnreadMessageCount(number));
+		
+	}
+	
+	public void addNewMessage(Message message, String number, boolean unread)
+	{
+		number = ContactRetriever.format(number);
+		addMessageRow(getNumberId(number), message);
+		if (!unread)
+		{
+			updateMessageCount(number, getUnreadMessageCount(number));
+		}
+		
+	}
+	
+	/*public void updateLastMessage(Message message, String number)
 	{
 		//long reference = getId(number.getNumber());
 		number = ContactRetriever.format(number);
@@ -191,7 +219,7 @@ public class DBAccessor {
         
         db.update(SQLitehelper.NUMBERS_TABLE_NAME, cvNumber, "number = ?", new String[] {number});
         close();
-	}
+	}*/
 	
 	/**
 	 * Add a row to the shared_information table.

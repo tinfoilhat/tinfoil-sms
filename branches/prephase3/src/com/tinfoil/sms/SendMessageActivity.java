@@ -122,16 +122,22 @@ public class SendMessageActivity extends Activity {
 						if (MessageService.dba.isTrustedContact(number) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							ContactRetriever.sendSMS(getBaseContext(), number, Encryption.aes_encrypt(
-									MessageService.dba.getRow(ContactRetriever.format(number))
-									.getPublicKey(), text));
-							Prephase3Activity.sendToSelf(getBaseContext(), number, Encryption.aes_encrypt(
-									MessageService.dba.getRow(ContactRetriever.format(number))
-									.getPublicKey(), text), Prephase3Activity.SENT);
+							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(ContactRetriever.format(number))
+									.getPublicKey(), text);
+							
+							ContactRetriever.sendSMS(getBaseContext(), number, encrypted);
+							
+							Prephase3Activity.sendToSelf(getBaseContext(), number, encrypted, Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 														
-							MessageService.dba.updateLastMessage(new Message 
-									(text, true),ContactRetriever.format(number));
+							//MessageService.dba.updateLastMessage(new Message 
+								//	(text, true),ContactRetriever.format(number));
+							
+							MessageService.dba.addNewMessage(new Message 
+									(encrypted, true),ContactRetriever.format(number), false);
+							
+							MessageService.dba.addNewMessage(new Message 
+									(text, true),ContactRetriever.format(number), true);
 							
 							//MessageService.dba.updateLastMessage(new Number 
 							//		(ContactRetriever.format(number), text));
@@ -144,7 +150,10 @@ public class SendMessageActivity extends Activity {
 							//MessageService.dba.updateLastMessage(new Number 
 								//	(ContactRetriever.format(number), text));
 							
-							MessageService.dba.updateLastMessage(new Message 
+							//MessageService.dba.updateLastMessage(new Message 
+								//	(text, true),ContactRetriever.format(number));
+							
+							MessageService.dba.addNewMessage(new Message 
 									(text, true),ContactRetriever.format(number));
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();

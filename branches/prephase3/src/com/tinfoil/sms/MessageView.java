@@ -126,22 +126,28 @@ public class MessageView extends Activity {
 						if (MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
-									Encryption.aes_encrypt(MessageService.dba.getRow(
+							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
 									ContactRetriever.format(Prephase3Activity.selectedNumber))
-									.getPublicKey(), text));							
+									.getPublicKey(), text);
+							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
+									encrypted);							
 							
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									Encryption.aes_encrypt(MessageService.dba.getRow(ContactRetriever.format
-									(Prephase3Activity.selectedNumber)).getPublicKey(), text), Prephase3Activity.SENT);
+									encrypted, Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
 							
 							
 							//MessageService.dba.updateLastMessage(new Number 
 								//	(Prephase3Activity.selectedNumber, text));
-							MessageService.dba.updateLastMessage(new Message 
-									(text, true),Prephase3Activity.selectedNumber);
+							//MessageService.dba.updateLastMessage(new Message 
+								//	(text, true),Prephase3Activity.selectedNumber);
+							
+							MessageService.dba.addNewMessage(new Message 
+									(encrypted, true),Prephase3Activity.selectedNumber);
+							
+							MessageService.dba.addNewMessage(new Message 
+										(text, true),Prephase3Activity.selectedNumber);
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
@@ -151,7 +157,10 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
 							
-							MessageService.dba.updateLastMessage(new Message 
+							//MessageService.dba.updateLastMessage(new Message 
+								//	(text, true),Prephase3Activity.selectedNumber);
+							
+							MessageService.dba.addNewMessage(new Message 
 									(text, true),Prephase3Activity.selectedNumber);
 							
 							//MessageService.dba.updateLastMessage(new Number 
