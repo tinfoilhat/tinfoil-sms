@@ -37,6 +37,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String NUMBERS_TABLE_NAME = "numbers";
     public static final String SHARED_INFO_TABLE_NAME = "shared_information";
     public static final String BOOK_PATHS_TABLE_NAME = "book_paths";
+    public static final String MESSAGES_TABLE_NAME = "messages";
     
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
@@ -55,12 +56,18 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     private static final String TRUSTED_TABLE_CREATE =
                 "CREATE TABLE " + TRUSTED_TABLE_NAME + 
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, public_key BLOB, signature BLOB );";
+                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, public_key BLOB," +
+                " signature BLOB );";
     
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT," +
-            " type INTEGER, last_message TEXT, date INTEGER, unread INTEGER);";
+            " type INTEGER, unread INTEGER);";
+    
+    private static final String MESSAGES_TABLE_CREATE =
+            "CREATE TABLE " + MESSAGES_TABLE_NAME + 
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, message TEXT," +
+            " date INTEGER);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,6 +80,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
         db.execSQL(USER_TABLE_CREATE);
         db.execSQL(SHARED_INFO_TABLE_CREATE);
         db.execSQL(BOOK_PATHS_TABLE_CREATE);
+        db.execSQL(MESSAGES_TABLE_CREATE);
     }
 
 	@Override
@@ -82,6 +90,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS "+ NUMBERS_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS "+ SHARED_INFO_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS "+ BOOK_PATHS_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS "+ MESSAGES_TABLE_CREATE);
 		onCreate(db);
 		
 	}

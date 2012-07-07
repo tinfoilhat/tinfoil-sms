@@ -89,26 +89,27 @@ public class ImportContacts extends Activity {
             					String numb = (pCur.getString(pCur.getColumnIndex(Phone.NUMBER)));
             					int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
             					Uri uriSMSURI = Uri.parse("content://sms/");
-            					            					
+            					
+            					number.add(new Number (ContactRetriever.format(numb), type));
+            					
             					//This now takes into account the different formats of the numbers. 
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
-            							{"address", "body", "date"}, "address = ? or address = ? or address = ?",
+            							{"body", "date"}, "address = ? or address = ? or address = ?",
             							new String[] {ContactRetriever.format(numb),
             							"+1" + ContactRetriever.format(numb),
             							"1" + ContactRetriever.format(numb)},
-            							"date DESC LIMIT 1");
-            					
+            							"date DESC LIMIT 50");
             					if (mCur.moveToFirst())
             					{
-            						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
-            						number.add(new Number (ContactRetriever.format(numb), type, 
-            								mCur.getString(mCur.getColumnIndex("body")), 
-            								mCur.getLong(mCur.getColumnIndex("date"))));
+            						do 
+	            					{
+	            						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
+            							Message myM = new Message (mCur.getString(mCur.getColumnIndex("body")), 
+        								mCur.getLong(mCur.getColumnIndex("date")));
+	            						number.get(number.size()-1).addMessage(myM);
+	            					}while(mCur.moveToNext());
             					}
-            					else 
-            					{
-            						number.add(new Number (ContactRetriever.format(numb), type));
-            					}
+            					
             				} while (pCur.moveToNext());
             			}
             			pCur.close();
@@ -129,37 +130,47 @@ public class ImportContacts extends Activity {
         
         Uri uriSMSURI = Uri.parse("content://sms/conversations/");
 		Cursor convCur = getContentResolver().query(uriSMSURI, 
-				new String[]{"thread_id", "snippet"}, null,
+				new String[]{"thread_id"}, null,
 				null, "date DESC");
 		
-		Number newNumber;
+		Number newNumber = null;
 		
 		while (convCur.moveToNext()) 
 		{
 			id = convCur.getString(convCur.getColumnIndex("thread_id"));
-			newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
+			//newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
 			
 			Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
-					new String[]{"address", "date"}, "thread_id = ?",
-					new String[] {id}, "date DESC");
+					new String[]{"body", "address", "date"}, "thread_id = ?",
+					new String[] {id}, "date DESC LIMIT 50");
 
 			if (nCur.moveToFirst())
 			{
-				newNumber.setNumber(ContactRetriever.format(
-						nCur.getString(nCur.getColumnIndex("address"))));
-				newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+				do
+				{
+					newNumber = new Number(ContactRetriever.format(
+							nCur.getString(nCur.getColumnIndex("address"))));
+					newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
+							nCur.getLong(nCur.getColumnIndex("date"))));
+					//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+				}while(nCur.moveToNext());
 			}
 			else
 			{
 				
 				Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
-						new String[]{"address", "date"}, "thread_id = ?",
-						new String[] {id}, "date DESC");
+						new String[]{"body", "address", "date"}, "thread_id = ?",
+						new String[] {id}, "date DESC LIMIT 50");
 				if (sCur.moveToFirst())
 				{
-					newNumber.setNumber(ContactRetriever.format(
-							sCur.getString(sCur.getColumnIndex("address"))));
-					newNumber.setDate(sCur.getLong(sCur.getColumnIndex("date")));
+					do
+					{
+						newNumber = new Number(ContactRetriever.format(
+								sCur.getString(sCur.getColumnIndex("address"))));
+						newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
+								sCur.getLong(sCur.getColumnIndex("date"))));
+						//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+					}while(sCur.moveToNext());
 				}
 			}
 			if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber()) 

@@ -130,16 +130,22 @@ public class SendMessageActivity extends Activity {
 									.getPublicKey(), text), Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 														
-							MessageService.dba.updateLastMessage(new Number 
-									(ContactRetriever.format(number), text));
+							MessageService.dba.updateLastMessage(new Message 
+									(text, true),ContactRetriever.format(number));
+							
+							//MessageService.dba.updateLastMessage(new Number 
+							//		(ContactRetriever.format(number), text));
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							ContactRetriever.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
-							MessageService.dba.updateLastMessage(new Number 
-									(ContactRetriever.format(number), text));
+							//MessageService.dba.updateLastMessage(new Number 
+								//	(ContactRetriever.format(number), text));
+							
+							MessageService.dba.updateLastMessage(new Message 
+									(text, true),ContactRetriever.format(number));
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}

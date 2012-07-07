@@ -1,5 +1,23 @@
+/** 
+ * Copyright (C) 2011 Tinfoilhat
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.tinfoil.sms;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -11,9 +29,9 @@ public class Number {
 	private String number;
 	private String lastMessage;
 	private int type;
-	private long date;
 	private int unreadMessageCount = 0;
-	
+	private long date;
+	private ArrayList<Message> messages;
 	/**
 	 * 
 	 * @param number
@@ -21,36 +39,16 @@ public class Number {
 	 * @param lastMessage
 	 * @param date
 	 */
-	public Number (String number, int type, String lastMessage, long date, int unreadMessageCount)
+	public Number (String number, int type, int unreadMessageCount)
 	{
 		this.setNumber(number);
-		this.setLastMessage(lastMessage);
+		//this.setLastMessage(lastMessage);
 		this.setType(type);
-		this.setDate(date);
+		//this.setDate(date);
+		//messages.add(new Message());
 		this.setUnreadMessageCount(unreadMessageCount);
+		this.messages = new ArrayList<Message>();
 	}
-	
-	public Number (String number, int type, String lastMessage, long date)
-	{
-		this.setNumber(number);
-		this.setLastMessage(lastMessage);
-		this.setType(type);
-		this.setDate(date);
-	}
-	
-	/**
-	 * Date set to current time
-	 * @param number
-	 * @param type
-	 * @param lastMessage
-	 */
-	/*public Number (String number, int type, String lastMessage)
-	{
-		this.setNumber(number);
-		this.setLastMessage(lastMessage);
-		this.setType(type);
-		this.setDate();
-	}*/
 	
 	/**
 	 * Date not set
@@ -60,9 +58,8 @@ public class Number {
 	public Number (String number, int type)
 	{
 		this.setNumber(number);
-		this.setLastMessage(null);
 		this.setType(type);
-		this.setDate(0);
+		this.messages = new ArrayList<Message>();
 	}
 	
 	/**
@@ -72,24 +69,10 @@ public class Number {
 	public Number (String number)
 	{
 		this.setNumber(number);
-		this.setLastMessage(null);
 		this.setType(DBAccessor.OTHER_INDEX);
-		this.setDate(0);
+		this.messages = new ArrayList<Message>();
 	}
 	
-	/**
-	 * Date set
-	 * @param number
-	 * @param lastMessage
-	 */
-	public Number (String number, String lastMessage)
-	{
-		this.setNumber(number);
-		this.setLastMessage(lastMessage);
-		this.setType(DBAccessor.OTHER_INDEX);
-		this.setDate();
-	}
-
 	/**
 	 * @return the number
 	 */
@@ -102,20 +85,6 @@ public class Number {
 	 */
 	public void setNumber(String number) {
 		this.number = number;
-	}
-
-	/**
-	 * @return the lastMessage
-	 */
-	public String getLastMessage() {
-		return lastMessage;
-	}
-
-	/**
-	 * @param lastMessage the lastMessage to set
-	 */
-	public void setLastMessage(String lastMessage) {
-		this.lastMessage = lastMessage;
 	}
 
 	/**
@@ -136,26 +105,19 @@ public class Number {
 		this.type = type;
 	}
 
-	/**
-	 * @return the date
-	 */
-	public long getDate() {
-		return date;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(long date) {
-		this.date = date;
+	public void addMessage(Message newMessage)
+	{
+		this.messages.add(newMessage);
 	}
 	
-	/**
-	 * set the date to the current time
-	 */
-	public void setDate() {
-		Calendar calendar = Calendar.getInstance();
-		this.date = calendar.getTimeInMillis();
+	public ArrayList<Message> getMessages()
+	{
+		return this.messages;
+	}
+	
+	public Message getMessage(int index)
+	{
+		return this.messages.get(index);
 	}
 	
 	public static String millisToDate(long currentTime) {
@@ -179,4 +141,5 @@ public class Number {
 	public void addUnreadMessageCount() {
 		this.unreadMessageCount++;
 	}
+
 }

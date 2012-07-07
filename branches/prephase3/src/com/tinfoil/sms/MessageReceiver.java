@@ -97,11 +97,15 @@ public class MessageReceiver extends BroadcastReceiver {
 							
 							//Updates the last message recieved
 							
-							Number newMessage = tcMess.getNumber(address);
+							/*Number newMessage = tcMess.getNumber(address);
 							newMessage.setLastMessage(secretMessage);
 							newMessage.setDate();
 							newMessage.addUnreadMessageCount();
-							MessageService.dba.updateLastMessage(newMessage);
+							MessageService.dba.updateLastMessage(newMessage);*/
+							
+							//TODO ADD new unread message
+							Message newMessage = new Message(secretMessage,true);
+							MessageService.dba.updateLastMessage(newMessage, address);
 							
 							Prephase3Activity.updateList(context, true);
 							//Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
@@ -121,11 +125,15 @@ public class MessageReceiver extends BroadcastReceiver {
 						
 						
 						//Number newMessage = new Number (address, messages[0].getMessageBody());
-						Number newMessage = tcMess.getNumber(address);
+						/*Number newMessage = tcMess.getNumber(address);
 						newMessage.setLastMessage(messages[0].getMessageBody());
 						newMessage.setDate();
 						newMessage.addUnreadMessageCount();
-						MessageService.dba.updateLastMessage(newMessage);
+						MessageService.dba.updateLastMessage(newMessage);*/
+						
+						//TODO ADD new unread message
+						Message newMessage = new Message(messages[0].getMessageBody(),true);
+						MessageService.dba.updateLastMessage(newMessage, address);
 						
 						Prephase3Activity.updateList(context, true);
 					}

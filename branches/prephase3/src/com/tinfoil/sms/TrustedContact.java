@@ -373,47 +373,7 @@ public class TrustedContact {
 		}
 		return num;
 	}
-	
-	/**
-	 * Set a lastMessage in the contact's last message list
-	 * @param number : String the number the message came from
-	 * @param number : String the new last message
-	 */
-	public void setLastMessage(String number, String lastMessage)
-	{
-		for (int i = 0; i < this.numbers.size(); i++)
-		{
-			if (this.getNumber(i).equalsIgnoreCase(number))
-			{
-				this.numbers.get(i).setLastMessage(lastMessage);
-				break;
-			}
-		}
-		
-	}
-	
-	/**
-	 * Set a lastMessage in the contact's last message list
-	 * @param index : int the index of the number
-	 * @param lastMessage : String the new last message
-	 */
-	public void setLastMessage(int index, String lastMessage)
-	{
-		this.numbers.get(index).setLastMessage(lastMessage);
-	}
-	
-	/**
-	 * Access a contact's number from their contact list
-	 * @return : String
-	 */
-	public String getLastMessage(int index)
-	{
-		if (index < numbers.size())
-		{
-			return numbers.get(index).getLastMessage();
-		}
-		return null;
-	}
+
 	
 	/**
 	 * Whether the contact has numbers or not
