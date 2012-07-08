@@ -17,16 +17,12 @@
 
 package com.tinfoil.sms;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -61,16 +57,32 @@ public class MessageView extends Activity {
         super.onCreate(savedInstanceState);
         
         //Finds the number of the recently sent message attached to the notification
-        if (this.getIntent().hasExtra("Notification"))
+        if (this.getIntent().hasExtra(MessageService.notificationIntent))
 		{
-			Prephase3Activity.selectedNumber = this.getIntent().getStringExtra("Notification");
-			this.getIntent().removeExtra("Notification");
+			Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(MessageService.notificationIntent);
+			this.getIntent().removeExtra(MessageService.notificationIntent);
 			MessageService.mNotificationManager.cancel(MessageService.INDEX);
 			
 		}
+        else if(this.getIntent().hasExtra(Prephase3Activity.selectedNumberIntent))
+        {
+        	Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(Prephase3Activity.selectedNumberIntent);
+        	this.getIntent().removeExtra(Prephase3Activity.selectedNumberIntent);
+        }
+        else 
+        {
+        	finish();
+        }
         
-        //All messages are now read since the user has entered the conversation.
-        MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+        if (MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber) > 0)
+        {
+        	//All messages are now read since the user has entered the conversation.
+        	MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+        	if (MessageService.mNotificationManager != null)
+        	{
+        		MessageService.mNotificationManager.cancel(MessageService.INDEX);
+        	}
+        }
         
 		setContentView(R.layout.messageviewer);
 		
@@ -114,20 +126,28 @@ public class MessageView extends Activity {
 						if (MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
-									Encryption.aes_encrypt(MessageService.dba.getRow(
+							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
 									ContactRetriever.format(Prephase3Activity.selectedNumber))
-									.getPublicKey(), text));							
+									.getPublicKey(), text);
+							ContactRetriever.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
+									encrypted);							
 							
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									Encryption.aes_encrypt(MessageService.dba.getRow(ContactRetriever.format
-									(Prephase3Activity.selectedNumber)).getPublicKey(), text), Prephase3Activity.SENT);
+									encrypted, Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
 							
 							
-							MessageService.dba.updateLastMessage(new Number 
-									(Prephase3Activity.selectedNumber, text));
+							//MessageService.dba.updateLastMessage(new Number 
+								//	(Prephase3Activity.selectedNumber, text));
+							//MessageService.dba.updateLastMessage(new Message 
+								//	(text, true),Prephase3Activity.selectedNumber);
+							
+							MessageService.dba.addNewMessage(new Message 
+									(encrypted, true),Prephase3Activity.selectedNumber);
+							
+							MessageService.dba.addNewMessage(new Message 
+										(text, true),Prephase3Activity.selectedNumber);
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
@@ -137,8 +157,14 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
 							
-							MessageService.dba.updateLastMessage(new Number 
-									(Prephase3Activity.selectedNumber, text));
+							//MessageService.dba.updateLastMessage(new Message 
+								//	(text, true),Prephase3Activity.selectedNumber);
+							
+							MessageService.dba.addNewMessage(new Message 
+									(text, true),Prephase3Activity.selectedNumber);
+							
+							//MessageService.dba.updateLastMessage(new Number 
+								//	(Prephase3Activity.selectedNumber, text));
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList(getBaseContext());
@@ -168,10 +194,13 @@ public class MessageView extends Activity {
     
     public static void updateList(Context context)
     {
-    	msgList2 = ContactRetriever.getPersonSMS(context);
-    	messages.clear();
-    	messages.addData(msgList2);
-    	MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+    	if (Prephase3Activity.selectedNumber != null)
+    	{
+    		msgList2 = ContactRetriever.getPersonSMS(context);
+    		messages.clear();
+    		messages.addData(msgList2);
+    		MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+    	}
     }
     
     protected void onStop()
@@ -197,7 +226,8 @@ public class MessageView extends Activity {
 		switch (item.getItemId()) {
 		case R.id.exchange:
 			//Add to trusted Contact list
-			TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
+			//DOES NOT WORK...
+			/*TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)
 			{
@@ -212,7 +242,7 @@ public class MessageView extends Activity {
 					tc.setPublicKey();
 					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
-			}
+			}*/
 			
 			return true;
 		case R.id.delete:

@@ -49,6 +49,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class AddContact extends Activity {
 	public static TrustedContact editTc;
 	public static boolean addContact;
+	private String originalNumber;
 	private TrustedContact contactEdit;
 	private ListView listView;
 	private Button add;
@@ -71,12 +72,13 @@ public class AddContact extends Activity {
         if (!addContact || editTc != null)
         {
         	contactEdit = editTc;
+        	originalNumber = contactEdit.getANumber();
        	}
         else
         {
         	contactEdit = new TrustedContact("");
         }
-                
+        
         update(null);
         
         addNumber.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +220,7 @@ public class AddContact extends Activity {
 					}
 					else
 					{
-						MessageService.dba.updateRow(contactEdit, contactEdit.getNumber(0));
+						MessageService.dba.updateRow(contactEdit, originalNumber);
 						contactEdit = null;
 				        editTc = null;
 						finish();

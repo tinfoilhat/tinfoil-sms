@@ -32,7 +32,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
@@ -51,6 +50,7 @@ public class Prephase3Activity extends Activity {
 	public static final String SENT = "content://sms/sent";
 	public static SharedPreferences sharedPrefs;
 	public static String selectedNumber;
+	public static final String selectedNumberIntent = "com.tinfoil.sms.Selected";
 	private static ConversationAdapter conversations;
 	private static List<String[]> msgList;
 	private static ListView list;
@@ -60,19 +60,31 @@ public class Prephase3Activity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		MessageService.dba = new DBAccessor(this);
-		if (this.getIntent().hasExtra("Notification"))
+		
+		if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
 		{
-			//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
-			selectedNumber = this.getIntent().getStringExtra("Notification");
-			this.getIntent().removeExtra("Notification");
+			if (this.getIntent().getBooleanExtra(MessageService.multipleNotificationIntent, false))
+			{
+				MessageService.mNotificationManager.cancel(MessageService.INDEX);
+			}
+			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
+		}
+		
+		//Launches MessageView with the correct number of the notification
+		if (this.getIntent().hasExtra(MessageService.notificationIntent))
+		{
+			//selectedNumber = this.getIntent().getStringExtra("Notification");
+			Intent intent = new Intent(this, MessageView.class);
+			intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
+			this.getIntent().removeExtra(MessageService.notificationIntent);
 			MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			//Toast.makeText(this, "X" + selectedNumber + "X", Toast.LENGTH_LONG).show();
-			startActivity(new Intent(this, MessageView.class));
+			startActivity(intent);
 		}
 		
 		setContentView(R.layout.main);
 		//dba = new DBAccessor(this);
 		
+		//Toast.makeText(this, "X"+ MessageService.dba.getUnreadMessageCount(), Toast.LENGTH_LONG).show();
 		//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
 		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -101,8 +113,10 @@ public class Prephase3Activity extends Activity {
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				selectedNumber = msgList.get(position)[0];
-				startActivity(new Intent (getBaseContext(), MessageView.class));
+				//selectedNumber = msgList.get(position)[0];
+				Intent intent = new Intent (getBaseContext(), MessageView.class);
+				intent.putExtra(Prephase3Activity.selectedNumberIntent, msgList.get(position)[0]);
+				startActivity(intent);
 			}
 		});
 		
@@ -121,7 +135,8 @@ public class Prephase3Activity extends Activity {
 			msgList = MessageService.dba.getConversations();
 			conversations.clear();
 			conversations.addData(msgList);
-			if (Prephase3Activity.selectedNumber != null && messageViewUpdate)
+			
+			if (messageViewUpdate)
 			{
 				MessageView.updateList(context);
 			}
@@ -140,7 +155,6 @@ public class Prephase3Activity extends Activity {
 		MessageService.dba.close();
 		stopService(new Intent(this, MessageService.class));
 		MessageReceiver.myActivityStarted = false;
-		//unregisterReceiver(SMSbr);
 		super.onDestroy();
 	}
 	

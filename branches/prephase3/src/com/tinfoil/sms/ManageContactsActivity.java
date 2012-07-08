@@ -97,6 +97,8 @@ public class ManageContactsActivity extends Activity {
         		else
         		{
         			//Go to add contact
+        			AddContact.addContact = true;
+    				AddContact.editTc = null;
         			startActivity(new Intent(getBaseContext(), AddContact.class));
         		}
 
