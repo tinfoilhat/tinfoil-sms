@@ -23,9 +23,6 @@ import java.util.regex.Pattern;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 
 /**
@@ -34,11 +31,11 @@ import android.telephony.SmsManager;
  * database.
  */
 public abstract class ContactRetriever {
-	private static final String dateColumn = "date DESC";
+	//private static final String dateColumn = "date DESC";
 	private static final Pattern p = Pattern.compile("^[+]1.{10}");
 	private static final Pattern numOnly = Pattern.compile("\\W");
-	private static final int LIMIT = 50;
-	private static final String USER_NAME = "Me";
+	//private static final int LIMIT = 50;
+	//private static final String USER_NAME = "Me";
 	
 	/**
 	 * Get a list of messages received from a given number
@@ -46,7 +43,7 @@ public abstract class ContactRetriever {
 	 * @return : List<String[]>, a list of String arrays that contain 
 	 * the number, name, and the message.
 	 */
-	public static List<String[]> getPersonSMS(Context c) {
+	/*public static List<String[]> getPersonSMS(Context c) {
 		
 		final String[] projection = new String[]{"address", "body", "type"};
 		List<String[]> sms = new ArrayList<String[]>();
@@ -76,7 +73,7 @@ public abstract class ContactRetriever {
 		}
 		cur.close();
 		return sms;
-	}
+	}*/
 	
 	/**
 	 * Create an array of Strings to display for the auto-complete
@@ -105,7 +102,7 @@ public abstract class ContactRetriever {
 	 * @param c : Context
 	 * @return : String, the name of the contact that has the given number
 	 */
-	public static String nameHelper(String number, Context c) {
+	/*public static String nameHelper(String number, Context c) {
 		String num = findNameByAddress(number,c);
 		if (num == null)
 		{
@@ -119,7 +116,7 @@ public abstract class ContactRetriever {
 			}
 		}
 		return num;
-	}
+	}*/
 	
 	/**
 	 * Finds the name of the contact that has the given number
@@ -127,7 +124,7 @@ public abstract class ContactRetriever {
 	 * @param c : Context
 	 * @return : String, the name of the contact that has the given number
 	 */
-	public static String findNameByAddress(String addr, Context c) {
+	/*public static String findNameByAddress(String addr, Context c) {
 		Uri myPerson = Uri.withAppendedPath(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
 				Uri.encode(addr));
@@ -147,7 +144,7 @@ public abstract class ContactRetriever {
 		cursor.close();
 
 		return addr;
-	}
+	}*/
 
 	/**
 	 * Removes the preceding '1' or '+1' for the given number

@@ -74,8 +74,8 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
         }
         
         String contact[] = data.get(position);
-        holder.c_name.setText(contact[1]);
-        holder.c_message.setText(contact[2]);
+        holder.c_name.setText(contact[0]);
+        holder.c_message.setText(contact[1]);
         
         return row;
     }

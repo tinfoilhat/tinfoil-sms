@@ -70,7 +70,7 @@ public class MessageReceiver extends BroadcastReceiver {
 				// Only expects encrypted messages from trusted contacts in the secure state
 				if (MessageService.dba.inDatabase(address))
 				{
-					TrustedContact tcMess = MessageService.dba.getRow(ContactRetriever.format(address));
+					//TrustedContact tcMess = MessageService.dba.getRow(ContactRetriever.format(address));
 					if (MessageService.dba.isTrustedContact((address))) {
 						//Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
 						//Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
@@ -140,7 +140,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						MessageService.dba.updateLastMessage(newMessage, address);*/
 						
 						Message newMessage = new Message(messages[0].getMessageBody(),true);
-						MessageService.dba.addNewMessage(newMessage, address);
+						MessageService.dba.addNewMessage(newMessage, address, true);
 						
 						Prephase3Activity.updateList(context, true);
 					}

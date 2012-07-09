@@ -27,10 +27,8 @@ import java.util.Calendar;
 public class Number {
 	
 	private String number;
-	private String lastMessage;
 	private int type;
 	private int unreadMessageCount = 0;
-	private long date;
 	private ArrayList<Message> messages;
 	/**
 	 * 

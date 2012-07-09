@@ -94,7 +94,8 @@ public class MessageView extends Activity {
 		//Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
 		list2 = (ListView) findViewById(R.id.message_list);
-		msgList2 = ContactRetriever.getPersonSMS(this);
+		//msgList2 = ContactRetriever.getPersonSMS(this);
+		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
 		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2);
 		list2.setAdapter(messages);
 		list2.setItemsCanFocus(false);
@@ -144,10 +145,10 @@ public class MessageView extends Activity {
 								//	(text, true),Prephase3Activity.selectedNumber);
 							
 							MessageService.dba.addNewMessage(new Message 
-									(encrypted, true),Prephase3Activity.selectedNumber);
+									(encrypted, true),Prephase3Activity.selectedNumber, false);
 							
 							MessageService.dba.addNewMessage(new Message 
-										(text, true),Prephase3Activity.selectedNumber);
+										(text, true),Prephase3Activity.selectedNumber, true);
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
@@ -161,7 +162,7 @@ public class MessageView extends Activity {
 								//	(text, true),Prephase3Activity.selectedNumber);
 							
 							MessageService.dba.addNewMessage(new Message 
-									(text, true),Prephase3Activity.selectedNumber);
+									(text, true),Prephase3Activity.selectedNumber, true);
 							
 							//MessageService.dba.updateLastMessage(new Number 
 								//	(Prephase3Activity.selectedNumber, text));
@@ -196,7 +197,8 @@ public class MessageView extends Activity {
     {
     	if (Prephase3Activity.selectedNumber != null)
     	{
-    		msgList2 = ContactRetriever.getPersonSMS(context);
+    		//msgList2 = ContactRetriever.getPersonSMS(context);
+    		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
     		messages.clear();
     		messages.addData(msgList2);
     		MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);

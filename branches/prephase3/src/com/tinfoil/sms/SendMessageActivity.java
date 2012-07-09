@@ -154,7 +154,7 @@ public class SendMessageActivity extends Activity {
 								//	(text, true),ContactRetriever.format(number));
 							
 							MessageService.dba.addNewMessage(new Message 
-									(text, true),ContactRetriever.format(number));
+									(text, true),ContactRetriever.format(number), true);
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}

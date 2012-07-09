@@ -27,6 +27,7 @@ public class Message {
 	
 	private String message;
 	private long date;
+	private boolean sent; //TODO integrate sent to be used by tinfoil-sms.
 	
 	/**
 	 * 
