@@ -94,7 +94,7 @@ public class ImportContacts extends Activity {
             					
             					//This now takes into account the different formats of the numbers. 
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
-            							{"body", "date"}, "address = ? or address = ? or address = ?",
+            							{"body", "date", "type"}, "address = ? or address = ? or address = ?",
             							new String[] {ContactRetriever.format(numb),
             							"+1" + ContactRetriever.format(numb),
             							"1" + ContactRetriever.format(numb)},
@@ -105,7 +105,7 @@ public class ImportContacts extends Activity {
 	            					{
 	            						//Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
             							Message myM = new Message (mCur.getString(mCur.getColumnIndex("body")), 
-        								mCur.getLong(mCur.getColumnIndex("date")));
+        								mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
 	            						number.get(number.size()-1).addMessage(myM);
 	            					}while(mCur.moveToNext());
             					}
@@ -141,7 +141,7 @@ public class ImportContacts extends Activity {
 			//newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
 			
 			Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
-					new String[]{"body", "address", "date"}, "thread_id = ?",
+					new String[]{"body", "address", "date", "type"}, "thread_id = ?",
 					new String[] {id}, "date DESC LIMIT 50");
 
 			if (nCur.moveToFirst())
@@ -151,7 +151,7 @@ public class ImportContacts extends Activity {
 					newNumber = new Number(ContactRetriever.format(
 							nCur.getString(nCur.getColumnIndex("address"))));
 					newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
-							nCur.getLong(nCur.getColumnIndex("date"))));
+							nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
 					//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 				}while(nCur.moveToNext());
 			}
@@ -159,7 +159,7 @@ public class ImportContacts extends Activity {
 			{
 				
 				Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
-						new String[]{"body", "address", "date"}, "thread_id = ?",
+						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
 						new String[] {id}, "date DESC LIMIT 50");
 				if (sCur.moveToFirst())
 				{
@@ -168,7 +168,7 @@ public class ImportContacts extends Activity {
 						newNumber = new Number(ContactRetriever.format(
 								sCur.getString(sCur.getColumnIndex("address"))));
 						newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
-								sCur.getLong(sCur.getColumnIndex("date"))));
+								sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
 						//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 					}while(sCur.moveToNext());
 				}

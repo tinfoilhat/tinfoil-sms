@@ -27,26 +27,34 @@ public class Message {
 	
 	private String message;
 	private long date;
-	private boolean sent; //TODO integrate sent to be used by tinfoil-sms.
+	private boolean sent;
 	
 	/**
-	 * 
+	 * TODO COMMENTING
 	 * @param number
 	 * @param type
 	 * @param lastMessage
 	 * @param date
 	 */
-	public Message (String message, long date)
+	public Message (String message, long date, int type)
 	{
 		this.setMessage(message);
 		this.setDate(date);
+		if (type == 2)
+		{
+			this.setSent(true);
+		}
+		else if (type == 1)
+		{
+			this.setSent(false);
+		}
 	}
 	
 	/**
 	 * @param number
 	 * @param lastMessage
 	 */
-	public Message (String message, boolean currentTime)
+	public Message (String message, boolean currentTime, boolean sent)
 	{
 		this.setMessage(message);
 		if (currentTime)
@@ -57,6 +65,7 @@ public class Message {
 		{
 			this.setDate(0);
 		}
+		this.setSent(sent);
 	}
 
 	/**
@@ -100,4 +109,23 @@ public class Message {
         calendar.setTimeInMillis(currentTime);
         return calendar.getTime().toString();
     }
+
+	public boolean isSent() {
+		return sent;
+	}
+	
+	public int getSent() {
+		if (sent)
+		{
+			return 2;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+
+	public void setSent(boolean sent) {
+		this.sent = sent;
+	}
 }

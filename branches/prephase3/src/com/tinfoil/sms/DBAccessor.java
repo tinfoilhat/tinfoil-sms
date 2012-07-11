@@ -52,6 +52,9 @@ public class DBAccessor {
 	public static final String KEY_DATE = "date";
 	public static final String KEY_SENT = "sent";
 	
+	private static final String USER_NAME = "Me";
+	private static final int LIMIT = 50;
+	
 	public static final int LENGTH = 21;
 	public static final int OTHER_INDEX = 7;
 	public static String[] TYPES = new String[] {"", "Home", "Mobile", "Work", "Work Fax",
@@ -109,6 +112,11 @@ public class DBAccessor {
 		
 	}
 	
+	/**
+	 * TODO COMMENT
+	 * @param reference
+	 * @param message
+	 */
 	private void addMessageRow (long reference, Message message)
 	{
 		ContentValues cv = new ContentValues();
@@ -117,12 +125,13 @@ public class DBAccessor {
         cv.put(KEY_REFERENCE, reference);
         cv.put(KEY_MESSAGE, message.getMessage());
         cv.put(KEY_DATE, message.getDate());
+        cv.put(KEY_SENT, message.getSent());
 
         //Insert the row into the database
         open();
         Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
-        if (cur.moveToFirst() && cur.getInt(0) >= 50)
+        if (cur.moveToFirst() && cur.getInt(0) >= LIMIT)
         {
         	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
         			"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
@@ -580,10 +589,11 @@ public class DBAccessor {
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + ", " +
 				SQLitehelper.MESSAGES_TABLE_NAME, new String[]{
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME + ", " +
-				//SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER + ", " + 
-				//SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD + ", " + 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE},
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
+				//SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER,
+				//SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD,
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
@@ -596,8 +606,12 @@ public class DBAccessor {
 		{
 			do
 			{
-				String name = cur.getString(cur.getColumnIndex(KEY_NAME));
+				String name = USER_NAME;
 				//String address = cur.getString(cur.getColumnIndex(KEY_NUMBER));
+				if (cur.getInt(cur.getColumnIndex(KEY_SENT)) == 1)
+				{
+					name = cur.getString(cur.getColumnIndex(KEY_NAME));
+				}
 				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
 				smsList.add(new String[]{name, message});
 			}while(cur.moveToNext());

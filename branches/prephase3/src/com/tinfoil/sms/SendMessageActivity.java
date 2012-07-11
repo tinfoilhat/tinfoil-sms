@@ -134,10 +134,10 @@ public class SendMessageActivity extends Activity {
 								//	(text, true),ContactRetriever.format(number));
 							
 							MessageService.dba.addNewMessage(new Message 
-									(encrypted, true),ContactRetriever.format(number), false);
+									(encrypted, true, true),ContactRetriever.format(number), false);
 							
 							MessageService.dba.addNewMessage(new Message 
-									(text, true),ContactRetriever.format(number), true);
+									(text, true, true),ContactRetriever.format(number), true);
 							
 							//MessageService.dba.updateLastMessage(new Number 
 							//		(ContactRetriever.format(number), text));
@@ -154,7 +154,7 @@ public class SendMessageActivity extends Activity {
 								//	(text, true),ContactRetriever.format(number));
 							
 							MessageService.dba.addNewMessage(new Message 
-									(text, true),ContactRetriever.format(number), true);
+									(text, true, true),ContactRetriever.format(number), true);
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}

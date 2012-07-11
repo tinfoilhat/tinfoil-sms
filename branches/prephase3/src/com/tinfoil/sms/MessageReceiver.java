@@ -106,10 +106,10 @@ public class MessageReceiver extends BroadcastReceiver {
 							/*Message newMessage = new Message(secretMessage,true);
 							MessageService.dba.updateLastMessage(newMessage, address);*/
 							
-							Message newMessage = new Message(messages[0].getMessageBody(),true);
+							Message newMessage = new Message(messages[0].getMessageBody(), true, false);
 							MessageService.dba.addNewMessage(newMessage, address, false);
 							
-							newMessage = new Message(secretMessage,true);
+							newMessage = new Message(secretMessage, true, false);
 							MessageService.dba.addNewMessage(newMessage, address, true);
 							
 							Prephase3Activity.updateList(context, true);
@@ -139,7 +139,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						/*Message newMessage = new Message(messages[0].getMessageBody(),true);
 						MessageService.dba.updateLastMessage(newMessage, address);*/
 						
-						Message newMessage = new Message(messages[0].getMessageBody(),true);
+						Message newMessage = new Message(messages[0].getMessageBody(), true, false);
 						MessageService.dba.addNewMessage(newMessage, address, true);
 						
 						Prephase3Activity.updateList(context, true);
