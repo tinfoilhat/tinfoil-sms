@@ -43,8 +43,6 @@ import android.widget.AdapterView.OnItemClickListener;
 * updated as well.
 */
 public class MessageView extends Activity {
-	//public static ArrayList<String> newMessages = new ArrayList<String>(); //Change to just 1 string, see if you can get intent
-	
 	private Button sendSMS;
 	private EditText messageBox;
 	private static ListView list2;
@@ -138,12 +136,6 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
 							
-							
-							//MessageService.dba.updateLastMessage(new Number 
-								//	(Prephase3Activity.selectedNumber, text));
-							//MessageService.dba.updateLastMessage(new Message 
-								//	(text, true),Prephase3Activity.selectedNumber);
-							
 							MessageService.dba.addNewMessage(new Message 
 									(encrypted, true, true),Prephase3Activity.selectedNumber, false);
 							
@@ -158,14 +150,9 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									text, Prephase3Activity.SENT);
 							
-							//MessageService.dba.updateLastMessage(new Message 
-								//	(text, true),Prephase3Activity.selectedNumber);
-							
 							MessageService.dba.addNewMessage(new Message 
 									(text, true, true),Prephase3Activity.selectedNumber, true);
 							
-							//MessageService.dba.updateLastMessage(new Number 
-								//	(Prephase3Activity.selectedNumber, text));
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}
 						updateList(getBaseContext());

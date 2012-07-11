@@ -31,49 +31,8 @@ import android.telephony.SmsManager;
  * database.
  */
 public abstract class ContactRetriever {
-	//private static final String dateColumn = "date DESC";
 	private static final Pattern p = Pattern.compile("^[+]1.{10}");
 	private static final Pattern numOnly = Pattern.compile("\\W");
-	//private static final int LIMIT = 50;
-	//private static final String USER_NAME = "Me";
-	
-	/**
-	 * Get a list of messages received from a given number
-	 * @param c : Context
-	 * @return : List<String[]>, a list of String arrays that contain 
-	 * the number, name, and the message.
-	 */
-	/*public static List<String[]> getPersonSMS(Context c) {
-		
-		final String[] projection = new String[]{"address", "body", "type"};
-		List<String[]> sms = new ArrayList<String[]>();
-		Uri uriSMSURI = Uri.parse("content://sms/");
-		Cursor cur = c.getContentResolver().query(uriSMSURI, projection, 
-				"address = ? or address = ? or address = ?",
-				new String[] {format(Prephase3Activity.selectedNumber),
-				"+1" + format(Prephase3Activity.selectedNumber),
-				"1" + format(Prephase3Activity.selectedNumber)},
-				dateColumn + " LIMIT " + LIMIT);
-
-		while (cur.moveToNext()) {
-			String address = cur.getString(cur.getColumnIndex("address"));
-			String type = cur.getString(cur.getColumnIndex("type"));
-			String name ="";
-			if (type.equalsIgnoreCase("1"))
-			{
-				name = nameHelper(address, c);
-			}
-			else if (type.equalsIgnoreCase("2"))
-			{
-				name = USER_NAME; 
-			}
-			
-			String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-			sms.add(new String[] {address, name, body});
-		}
-		cur.close();
-		return sms;
-	}*/
 	
 	/**
 	 * Create an array of Strings to display for the auto-complete
@@ -94,57 +53,6 @@ public abstract class ContactRetriever {
 		
 		return contacts;
 	}
-	
-	/**
-	 * Facilitates finding the name. If the name is not found 
-	 * it will check again removing possible formatting.
-	 * @param number : String, the number to be looked up to find the contact's name
-	 * @param c : Context
-	 * @return : String, the name of the contact that has the given number
-	 */
-	/*public static String nameHelper(String number, Context c) {
-		String num = findNameByAddress(number,c);
-		if (num == null)
-		{
-			return number;
-		}
-		if (num.equalsIgnoreCase(number))
-		{
-			if (!number.equalsIgnoreCase(format(number)))
-			{
-				return findNameByAddress(format(number), c);
-			}
-		}
-		return num;
-	}*/
-	
-	/**
-	 * Finds the name of the contact that has the given number
-	 * @param addr : String, the number to be looked up to find the contact's name
-	 * @param c : Context
-	 * @return : String, the name of the contact that has the given number
-	 */
-	/*public static String findNameByAddress(String addr, Context c) {
-		Uri myPerson = Uri.withAppendedPath(
-				ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
-				Uri.encode(addr));
-
-		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME };
-
-		Cursor cursor = c.getContentResolver().query(myPerson, projection, null, null, null);
-
-		if (cursor.moveToFirst()) {
-
-			String name = cursor.getString(cursor
-					.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-			cursor.close();
-			return name;
-		}
-
-		cursor.close();
-
-		return addr;
-	}*/
 
 	/**
 	 * Removes the preceding '1' or '+1' for the given number

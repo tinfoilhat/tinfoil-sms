@@ -26,14 +26,9 @@ import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
-
 	
     @Override
     public void onReceive(Context context, Intent intent) {
-    	//Toast.makeText(context, "MY BOOT", Toast.LENGTH_LONG).show();
-    	//Intent i = new Intent(context, Prephase3Activity.class);
-    	//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    	//context.startActivity(i);
     	
     	Bundle bundle = intent.getExtras();
 		if (bundle != null) {
@@ -95,17 +90,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							Prephase3Activity.sendToSelf(context, address,	
 									secretMessage , Prephase3Activity.INBOX);
 							
-							//Updates the last message recieved
-							
-							/*Number newMessage = tcMess.getNumber(address);
-							newMessage.setLastMessage(secretMessage);
-							newMessage.setDate();
-							newMessage.addUnreadMessageCount();
-							MessageService.dba.updateLastMessage(newMessage);*/
-							
-							/*Message newMessage = new Message(secretMessage,true);
-							MessageService.dba.updateLastMessage(newMessage, address);*/
-							
+							//Updates the last message received							
 							Message newMessage = new Message(messages[0].getMessageBody(), true, false);
 							MessageService.dba.addNewMessage(newMessage, address, false);
 							
@@ -127,17 +112,6 @@ public class MessageReceiver extends BroadcastReceiver {
 						//Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 						Prephase3Activity.sendToSelf(context, address,
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
-						
-						
-						//Number newMessage = new Number (address, messages[0].getMessageBody());
-						/*Number newMessage = tcMess.getNumber(address);
-						newMessage.setLastMessage(messages[0].getMessageBody());
-						newMessage.setDate();
-						newMessage.addUnreadMessageCount();
-						MessageService.dba.updateLastMessage(newMessage);*/
-						
-						/*Message newMessage = new Message(messages[0].getMessageBody(),true);
-						MessageService.dba.updateLastMessage(newMessage, address);*/
 						
 						Message newMessage = new Message(messages[0].getMessageBody(), true, false);
 						MessageService.dba.addNewMessage(newMessage, address, true);
