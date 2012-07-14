@@ -113,9 +113,9 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO COMMENT
-	 * @param reference
-	 * @param message
+	 * Add a message to the database, only a limited number of messages are stored in the database.
+	 * @param reference : long, the id of the number that the message came from or was sent to.
+	 * @param message : Message, a message object containing all the information for the message.
 	 */
 	private void addMessageRow (long reference, Message message)
 	{
@@ -144,6 +144,11 @@ public class DBAccessor {
 		
 	}
 	
+	/**
+	 * Updates the message count for the particular given number to the given new count.
+	 * @param number : String a number.
+	 * @param unreadMessageCount : int the new number of unread messages.
+	 */
 	public void updateMessageCount(String number, int unreadMessageCount)
 	{
 		//long reference = getId(number.getNumber());
@@ -154,13 +159,21 @@ public class DBAccessor {
         close();
 	}
 	
+	/**
+	 * Add a new message to the database.
+	 * @param message : Message, the object containing all the information to be stored.
+	 * @param number : String, the number of the contact the message was sent to or received from.
+	 * @param unread : boolean, whether the message has been read or has not.
+	 * if true the message is unread
+	 * if false the message is read
+	 */
 	public void addNewMessage(Message message, String number, boolean unread)
 	{
 		number = ContactRetriever.format(number);
 		addMessageRow(getNumberId(number), message);
 		if (unread)
 		{
-			updateMessageCount(number, getUnreadMessageCount(number));
+			updateMessageCount(number, getUnreadMessageCount(number)+1);
 		}
 		
 	}
@@ -500,7 +513,12 @@ public class DBAccessor {
 		return 0;
 	}
 	
-	
+	/**
+	 * Get the number's id to use as a reference for the message table
+	 * @param number : String, the number
+	 * @return : long the id number of the number
+	 * if there is no number in the database it will return 0
+	 */
 	private long getNumberId(String number)
 	{
 		open();
@@ -577,10 +595,12 @@ public class DBAccessor {
 	{
 		db.close();
 	}
-	/**
-	 * TODO COMMENT
-	 * @param number
-	 * @return
+	
+	/** TODO add the date into the messages layout.
+	 * Get all of the messages sent and received from the given number.
+	 * @param number : String, a number
+	 * @return : List<String[]> with the name and the message stored in the
+	 * array. 
 	 */
 	public List<String[]> getSMSList(String number)
 	{
@@ -590,8 +610,6 @@ public class DBAccessor {
 				SQLitehelper.NUMBERS_TABLE_NAME + ", " +
 				SQLitehelper.MESSAGES_TABLE_NAME, new String[]{
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
-				//SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER,
-				//SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD,
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
@@ -622,7 +640,7 @@ public class DBAccessor {
 	
 	/**
 	 * Get all of the last messages sent from every contact.
-	 * @return : List<String[]> the information need to 
+	 * @return : List<String[]> the information needed to 
 	 * display the conversations.
 	 */
 	public List<String[]>  getConversations()
@@ -838,8 +856,8 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO COMMENT
-	 * @return
+	 * Get number of messages that are unread for all numbers
+	 * @return : int, the number of messages unread for all numbers
 	 */
 	public int getUnreadMessageCount() {
 		open();
@@ -855,9 +873,9 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO COMMENT
-	 * @param number
-	 * @return
+	 * Get the unread message count for a given number
+	 * @param number : String a number
+	 * @return : int the number of unread messages
 	 */
 	public int getUnreadMessageCount(String number) {
 		open();
@@ -897,7 +915,7 @@ public class DBAccessor {
 	
 	/**
 	 * Get the user's public key, private key and signature
-	 * @return
+	 * @return : User
 	 */
 	public User getUserRow()
 	{
@@ -938,7 +956,7 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO COMMENT
+	 * Update a contact's public key
 	 * @param contact
 	 */
 	public void updateRow (Contact contact)
@@ -967,10 +985,10 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO COMMENT
-	 * @param tc
-	 * @param number
-	 * @param id
+	 * Update a TrustedContact row
+	 * @param tc : TrustedContact the new information to be stored
+	 * @param number : String a number owned by the contact
+	 * @param id : long the id for the contact's database row
 	 */
 	public void updateTrustedRow (TrustedContact tc, String number, long id)
 	{
@@ -991,10 +1009,10 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO COMMENT
-	 * @param tc
-	 * @param number
-	 * @param id
+	 * Update the Numbers row
+	 * @param tc : TrustedContact the new information to be stored
+	 * @param number : String a number owned by the contact
+	 * @param id : long the id for the contact's database row
 	 */
 	public void updateNumberRow (TrustedContact tc, String number, long id)
 	{

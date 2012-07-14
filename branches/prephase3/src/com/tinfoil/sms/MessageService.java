@@ -49,13 +49,6 @@ public class MessageService extends Service {
     	 
     	 if (contentTitle != null && contentText != null)
     	 {
-    		//TODO when there is multiple messages the notification Intent will contain either nothing or 
-     		//a word to identify it is to be sent to prephase3Activity only.
-     		
-     		//TODO find out more about intents and figure out to:
-     		//get to a neutral state from any position in program so then it can follow the same procedure each time, 
-     		//(such as closing the program and then starting from a closed state).
-     		//I could consider the main application page (Prephase3Activity) to be the neutral point in the program
     		Intent notifyIntent = null;
     		PendingIntent in = null;
     		Notification notifyDetails = null;

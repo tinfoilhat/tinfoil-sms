@@ -20,6 +20,7 @@ package com.tinfoil.sms;
 import java.util.List;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,10 +80,14 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         if (contact[3].equalsIgnoreCase("0"))
         {
         	holder.c_count.setText(" ");
+        	holder.c_name.setTypeface(null, Typeface.NORMAL);
+        	holder.c_message.setTypeface(null, Typeface.NORMAL);
         }
         else
         {
+        	holder.c_name.setTypeface(null, Typeface.BOLD);
         	holder.c_count.setText(" (" + contact[3] +")");
+        	holder.c_message.setTypeface(null, Typeface.BOLD);
         }
         holder.c_message.setText(contact[2]);
         
