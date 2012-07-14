@@ -1,10 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.text.Collator;
-import java.util.Locale;
-
 /** 
  * Copyright (C) 2012 Tinfoilhat
  * 
@@ -21,6 +14,13 @@ import java.util.Locale;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.text.Collator;
+import java.util.Locale;
 
 
 public class CompressionActivity
@@ -43,7 +43,7 @@ public class CompressionActivity
         lnr.skip(Long.MAX_VALUE);
         String[] fileLines = new String[lnr.getLineNumber()];
         String line = null;
-        lnr.close();    	
+        lnr.close();
     	
     	/*
     	 * Open the file for reading as well as a buffered reader
