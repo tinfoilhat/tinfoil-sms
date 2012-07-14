@@ -21,6 +21,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
             holder = new MessageHolder();
             holder.c_name = (TextView)row.findViewById(R.id.c_name);
             holder.c_message = (TextView)row.findViewById(R.id.c_message);
+            holder.c_date = (TextView)row.findViewById(R.id.c_date);
             
             row.setTag(holder);
         }
@@ -75,7 +77,20 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
         
         String contact[] = data.get(position);
         holder.c_name.setText(contact[0]);
+        holder.c_date.setText(contact[2]);
         holder.c_message.setText(contact[1]);
+        
+        /*if (false)
+        {
+        	holder.c_name.setTypeface(null, Typeface.BOLD);
+        	holder.c_message.setTypeface(null, Typeface.BOLD);
+        }
+        else
+        {
+        	holder.c_name.setTypeface(null, Typeface.NORMAL);
+        	holder.c_message.setTypeface(null, Typeface.NORMAL);
+        }*/
+        
         
         return row;
     }
@@ -84,5 +99,6 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
     {
     	TextView c_name;
     	TextView c_message;
+    	TextView c_date;
     }
 }

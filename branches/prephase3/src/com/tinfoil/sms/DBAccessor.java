@@ -611,7 +611,8 @@ public class DBAccessor {
 				SQLitehelper.MESSAGES_TABLE_NAME, new String[]{
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT},
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT, 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
@@ -631,7 +632,8 @@ public class DBAccessor {
 					name = cur.getString(cur.getColumnIndex(KEY_NAME));
 				}
 				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
-				smsList.add(new String[]{name, message});
+				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(KEY_DATE)));
+				smsList.add(new String[]{name, message, date});
 			}while(cur.moveToNext());
 		}
 		close(cur);
@@ -1061,8 +1063,7 @@ public class DBAccessor {
 	 * true, if the contact is found in the database and is in the trusted state.
 	 * false, if the contact is not found in the database or is not the trusted state.
 	 * 
-	 * A contact is in the trusted state if they have a key (!= null) and
-	 * they have send their public key the contact (verified = 2)
+	 * A contact is in the trusted state if they have a key (!= null)
 	 */
 	public boolean isTrustedContact (String number)
 	{
