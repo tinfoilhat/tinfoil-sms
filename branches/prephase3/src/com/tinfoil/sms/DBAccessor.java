@@ -596,7 +596,7 @@ public class DBAccessor {
 		db.close();
 	}
 	
-	/** TODO add the date into the messages layout.
+	/**
 	 * Get all of the messages sent and received from the given number.
 	 * @param number : String, a number
 	 * @return : List<String[]> with the name and the message stored in the
@@ -626,7 +626,6 @@ public class DBAccessor {
 			do
 			{
 				String name = USER_NAME;
-				//String address = cur.getString(cur.getColumnIndex(KEY_NUMBER));
 				if (cur.getInt(cur.getColumnIndex(KEY_SENT)) == 1)
 				{
 					name = cur.getString(cur.getColumnIndex(KEY_NAME));

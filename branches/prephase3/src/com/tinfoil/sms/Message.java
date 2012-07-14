@@ -25,6 +25,7 @@ import java.util.Calendar;
  */
 public class Message {
 	
+	private static final boolean clockStyle = true;
 	private String message;
 	private long date;
 	private boolean sent;
@@ -100,16 +101,39 @@ public class Message {
 	 * set the date to the current time
 	 */
 	public void setDate() {
+		
 		Calendar calendar = Calendar.getInstance();
 		this.date = calendar.getTimeInMillis();
 	}
 	
 	public static String millisToDate(long currentTime) {
         Calendar calendar = Calendar.getInstance();
+        
         calendar.setTimeInMillis(currentTime);
-        return calendar.getTime().toString();
-    }
+        String date = calendar.get(Calendar.YEAR) + "/" +  (calendar.getTime().getMonth()+1) + "/" + 
+        		calendar.getTime().getDate();
+        
+        if (clockStyle && calendar.getTime().getHours() > 12)
+        {
+        	date += " " + (calendar.getTime().getHours()-12);
+        }
+        else
+        {
+        	date += " " + calendar.getTime().getHours() ;
+        }
+        
+        date += ":" + calendar.getTime().getMinutes();
 
+        if (calendar.get(Calendar.AM_PM) == 1)
+        {
+        	date += " PM";
+        }
+        else {
+        	date += " AM";
+        }
+        return date;
+    }
+	
 	public boolean isSent() {
 		return sent;
 	}
