@@ -33,12 +33,14 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
     private Context context; 
     private int layoutResourceId;    
     private List<String[]> data = null;
+    private int count;
     
-    public MessageAdapter(Context context, int layoutResourceId, List<String[]> data) {
+    public MessageAdapter(Context context, int layoutResourceId, List<String[]> data, int count) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
+        this.count = count;
     }
     
     /**
@@ -80,7 +82,7 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
         holder.c_date.setText(contact[2]);
         holder.c_message.setText(contact[1]);
         
-        /*if (false)
+        if (position < count)
         {
         	holder.c_name.setTypeface(null, Typeface.BOLD);
         	holder.c_message.setTypeface(null, Typeface.BOLD);
@@ -89,7 +91,7 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
         {
         	holder.c_name.setTypeface(null, Typeface.NORMAL);
         	holder.c_message.setTypeface(null, Typeface.NORMAL);
-        }*/
+        }
         
         
         return row;

@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
@@ -130,8 +129,11 @@ public class SendMessageActivity extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), number, encrypted, Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							
-							MessageService.dba.addNewMessage(new Message 
-									(encrypted, true, true),ContactRetriever.format(number), false);
+							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
+							{
+								MessageService.dba.addNewMessage(new Message 
+										(encrypted, true, true),ContactRetriever.format(number), true);
+							}
 							
 							MessageService.dba.addNewMessage(new Message 
 									(text, true, true),ContactRetriever.format(number), true);

@@ -84,9 +84,6 @@ public class Prephase3Activity extends Activity {
 		setContentView(R.layout.main);
 		//dba = new DBAccessor(this);
 		
-		//Toast.makeText(this, "X"+ MessageService.dba.getUnreadMessageCount(), Toast.LENGTH_LONG).show();
-		//Toast.makeText(this, "X" + this.getIntent().getStringExtra("Notification") + "X", Toast.LENGTH_LONG).show();
-		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		MessageReceiver.myActivityStarted = true;
 

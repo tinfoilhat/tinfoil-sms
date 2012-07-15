@@ -122,7 +122,12 @@ public class Message {
         	date += " " + calendar.getTime().getHours() ;
         }
         
-        date += ":" + calendar.getTime().getMinutes();
+        String minutes = ""+calendar.getTime().getMinutes();
+        if (minutes.length() < 2)
+        {
+        	minutes = "0" + minutes;
+        }
+        date += ":" + minutes;
 
         if (calendar.get(Calendar.AM_PM) == 1)
         {

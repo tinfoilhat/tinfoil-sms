@@ -9,7 +9,8 @@
             android:key="enable"
             android:summary="Enable or disable SMS encrption"
             android:title="Enable Tinfoil-SMS" 
-            android:defaultValue="true" />           
+            android:defaultValue="true" />
+                   
     </PreferenceCategory>
     
     <PreferenceCategory 
@@ -58,7 +59,7 @@
 	
 	<PreferenceCategory 
 	    android:key="encryption_category" 
-	    android:title="Encryption Settings">
+	    android:title="Encryption Settings"><CheckBoxPreference android:title="Encrypted Messages" android:key="showEncrypt" android:summary="Display the original encrypted message" android:defaultValue="true" />
 	    <CheckBoxPreference 
 	        android:title="Exchange Keys" 
 	        android:key="auto_key_exchange" android:summary="Automatically exchange keys with Contacts"/>

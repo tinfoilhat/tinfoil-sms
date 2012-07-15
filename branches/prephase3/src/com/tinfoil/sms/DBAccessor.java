@@ -612,7 +612,8 @@ public class DBAccessor {
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE},
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE,
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
@@ -632,6 +633,7 @@ public class DBAccessor {
 				}
 				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
 				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(KEY_DATE)));
+				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
 				smsList.add(new String[]{name, message, date});
 			}while(cur.moveToNext());
 		}

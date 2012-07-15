@@ -72,17 +72,7 @@ public class MessageView extends Activity {
         	finish();
         }
         
-        if (MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber) > 0)
-        {
-        	//All messages are now read since the user has entered the conversation.
-        	MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
-        	if (MessageService.mNotificationManager != null)
-        	{
-        		MessageService.mNotificationManager.cancel(MessageService.INDEX);
-        	}
-        }
-        
-		setContentView(R.layout.messageviewer);
+        setContentView(R.layout.messageviewer);
 		
 		//Sets the keyboard to not pop-up until a text area is selected 
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -94,8 +84,20 @@ public class MessageView extends Activity {
 		list2 = (ListView) findViewById(R.id.message_list);
 		//msgList2 = ContactRetriever.getPersonSMS(this);
 		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
-		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2);
+		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
+			MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber));
 		list2.setAdapter(messages);
+		
+		if (MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber) > 0)
+        {
+        	//All messages are now read since the user has entered the conversation.
+        	MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+        	if (MessageService.mNotificationManager != null)
+        	{
+        		MessageService.mNotificationManager.cancel(MessageService.INDEX);
+        	}
+        }
+		
 		list2.setItemsCanFocus(false);
 
 		list2.setOnItemClickListener(new OnItemClickListener() {
@@ -136,8 +138,11 @@ public class MessageView extends Activity {
 							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
 									 text, Prephase3Activity.SENT);
 							
-							MessageService.dba.addNewMessage(new Message 
-									(encrypted, true, true),Prephase3Activity.selectedNumber, false);
+							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
+							{
+								MessageService.dba.addNewMessage(new Message 
+										(encrypted, true, true), Prephase3Activity.selectedNumber, true);
+							}
 							
 							MessageService.dba.addNewMessage(new Message 
 										(text, true, true),Prephase3Activity.selectedNumber, true);

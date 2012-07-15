@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
@@ -53,10 +54,11 @@ public class MessageReceiver extends BroadcastReceiver {
 				
 				
 		    	
-				if (MessageService.dba == null)
+				if (MessageService.dba == null || Prephase3Activity.sharedPrefs == null)
 				{
 					//Sometimes the dba will not be initilized by the service this will catch it for those times
 					MessageService.dba = new DBAccessor(context);
+					Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 				}
 				String address = messages[0].getOriginatingAddress();
 				String secretMessage = null;
@@ -66,9 +68,8 @@ public class MessageReceiver extends BroadcastReceiver {
 				if (MessageService.dba.inDatabase(address))
 				{
 					//TrustedContact tcMess = MessageService.dba.getRow(ContactRetriever.format(address));
-					if (MessageService.dba.isTrustedContact((address))) {
-						//Toast.makeText(context,	"Encrypted Message Received", Toast.LENGTH_SHORT).show();
-						//Toast.makeText(context,	messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
+					if (MessageService.dba.isTrustedContact((address)) && 
+							Prephase3Activity.sharedPrefs.getBoolean("enable", true)) {
 						
 						/*
 						 * Now send the decrypted message to ourself, set
@@ -78,11 +79,6 @@ public class MessageReceiver extends BroadcastReceiver {
 						try {
 							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
 									messages[0].getMessageBody(), Prephase3Activity.INBOX);
-							
-							/*Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(),	
-									Encryption.aes_decrypt(Prephase3Activity.dba.getRow(ContactRetriever.format
-									(address)).getPublicKey(), messages[0].getMessageBody()), Prephase3Activity.INBOX);
-									*/
 	
 							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
 									ContactRetriever.format(address)).getPublicKey(), 
@@ -90,9 +86,13 @@ public class MessageReceiver extends BroadcastReceiver {
 							Prephase3Activity.sendToSelf(context, address,	
 									secretMessage , Prephase3Activity.INBOX);
 							
-							//Updates the last message received							
-							Message newMessage = new Message(messages[0].getMessageBody(), true, false);
-							MessageService.dba.addNewMessage(newMessage, address, false);
+							//Updates the last message received
+							Message newMessage = null;
+							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
+							{
+								newMessage = new Message(messages[0].getMessageBody(), true, false);
+								MessageService.dba.addNewMessage(newMessage, address, true);
+							}
 							
 							newMessage = new Message(secretMessage, true, false);
 							MessageService.dba.addNewMessage(newMessage, address, true);
@@ -108,8 +108,6 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 					else
 					{
-						//Toast.makeText(context, "Message Received", Toast.LENGTH_LONG).show();
-						//Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_LONG).show();
 						Prephase3Activity.sendToSelf(context, address,
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
 						
