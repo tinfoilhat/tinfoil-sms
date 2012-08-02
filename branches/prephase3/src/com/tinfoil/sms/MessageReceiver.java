@@ -21,12 +21,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
+	//public static final long VIBRATOR_LENTH = 500;
 	
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -67,6 +69,15 @@ public class MessageReceiver extends BroadcastReceiver {
 				// Only expects encrypted messages from trusted contacts in the secure state
 				if (MessageService.dba.inDatabase(address))
 				{
+					
+					if (Prephase3Activity.sharedPrefs.getBoolean("vibrate", true) && 
+							Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true)){
+						Vibrator vibrator;
+						vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+						String value = Prephase3Activity.sharedPrefs.getString("vibrate_length", "500");
+						vibrator.vibrate(Long.valueOf(value));
+					}
+
 					//TrustedContact tcMess = MessageService.dba.getRow(ContactRetriever.format(address));
 					if (MessageService.dba.isTrustedContact((address)) && 
 							Prephase3Activity.sharedPrefs.getBoolean("enable", true)) {
@@ -136,5 +147,5 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		// Prevent other applications from seeing the message received			
 		//this.abortBroadcast();
-	}
+    }
 }

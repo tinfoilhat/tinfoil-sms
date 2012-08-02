@@ -54,6 +54,10 @@ public class MessageAdapter extends ArrayAdapter<String[]>{
     		this.add(data.get(i));
     	}
     }
+    public void setCount(int count)
+    {
+    	this.count = count;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

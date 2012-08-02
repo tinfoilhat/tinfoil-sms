@@ -3,5 +3,7 @@
 
     <string name="hello">Hello World, Prephase1Activity!</string>
     <string name="app_name">prephase1</string>
-
+    <string name="vibration_default_length">500</string>
+    
+    
 </resources>

@@ -142,7 +142,6 @@ public class Prephase3Activity extends Activity {
 	
 	protected void onResume()
 	{
-		//Prephase3Activity.selectedNumber = null;
 		updateList(this, false);
 		super.onResume();
 	}

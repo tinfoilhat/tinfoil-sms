@@ -118,6 +118,9 @@ public class MessageView extends Activity {
 				
 				if (Prephase3Activity.selectedNumber.length() > 0 && text.length() > 0)
 				{
+					//Sets so that a new message sent from the user will not show up as bold
+					messages.setCount(0);
+					
 					//Encrypt the text message before sending it	
 					try
 					{
@@ -197,11 +200,6 @@ public class MessageView extends Activity {
     	}
     }
     
-    protected void onStop()
-    {
-    	Prephase3Activity.selectedNumber = null;
-		super.onStop();
-    }
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.exchange).setChecked(true);

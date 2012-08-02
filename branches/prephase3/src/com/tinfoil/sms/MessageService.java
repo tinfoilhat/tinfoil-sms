@@ -47,7 +47,8 @@ public class MessageService extends Service {
      @Override
      public int onStartCommand(Intent intent, int flags, int startId) {
     	 
-    	 if (contentTitle != null && contentText != null)
+    	 if (contentTitle != null && contentText != null &&
+    			 Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
     	 {
     		Intent notifyIntent = null;
     		PendingIntent in = null;

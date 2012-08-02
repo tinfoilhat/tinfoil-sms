@@ -59,10 +59,16 @@
 	
 	<PreferenceCategory 
 	    android:key="encryption_category" 
-	    android:title="Encryption Settings"><CheckBoxPreference android:title="Encrypted Messages" android:key="showEncrypt" android:summary="Display the original encrypted message" android:defaultValue="true" />
+	    android:title="Encryption Settings">
+		<CheckBoxPreference 
+		    android:title="Encrypted Messages" 
+		    android:key="showEncrypt" 
+		    android:summary="Display the original encrypted message"
+		    android:defaultValue="true" />
 	    <CheckBoxPreference 
 	        android:title="Exchange Keys" 
-	        android:key="auto_key_exchange" android:summary="Automatically exchange keys with Contacts"/>
+	        android:key="auto_key_exchange"
+	        android:summary="Automatically exchange keys with Contacts"/>
 	    <EditTextPreference 
 	        android:key="key_exchange_timeout" 
 	        android:title="Key Exchange Timeout" 
@@ -98,9 +104,17 @@
         android:title="Notification Settings">
         <CheckBoxPreference 
             android:title="Enable Notifications" 
-            android:key="notification_bar" />
+            android:key="notification_bar"
+            android:defaultValue="true"/>
         <CheckBoxPreference 
-            android:title="Vibrate" android:key="vibrate"/>
+            android:title="Vibrate" 
+            android:key="vibrate"
+            android:defaultValue="true"/>
+        <EditTextPreference 
+            android:key="vibrate_length"
+            android:title="Vibrate Length" 
+            android:summary="Select length of vibration notification" 
+            android:defaultValue="500"/>
     </PreferenceCategory>
     
     <PreferenceCategory 
