@@ -72,11 +72,13 @@
 	    <EditTextPreference 
 	        android:key="key_exchange_timeout" 
 	        android:title="Key Exchange Timeout" 
-	        android:defaultValue="30"/>
+	        android:defaultValue="30"
+	        android:inputType="number"/>
 	    <EditTextPreference 
 	        android:key="key_exchange_attempts" 
 	        android:title="Key Exchange Attempts" 
-	        android:defaultValue="1"/>
+	        android:defaultValue="1"
+	        android:inputType="number"/>
 	</PreferenceCategory>
           
 
@@ -114,7 +116,8 @@
             android:key="vibrate_length"
             android:title="Vibrate Length" 
             android:summary="Select length of vibration notification" 
-            android:defaultValue="500"/>
+            android:defaultValue="500"
+            android:inputType="number" />
     </PreferenceCategory>
     
     <PreferenceCategory 

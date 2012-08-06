@@ -69,6 +69,9 @@ public class AddContact extends Activity {
       	listView = (ListView)findViewById(R.id.contact_numbers);
         addNumber = (Button) findViewById(R.id.add_new_number);
         
+        /*
+         * Check if a user is editing a contact or creating a new contact.
+         */
         if (!addContact || editTc != null)
         {
         	contactEdit = editTc;
@@ -79,8 +82,16 @@ public class AddContact extends Activity {
         	contactEdit = new TrustedContact("");
         }
         
+        /*
+         * Populates the list of numbers
+         */
         update(null);
         
+        /*
+         * Add a dialog for when a user clicks on the add new number button.
+         * A message dialog pops-up with an input section allowing the user to
+         * enter the new number. 
+         */
         addNumber.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
@@ -103,11 +114,21 @@ public class AddContact extends Activity {
 							}});
 				alert = builder.create();
 				alert.show();
-				
 			}
 				
 		});
         
+        /*
+         * When a user clicks on a number for a longer period of time a dialog is started
+         * to determine what type of number the number is (mobile, home, ...)
+         * 
+         * ***Please note: Since this is a task within itself the onclickListener is silenced
+         * after fulfilling the declared method.
+         * 
+         * ***Please note: This does not have a impact on the program. If a user sets the
+         * number to pager or anything else and then tries to send a message to the number
+         * it will still send.
+         */
         listView.setOnItemLongClickListener(new OnItemLongClickListener(){
 
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -126,8 +147,14 @@ public class AddContact extends Activity {
 					alert.show();
 				
 				return true;
-			}});
+			}
+		});
         
+        /*
+         * When a use clicks on a number in from the list they a dialog will pop-up
+         * allowing them to edit the number. Any changes will be discarded if the
+         * user cancels the dialog. 
+         */
         listView.setOnItemClickListener(new OnItemClickListener()
 		{
         	public void onItemClick(AdapterView<?> parent, View view,
@@ -160,15 +187,19 @@ public class AddContact extends Activity {
         
         add = (Button) findViewById(R.id.add);
         contactName = (EditText) findViewById(R.id.contact_name);
-       
-        if (contactEdit != null)
+        
+        /*
+         * Check if a user is editing a contact and if that contact has a name
+         */
+        if (contactEdit != null && contactEdit.getName() != null)
         {
-        	if (contactEdit.getName() != null)
-        	{
         		contactName.setText(contactEdit.getName());
-        	}
+        	
         }
         
+        /*
+         * Add/Save the user to the database and exit the activity.
+         */
         add.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
@@ -245,6 +276,10 @@ public class AddContact extends Activity {
 		}); 
   	}
 	
+	/**
+	 * Update the list of numbers shown.
+	 * @param newNumber : String a new number to be added to the list, if null no new number is added
+	 */
 	public void update(String newNumber)
 	{
 		if (newNumber != null)
