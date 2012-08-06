@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
-	//public static final long VIBRATOR_LENTH = 500;
+	public static final String VIBRATOR_LENTH = "500";
 	
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -54,31 +54,43 @@ public class MessageReceiver extends BroadcastReceiver {
 				 * messages[0].getMessageBody() + "'";
 				 */
 				
-				
-		    	
+				/*
+				 * Checks if the database interface has been initialised and if tinfoil-sms's 
+				 * preference interface has been dealt with
+				 */
 				if (MessageService.dba == null || Prephase3Activity.sharedPrefs == null)
 				{
-					//Sometimes the dba will not be initilized by the service this will catch it for those times
 					MessageService.dba = new DBAccessor(context);
 					Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 				}
+				
 				String address = messages[0].getOriginatingAddress();
 				String secretMessage = null;
 					    	
-		    	//Check if contact is in db
-				// Only expects encrypted messages from trusted contacts in the secure state
+		    	/*
+		    	 * Checks if the contact is in the database
+		    	 */
 				if (MessageService.dba.inDatabase(address))
 				{
 					
-					if (Prephase3Activity.sharedPrefs.getBoolean("vibrate", true) && 
-							Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true)){
+					/*
+					 * Checks if the user has enabled the vibration option
+					 */
+					if (Prephase3Activity.sharedPrefs.getBoolean("vibrate", true)
+							)//&& Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
+					{
 						Vibrator vibrator;
 						vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-						String value = Prephase3Activity.sharedPrefs.getString("vibrate_length", "500");
+						String value = Prephase3Activity.sharedPrefs.getString("vibrate_length", VIBRATOR_LENTH);
 						vibrator.vibrate(Long.valueOf(value));
 					}
 
 					//TrustedContact tcMess = MessageService.dba.getRow(ContactRetriever.format(address));
+					
+					/*
+					 * Checks if the user is a trusted contact and if tinfoil-sms encryption is
+					 * enabled.
+					 */
 					if (MessageService.dba.isTrustedContact((address)) && 
 							Prephase3Activity.sharedPrefs.getBoolean("enable", true)) {
 						
@@ -88,6 +100,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * sender of the message
 						 */
 						try {
+							
 							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
 									messages[0].getMessageBody(), Prephase3Activity.INBOX);
 	
@@ -99,17 +112,27 @@ public class MessageReceiver extends BroadcastReceiver {
 							
 							//Updates the last message received
 							Message newMessage = null;
+							
+							/*
+							 * Checks if the user has set encrypted messages to be shown in
+							 * messageView
+							 */
 							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
 							{
 								newMessage = new Message(messages[0].getMessageBody(), true, false);
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}
 							
+							/*
+							 * Store the message in the database
+							 */
 							newMessage = new Message(secretMessage, true, false);
 							MessageService.dba.addNewMessage(newMessage, address, true);
 							
+							/*
+							 * Update the list of messages to show the new messages
+							 */
 							Prephase3Activity.updateList(context, true);
-							//Toast.makeText(context, "Message Decrypted", Toast.LENGTH_SHORT).show();
 						} 
 						catch (Exception e) 
 						{
@@ -119,8 +142,12 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 					else
 					{
+						/*
+						 * Send and store a plain text message to the contact
+						 */
 						Prephase3Activity.sendToSelf(context, address,
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
+						
 						
 						Message newMessage = new Message(messages[0].getMessageBody(), true, false);
 						MessageService.dba.addNewMessage(newMessage, address, true);
@@ -128,6 +155,9 @@ public class MessageReceiver extends BroadcastReceiver {
 						Prephase3Activity.updateList(context, true);
 					}
 					
+					/*
+					 * Set the values needed for the notification
+					 */
 					MessageService.contentTitle = ContactRetriever.format(address);
 					if (secretMessage != null)
 					{
@@ -139,13 +169,12 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 					Intent serviceIntent = new Intent(context, MessageService.class);
 					context.startService(serviceIntent);
+					
+					// Prevent other applications from seeing the message received
 					this.abortBroadcast();
 				}
 					
 			}
 		}
-
-		// Prevent other applications from seeing the message received			
-		//this.abortBroadcast();
     }
 }

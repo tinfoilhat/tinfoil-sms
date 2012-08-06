@@ -47,6 +47,10 @@ public class MessageService extends Service {
      @Override
      public int onStartCommand(Intent intent, int flags, int startId) {
     	 
+    	 /*
+    	  * Creates a notification if there is one to be created and if the user set the preferences
+    	  * to allow notifications
+    	  */
     	 if (contentTitle != null && contentText != null &&
     			 Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
     	 {

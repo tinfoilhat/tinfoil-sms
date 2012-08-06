@@ -60,7 +60,6 @@ public class MessageView extends Activity {
 			Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(MessageService.notificationIntent);
 			this.getIntent().removeExtra(MessageService.notificationIntent);
 			MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			
 		}
         else if(this.getIntent().hasExtra(Prephase3Activity.selectedNumberIntent))
         {
@@ -79,15 +78,20 @@ public class MessageView extends Activity {
 		
 		MessageService.dba = new DBAccessor(this);
 	
-		//Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
+		/*
+		 * Create a list of messages sent between the user and the contact
+		 */
 		list2 = (ListView) findViewById(R.id.message_list);
-		//msgList2 = ContactRetriever.getPersonSMS(this);
+
 		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
 		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
 			MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber));
 		list2.setAdapter(messages);
+		list2.setItemsCanFocus(false);	
 		
+		/*
+		 * Reset the number of unread messages for the contact to 0
+		 */
 		if (MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber) > 0)
         {
         	//All messages are now read since the user has entered the conversation.
@@ -97,19 +101,35 @@ public class MessageView extends Activity {
         		MessageService.mNotificationManager.cancel(MessageService.INDEX);
         	}
         }
-		
-		list2.setItemsCanFocus(false);
 
+		//Set an action for when a user clicks on a message
 		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				//Still thinking about what to add
+				/**
+				 * Going to add a menu of things the user can do with the messages:
+				 * 1. Re-send the message
+				 * 2. Delete the message
+				 * 3. Copy the details
+				 * 	i.  Message
+				 * 	ii. Number
+				 * 4. View Information
+				 * 	i.  Time Received
+				 * 	ii. Number
+				 * 5. Forward message
+				 */
 			}
 		});
 		
+		/*
+		 * Link the GUI items to the xml layout
+		 */
 		sendSMS = (Button) findViewById(R.id.send);
 		messageBox = (EditText) findViewById(R.id.message);
 		
+		/*
+		 * Set an action for when the user clicks on the sent button
+		 */
 		sendSMS.setOnClickListener(new View.OnClickListener()
         {
 			public void onClick(View v) 
@@ -192,7 +212,6 @@ public class MessageView extends Activity {
     {
     	if (Prephase3Activity.selectedNumber != null)
     	{
-    		//msgList2 = ContactRetriever.getPersonSMS(context);
     		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
     		messages.clear();
     		messages.addData(msgList2);

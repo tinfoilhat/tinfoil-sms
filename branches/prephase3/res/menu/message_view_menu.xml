@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	
     <group android:checkableBehavior="single">
-	    <item android:id="@+id/delete" android:title="Delete Contact"/>
+	    <item android:id="@+id/delete" android:title="Delete Thread"/>
 	    <item android:id="@+id/exchange" android:title="Exchange Keys"/>
     </group>
 </menu>

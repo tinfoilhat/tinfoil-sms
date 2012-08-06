@@ -59,21 +59,34 @@ public class Prephase3Activity extends Activity {
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		MessageService.dba = new DBAccessor(this);
+		
+		if (MessageService.dba == null)
+		{
+			MessageService.dba = new DBAccessor(this);
+		}
 		
 		if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
 		{
+			/*
+			 * Check if there is the activity has been entered from a notification.
+			 * This check specifically is to find out if there are multiple pending
+			 * received messages. If there are multiple messages pending the notification
+			 * will be removed.
+			 */
 			if (this.getIntent().getBooleanExtra(MessageService.multipleNotificationIntent, false))
 			{
 				MessageService.mNotificationManager.cancel(MessageService.INDEX);
 			}
 			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
 		}
-		
-		//Launches MessageView with the correct number of the notification
-		if (this.getIntent().hasExtra(MessageService.notificationIntent))
+		else if (this.getIntent().hasExtra(MessageService.notificationIntent))
 		{
-			//selectedNumber = this.getIntent().getStringExtra("Notification");
+			/*
+			 * Check if there is the activity has been entered from a notification.
+			 * This check is to find out if there is a single message received pending.
+			 * If so then the conversation with that contact will be loaded.
+			 */
+			
 			Intent intent = new Intent(this, MessageView.class);
 			intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
 			this.getIntent().removeExtra(MessageService.notificationIntent);
@@ -84,20 +97,18 @@ public class Prephase3Activity extends Activity {
 		setContentView(R.layout.main);
 		//dba = new DBAccessor(this);
 		
+		/*
+		 * Load the shared preferences
+		 */
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
 		MessageReceiver.myActivityStarted = true;
 
+		/*
+		 * Set the list of conversations
+		 */
 		list = (ListView) findViewById(R.id.conversation_list);
 		
-		/*TextView name = (TextView)findViewById(R.id.c_name);
-		TextView message = (TextView)findViewById(R.id.c_message);
-		
-		name.setTextColor(color.white);
-		message.setTextColor(color.white);
-		list.setBackgroundColor(color.black);
-		*/
-		
-		//msgList = ContactRetriever.getSMS(this);
 		msgList = MessageService.dba.getConversations();
 		conversations = new ConversationAdapter(this, R.layout.listview_item_row, msgList);		
 		
@@ -106,11 +117,13 @@ public class Prephase3Activity extends Activity {
 		
 		list.setAdapter(conversations);
         
-		//Load up the conversation with the contact selected
+		/*
+		 * Load the selected conversation thread when clicked
+		 */
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				//selectedNumber = msgList.get(position)[0];
+
 				Intent intent = new Intent (getBaseContext(), MessageView.class);
 				intent.putExtra(Prephase3Activity.selectedNumberIntent, msgList.get(position)[0]);
 				startActivity(intent);
