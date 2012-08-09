@@ -342,7 +342,7 @@ public class TrustedContact {
 	{
 		for (int i = 0; i < numbers.size(); i++)
 		{
-			if (numbers.get(i).getNumber().equalsIgnoreCase(ContactRetriever.format(number)))
+			if (numbers.get(i).getNumber().equalsIgnoreCase(SMSUtility.format(number)))
 			{
 				return numbers.get(i);
 			}

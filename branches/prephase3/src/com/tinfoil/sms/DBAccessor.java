@@ -100,7 +100,7 @@ public class DBAccessor {
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_NUMBER, ContactRetriever.format(number.getNumber()));
+        cv.put(KEY_NUMBER, SMSUtility.format(number.getNumber()));
         cv.put(KEY_TYPE, number.getType());
         cv.put(KEY_UNREAD, number.getUnreadMessageCount());
 
@@ -151,7 +151,6 @@ public class DBAccessor {
 	 */
 	public void updateMessageCount(String number, int unreadMessageCount)
 	{
-		//long reference = getId(number.getNumber());
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_UNREAD, unreadMessageCount);
 		open();
@@ -169,13 +168,12 @@ public class DBAccessor {
 	 */
 	public void addNewMessage(Message message, String number, boolean unread)
 	{
-		number = ContactRetriever.format(number);
+		number = SMSUtility.format(number);
 		addMessageRow(getNumberId(number), message);
 		if (unread)
 		{
 			updateMessageCount(number, getUnreadMessageCount(number)+1);
 		}
-		
 	}
 	
 	/**
@@ -227,7 +225,6 @@ public class DBAccessor {
 			db.delete(SQLitehelper.SHARED_INFO_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
 			close();
 		}
-		
 	}
 	
 	/**
@@ -350,7 +347,6 @@ public class DBAccessor {
 			db.delete(SQLitehelper.BOOK_PATHS_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
 			close();
 		}
-		
 	}
 	
 	/** 
@@ -563,7 +559,7 @@ public class DBAccessor {
 	 */
 	public boolean inDatabase(String number)
 	{
-		if (getRow(ContactRetriever.format(number)) == null)
+		if (getRow(SMSUtility.format(number)) == null)
 		{
 			return false;
 		}
@@ -612,16 +608,16 @@ public class DBAccessor {
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE,
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD},
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE + " IS NOT NULL AND " +
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER + " = ?", new String[]{
-				ContactRetriever.format(number)}, null, null, 
+				SMSUtility.format(number)}, null, null, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE + " DESC");
+		
 		if (cur.moveToFirst())
 		{
 			do
@@ -883,7 +879,7 @@ public class DBAccessor {
 	public int getUnreadMessageCount(String number) {
 		open();
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{KEY_UNREAD},
-				KEY_NUMBER + " = ?", new String[]{ContactRetriever.format(number)}, null, null, KEY_ID);
+				KEY_NUMBER + " = ?", new String[]{SMSUtility.format(number)}, null, null, KEY_ID);
 		int count = 0;
 		if (cur.moveToFirst())
 		{
@@ -980,7 +976,7 @@ public class DBAccessor {
 	 */
 	public void updateRow (TrustedContact tc, String number)
 	{
-		long id = getId(ContactRetriever.format(number));
+		long id = getId(SMSUtility.format(number));
 		updateTrustedRow(tc, number, id);
 		updateNumberRow(tc, number, id);
 		updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
@@ -998,7 +994,7 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 		if (id == 0)
 		{
-			id = getId(ContactRetriever.format(number));
+			id = getId(SMSUtility.format(number));
 		}
 		
 		//Trusted Table
@@ -1021,7 +1017,7 @@ public class DBAccessor {
 	{
 		if (id == 0)
 		{
-			id = getId(ContactRetriever.format(number));
+			id = getId(SMSUtility.format(number));
 		}
 		open();
 		int num = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
@@ -1043,7 +1039,7 @@ public class DBAccessor {
 	 */
 	public boolean removeRow(String number)
 	{
-		long id = getId(ContactRetriever.format(number));
+		long id = getId(SMSUtility.format(number));
 		resetSharedInfo(id);
 		resetBookPath(id);
 		open();
@@ -1068,7 +1064,7 @@ public class DBAccessor {
 	 */
 	public boolean isTrustedContact (String number)
 	{
-		TrustedContact tc = getRow(ContactRetriever.format(number));
+		TrustedContact tc = getRow(SMSUtility.format(number));
 		if (tc != null)
 		{
 			if (!tc.isPublicKeyNull())

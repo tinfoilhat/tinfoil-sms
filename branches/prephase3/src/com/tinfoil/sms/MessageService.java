@@ -80,7 +80,7 @@ public class MessageService extends Service {
     		{
     			contentTitle = dba.getRow(address).getName();
 				notifyDetails = new Notification(R.drawable.ic_launcher, 
-						contentTitle + ": " + contentText,System.currentTimeMillis());
+						contentTitle + ": " + contentText, System.currentTimeMillis());
 	    		if (MessageReceiver.myActivityStarted)
 	    		{
 	    			notifyIntent = new Intent(getApplicationContext(), MessageView.class);

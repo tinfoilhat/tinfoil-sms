@@ -90,14 +90,14 @@ public class ImportContacts extends Activity {
             					int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
             					Uri uriSMSURI = Uri.parse("content://sms/");
             					
-            					number.add(new Number (ContactRetriever.format(numb), type));
+            					number.add(new Number (SMSUtility.format(numb), type));
             					
             					//This now takes into account the different formats of the numbers. 
             					Cursor mCur = getContentResolver().query(uriSMSURI, new String[]
             							{"body", "date", "type"}, "address = ? or address = ? or address = ?",
-            							new String[] {ContactRetriever.format(numb),
-            							"+1" + ContactRetriever.format(numb),
-            							"1" + ContactRetriever.format(numb)},
+            							new String[] {SMSUtility.format(numb),
+            							"+1" + SMSUtility.format(numb),
+            							"1" + SMSUtility.format(numb)},
             							"date DESC LIMIT 50");
             					if (mCur.moveToFirst())
             					{
@@ -148,7 +148,7 @@ public class ImportContacts extends Activity {
 			{
 				do
 				{
-					newNumber = new Number(ContactRetriever.format(
+					newNumber = new Number(SMSUtility.format(
 							nCur.getString(nCur.getColumnIndex("address"))));
 					newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
 							nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
@@ -165,7 +165,7 @@ public class ImportContacts extends Activity {
 				{
 					do
 					{
-						newNumber = new Number(ContactRetriever.format(
+						newNumber = new Number(SMSUtility.format(
 								sCur.getString(sCur.getColumnIndex("address"))));
 						newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
 								sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));

@@ -79,7 +79,8 @@ public class Prephase3Activity extends Activity {
 			}
 			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
 		}
-		else if (this.getIntent().hasExtra(MessageService.notificationIntent))
+		
+		if (this.getIntent().hasExtra(MessageService.notificationIntent))
 		{
 			/*
 			 * Check if there is the activity has been entered from a notification.
@@ -155,6 +156,35 @@ public class Prephase3Activity extends Activity {
 	
 	protected void onResume()
 	{
+		if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
+		{
+			/*
+			 * Check if there is the activity has been entered from a notification.
+			 * This check specifically is to find out if there are multiple pending
+			 * received messages. If there are multiple messages pending the notification
+			 * will be removed.
+			 */
+			if (this.getIntent().getBooleanExtra(MessageService.multipleNotificationIntent, false))
+			{
+				MessageService.mNotificationManager.cancel(MessageService.INDEX);
+			}
+			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
+		}
+		
+		if (this.getIntent().hasExtra(MessageService.notificationIntent))
+		{
+			/*
+			 * Check if there is the activity has been entered from a notification.
+			 * This check is to find out if there is a single message received pending.
+			 * If so then the conversation with that contact will be loaded.
+			 */
+			
+			Intent intent = new Intent(this, MessageView.class);
+			intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
+			this.getIntent().removeExtra(MessageService.notificationIntent);
+			MessageService.mNotificationManager.cancel(MessageService.INDEX);
+			startActivity(intent);
+		}
 		updateList(this, false);
 		super.onResume();
 	}

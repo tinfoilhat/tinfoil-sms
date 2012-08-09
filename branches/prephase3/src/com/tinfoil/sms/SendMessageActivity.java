@@ -65,7 +65,7 @@ public class SendMessageActivity extends Activity {
     	List <String> contact;
     	if (tc != null)
     	{
-    		contact =ContactRetriever.contactDisplayMaker(tc);
+    		contact =SMSUtility.contactDisplayMaker(tc);
     	}
     	else
     	{
@@ -121,10 +121,10 @@ public class SendMessageActivity extends Activity {
 						if (MessageService.dba.isTrustedContact(number) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
 						{
-							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(ContactRetriever.format(number))
+							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(SMSUtility.format(number))
 									.getPublicKey(), text);
 							
-							ContactRetriever.sendSMS(getBaseContext(), number, encrypted);
+							SMSUtility.sendSMS(getBaseContext(), number, encrypted);
 							
 							Prephase3Activity.sendToSelf(getBaseContext(), number, encrypted, Prephase3Activity.SENT);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
@@ -132,21 +132,21 @@ public class SendMessageActivity extends Activity {
 							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
 							{
 								MessageService.dba.addNewMessage(new Message 
-										(encrypted, true, true),ContactRetriever.format(number), true);
+										(encrypted, true, true),SMSUtility.format(number), true);
 							}
 							
 							MessageService.dba.addNewMessage(new Message 
-									(text, true, true),ContactRetriever.format(number), true);
+									(text, true, true),SMSUtility.format(number), true);
 							
 							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
-							ContactRetriever.sendSMS(getBaseContext(), number, text);
+							SMSUtility.sendSMS(getBaseContext(), number, text);
 							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
 							
 							MessageService.dba.addNewMessage(new Message 
-									(text, true, true),ContactRetriever.format(number), true);
+									(text, true, true),SMSUtility.format(number), true);
 							
 							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
 						}

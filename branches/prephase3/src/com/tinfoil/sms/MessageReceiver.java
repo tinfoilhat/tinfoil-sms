@@ -105,7 +105,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									messages[0].getMessageBody(), Prephase3Activity.INBOX);
 	
 							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
-									ContactRetriever.format(address)).getPublicKey(), 
+									SMSUtility.format(address)).getPublicKey(), 
 									messages[0].getMessageBody());
 							Prephase3Activity.sendToSelf(context, address,	
 									secretMessage , Prephase3Activity.INBOX);
@@ -158,7 +158,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Set the values needed for the notification
 					 */
-					MessageService.contentTitle = ContactRetriever.format(address);
+					MessageService.contentTitle = SMSUtility.format(address);
 					if (secretMessage != null)
 					{
 						MessageService.contentText = secretMessage;
