@@ -19,6 +19,7 @@ package com.tinfoil.sms;
 
 import java.util.List;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +61,10 @@ public class Prephase3Activity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		MessageService.mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		
+		//Cancel all notifications from tinfoil-sms upon starting the main activity
+		MessageService.mNotificationManager.cancelAll();
 		if (MessageService.dba == null)
 		{
 			MessageService.dba = new DBAccessor(this);
@@ -70,13 +75,8 @@ public class Prephase3Activity extends Activity {
 			/*
 			 * Check if there is the activity has been entered from a notification.
 			 * This check specifically is to find out if there are multiple pending
-			 * received messages. If there are multiple messages pending the notification
-			 * will be removed.
+			 * received messages.
 			 */
-			if (this.getIntent().getBooleanExtra(MessageService.multipleNotificationIntent, false))
-			{
-				MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			}
 			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
 		}
 		
@@ -86,18 +86,15 @@ public class Prephase3Activity extends Activity {
 			 * Check if there is the activity has been entered from a notification.
 			 * This check is to find out if there is a single message received pending.
 			 * If so then the conversation with that contact will be loaded.
-			 */
-			
+			 */			
 			Intent intent = new Intent(this, MessageView.class);
 			intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
 			this.getIntent().removeExtra(MessageService.notificationIntent);
-			MessageService.mNotificationManager.cancel(MessageService.INDEX);
 			startActivity(intent);
 		}
 		
 		setContentView(R.layout.main);
-		//dba = new DBAccessor(this);
-		
+
 		/*
 		 * Load the shared preferences
 		 */
@@ -142,7 +139,6 @@ public class Prephase3Activity extends Activity {
 	{
 		if (MessageReceiver.myActivityStarted)
 		{
-			//msgList = ContactRetriever.getSMS(context);
 			msgList = MessageService.dba.getConversations();
 			conversations.clear();
 			conversations.addData(msgList);
@@ -156,35 +152,6 @@ public class Prephase3Activity extends Activity {
 	
 	protected void onResume()
 	{
-		if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
-		{
-			/*
-			 * Check if there is the activity has been entered from a notification.
-			 * This check specifically is to find out if there are multiple pending
-			 * received messages. If there are multiple messages pending the notification
-			 * will be removed.
-			 */
-			if (this.getIntent().getBooleanExtra(MessageService.multipleNotificationIntent, false))
-			{
-				MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			}
-			this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
-		}
-		
-		if (this.getIntent().hasExtra(MessageService.notificationIntent))
-		{
-			/*
-			 * Check if there is the activity has been entered from a notification.
-			 * This check is to find out if there is a single message received pending.
-			 * If so then the conversation with that contact will be loaded.
-			 */
-			
-			Intent intent = new Intent(this, MessageView.class);
-			intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
-			this.getIntent().removeExtra(MessageService.notificationIntent);
-			MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			startActivity(intent);
-		}
 		updateList(this, false);
 		super.onResume();
 	}
@@ -233,7 +200,8 @@ public class Prephase3Activity extends Activity {
 		values.put("body", decMessage);
 		
 		//Stops native sms client from reading messages as new.
-		values.put("read", true); 
+		values.put("read", true);
+		values.put("seen", true); 
 
 		/**
 		 * Need to:

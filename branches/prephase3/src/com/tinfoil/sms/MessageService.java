@@ -105,6 +105,15 @@ public class MessageService extends Service {
 			mNotificationManager.notify(INDEX, notifyDetails);
 			
      	}
+    	 
+    	/*
+    	 * This seems to do the trick for having a notification
+    	 * that stops if the activity is open
+    	 */
+    	if (MessageReceiver.myActivityStarted)
+		{
+			MessageService.mNotificationManager.cancelAll();
+		}
     	stopSelf();
     	return Service.START_NOT_STICKY;
      }

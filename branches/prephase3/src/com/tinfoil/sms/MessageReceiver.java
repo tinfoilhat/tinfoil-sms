@@ -55,7 +55,7 @@ public class MessageReceiver extends BroadcastReceiver {
 				 */
 				
 				/*
-				 * Checks if the database interface has been initialised and if tinfoil-sms's 
+				 * Checks if the database interface has been initialized and if tinfoil-sms's 
 				 * preference interface has been dealt with
 				 */
 				if (MessageService.dba == null || Prephase3Activity.sharedPrefs == null)

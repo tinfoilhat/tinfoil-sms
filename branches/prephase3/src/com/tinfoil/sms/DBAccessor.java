@@ -140,7 +140,7 @@ public class DBAccessor {
         {
         	db.insert(SQLitehelper.MESSAGES_TABLE_NAME, null, cv);
         }
-        close();
+        close(cur);
 		
 	}
 	
@@ -773,12 +773,9 @@ public class DBAccessor {
 				id = cur.getInt(cur.getColumnIndex(KEY_REFERENCE));
 				if (id != id2)
 				{
-					
-						
 					contact.add(new Contact (cur.getString(cur.getColumnIndex(KEY_NAME)),
 							cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
 							cur.getString(cur.getColumnIndex(KEY_NUMBER))));
-					
 				}
 				id2 = id;
 			}while (cur.moveToNext());
@@ -1008,7 +1005,7 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Update the Numbers row
+	 * Update a row from the Numbers table
 	 * @param tc : TrustedContact the new information to be stored
 	 * @param number : String a number owned by the contact
 	 * @param id : long the id for the contact's database row

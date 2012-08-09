@@ -58,21 +58,10 @@ public class MessageView extends Activity {
         if (this.getIntent().hasExtra(MessageService.notificationIntent))
 		{
 			Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(MessageService.notificationIntent);
-			this.getIntent().removeExtra(MessageService.notificationIntent);
-			//MessageService.mNotificationManager.cancel(MessageService.INDEX);
-			
 		}
         else if(this.getIntent().hasExtra(Prephase3Activity.selectedNumberIntent))
         {
         	Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(Prephase3Activity.selectedNumberIntent);
-        	this.getIntent().removeExtra(Prephase3Activity.selectedNumberIntent);
-        	/*
-        	 * Need to cancel the notification if the notification is from the selected number
-        	 * 
-        	 * If the MessageService.INDEX == contact.id (database) and 0 if it is multiple contacts.
-        	 * With that it would be the key to finding out which contact had the notification and
-        	 * clearing the notification accordingly.
-        	 */
         }
         else 
         {
