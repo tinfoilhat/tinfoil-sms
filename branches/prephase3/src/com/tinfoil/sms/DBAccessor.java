@@ -1070,5 +1070,15 @@ public class DBAccessor {
 			}
 		}
 		return false;
+	}
+	
+	public boolean[] isTrustedContact (ArrayList<Contact> contacts)
+	{
+		boolean[] trusted = new boolean[contacts.size()];
+		for (int i=0;i<contacts.size();i++)
+		{
+			trusted[i] = isTrustedContact(contacts.get(i).getNumber());
+		}
+		return trusted;
 	}	
 }

@@ -52,7 +52,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private ArrayList<Contact> contact;
 	private ProgressDialog dialog;
 	private String[] names = null;
-	private ArrayAdapter arrayAp;
+	private ArrayAdapter<String> arrayAp;
+	private boolean[] trusted;
 
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -151,8 +152,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		//for (int i = 0; i < tc.size();i++)
 		for (int i = 0; i < contact.size();i++)
 		{				
-			//if (MessageService.dba.isTrustedContact(tc.get(i).getANumber()))
-			if (MessageService.dba.isTrustedContact(contact.get(i).getNumber()))
+			//***Change into a method that returns a boolean array
+			//So the db accessing can be done in a thread
+			//if (MessageService.dba.isTrustedContact(contact.get(i).getNumber()))
+			if (trusted[i])
 			{
 				listView.setItemChecked(i, true);
     		}
@@ -267,8 +270,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
         	
         	arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
 		}
+		trusted = MessageService.dba.isTrustedContact(contact);
 		handler.sendEmptyMessage(0);
-		dialog.dismiss();
 	}
 	
 	private Handler handler = new Handler() {
@@ -278,6 +281,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
         	update();
         	dialog.dismiss();
         }
-};
+	};
 
 }
