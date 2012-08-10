@@ -152,9 +152,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		//for (int i = 0; i < tc.size();i++)
 		for (int i = 0; i < contact.size();i++)
 		{				
-			//***Change into a method that returns a boolean array
-			//So the db accessing can be done in a thread
-			//if (MessageService.dba.isTrustedContact(contact.get(i).getNumber()))
 			if (trusted[i])
 			{
 				listView.setItemChecked(i, true);

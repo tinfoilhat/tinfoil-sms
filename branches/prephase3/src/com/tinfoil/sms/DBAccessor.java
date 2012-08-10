@@ -1072,6 +1072,15 @@ public class DBAccessor {
 		return false;
 	}
 	
+	/**
+	 * Identifies which contacts are trusted
+	 * @param contacts : ArrayList<Contact> contacts the list of contacts
+	 * @return : boolean[] an array of boolean values which maps to the contacts
+	 * true if the contact is trusted
+	 * false if the contact is not trusted.
+	 * 
+	 * (NOTE: see isTrustedContact(String number) for more details)
+	 */
 	public boolean[] isTrustedContact (ArrayList<Contact> contacts)
 	{
 		boolean[] trusted = new boolean[contacts.size()];
