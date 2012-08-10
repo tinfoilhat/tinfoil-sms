@@ -52,6 +52,12 @@ public class ImportContacts extends Activity {
 	private boolean disable;
 	private ArrayList<Boolean> inDb;
 	
+	/*
+	 ***NOTE: 
+	 *Transfer the database accessing, formating and storing into a run() method and create a process dialog.
+	 *Title: Searching.
+	 *Sub: Locating Possible Contacts.
+	 */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.importcontacts);

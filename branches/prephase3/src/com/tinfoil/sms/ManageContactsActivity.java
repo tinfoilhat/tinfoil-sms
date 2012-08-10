@@ -19,8 +19,11 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,19 +46,26 @@ import android.widget.Toast;
  * be deleted from tinfoil-sms's database by clicking 'Delete Contact' in the
  * menu which will start RemoveContactActivity. 
  */
-public class ManageContactsActivity extends Activity {
+public class ManageContactsActivity extends Activity implements Runnable {
 	private ListView listView;
 	//private ArrayList<TrustedContact> tc;
 	private ArrayList<Contact> contact;
+	private ProgressDialog dialog;
+	private String[] names = null;
+	private ArrayAdapter arrayAp;
 
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //***Need to override dialog to make so if BACK is pressed it exits the activity if it hasnt finished loading
+        dialog = ProgressDialog.show(this, "Loading Contacts", 
+                "Loading. Please wait...", true, false);
+
         setContentView(R.layout.contact);
-        
         listView = (ListView)findViewById(R.id.contact_list);
-        
-        update();
+
+        //update();
         
         listView.setOnItemLongClickListener(new OnItemLongClickListener(){
 
@@ -103,7 +113,6 @@ public class ManageContactsActivity extends Activity {
         		}
 
         	}});
-        
 	}
 
 	/**
@@ -159,40 +168,15 @@ public class ManageContactsActivity extends Activity {
 	 */
 	private void update()
 	{
-		String[] names;
-		//tc  = MessageService.dba.getAllRows();
-		contact = MessageService.dba.getAllRowsLimited();
-		//if (tc != null)
+		listView.setAdapter(arrayAp);
+		listView.setItemsCanFocus(false);
+		
 		if (contact != null)
         {
-	        //The string that is displayed for each item on the list 
-	        /*names = new String[tc.size()];
-	        for (int i = 0; i < tc.size(); i++)
-	        {
-	        	names[i] = tc.get(i).getName();
-	        }*/
-			names = new String[contact.size()];
-	        for (int i = 0; i < contact.size(); i++)
-	        {
-	        	names[i] = contact.get(i).getName();
-	        }
-
-	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
-
-	        listView.setItemsCanFocus(false);
-
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	        initList();
         }
-        else 
-        {
-        	names = new String[1];
-        	names[0] = "Add a Contact";
-        	        
-	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
 
-	        listView.setItemsCanFocus(false);
-        }
 	}
 
 	/*
@@ -200,8 +184,10 @@ public class ManageContactsActivity extends Activity {
 	 */
 	protected void onResume()
 	{
-		update();
+		Thread thread = new Thread(this);
+	    thread.start();
 		super.onResume();
+		
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -262,5 +248,36 @@ public class ManageContactsActivity extends Activity {
 		}
 
 	}
+
+	public void run() {
+		contact = MessageService.dba.getAllRowsLimited();
+		if (contact != null)
+		{
+			names = new String[contact.size()];
+	        for (int i = 0; i < contact.size(); i++)
+	        {
+	        	names[i] = contact.get(i).getName();
+	        }
+	        arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
+		}
+		else
+		{
+			names = new String[1];
+        	names[0] = "Add a Contact";
+        	
+        	arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+		}
+		handler.sendEmptyMessage(0);
+		dialog.dismiss();
+	}
+	
+	private Handler handler = new Handler() {
+        @Override
+        public void handleMessage (Message msg)
+        {
+        	update();
+        	dialog.dismiss();
+        }
+};
 
 }
