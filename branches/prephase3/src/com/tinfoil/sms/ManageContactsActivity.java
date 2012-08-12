@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -250,6 +251,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	}
 
 	public void run() {
+		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		contact = MessageService.dba.getAllRowsLimited();
 		if (contact != null)
 		{
@@ -259,6 +262,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	        	names[i] = contact.get(i).getName();
 	        }
 	        arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
+	        trusted = MessageService.dba.isTrustedContact(contact);
 		}
 		else
 		{
@@ -266,8 +270,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
         	names[0] = "Add a Contact";
         	
         	arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-		}
-		trusted = MessageService.dba.isTrustedContact(contact);
+		}		
+		
 		handler.sendEmptyMessage(0);
 	}
 	
@@ -277,6 +281,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         {
         	update();
         	dialog.dismiss();
+        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
 	};
 

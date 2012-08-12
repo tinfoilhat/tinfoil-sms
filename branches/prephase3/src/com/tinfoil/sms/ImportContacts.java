@@ -21,6 +21,7 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
