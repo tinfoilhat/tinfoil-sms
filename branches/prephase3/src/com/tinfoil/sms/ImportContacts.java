@@ -242,15 +242,19 @@ public class ImportContacts extends Activity implements Runnable {
             			pCur.close();
             		}
             		
-                    if(number!=null)
-                    {
-                    	
-                    	if (!MessageService.dba.inDatabase(number))
-                    	{
-                    		tc.add(new TrustedContact(name, number));
-                    		inDb.add(false);
-                    	}
-                    }
+            		/*
+            		 * Added a check to see if the number array is empty
+            		 * if a contact has no number they can not be texted
+            		 * therefore there is no point allowing them to be
+            		 * added.
+            		 */
+                    if(number!=null && !number.isEmpty() && 
+                    		!MessageService.dba.inDatabase(number))
+                	{
+                		tc.add(new TrustedContact(name, number));
+                		inDb.add(false);
+                	}
+                
                     number = null;
                 } while (cur.moveToNext());
         }
@@ -301,7 +305,7 @@ public class ImportContacts extends Activity implements Runnable {
 				}
 			}
 			if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber()) 
-					&& !MessageService.dba.inDatabase(newNumber.getNumber()))
+					&& !MessageService.dba.inDatabase(newNumber.getNumber()) && newNumber.getNumber()!=null)
 			{
 				tc.add(new TrustedContact(newNumber));
 				inDb.add(false);
