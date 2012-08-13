@@ -21,11 +21,10 @@
         <activity android:name=".SendMessageActivity" android:label="Send Message" />
         <activity android:name=".AddContact" android:label="Add Contact" />
         <activity android:name=".QuickPrefsActivity" android:label="Settings" />
-        <activity android:name=".ManageContactsActivity" android:label="Contacts" />
+        <activity android:name=".ManageContactsActivity" android:label="Contacts" android:configChanges="orientation" />
         <activity android:name=".MessageView" android:label="Messages" />
-        <activity android:name=".ImportContacts" android:label="Import Contacts" />
+        <activity android:name=".ImportContacts" android:label="Import Contacts" android:configChanges="orientation" />
         <activity android:name=".RemoveContactsActivity" android:label="Delete Contacts" />
-        <activity android:name=".ManageNumbersActivity" android:label="Edit Numbers" />
         <activity
             android:name=".Prephase3Activity"
             android:label="Tinfoil-SMS" >

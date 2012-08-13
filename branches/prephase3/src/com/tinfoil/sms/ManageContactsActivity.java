@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -251,8 +250,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	}
 
 	public void run() {
-		
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		contact = MessageService.dba.getAllRowsLimited();
 		if (contact != null)
 		{
@@ -277,11 +274,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	
 	private Handler handler = new Handler() {
         @Override
-        public void handleMessage (Message msg)
+        public void handleMessage(Message msg)
         {
         	update();
         	dialog.dismiss();
-        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
 	};
 
