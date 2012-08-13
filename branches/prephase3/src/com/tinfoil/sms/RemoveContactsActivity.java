@@ -19,7 +19,10 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,31 +38,32 @@ import android.widget.ListView;
 * deleted from tinfoil-sms's database.
 * ***Please note that contacts will not be deleted from the native database. 
 */
-public class RemoveContactsActivity extends Activity {
+public class RemoveContactsActivity extends Activity  implements Runnable {
 	private ListView listView;
 	private boolean [] contact;
 	//private ArrayList<TrustedContact> tc;
 	private ArrayList<Contact> cont;
 	private Button delete;
+	private ProgressDialog dialog;
+	private boolean clicked = false;
+	private ArrayAdapter<String> appAdapt;
 	
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.remove_contacts);
-                
+        clicked = false;
+        
         delete = (Button)findViewById(R.id.delete_cont);
 
         listView = (ListView)findViewById(R.id.removeable_contact_list);
         
-        update();
+        dialog = ProgressDialog.show(this, "Loading Contacts", 
+                "Loading. Please wait...", true, false);
         
-        //contact = new boolean [tc.size()];
-        contact = new boolean [cont.size()];
-        //for (int i = 0; i < tc.size(); i++)
-        for (int i = 0; i < cont.size(); i++)
-        {
-        	contact[i] = false;
-        }
+        //update();
+        Thread thread = new Thread(this);
+        thread.start();
         
         //Create what happens when you click on a button
         listView.setOnItemClickListener(new OnItemClickListener()
@@ -76,16 +80,13 @@ public class RemoveContactsActivity extends Activity {
 				//if (tc != null)
 				if (cont != null)
 				{
-					//for (int i = 0; i < tc.size(); i++)
-					for (int i = 0; i < cont.size(); i++)
-					{
-						if (contact[i])
-						{
-							//MessageService.dba.removeRow(tc.get(i).getANumber());
-							MessageService.dba.removeRow(cont.get(i).getNumber());
-						}
-					}
-					update();
+					clicked = true;
+					dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts", 
+				                "Deleting. Please wait...", true, false);
+					Thread thread2 = new Thread(RemoveContactsActivity.this);
+			        thread2.start();
+					
+					//update();
 				}
 				
 			}});
@@ -129,17 +130,14 @@ public class RemoveContactsActivity extends Activity {
 	        	//names[i] = tc.get(i).getName();
 				names[i] = cont.get(i).getName();
 	        }
-	
-	        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names));
-	
-	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			appAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
 		}
 		else 
 		{
 			names = new String[] {"No Contacts"};
-			listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
+			appAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
 		}
-		listView.setItemsCanFocus(false);
+		
 	}
 		
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -180,6 +178,47 @@ public class RemoveContactsActivity extends Activity {
 		}
 
 	}
+
+	public void run() {
+		if (clicked)
+		{
+			for (int i = 0; i < cont.size(); i++)
+			{
+				if (contact[i])
+				{
+					//MessageService.dba.removeRow(tc.get(i).getANumber());
+					MessageService.dba.removeRow(cont.get(i).getNumber());
+				}
+			}
+		}
+			
+		update();
+		if (cont != null)
+		{
+			contact = new boolean [cont.size()];
+	        for (int i = 0; i < cont.size(); i++)
+	        {
+	        	contact[i] = false;
+	        }
+		}
+        handler.sendEmptyMessage(0);
+	}
+	
+	private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg)
+        {
+        	listView.setAdapter(appAdapt);
+        	if (cont!= null)
+        	{
+        		
+		        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        	}
+        	listView.setItemsCanFocus(false);
+        	
+        	dialog.dismiss();
+        }
+	};
 	
 }
 
