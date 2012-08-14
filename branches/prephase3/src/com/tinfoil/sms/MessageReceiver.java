@@ -46,6 +46,9 @@ public class MessageReceiver extends BroadcastReceiver {
 				messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
 			}
 
+			/*
+			 * Might have to update this so that it accounts for multiple messages received
+			 */
 			if (messages.length > -1) {
 				
 				/* Shows a Toast with the phone number of the sender, and the message.

@@ -33,6 +33,7 @@ import android.telephony.SmsManager;
 public abstract class SMSUtility {
 	private static final Pattern p = Pattern.compile("^[+]1.{10}");
 	private static final Pattern numOnly = Pattern.compile("\\W");
+	private static final SmsManager sms = SmsManager.getDefault();
 	
 	/**
 	 * Create an array of Strings to display for the auto-complete
@@ -82,7 +83,6 @@ public abstract class SMSUtility {
     public static void sendSMS (Context c, String number, String message)
     {
     	PendingIntent pi = PendingIntent.getActivity(c, 0, new Intent(c, Object.class), 0);
-        SmsManager sms = SmsManager.getDefault();
         
         //this is the function that does all the magic
         sms.sendTextMessage(number, null, message, pi, null);

@@ -43,7 +43,7 @@ import android.widget.AdapterView.OnItemClickListener;
 * updated as well.
 */
 public class MessageView extends Activity {
-	private Button sendSMS;
+	private static Button sendSMS;
 	private EditText messageBox;
 	private static ListView list2;
 	private static List<String[]> msgList2;
@@ -131,18 +131,18 @@ public class MessageView extends Activity {
         {
 			public void onClick(View v) 
 			{
+				
 		        String text = messageBox.getText().toString();
 				
 				if (Prephase3Activity.selectedNumber.length() > 0 && text.length() > 0)
 				{
 					//Sets so that a new message sent from the user will not show up as bold
 					messages.setCount(0);
+					messageBox.setText("");
 					
 					//Encrypt the text message before sending it	
 					try
-					{
-						messageBox.setText("");
-																		
+					{																		
 						//Only expects encrypted messages from trusted contacts in the secure state
 						if (MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
 								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
@@ -153,17 +153,16 @@ public class MessageView extends Activity {
 							SMSUtility.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
 									encrypted);							
 							
-							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									encrypted, Prephase3Activity.SENT);
-							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									 text, Prephase3Activity.SENT);
-							
 							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
 							{
+								Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
+										encrypted, Prephase3Activity.SENT);
 								MessageService.dba.addNewMessage(new Message 
 										(encrypted, true, true), Prephase3Activity.selectedNumber, true);
 							}
 							
+							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
+									 text, Prephase3Activity.SENT);
 							MessageService.dba.addNewMessage(new Message 
 										(text, true, true),Prephase3Activity.selectedNumber, true);
 							
@@ -191,15 +190,21 @@ public class MessageView extends Activity {
 				}
 				else
 				{
-					AlertDialog.Builder builder = new AlertDialog.Builder(MessageView.this);
+					/*
+					 * Might make a setting to allow "warning dialogs" such as this one.
+					 * This one though has gotten quite annoying since any accidental second
+					 * second click brings up this message.
+					 * 
+					 * Might also be a thought to have it only show the first time or just never show
+					 */
+					/*AlertDialog.Builder builder = new AlertDialog.Builder(MessageView.this);
 					builder.setMessage("You have failed to provide sufficient information")
-					       .setCancelable(false)
+					       .setCancelable(true)
 					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					           public void onClick(DialogInterface dialog, int id) {}});
 					AlertDialog alert = builder.create();
-					alert.show();
+					alert.show();*/
 				}
-				
 			}
         });
 		

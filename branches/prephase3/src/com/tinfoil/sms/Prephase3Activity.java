@@ -114,7 +114,7 @@ public class Prephase3Activity extends Activity {
         //list.addHeaderView(header);
 		
 		list.setAdapter(conversations);
-        
+		
 		/*
 		 * Load the selected conversation thread when clicked
 		 */

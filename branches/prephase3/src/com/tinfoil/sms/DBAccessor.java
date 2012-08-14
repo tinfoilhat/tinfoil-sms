@@ -133,8 +133,16 @@ public class DBAccessor {
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
         if (cur.moveToFirst() && cur.getInt(0) >= LIMIT)
         {
-        	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
-        			"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
+        	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
+        		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
+        	
+        	/*
+        	 * Updated the update db sql command to account for messages having the exact same date
+        	 */
+        	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_ID + " = " + 
+            		"(SELECT id FROM " + SQLitehelper.MESSAGES_TABLE_NAME + 
+            		" WHERE "+ KEY_DATE + " = " + "(SELECT MIN("+KEY_DATE+") FROM " 
+            		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
         }
         else
         {
