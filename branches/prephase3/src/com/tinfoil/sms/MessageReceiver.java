@@ -107,12 +107,6 @@ public class MessageReceiver extends BroadcastReceiver {
 							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
 									messages[0].getMessageBody(), Prephase3Activity.INBOX);
 	
-							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
-									SMSUtility.format(address)).getPublicKey(), 
-									messages[0].getMessageBody());
-							Prephase3Activity.sendToSelf(context, address,	
-									secretMessage , Prephase3Activity.INBOX);
-							
 							//Updates the last message received
 							Message newMessage = null;
 							
@@ -125,6 +119,12 @@ public class MessageReceiver extends BroadcastReceiver {
 								newMessage = new Message(messages[0].getMessageBody(), true, false);
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}
+							
+							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
+									SMSUtility.format(address)).getPublicKey(), 
+									messages[0].getMessageBody());
+							Prephase3Activity.sendToSelf(context, address,	
+									secretMessage , Prephase3Activity.INBOX);
 							
 							/*
 							 * Store the message in the database

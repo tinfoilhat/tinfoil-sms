@@ -567,11 +567,28 @@ public class DBAccessor {
 	 */
 	public boolean inDatabase(String number)
 	{
-		if (getRow(SMSUtility.format(number)) == null)
+		open();
+		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + ", " + KEY_NUMBER + " FROM "
+				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", 
+				new String[] {SMSUtility.format(number)});
+		
+		long id = 0;
+		if (idCur.moveToFirst())
 		{
-			return false;
+			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
 		}
-		return true;
+		idCur.close();
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[]
+				{KEY_NAME}, KEY_ID +" = " + id, null, null, null, null);
+
+			if (cur.moveToFirst())
+		{
+			close(cur);
+			return true;
+		}
+		close(cur);
+		return false;
+		
 	}
 	
     /**
