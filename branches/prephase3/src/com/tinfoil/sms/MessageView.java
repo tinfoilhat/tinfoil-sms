@@ -103,7 +103,7 @@ public class MessageView extends Activity {
 		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				/**
+				/** TODO
 				 * Going to add a menu of things the user can do with the messages:
 				 * 1. Re-send the message
 				 * 2. Delete the message
@@ -240,11 +240,11 @@ public class MessageView extends Activity {
 		case R.id.exchange:
 			//Add to trusted Contact list
 			//DOES NOT WORK...
-			/*TrustedContact tc = MessageService.dba.getRow(ContactRetriever.format
+			TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)
 			{
-				if (MessageService.dba.isTrustedContact(ContactRetriever.format
+				if (MessageService.dba.isTrustedContact(SMSUtility.format
 						(Prephase3Activity.selectedNumber)))
 				{
 					tc.clearPublicKey();
@@ -255,11 +255,13 @@ public class MessageView extends Activity {
 					tc.setPublicKey();
 					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
 				}
-			}*/
+			}
 			
 			return true;
 		case R.id.delete:
-			//Not sure if we should have it delete the contact or delete the conversation
+			/*
+			 * TODO Should have Delete Thread and another option to delete groups of messages within the thread
+			 */
 			return true;
 	
 		default:

@@ -775,7 +775,7 @@ public class DBAccessor {
 	 * information is actually used.
 	 * @return ArrayList<Contact> contact
 	 */
-	public ArrayList<Contact> getAllRowsLimited()
+	/*public ArrayList<Contact> getAllRowsLimited()
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
@@ -810,7 +810,7 @@ public class DBAccessor {
         }
 		close(cur);
 		return null;
-	}
+	}*/
 	
 	/**
 	 * Get all of the rows in the database with the columns
@@ -980,7 +980,7 @@ public class DBAccessor {
 	 * Update a contact's public key
 	 * @param contact
 	 */
-	public void updateRow (Contact contact)
+	/*public void updateRow (Contact contact)
 	{
 		ContentValues cv = new ContentValues();
 		long id = getId(contact.getNumber());
@@ -989,7 +989,7 @@ public class DBAccessor {
 		open();
 		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, KEY_ID + " = " + id, null);
 		close();
-	}
+	}*/
 
 	/**
 	 * Update all of the values in a row
@@ -1106,12 +1106,31 @@ public class DBAccessor {
 	 * 
 	 * (NOTE: see isTrustedContact(String number) for more details)
 	 */
-	public boolean[] isTrustedContact (ArrayList<Contact> contacts)
+	/*public boolean[] isTrustedContact (ArrayList<Contact> contacts)
 	{
 		boolean[] trusted = new boolean[contacts.size()];
 		for (int i=0;i<contacts.size();i++)
 		{
 			trusted[i] = isTrustedContact(contacts.get(i).getNumber());
+		}
+		return trusted;
+	}*/
+	
+	/**
+	 * Identifies which contacts are trusted
+	 * @param contacts : ArrayList<Contact> contacts the list of contacts
+	 * @return : boolean[] an array of boolean values which maps to the contacts
+	 * true if the contact is trusted
+	 * false if the contact is not trusted.
+	 * 
+	 * (NOTE: see isTrustedContact(String number) for more details)
+	 */
+	public boolean[] isTrustedContact (ArrayList<TrustedContact> tc)
+	{
+		boolean[] trusted = new boolean[tc.size()];
+		for (int i=0;i<tc.size();i++)
+		{
+			trusted[i] = isTrustedContact(tc.get(i).getANumber());
 		}
 		return trusted;
 	}	
