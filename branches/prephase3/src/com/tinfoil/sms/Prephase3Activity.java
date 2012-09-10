@@ -20,11 +20,9 @@ package com.tinfoil.sms;
 import java.util.List;
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -34,6 +32,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+
 
 /**
  * Prephase3Activity is the activity that is launched for the start of the program.
@@ -184,42 +183,5 @@ public class Prephase3Activity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 
-	}
-
-	/** 
-	 * Drops the message into the in-box of the default SMS program. Tricks the
-	 * in-box to think the message was send by the original sender
-	 * 
-	 * @param srcNumber : String, the number of the contact that sent the message
-	 * @param decMessage : String, the message sent from the contact
-	 * @param dest : String, the folder in the android database that the message will be stored in
-	 */
-	public static void sendToSelf(Context c, String srcNumber, String decMessage, String dest) {
-		ContentValues values = new ContentValues();
-		values.put("address", srcNumber);
-		values.put("body", decMessage);
-		
-		//Stops native sms client from reading messages as new.
-		values.put("read", true);
-		values.put("seen", true); 
-
-		/**
-		 * Need to:
-		 * 1. Make so that messages received from contacts not in database are ignored and sent to native
-		 */
-		/* Sets used to determine who sent the message, 
-		 * if type == 2 then it is sent from the user
-		 * if type == 1 it has been sent by the contact
-		 */
-		if (dest.equalsIgnoreCase(SENT))
-		{
-			values.put("type", "2");
-		}
-		else
-		{
-			values.put("type", "1");
-		}
-		
-		c.getContentResolver().insert(Uri.parse(dest), values);
 	}
 }

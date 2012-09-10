@@ -1005,6 +1005,21 @@ public class DBAccessor {
 		updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
 	}
 	
+	/** TODO decide whether a contact should be allowed to have a key per number (so if a person has multiple
+	 * cell phones for a single contact, )
+	 * Update all of the values in a row
+	 * @param tc : Trusted Contact, the new values for the row
+	 * @param number : the number of the contact in the database
+	 */
+	public void updateKey (TrustedContact tc, String number)
+	{
+		long id = getId(SMSUtility.format(number));
+		updateTrustedRow(tc, number, id);
+		//updateNumberRow(tc, number, id);
+		//updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
+		//updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
+	}
+	
 	/**
 	 * Update a TrustedContact row
 	 * @param tc : TrustedContact the new information to be stored

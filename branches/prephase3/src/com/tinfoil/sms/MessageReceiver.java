@@ -104,7 +104,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						try {
 							
-							Prephase3Activity.sendToSelf(context, messages[0].getOriginatingAddress(), 
+							SMSUtility.sendToSelf(context, messages[0].getOriginatingAddress(), 
 									messages[0].getMessageBody(), Prephase3Activity.INBOX);
 	
 							//Updates the last message received
@@ -123,7 +123,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
 									SMSUtility.format(address)).getPublicKey(), 
 									messages[0].getMessageBody());
-							Prephase3Activity.sendToSelf(context, address,	
+							SMSUtility.sendToSelf(context, address,	
 									secretMessage , Prephase3Activity.INBOX);
 							
 							/*
@@ -132,31 +132,34 @@ public class MessageReceiver extends BroadcastReceiver {
 							newMessage = new Message(secretMessage, true, false);
 							MessageService.dba.addNewMessage(newMessage, address, true);
 							
-							/*
-							 * Update the list of messages to show the new messages
-							 */
-							Prephase3Activity.updateList(context, true);
+							
+							
 						} 
 						catch (Exception e) 
 						{
 							Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 							e.printStackTrace();
 						}
+						
 					}
 					else
 					{
 						/*
 						 * Send and store a plain text message to the contact
 						 */
-						Prephase3Activity.sendToSelf(context, address,
+						SMSUtility.sendToSelf(context, address,
 								messages[0].getMessageBody(), Prephase3Activity.INBOX);
 						
 						
 						Message newMessage = new Message(messages[0].getMessageBody(), true, false);
 						MessageService.dba.addNewMessage(newMessage, address, true);
 						
-						Prephase3Activity.updateList(context, true);
 					}
+					
+					/*
+					 * Update the list of messages to show the new messages
+					 */
+					Prephase3Activity.updateList(context, true);
 					
 					/*
 					 * Set the values needed for the notification

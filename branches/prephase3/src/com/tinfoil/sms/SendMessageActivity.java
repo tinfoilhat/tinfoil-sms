@@ -114,42 +114,12 @@ public class SendMessageActivity extends Activity {
 				
 				if (number.length() > 0 && text.length() > 0)
 				{
-					//Encrypt the text message before sending it	
-					try
+					//Send the message
+					boolean sent = SMSUtility.SendMessage(newCont.getNumber(0), text, getBaseContext());
+					
+					//Check if the message was successful at sending
+					if (sent)
 					{
-                    	//Only expects encrypted messages from trusted contacts in the secure state
-						if (MessageService.dba.isTrustedContact(number) && 
-								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
-						{
-							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(SMSUtility.format(number))
-									.getPublicKey(), text);
-							
-							SMSUtility.sendSMS(getBaseContext(), number, encrypted);
-							
-							Prephase3Activity.sendToSelf(getBaseContext(), number, encrypted, Prephase3Activity.SENT);
-							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
-							
-							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
-							{
-								MessageService.dba.addNewMessage(new Message 
-										(encrypted, true, true),SMSUtility.format(number), true);
-							}
-							
-							MessageService.dba.addNewMessage(new Message 
-									(text, true, true),SMSUtility.format(number), true);
-							
-							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
-						}
-						else
-						{
-							SMSUtility.sendSMS(getBaseContext(), number, text);
-							Prephase3Activity.sendToSelf(getBaseContext(), number, text, Prephase3Activity.SENT);
-							
-							MessageService.dba.addNewMessage(new Message 
-									(text, true, true),SMSUtility.format(number), true);
-							
-							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
-						}
 						if (!MessageService.dba.inDatabase(number))
 						{
 
@@ -174,12 +144,7 @@ public class SendMessageActivity extends Activity {
 						}
 						messageBox.setText("");
 						phoneBox.setText("");
-				    }
-			        catch ( Exception e ) 
-			        { 
-			        	Toast.makeText(getBaseContext(), "FAILED TO SEND", Toast.LENGTH_LONG).show();
-			        	e.printStackTrace(); 
-			    	}
+					}				
 				}
 				else
 				{

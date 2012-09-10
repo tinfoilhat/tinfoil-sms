@@ -141,52 +141,8 @@ public class MessageView extends Activity {
 					messageBox.setText("");
 					
 					//Encrypt the text message before sending it	
-					try
-					{																		
-						//Only expects encrypted messages from trusted contacts in the secure state
-						if (MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber) && 
-								Prephase3Activity.sharedPrefs.getBoolean("enable", true))
-						{
-							String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
-									SMSUtility.format(Prephase3Activity.selectedNumber))
-									.getPublicKey(), text);
-							SMSUtility.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, 
-									encrypted);							
-							
-							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
-							{
-								Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-										encrypted, Prephase3Activity.SENT);
-								MessageService.dba.addNewMessage(new Message 
-										(encrypted, true, true), Prephase3Activity.selectedNumber, true);
-							}
-							
-							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									 text, Prephase3Activity.SENT);
-							MessageService.dba.addNewMessage(new Message 
-										(text, true, true),Prephase3Activity.selectedNumber, true);
-							
-							Toast.makeText(getBaseContext(), "Encrypted Message sent", Toast.LENGTH_SHORT).show();
-						}
-						else
-						{
-							SMSUtility.sendSMS(getBaseContext(), Prephase3Activity.selectedNumber, text);
-							Prephase3Activity.sendToSelf(getBaseContext(), Prephase3Activity.selectedNumber,
-									text, Prephase3Activity.SENT);
-							
-							MessageService.dba.addNewMessage(new Message 
-									(text, true, true),Prephase3Activity.selectedNumber, true);
-							
-							Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_SHORT).show();
-						}
-						updateList(getBaseContext());
-						
-					}
-			        catch ( Exception e ) 
-			        { 
-			        	Toast.makeText(getBaseContext(), "FAILED TO SEND", Toast.LENGTH_LONG).show();
-			        	e.printStackTrace(); 
-			    	}
+					SMSUtility.SendMessage(Prephase3Activity.selectedNumber, text, getBaseContext());
+					updateList(getBaseContext());
 				}
 				else
 				{
@@ -248,12 +204,12 @@ public class MessageView extends Activity {
 						(Prephase3Activity.selectedNumber)))
 				{
 					tc.clearPublicKey();
-					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateKey(tc, Prephase3Activity.selectedNumber);
 				}
 				else
 				{
 					tc.setPublicKey();
-					MessageService.dba.updateRow(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateKey(tc, Prephase3Activity.selectedNumber);
 				}
 			}
 			

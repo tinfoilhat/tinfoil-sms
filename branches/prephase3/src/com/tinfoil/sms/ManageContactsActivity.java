@@ -140,7 +140,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		}
 
 		//MessageService.dba.updateRow(contact.get(position));
-		MessageService.dba.updateRow(tc.get(position),tc.get(position).getANumber());
+		MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
 	}
 
 	/**
