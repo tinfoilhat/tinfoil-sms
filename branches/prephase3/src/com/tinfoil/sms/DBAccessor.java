@@ -1148,5 +1148,53 @@ public class DBAccessor {
 			trusted[i] = isTrustedContact(tc.get(i).getANumber());
 		}
 		return trusted;
-	}	
+	}
+	
+	/**
+	 * Adding a message to the queue to be sent when there is service to send the message. 
+	 * Once the message has been sent it will be removed from the queue.
+	 * @param number : String the number for the contact that the message will be sent to
+	 * @param message : String the message that will be sent to the contact with the given number.
+	 * **Please note the message is not changed, it will be stored and sent as is.  
+	 */
+	public void addMessageToQueue (String number, String message)
+	{
+		ContentValues cv = new ContentValues();
+		
+		//Trusted Table
+        cv.put(KEY_NUMBER, number);
+        cv.put(KEY_MESSAGE, message);
+        
+        open();
+        db.insert(SQLitehelper.QUEUE_TABLE_NAME, null, cv);
+		close();
+	}
+	
+	public String[] getFirstInQueue ()
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, KEY_NUMBER, KEY_MESSAGE},
+			KEY_ID + " = (SELECT MIN("+KEY_ID+" FROM " + SQLitehelper.QUEUE_TABLE_NAME +")", null, 
+			null, null, null);
+		
+		if (cur.moveToFirst())
+		{
+			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
+			String[] queue = new String[2];
+			queue[0] = cur.getString(cur.getColumnIndex(KEY_NUMBER));
+			queue[1] = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
+			close(cur);
+			deleteQueueEntry(id);
+			return queue;
+		}
+		close(cur);
+		return null;
+	}
+	
+	public void deleteQueueEntry (long id)
+	{
+		open();
+		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = " + id, null);
+		close();
+	}
 }

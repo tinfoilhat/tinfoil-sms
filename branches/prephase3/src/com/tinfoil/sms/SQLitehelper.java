@@ -29,7 +29,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 1;
 	
 	//Table Names
 	public static final String USER_TABLE_NAME = "user";
@@ -38,6 +38,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String SHARED_INFO_TABLE_NAME = "shared_information";
     public static final String BOOK_PATHS_TABLE_NAME = "book_paths";
     public static final String MESSAGES_TABLE_NAME = "messages";
+    public static final String QUEUE_TABLE_NAME = "queue";
     
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
@@ -68,6 +69,10 @@ public class SQLitehelper extends SQLiteOpenHelper {
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, message TEXT," +
             " date INTEGER, sent INTEGER);";
+    
+    private static final String QUEUE_TABLE_CREATE =
+            "CREATE TABLE " + QUEUE_TABLE_NAME + 
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT, message TEXT;";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -81,6 +86,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
         db.execSQL(SHARED_INFO_TABLE_CREATE);
         db.execSQL(BOOK_PATHS_TABLE_CREATE);
         db.execSQL(MESSAGES_TABLE_CREATE);
+        db.execSQL(QUEUE_TABLE_CREATE);
     }
 
 	@Override
@@ -91,6 +97,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS "+ SHARED_INFO_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS "+ BOOK_PATHS_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS "+ MESSAGES_TABLE_CREATE);
+		db.execSQL("DROP TABLE IF EXISTS "+ QUEUE_TABLE_CREATE);
 		onCreate(db);
 		
 	}

@@ -170,7 +170,6 @@ public class Prephase3Activity extends Activity {
 		return true;
 	}
 
-	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.compose:
