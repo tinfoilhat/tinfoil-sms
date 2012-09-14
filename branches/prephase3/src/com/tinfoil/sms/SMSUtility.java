@@ -20,11 +20,17 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
+import android.telephony.CellLocation;
+import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
 import android.telephony.SmsManager;
 import android.widget.Toast;
@@ -40,6 +46,11 @@ public abstract class SMSUtility {
 	private static final Pattern numOnly = Pattern.compile("\\W");
 	private static final SmsManager sms = SmsManager.getDefault();
 	public static final String SENT = "content://sms/sent";
+	
+	public static String NUMBER = "com.tinfoil.sms.number";
+	public static String MESSAGE = "com.tinfoil.sms.message";
+	public static String ID = "com.tinfoil.sms.id";
+	private static MessageSender MS = new MessageSender();
 	
 	/**
 	 * Create an array of Strings to display for the auto-complete
@@ -88,13 +99,41 @@ public abstract class SMSUtility {
      */
     public static void sendSMS (Context c, String number, String message)
     {
-    	PendingIntent pi = PendingIntent.getActivity(c, 0, new Intent(c, Object.class), 0);
+    	String SENT = "SMS_SENT";
+
+    	Intent intent = new Intent(SENT);
+    	intent.putExtra(NUMBER, number);
+    	intent.putExtra(MESSAGE, message);
+    	intent.putExtra(ID, 0);
+        PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
+           intent, PendingIntent.FLAG_CANCEL_CURRENT);
         
-        //this is the function that does all the magic
-        sms.sendTextMessage(number, null, message, pi, null);
+        c.registerReceiver(MS, new IntentFilter(SENT));
         
-        //PhoneStateListener pSL = new PhoneStateListener();
-        //pSL.onSignalStrengthChanged(PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(number, null, message, sentPI, null);   
+    }
+    
+    /**
+     * Sends the given message to the phone with the given number
+     * @param number : String, the number of the phone that the message is sent to
+     * @param message : String, the message, encrypted that will be sent to the contact
+     */
+    public static void sendSMS (Context c, String number, String message, long id)
+    {
+    	String SENT = "SMS_SENT";
+
+    	Intent intent = new Intent(SENT);
+    	intent.putExtra(NUMBER, number);
+    	intent.putExtra(MESSAGE, message);
+    	intent.putExtra(ID, id);
+        PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
+           intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        
+        c.registerReceiver(MS, new IntentFilter(SENT));
+        
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(number, null, message, sentPI, null);   
     }
     
     /** 

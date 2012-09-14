@@ -72,7 +72,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     private static final String QUEUE_TABLE_CREATE =
             "CREATE TABLE " + QUEUE_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT, message TEXT;";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT, number_reference INTEGER, message TEXT);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

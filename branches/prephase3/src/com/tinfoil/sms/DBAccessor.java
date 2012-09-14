@@ -52,6 +52,8 @@ public class DBAccessor {
 	public static final String KEY_DATE = "date";
 	public static final String KEY_SENT = "sent";
 	
+	public static final String KEY_NUMBER_REFERENCE = "number_reference";
+	
 	private static final String USER_NAME = "Me";
 	private static final int LIMIT = 50;
 	
@@ -537,6 +539,23 @@ public class DBAccessor {
 		}
 		close(cur);
 		return 0;
+	}
+	
+	private String getNumber(long id)
+	{
+		open();
+		Cursor cur = db.rawQuery("SELECT " + KEY_NUMBER + " FROM " + 
+		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + KEY_ID + " = " + id, null);
+
+		if (cur.moveToFirst())
+		{
+			//long id = cur.getInt(cur.getColumnIndex((KEY_ID)));
+			String number = cur.getString(cur.getColumnIndex(KEY_NUMBER));
+			close(cur);
+			return number;
+		}
+		close(cur);
+		return null;
 	}
 	
 	/**
@@ -1159,10 +1178,10 @@ public class DBAccessor {
 	 */
 	public void addMessageToQueue (String number, String message)
 	{
+		long numberReference = getNumberId(number);
 		ContentValues cv = new ContentValues();
-		
-		//Trusted Table
-        cv.put(KEY_NUMBER, number);
+
+        cv.put(KEY_NUMBER_REFERENCE, numberReference);
         cv.put(KEY_MESSAGE, message);
         
         open();
@@ -1173,19 +1192,20 @@ public class DBAccessor {
 	public String[] getFirstInQueue ()
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, KEY_NUMBER, KEY_MESSAGE},
-			KEY_ID + " = (SELECT MIN("+KEY_ID+" FROM " + SQLitehelper.QUEUE_TABLE_NAME +")", null, 
-			null, null, null);
+		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, 
+				KEY_NUMBER_REFERENCE, KEY_MESSAGE}, KEY_ID + 
+				" = (SELECT MIN(" + KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
+				null, null, null, null);
 		
 		if (cur.moveToFirst())
 		{
 			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
-			String[] queue = new String[2];
-			queue[0] = cur.getString(cur.getColumnIndex(KEY_NUMBER));
-			queue[1] = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
+			String[] entry = new String[]{
+					getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
+					cur.getString(cur.getColumnIndex(KEY_MESSAGE))};
 			close(cur);
-			deleteQueueEntry(id);
-			return queue;
+			//deleteQueueEntry(id);
+			return entry;
 		}
 		close(cur);
 		return null;
@@ -1197,4 +1217,42 @@ public class DBAccessor {
 		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = " + id, null);
 		close();
 	}
+	
+	public void deleteLastQueueEntry()
+	{
+		open();
+		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = (SELECT MAX(" + KEY_ID + ") FROM " + 
+				SQLitehelper.QUEUE_TABLE_NAME +")", null);
+		close();
+	}
+	
+	public long queueLength()
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, 
+				new String[]{"COUNT("+KEY_ID+")"},
+				null, null, null, null, null);
+		
+		if (cur.moveToFirst())
+		{
+			long count = cur.getLong(0);
+			close(cur);
+			return count;
+		}
+		close(cur);
+		return 0;
+	}
+	
+	/*public void placeOnTop(String number, String message, long id)
+	{
+		long numberReference = getNumberId(number);
+		ContentValues cv = new ContentValues();
+
+        cv.put(KEY_NUMBER_REFERENCE, numberReference);
+        cv.put(KEY_MESSAGE, message);
+        
+        open();
+        db.insert(SQLitehelper.QUEUE_TABLE_NAME, null, cv);
+		close();
+	}*/
 }
