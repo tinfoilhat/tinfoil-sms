@@ -57,13 +57,13 @@ public class Prephase3Activity extends Activity {
 	private static List<String[]> msgList;
 	private static ListView list;
 	private MessageReceiver boot = new MessageReceiver();
-	//private SignalListener pSL = new SignalListener();
+	private SignalListener pSL = new SignalListener();
 	
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 				
-		//((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).listen(pSL,pSL.LISTEN_SIGNAL_STRENGTHS);
+		((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).listen(pSL,pSL.LISTEN_SIGNAL_STRENGTHS);
 		MessageService.mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		
 		//Cancel all notifications from tinfoil-sms upon starting the main activity

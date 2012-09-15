@@ -79,8 +79,8 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Checks if the user has enabled the vibration option
 					 */
-					if (Prephase3Activity.sharedPrefs.getBoolean("vibrate", true)
-							)//&& Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
+					if (Prephase3Activity.sharedPrefs.getBoolean("vibrate", true))
+							//&& Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
 					{
 						Vibrator vibrator;
 						vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

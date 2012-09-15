@@ -11,8 +11,8 @@ import android.telephony.TelephonyManager;
 
 
 public class MessageSender extends BroadcastReceiver{
-	//private ServiceChecker sc = new ServiceChecker();
-	
+	private ServiceChecker sc = new ServiceChecker();
+	public static byte success = 0;
 	
 	@Override
 	public void onReceive(Context c, Intent intent) {
@@ -23,6 +23,11 @@ public class MessageSender extends BroadcastReceiver{
 			int result = getResultCode();
 			long id = bundle.getLong(SMSUtility.ID);
 			
+			/*
+			 * This still has not been tested on real phones. Under real conditions.
+			 * Testing has been done to make sure that the threading is working.
+			 * Real testing needs to take place for this to be cleared for use.
+			 */
 			if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
 			{
 				if(id == 0){
@@ -33,16 +38,17 @@ public class MessageSender extends BroadcastReceiver{
 	            	intent.removeExtra(SMSUtility.NUMBER);
 	            	intent.removeExtra(SMSUtility.MESSAGE);*/
 					
-					//Temporary fix for no signal problem
+					//**Temporary fix for no signal problem
 					Toast.makeText(c, "No signal", Toast.LENGTH_SHORT).show();
 	            	
 	            	//Start the Thread to start checking for messages
 	            	
-	            	//sc.startThread();
+	            	//sc.startThread(c);
 				}
 				else{
 					Toast.makeText(c, "SMS still in queue", Toast.LENGTH_SHORT).show();
-					//Found service but then lost it. Don't do anything just go back to waiting.
+					
+					success = 1;
 				}
 				
 			}
@@ -50,6 +56,7 @@ public class MessageSender extends BroadcastReceiver{
 			{
 				if (id > 0)
 				{
+					success = 2;
 					Toast.makeText(c, "Queue message sent", Toast.LENGTH_SHORT).show();
 					MessageService.dba.deleteQueueEntry(id);
 				}

@@ -1189,7 +1189,7 @@ public class DBAccessor {
 		close();
 	}
 	
-	public String[] getFirstInQueue ()
+	public Queue getFirstInQueue ()
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, 
@@ -1200,9 +1200,8 @@ public class DBAccessor {
 		if (cur.moveToFirst())
 		{
 			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
-			String[] entry = new String[]{
-					getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
-					cur.getString(cur.getColumnIndex(KEY_MESSAGE))};
+			Queue entry = new Queue(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
+					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id);
 			close(cur);
 			//deleteQueueEntry(id);
 			return entry;
