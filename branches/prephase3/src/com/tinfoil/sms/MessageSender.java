@@ -11,7 +11,7 @@ import android.telephony.TelephonyManager;
 
 
 public class MessageSender extends BroadcastReceiver{
-	private ServiceChecker sc = new ServiceChecker();
+	public static ServiceChecker sc = new ServiceChecker();
 	public static byte success = 0;
 	
 	@Override
@@ -23,27 +23,39 @@ public class MessageSender extends BroadcastReceiver{
 			int result = getResultCode();
 			long id = bundle.getLong(SMSUtility.ID);
 			
+			Toast.makeText(c, "Unable to send message", Toast.LENGTH_SHORT).show();
+			
 			/*
-			 * This still has not been tested on real phones. Under real conditions.
-			 * Testing has been done to make sure that the threading is working.
-			 * Real testing needs to take place for this to be cleared for use.
+			 * Currently this only works for when there is one message in the queue.
+			 * ***Note changes have been made but not tested
+			 * 
+			 * The problem:
+			 * ------------
+			 * *Please note that tests have consisted only with one contact being messaged multiple times
+			 * let n be the number of messages in the queue of a single contact,
+			 * n - 1 of the messages would be sent n times to the contact 
+			 * current fix attempt: 
+			 * retrieve the length of the queue once, before the loop,
+			 * *expected results, n messages will be sent, (unknown if it will be n times)
+			 * 
+			 * ***CURRENTLY NOT SUPPORTED***
 			 */
-			if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
+			/*if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
 			{
 				if(id == 0){
-					/*Toast.makeText(c, "SMS put in queue to send", Toast.LENGTH_SHORT).show();
+					Toast.makeText(c, "SMS put in queue to send", Toast.LENGTH_SHORT).show();
 					MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER), 
 	                		bundle.getString(SMSUtility.MESSAGE));
 	                
 	            	intent.removeExtra(SMSUtility.NUMBER);
-	            	intent.removeExtra(SMSUtility.MESSAGE);*/
+	            	intent.removeExtra(SMSUtility.MESSAGE);
 					
 					//**Temporary fix for no signal problem
 					Toast.makeText(c, "No signal", Toast.LENGTH_SHORT).show();
 	            	
 	            	//Start the Thread to start checking for messages
-	            	
-	            	//sc.startThread(c);
+	            	sc.startThread(c);
+
 				}
 				else{
 					Toast.makeText(c, "SMS still in queue", Toast.LENGTH_SHORT).show();
@@ -56,54 +68,14 @@ public class MessageSender extends BroadcastReceiver{
 			{
 				if (id > 0)
 				{
-					success = 2;
+					
 					Toast.makeText(c, "Queue message sent", Toast.LENGTH_SHORT).show();
 					MessageService.dba.deleteQueueEntry(id);
+					success = 2;
 				}
 				//Should make confirmation toast here that the message has been sent.
 				//Toast.makeText(c, "Message Sent", Toast.LENGTH_SHORT).show();
-			}
-			/*switch (getResultCode())
-	        {
-	            case Activity.RESULT_OK:
-	                Toast.makeText(c, "SMS sent", Toast.LENGTH_SHORT).show();
-	                //For testing purposes
-	                //Toast.makeText(c, "here", Toast.LENGTH_SHORT).show();
-	                MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER), 
-	                	bundle.getString(SMSUtility.MESSAGE));
-	                	
-	                intent.removeExtra(SMSUtility.NUMBER);
-	                intent.removeExtra(SMSUtility.MESSAGE);
-	                
-	                break;
-	            case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-	                Toast.makeText(c, "Generic failure", Toast.LENGTH_SHORT).show();
-	                break;
-	            case SmsManager.RESULT_ERROR_NO_SERVICE:
-	            	//Move Message to the Queue
-            	   
-                	MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER), 
-                		bundle.getString(SMSUtility.MESSAGE));
-                	
-                	intent.removeExtra(SMSUtility.NUMBER);
-                	intent.removeExtra(SMSUtility.MESSAGE);
-                    Toast.makeText(c, "No service", Toast.LENGTH_SHORT).show();
-	                break;
-	            case SmsManager.RESULT_ERROR_NULL_PDU:
-	                Toast.makeText(c, "Null PDU", Toast.LENGTH_SHORT).show();
-	                break;
-	            case SmsManager.RESULT_ERROR_RADIO_OFF:
-	            	//Move Message to the Queue
-	            	
-                	MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER), 
-                		bundle.getString(SMSUtility.MESSAGE));
-                	
-                	intent.removeExtra(SMSUtility.NUMBER);
-                	intent.removeExtra(SMSUtility.MESSAGE);
-	                
-	                Toast.makeText(c, "Radio off", Toast.LENGTH_SHORT).show();
-	                break;
-	        }*/
+			}*/	
 		}
     }
 }

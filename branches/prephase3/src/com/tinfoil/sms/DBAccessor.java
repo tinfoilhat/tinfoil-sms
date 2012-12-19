@@ -1189,6 +1189,10 @@ public class DBAccessor {
 		close();
 	}
 	
+	/**
+	 * Get the first element within the queue.
+	 * @return : Queue the number and message stored in the queue
+	 */
 	public Queue getFirstInQueue ()
 	{
 		open();
@@ -1210,6 +1214,10 @@ public class DBAccessor {
 		return null;
 	}
 	
+	/**
+	 * Delete a given entry from the queue
+	 * @param id : long, the private key
+	 */
 	public void deleteQueueEntry (long id)
 	{
 		open();
@@ -1217,15 +1225,22 @@ public class DBAccessor {
 		close();
 	}
 	
-	public void deleteLastQueueEntry()
+	/**
+	 * Delete the first entry in the queue
+	 */
+	public void deleteFirstQueueEntry()
 	{
 		open();
-		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = (SELECT MAX(" + KEY_ID + ") FROM " + 
+		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = (SELECT MIN(" + KEY_ID + ") FROM " + 
 				SQLitehelper.QUEUE_TABLE_NAME +")", null);
 		close();
 	}
 	
-	public long queueLength()
+	/**
+	 * Get the current length of the queue
+	 * @return : long the length of the queue
+	 */
+	public int queueLength()
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, 
@@ -1234,7 +1249,7 @@ public class DBAccessor {
 		
 		if (cur.moveToFirst())
 		{
-			long count = cur.getLong(0);
+			int count = cur.getInt(0);
 			close(cur);
 			return count;
 		}

@@ -110,8 +110,11 @@ public abstract class SMSUtility {
         
         c.registerReceiver(MS, new IntentFilter(SENT));
         
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(number, null, message, sentPI, null);   
+        //SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(number, null, message, sentPI, null);
+        /*if(ServiceChecker.signal){
+        	sms.sendTextMessage(number, null, message, sentPI, null);   
+        }*/
     }
     
     /**
@@ -121,8 +124,8 @@ public abstract class SMSUtility {
      */
     public static void sendSMS (Context c, String number, String message, long id)
     {
-    	String SENT = "SMS_SENT";
-
+    	String SENT = "SMS_SENT";	
+    	
     	Intent intent = new Intent(SENT);
     	intent.putExtra(NUMBER, number);
     	intent.putExtra(MESSAGE, message);
@@ -130,10 +133,15 @@ public abstract class SMSUtility {
         PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
            intent, PendingIntent.FLAG_CANCEL_CURRENT);
         
+        Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
+        
         c.registerReceiver(MS, new IntentFilter(SENT));
         
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(number, null, message, sentPI, null);   
+        //SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(number, null, message, sentPI, null);
+        /*if(ServiceChecker.signal){
+        	sms.sendTextMessage(number, null, message, sentPI, null);
+        }*/
     }
     
     /** 
@@ -173,6 +181,13 @@ public abstract class SMSUtility {
 		c.getContentResolver().insert(Uri.parse(dest), values);
 	}
 	
+	/**
+	 * Sends a message as encrypted or plain text based on the contact's state.
+	 * @param number : String the number the text message is being sent to
+	 * @param text : String the text message
+	 * @param context : Context the context of the class
+	 * @return : boolean whether the message sent or not
+	 */
 	public static boolean SendMessage(String number, String text, Context context){
 		try
 		{																		

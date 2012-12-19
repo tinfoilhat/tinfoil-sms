@@ -14,9 +14,20 @@ public class SignalListener extends PhoneStateListener{
 			if (strength == 0 || strength == 99)
 			{
 				ServiceChecker.signal = false;
+				/*
+				 * Could use wait() and notify() rather then busy waiting
+				 */
+				//MessageSender.sc.notify();
+				
 			}
 			else{
 				ServiceChecker.signal = true;
+				/*try {
+					MessageSender.sc.wait();
+				} 
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}*/
 			}
 		}
 		
