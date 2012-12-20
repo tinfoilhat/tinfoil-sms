@@ -103,7 +103,7 @@ public class MessageView extends Activity {
 		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				/** TODO
+				/** TODO implement
 				 * Going to add a menu of things the user can do with the messages:
 				 * 1. Re-send the message
 				 * 2. Delete the message
@@ -146,7 +146,7 @@ public class MessageView extends Activity {
 				}
 				else
 				{
-					/*
+					/* TODO remove 
 					 * Might make a setting to allow "warning dialogs" such as this one.
 					 * This one though has gotten quite annoying since any accidental second
 					 * second click brings up this message.
@@ -194,8 +194,7 @@ public class MessageView extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.exchange:
-			//Add to trusted Contact list
-			//DOES NOT WORK...
+			//TODO ensure this is working
 			TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)

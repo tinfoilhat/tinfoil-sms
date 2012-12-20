@@ -1,6 +1,7 @@
 package com.tinfoil.sms;
 
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 
 public class ServiceChecker implements Runnable{
@@ -32,19 +33,31 @@ public class ServiceChecker implements Runnable{
 		 * TODO get queue working.
 		 * TODO change message service to only send messages through queue
 		 */
+		Looper.prepare();
+		
+		//TODO Add bloody semaphores to synchronously access the database...
 		while(MessageService.dba.queueLength() > 0)
     	{
+			/*
+			 * TODO remove busy wait
+			 */
+			while(!signal)
+			{
+				//Do nothing, just wait for their to be signal
+			}
 			MessageSender.success = 0;
 			Queue messageInfo = MessageService.dba.getFirstInQueue();
+			
+			//TODO check if number == null (if so, contact is no longer known discard message)
     		SMSUtility.sendSMS(c, messageInfo.getNumber(), messageInfo.getMessage(), messageInfo.getId());
     		
     		/*
     		 * TODO remove busy wait
     		 */
-    		while (!signal && MessageSender.success == 0){
+    		/*while (!signal || MessageSender.success == 0){
     			//Do nothing, just wait for their to be signal
     			Log.v("ServiceChecker", "" + MessageSender.success);
-    		}
+    		}*/
     		/*if (MessageSender.success == 1) 
     		{
     			i--;

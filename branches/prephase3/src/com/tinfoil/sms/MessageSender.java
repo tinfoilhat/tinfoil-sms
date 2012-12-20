@@ -26,6 +26,35 @@ public class MessageSender extends BroadcastReceiver{
 			Toast.makeText(c, "Unable to send message", Toast.LENGTH_SHORT).show();
 			
 			/*
+			 * What the end result of this should be:
+			 * 
+			 * Case:
+			 * Message is sent (no messages are in the queue)
+			 * - Message fails to send since there is no service
+			 * - Message gets put into the queue. (May change to put in queue prior to sending)
+			 * - Thread is started and checks if there is service
+			 * 	- If there is no service it blocks it self
+			 * 		- The signalListener will wake up the thread once their is service
+			 * 		- Proceed to line below
+			 * 	- If there is service the thread sends off the messages (FIFO)
+			 * 		- If the message successfully sends it is popped off the queue
+			 * 		- If the message fails to send (because of lack of service) it is not taken out of the queue
+			 * 			- The thread then blocks itself and waits to be woken up by the signalListener.
+			 * 
+			 * Similar case for if there is messages in the queue and a message is sent without service (sill)
+			 * - Message is added to the queue (upon failing because of lack of service) 
+			 * - Thread continues as above
+			 * 
+			 * The case not yet explained would be when there is a large queue of messages (relatively of course)
+			 * It could just be a single message. The problem comes with resource allocation in that the database must be
+			 * accessed exclusively. This is because the database is opened for each operation and then closed upon finishing
+			 * that operation (on the database). In order to prevent the database from being left open upon program termination.
+			 * The messaging thread which will be accessing the database.
+			 *  
+			 * Solutions, creating semaphores to the database to prevent other actions from competing. 
+			 */
+			
+			/* TODO fix
 			 * Currently this only works for when there is one message in the queue.
 			 * ***Note changes have been made but not tested
 			 * 
@@ -42,6 +71,8 @@ public class MessageSender extends BroadcastReceiver{
 			 */
 			/*if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
 			{
+			
+				// If id = 0 then the message is being sent for the first time (not yet in the queue)
 				if(id == 0){
 					Toast.makeText(c, "SMS put in queue to send", Toast.LENGTH_SHORT).show();
 					MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER), 
@@ -53,29 +84,46 @@ public class MessageSender extends BroadcastReceiver{
 					//**Temporary fix for no signal problem
 					Toast.makeText(c, "No signal", Toast.LENGTH_SHORT).show();
 	            	
+					//success = 0;
+					
 	            	//Start the Thread to start checking for messages
 	            	sc.startThread(c);
 
 				}
 				else{
+					
+					//There was service but not enough/not long enough to send a message from queue
 					Toast.makeText(c, "SMS still in queue", Toast.LENGTH_SHORT).show();
 					
-					success = 1;
+					//Success variable was intended to identify that the variable was
+					//success = 0 (not in queue)
+					//success = 1 (in the queue)
+					//success = 2 (out of queue)
+					//This was a bad approach in that messages should be put into the queue to begin with
+					//Also it is unable to describe every message in the queue and only works for a single message
+					
+					//success = 1;
 				}
 				
 			}
 			else if (result == Activity.RESULT_OK)
 			{
+				//Message sent successfully
 				if (id > 0)
 				{
-					
+					//Message Sent successful from queue 
 					Toast.makeText(c, "Queue message sent", Toast.LENGTH_SHORT).show();
 					MessageService.dba.deleteQueueEntry(id);
-					success = 2;
+					
+					//TODO Might be good if this section notifies the queue signaling the next message can be send
+					//That would also require the queue to block after sending a message
+					
+					//success = 2;
 				}
+				
 				//Should make confirmation toast here that the message has been sent.
 				//Toast.makeText(c, "Message Sent", Toast.LENGTH_SHORT).show();
-			}*/	
+			}*/
 		}
     }
 }

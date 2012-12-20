@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
+ * TODO Update database schema to use foreign and primary keys with constraints
  * Creates a database that is read and write and provides methods to 
  * facilitate the reading and writing to the database. Table Names
  * are all from SQLitehelper since they are created in that class.
@@ -788,6 +789,7 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO remove
 	 * Used to retrieve a limited set of information about all the contacts
 	 * This is used to increase the speed of activities such as ManageContactsActivity
 	 * Where all the contacts are needed to be retrieved at once but a small amount of 
@@ -996,6 +998,7 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO remove
 	 * Update a contact's public key
 	 * @param contact
 	 */
@@ -1132,6 +1135,7 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO remove
 	 * Identifies which contacts are trusted
 	 * @param contacts : ArrayList<Contact> contacts the list of contacts
 	 * @return : boolean[] an array of boolean values which maps to the contacts
@@ -1257,6 +1261,7 @@ public class DBAccessor {
 		return 0;
 	}
 	
+	//TODO remove
 	/*public void placeOnTop(String number, String message, long id)
 	{
 		long numberReference = getNumberId(number);

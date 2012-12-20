@@ -115,6 +115,7 @@ public abstract class SMSUtility {
         /*if(ServiceChecker.signal){
         	sms.sendTextMessage(number, null, message, sentPI, null);   
         }*/
+        c.unregisterReceiver(MS);
     }
     
     /**
@@ -142,6 +143,7 @@ public abstract class SMSUtility {
         /*if(ServiceChecker.signal){
         	sms.sendTextMessage(number, null, message, sentPI, null);
         }*/
+        c.unregisterReceiver(MS);
     }
     
     /** 

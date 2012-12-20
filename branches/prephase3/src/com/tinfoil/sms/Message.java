@@ -20,6 +20,7 @@ package com.tinfoil.sms;
 import java.util.Calendar;
 
 /**
+ * TODO comment
  * A class used to store information from the numbers table
  *
  */
@@ -31,7 +32,7 @@ public class Message {
 	private boolean sent;
 	
 	/**
-	 * TODO COMMENTING
+	 * TODO comment
 	 * @param number
 	 * @param type
 	 * @param lastMessage
@@ -52,6 +53,7 @@ public class Message {
 	}
 	
 	/**
+	 * TODO comment
 	 * @param number
 	 * @param lastMessage
 	 */
@@ -70,6 +72,7 @@ public class Message {
 	}
 
 	/**
+	 * TODO comment
 	 * @return the lastMessage
 	 */
 	public String getMessage() {
@@ -77,6 +80,7 @@ public class Message {
 	}
 
 	/**
+	 * TODO comment
 	 * @param lastMessage the lastMessage to set
 	 */
 	public void setMessage(String message) {
@@ -84,6 +88,7 @@ public class Message {
 	}
 
 	/**
+	 * TODO comment
 	 * @return the date
 	 */
 	public long getDate() {
@@ -91,6 +96,7 @@ public class Message {
 	}
 
 	/**
+	 * TODO comment
 	 * @param date the date to set
 	 */
 	public void setDate(long date) {
@@ -98,6 +104,7 @@ public class Message {
 	}
 	
 	/**
+	 * TODO comment
 	 * set the date to the current time
 	 */
 	public void setDate() {
@@ -106,6 +113,11 @@ public class Message {
 		this.date = calendar.getTimeInMillis();
 	}
 	
+	/**
+	 * TODO comment
+	 * @param currentTime
+	 * @return
+	 */
 	public static String millisToDate(long currentTime) {
         Calendar calendar = Calendar.getInstance();
         
@@ -139,10 +151,18 @@ public class Message {
         return date;
     }
 	
+	/**
+	 * TODO comment
+	 * @return
+	 */
 	public boolean isSent() {
 		return sent;
 	}
 	
+	/**
+	 * TODO comment
+	 * @return
+	 */
 	public int getSent() {
 		if (sent)
 		{
@@ -154,6 +174,10 @@ public class Message {
 		}
 	}
 
+	/**
+	 * TODO comment
+	 * @param sent
+	 */
 	public void setSent(boolean sent) {
 		this.sent = sent;
 	}
