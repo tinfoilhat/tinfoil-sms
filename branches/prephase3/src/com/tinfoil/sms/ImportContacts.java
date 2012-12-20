@@ -278,32 +278,37 @@ public class ImportContacts extends Activity implements Runnable {
 	
 				if (nCur.moveToFirst())
 				{
+					newNumber = new Number(SMSUtility.format(
+							nCur.getString(nCur.getColumnIndex("address"))));
 					do
 					{
-						newNumber = new Number(SMSUtility.format(
-								nCur.getString(nCur.getColumnIndex("address"))));
+						
 						newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
 								nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
 						//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 					}while(nCur.moveToNext());
 				}
-				else
-				{
+				//else
+				//{
 					
 					Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
 							new String[]{"body", "address", "date", "type"}, "thread_id = ?",
 							new String[] {id}, "date DESC LIMIT 50");
 					if (sCur.moveToFirst())
 					{
-						do
+						if(newNumber == null)
 						{
 							newNumber = new Number(SMSUtility.format(
-									sCur.getString(sCur.getColumnIndex("address"))));
+								sCur.getString(sCur.getColumnIndex("address"))));
+						}
+						
+						do
+						{							
 							newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
 									sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
 							//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 						}while(sCur.moveToNext());
-					}
+					//}
 				}
 				if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber()) 
 						&& !MessageService.dba.inDatabase(newNumber.getNumber()) && newNumber.getNumber()!=null)
