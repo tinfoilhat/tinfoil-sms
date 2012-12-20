@@ -179,6 +179,7 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
 
 	}
 
+	//TODO fix so that the contact is completely deleted from the database (messages)!
 	public void run() {
 		if (clicked)
 		{

@@ -138,14 +138,22 @@ public class DBAccessor {
         {
         	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
         		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
+
+        	//TODO check if the date of the currently message is older then the oldest message (if so don't add it)
+        	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
+            		null, null, null, null, null);
         	
-        	/*
-        	 * Updated the update db sql command to account for messages having the exact same date
-        	 */
-        	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_ID + " = " + 
-            		"(SELECT id FROM " + SQLitehelper.MESSAGES_TABLE_NAME + 
-            		" WHERE "+ KEY_DATE + " = " + "(SELECT MIN("+KEY_DATE+") FROM " 
-            		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
+        	if (date_cur.moveToFirst() && date_cur.getLong(0) > message.getDate())
+        	{
+		    	/*
+		    	 * Updated the update db sql command to account for messages having the exact same date
+		    	 */
+		    	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_ID + " = " + 
+		        		"(SELECT id FROM " + SQLitehelper.MESSAGES_TABLE_NAME + 
+		        		" WHERE "+ KEY_DATE + " = " + "(SELECT MIN("+KEY_DATE+") FROM " 
+		        		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
+        	}
+        	date_cur.close();
         }
         else
         {
@@ -1098,14 +1106,31 @@ public class DBAccessor {
 	 */
 	public boolean removeRow(String number)
 	{
-		long id = getId(SMSUtility.format(number));
+		number = SMSUtility.format(number);
+		long id = getId(number);
+		ArrayList<String> numbers = getRow(number).getNumbers();
+		
 		resetSharedInfo(id);
 		resetBookPath(id);
+		
+		int[] num = new int[4];
 		open();
-		int num = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
-		int num2 = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		num[0] = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
 		close();
-		if (num == 0 || num2 == 0)
+		for(int i = 0; i < numbers.size(); i++)
+		{
+			long num_id = getNumberId(numbers.get(i));
+			open();
+			db.delete(SQLitehelper.MESSAGES_TABLE_NAME, KEY_REFERENCE + " = " + num_id, null);
+			db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_REFERENCE + " = " + num_id, null);
+			close();
+		}
+		
+		open();
+		num[1] = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		close();
+		
+		if (num[0] == 0 || num[1] == 0)
 		{
 			return false;
 		}

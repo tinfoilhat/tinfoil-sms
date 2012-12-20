@@ -272,6 +272,13 @@ public class ImportContacts extends Activity implements Runnable {
 				id = convCur.getString(convCur.getColumnIndex("thread_id"));
 				//newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
 				
+				/*
+				 * TODO possibly come up with a more efficient method, since if the conversation 
+				 * has a lot of messages then limit*2 messages will be taken and then will be inserted (or attempted
+				 * until there is only 50)
+				 * **Please note, that currently the insert does not check if the message should be added based on
+				 * date.
+				 */
 				Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
 						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
 						new String[] {id}, "date DESC LIMIT 50");
@@ -288,27 +295,24 @@ public class ImportContacts extends Activity implements Runnable {
 						//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 					}while(nCur.moveToNext());
 				}
-				//else
-				//{
-					
-					Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
-							new String[]{"body", "address", "date", "type"}, "thread_id = ?",
-							new String[] {id}, "date DESC LIMIT 50");
-					if (sCur.moveToFirst())
+				
+				Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
+						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
+						new String[] {id}, "date DESC LIMIT 50");
+				if (sCur.moveToFirst())
+				{
+					if(newNumber == null)
 					{
-						if(newNumber == null)
-						{
-							newNumber = new Number(SMSUtility.format(
-								sCur.getString(sCur.getColumnIndex("address"))));
-						}
-						
-						do
-						{							
-							newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
-									sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
-							//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
-						}while(sCur.moveToNext());
-					//}
+						newNumber = new Number(SMSUtility.format(
+							sCur.getString(sCur.getColumnIndex("address"))));
+					}
+					
+					do
+					{							
+						newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
+								sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
+						//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+					}while(sCur.moveToNext());
 				}
 				if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber()) 
 						&& !MessageService.dba.inDatabase(newNumber.getNumber()) && newNumber.getNumber()!=null)

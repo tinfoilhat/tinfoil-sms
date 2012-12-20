@@ -68,10 +68,8 @@ public class Prephase3Activity extends Activity {
 		
 		//Cancel all notifications from tinfoil-sms upon starting the main activity
 		MessageService.mNotificationManager.cancelAll();
-		if (MessageService.dba == null)
-		{
-			MessageService.dba = new DBAccessor(this);
-		}
+		
+		MessageService.dba = new DBAccessor(this);
 		
 		if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
 		{
