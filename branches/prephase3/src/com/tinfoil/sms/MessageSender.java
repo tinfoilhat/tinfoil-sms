@@ -23,7 +23,6 @@ public class MessageSender extends BroadcastReceiver{
 			int result = getResultCode();
 			long id = bundle.getLong(SMSUtility.ID);
 			
-			Toast.makeText(c, "Unable to send message", Toast.LENGTH_SHORT).show();
 			
 			/*
 			 * What the end result of this should be:
@@ -69,7 +68,7 @@ public class MessageSender extends BroadcastReceiver{
 			 * 
 			 * ***CURRENTLY NOT SUPPORTED***
 			 */
-			/*if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
+			if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
 			{
 			
 				// If id = 0 then the message is being sent for the first time (not yet in the queue)
@@ -82,12 +81,11 @@ public class MessageSender extends BroadcastReceiver{
 	            	intent.removeExtra(SMSUtility.MESSAGE);
 					
 					//**Temporary fix for no signal problem
-					Toast.makeText(c, "No signal", Toast.LENGTH_SHORT).show();
+	            	Toast.makeText(c, "No signal, Message Failed to Send", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(c, "No signal", Toast.LENGTH_SHORT).show();
 	            	
-					//success = 0;
-					
 	            	//Start the Thread to start checking for messages
-	            	sc.startThread(c);
+	            	//sc.startThread(c);
 
 				}
 				else{
@@ -121,9 +119,8 @@ public class MessageSender extends BroadcastReceiver{
 					//success = 2;
 				}
 				
-				//Should make confirmation toast here that the message has been sent.
-				//Toast.makeText(c, "Message Sent", Toast.LENGTH_SHORT).show();
-			}*/
+				Toast.makeText(c, "Message Sent", Toast.LENGTH_SHORT).show();
+			}
 		}
     }
 }
