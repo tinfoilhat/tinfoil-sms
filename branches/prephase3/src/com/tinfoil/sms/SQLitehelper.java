@@ -40,39 +40,59 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String MESSAGES_TABLE_NAME = "messages";
     public static final String QUEUE_TABLE_NAME = "queue";
     
+    //TODO document db create schema
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER," +
-            " shared_info_1 TEXT, shared_info_2 TEXT);";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " reference INTEGER," +
+            " shared_info_1 TEXT," +
+            " shared_info_2 TEXT);";
     
     private static final String BOOK_PATHS_TABLE_CREATE =
             "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER," +
-            " book_path TEXT, book_inverse_path TEXT);";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " reference INTEGER," +
+            " book_path TEXT," +
+            " book_inverse_path TEXT);";
     
     
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + 
-            " (public_key BLOB, private_key BLOB, signature BLOB);";
+            " (public_key BLOB," +
+            " private_key BLOB," +
+            " signature BLOB);";
     
     private static final String TRUSTED_TABLE_CREATE =
-                "CREATE TABLE " + TRUSTED_TABLE_NAME + 
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, public_key BLOB," +
-                " signature BLOB );";
+            "CREATE TABLE " + TRUSTED_TABLE_NAME + 
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " name TEXT," +
+            " public_key BLOB," +
+            " signature BLOB );";
     
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, number TEXT," +
-            " type INTEGER, unread INTEGER);";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " reference INTEGER REFERENCES trusted_contact (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE, " +
+            " number TEXT," +
+            " type INTEGER," +
+            " unread INTEGER);";
     
     private static final String MESSAGES_TABLE_CREATE =
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, reference INTEGER, message TEXT," +
-            " date INTEGER, sent INTEGER);";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " reference INTEGER REFERENCES numbers (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE," +
+            " message TEXT," +
+            " date INTEGER," +
+            " sent INTEGER);";
     
     private static final String QUEUE_TABLE_CREATE =
             "CREATE TABLE " + QUEUE_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, number_reference INTEGER, message TEXT);";
+            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " number_reference INTEGER REFERENCES numbers (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE," +
+            " message TEXT);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -80,11 +100,11 @@ public class SQLitehelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+    	db.execSQL(USER_TABLE_CREATE);
         db.execSQL(TRUSTED_TABLE_CREATE);
-        db.execSQL(NUMBERS_TABLE_CREATE);
-        db.execSQL(USER_TABLE_CREATE);
         db.execSQL(SHARED_INFO_TABLE_CREATE);
         db.execSQL(BOOK_PATHS_TABLE_CREATE);
+        db.execSQL(NUMBERS_TABLE_CREATE);
         db.execSQL(MESSAGES_TABLE_CREATE);
         db.execSQL(QUEUE_TABLE_CREATE);
     }
@@ -100,5 +120,14 @@ public class SQLitehelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS "+ QUEUE_TABLE_CREATE);
 		onCreate(db);
 		
+	}
+	
+	@Override
+	public void onOpen(SQLiteDatabase db) {
+		super.onOpen(db);
+		if (!db.isReadOnly())
+		{
+			db.execSQL("PRAGMA foreign_keys=ON;");
+		}
 	}
 }

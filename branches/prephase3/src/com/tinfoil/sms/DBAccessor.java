@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 /**
  * TODO Update database schema to use foreign and primary keys with constraints
@@ -84,9 +85,15 @@ public class DBAccessor {
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
 		
+		// Enable foreign key constraints
+        //db.execSQL("PRAGMA foreign_keys=ON;");
+        
+        Toast.makeText(c, "Just set the dam thing", Toast.LENGTH_LONG).show();
+        
 		//Create a default row if once does not exist already.
 		if (bookIsDefault(0) && sharedInfoIsDefault(0))
 		{
+			Toast.makeText(c, "Just set the dam 2", Toast.LENGTH_LONG).show();
 			addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
 			addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
 		}
@@ -1088,6 +1095,7 @@ public class DBAccessor {
 		}
 		open();
 		int num = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		close();
 		if (num != 0)
 		{
 			for(int i=0; i< tc.getNumber().size(); i++)
@@ -1108,7 +1116,6 @@ public class DBAccessor {
 	{
 		number = SMSUtility.format(number);
 		long id = getId(number);
-		ArrayList<String> numbers = getRow(number).getNumbers();
 		
 		resetSharedInfo(id);
 		resetBookPath(id);
@@ -1117,20 +1124,8 @@ public class DBAccessor {
 		open();
 		num[0] = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
 		close();
-		for(int i = 0; i < numbers.size(); i++)
-		{
-			long num_id = getNumberId(numbers.get(i));
-			open();
-			db.delete(SQLitehelper.MESSAGES_TABLE_NAME, KEY_REFERENCE + " = " + num_id, null);
-			db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_REFERENCE + " = " + num_id, null);
-			close();
-		}
 		
-		open();
-		num[1] = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
-		close();
-		
-		if (num[0] == 0 || num[1] == 0)
+		if (num[0] == 0)// || num[1] == 0)
 		{
 			return false;
 		}
