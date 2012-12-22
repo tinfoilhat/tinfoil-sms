@@ -28,24 +28,19 @@ CREATE TABLE trusted_contact
 CREATE TABLE book_paths
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
-    reference INTEGER REFERENCES trusted_contact (id)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+    reference INTEGER,
     book_path TEXT,
     book_inverse_path TEXT
 )
 
 
-/* TODO test this.
+/*
  * This creates the shared information table
- * Please not that on delete is set to cascade, the default value should not be
- * deleted since it does not reference a column rather it is referenced because
- * of the lack of number in this table. 
  */
 CREATE TABLE shared_information 
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, 
-    reference INTEGER REFERENCES trusted_contact (id)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+    reference INTEGER,
     shared_info_1 TEXT,
     shared_info_2 TEXT
 )
