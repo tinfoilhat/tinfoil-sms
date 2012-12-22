@@ -215,7 +215,7 @@ public class MessageView extends Activity {
 			return true;
 		case R.id.delete:
 			/*
-			 * TODO Should have Delete Thread and another option to delete groups of messages within the thread
+			 * TODO add Delete Thread and another option to delete groups of messages within the thread
 			 */
 			return true;
 	

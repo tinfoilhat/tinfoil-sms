@@ -48,7 +48,6 @@ public class ServiceChecker implements Runnable{
 			MessageSender.success = 0;
 			Queue messageInfo = MessageService.dba.getFirstInQueue();
 			
-			//TODO check if number == null (if so, contact is no longer known discard message)
     		SMSUtility.sendSMS(c, messageInfo.getNumber(), messageInfo.getMessage(), messageInfo.getId());
     		
     		/*

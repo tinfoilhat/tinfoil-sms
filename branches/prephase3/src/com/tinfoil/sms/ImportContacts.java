@@ -276,8 +276,6 @@ public class ImportContacts extends Activity implements Runnable {
 				 * TODO possibly come up with a more efficient method, since if the conversation 
 				 * has a lot of messages then limit*2 messages will be taken and then will be inserted (or attempted
 				 * until there is only 50)
-				 * **Please note, that currently the insert does not check if the message should be added based on
-				 * date.
 				 */
 				Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
 						new String[]{"body", "address", "date", "type"}, "thread_id = ?",

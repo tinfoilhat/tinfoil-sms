@@ -41,6 +41,9 @@ public class TrustedContact {
 	private String bookInversePath;
 	
 	
+	/**
+	 * A class for storing information retrieved or to be stored in the database. 
+	 */
 	public TrustedContact ()
 	{
 		this.name = null;
@@ -117,6 +120,10 @@ public class TrustedContact {
 		this.bookInversePath = null;
 	}
 	
+	/**
+	 * A class for storing information retrieved or to be stored in the database. 
+	 * @param numbers The contact's Number object
+	 */
 	public TrustedContact (Number numbers)
 	{
 		this.name = numbers.getNumber();
@@ -174,6 +181,7 @@ public class TrustedContact {
 		return signature;
 	}
 	
+
 	/*public void setSignature(byte[] signature)
 	{
 		this.signature = signature;
@@ -433,6 +441,13 @@ public class TrustedContact {
 		return false;
 	}
 	
+	/**
+	 * Check whether another contact has the given number
+	 * @param tc The list of the user's trusted contacts 
+	 * @param number The number to check if there is a duplicate of
+	 * @return Whether the number is already used
+	 * If it is the return will be true, otherwise it will be false
+	 */
 	public static boolean isNumberUsed(ArrayList<TrustedContact> tc, String number)
 	{
 		for (int i = 0; i < tc.size(); i++)

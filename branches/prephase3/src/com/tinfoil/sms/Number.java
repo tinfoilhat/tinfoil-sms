@@ -30,28 +30,32 @@ public class Number {
 	private int type;
 	private int unreadMessageCount = 0;
 	private ArrayList<Message> messages;
+	
 	/**
+	 * A class used to store information from the numbers table
 	 * 
-	 * @param number
-	 * @param type
-	 * @param lastMessage
-	 * @param date
+	 * @param number A number for the contact
+	 * @param type The type of number, whether it is a cell, home, etc.
+	 * For more information of types of numbers please see the DBAccessor
+	 * class for the 'TYPES' variable
+	 * @param unreadMessageCount The number of messages that have
+	 * not been read from this number
 	 */
 	public Number (String number, int type, int unreadMessageCount)
 	{
 		this.setNumber(number);
-		//this.setLastMessage(lastMessage);
 		this.setType(type);
-		//this.setDate(date);
-		//messages.add(new Message());
 		this.setUnreadMessageCount(unreadMessageCount);
 		this.messages = new ArrayList<Message>();
 	}
 	
 	/**
-	 * Date not set
-	 * @param number
-	 * @param type
+	 * A class used to store information from the numbers table
+	 * 
+	 * @param number A number for the contact
+	 * @param type The type of number, whether it is a cell, home...
+	 * For more information of types please see the DBAccessor class
+	 * for the 'TYPES' variable
 	 */
 	public Number (String number, int type)
 	{
@@ -61,8 +65,9 @@ public class Number {
 	}
 	
 	/**
-	 * Date not set
-	 * @param number
+	 * A class used to store information from the numbers table
+	 * 
+	 * @param number A number for the contact
 	 */
 	public Number (String number)
 	{
@@ -72,21 +77,24 @@ public class Number {
 	}
 	
 	/**
-	 * @return the number
+	 * Get the number
+	 * @return The number
 	 */
 	public String getNumber() {
 		return number;
 	}
 
 	/**
-	 * @param number the number to set
+	 * Set the number
+	 * @param number The new number
 	 */
 	public void setNumber(String number) {
 		this.number = number;
 	}
 
 	/**
-	 * @return the type
+	 * Get the type of number
+	 * @return The type of number (the index for it)
 	 */
 	public int getType() {
 		if (type > DBAccessor.LENGTH)
@@ -97,45 +105,74 @@ public class Number {
 	}
 
 	/**
-	 * @param type the type to set
+	 * Set the type of number
+	 * @param type The new type
 	 */
 	public void setType(int type) {
 		this.type = type;
 	}
 
+	/**
+	 * Add a message to the list of messages for the number
+	 * @param newMessage The new message to add the list of messages
+	 */
 	public void addMessage(Message newMessage)
 	{
 		this.messages.add(newMessage);
 	}
 	
+	/**
+	 * Get the list of messages for the number
+	 * @return The list of messages
+	 */
 	public ArrayList<Message> getMessages()
 	{
 		return this.messages;
 	}
 	
+	/**
+	 * Get the message given the index
+	 * @param index The index of the message desired
+	 * @return The message at the given index
+	 */
 	public Message getMessage(int index)
 	{
 		return this.messages.get(index);
 	}
 	
-	public static String millisToDate(long currentTime) {
+	//TODO remove
+	/*public static String millisToDate(long currentTime) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(currentTime);
         return calendar.getTime().toString();
-    }
+    }*/
 
+	/**
+	 * Get the number of messages currently unread
+	 * @return The current count of unread messages
+	 */
 	public int getUnreadMessageCount() {
 		return unreadMessageCount;
 	}
 
+	/**
+	 * Set the number of unread messages
+	 * @param unreadMessageCount The new number of messages unread
+	 */
 	public void setUnreadMessageCount(int unreadMessageCount) {
 		this.unreadMessageCount = unreadMessageCount;
 	}
 	
+	/**
+	 * Reset the number of messages unread to 0
+	 */
 	public void resetUnreadMessageCount() {
 		this.unreadMessageCount = 0;
 	}
 	
+	/**
+	 * Increment the number of messages unread
+	 */
 	public void addUnreadMessageCount() {
 		this.unreadMessageCount++;
 	}

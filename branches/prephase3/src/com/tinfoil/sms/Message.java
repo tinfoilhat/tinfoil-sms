@@ -20,8 +20,7 @@ package com.tinfoil.sms;
 import java.util.Calendar;
 
 /**
- * TODO comment
- * A class used to store information from the numbers table
+ * A class used to store information from the message table
  *
  */
 public class Message {
@@ -32,11 +31,14 @@ public class Message {
 	private boolean sent;
 	
 	/**
-	 * TODO comment
-	 * @param number
-	 * @param type
-	 * @param lastMessage
-	 * @param date
+	 * A class for storing messages retrieved or to be stored in the database. 
+	 * 
+	 * @param message The body of the message
+	 * @param date The date the message was sent or received 
+	 * @param type Whether the message is send or received, 
+	 * 1 means received, 2 means sent. 
+	 * *Please Note These values are based of the native application's send and
+	 * received flags.
 	 */
 	public Message (String message, long date, int type)
 	{
@@ -53,9 +55,14 @@ public class Message {
 	}
 	
 	/**
-	 * TODO comment
-	 * @param number
-	 * @param lastMessage
+	 * A class for storing messages retrieved or to be stored in the database. 
+	 * 
+	 * @param message The body of the message
+	 * @param currentTime Whether the date is set to the current time or not. 
+	 * If true date is set to current time, otherwise date is set to 0
+	 * @param sent Whether the message was sent or received
+	 * If sent = true then the message was sent
+	 * otherwise the message was received
 	 */
 	public Message (String message, boolean currentTime, boolean sent)
 	{
@@ -72,51 +79,54 @@ public class Message {
 	}
 
 	/**
-	 * TODO comment
-	 * @return the lastMessage
+	 * Get the message's body
+	 * 
+	 * @return The message's body
 	 */
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * TODO comment
-	 * @param lastMessage the lastMessage to set
+	 * Set the message's body
+	 * 
+	 * @param message The new message body
 	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
 	/**
-	 * TODO comment
-	 * @return the date
+	 * 
+	 * Get the date the message was sent or received
+	 * @return The date
 	 */
 	public long getDate() {
 		return date;
 	}
 
 	/**
-	 * TODO comment
-	 * @param date the date to set
+	 * Set the date the message was sent or received.
+	 * @param date The new date the message was sent
 	 */
-	public void setDate(long date) {
+	private void setDate(long date) {
 		this.date = date;
 	}
 	
 	/**
-	 * TODO comment
-	 * set the date to the current time
+	 * Set the date the message was sent or received to the current time.
 	 */
-	public void setDate() {
+	private void setDate() {
 		
 		Calendar calendar = Calendar.getInstance();
 		this.date = calendar.getTimeInMillis();
 	}
 	
 	/**
-	 * TODO comment
-	 * @param currentTime
-	 * @return
+	 * Convert the current time in milliseconds to the current time formated as:
+	 * YYYY/MM/DD HH:MM AM/PM
+	 * @param currentTime The current time in milliseconds
+	 * @return The current time formated.
 	 */
 	public static String millisToDate(long currentTime) {
         Calendar calendar = Calendar.getInstance();
@@ -152,16 +162,21 @@ public class Message {
     }
 	
 	/**
-	 * TODO comment
-	 * @return
+	 * Check whether the message was sent or received
+	 * @return If the message was sent it will return true,
+	 * otherwise false.
 	 */
 	public boolean isSent() {
 		return sent;
 	}
 	
 	/**
-	 * TODO comment
-	 * @return
+	 * Get the send flag in terms of the native android messaging
+	 * application this is more used to save messages back to the
+	 * native application
+	 * @return The flag of whether the message was sent or
+	 * received. If the message was sent the return will be 2,
+	 * otherwise the return will be 1.
 	 */
 	public int getSent() {
 		if (sent)
@@ -175,10 +190,10 @@ public class Message {
 	}
 
 	/**
-	 * TODO comment
-	 * @param sent
+	 * Set whether the message is sent or received
+	 * @param sent Whether the message is now sent or received.
 	 */
-	public void setSent(boolean sent) {
+	private void setSent(boolean sent) {
 		this.sent = sent;
 	}
 }

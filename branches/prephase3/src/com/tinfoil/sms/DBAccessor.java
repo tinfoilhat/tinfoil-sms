@@ -26,7 +26,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
 /**
- * TODO Update database schema to use foreign and primary keys with constraints
  * Creates a database that is read and write and provides methods to 
  * facilitate the reading and writing to the database. Table Names
  * are all from SQLitehelper since they are created in that class.
@@ -61,6 +60,7 @@ public class DBAccessor {
 	
 	public static final int LENGTH = 21;
 	public static final int OTHER_INDEX = 7;
+	
 	public static String[] TYPES = new String[] {"", "Home", "Mobile", "Work", "Work Fax",
     	"Home Fax", "Pager", "Other", "Custom", "Callback", "Car", "Company Main", "ISDN", 
     	"Main", "Other Fax", "Telex", "TTY TTD", "Work Mobile", "Work Pager", "Assistant", 
@@ -84,16 +84,10 @@ public class DBAccessor {
 	{
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
-		
-		// Enable foreign key constraints
-        //db.execSQL("PRAGMA foreign_keys=ON;");
-        
-        Toast.makeText(c, "Just set the dam thing", Toast.LENGTH_LONG).show();
         
 		//Create a default row if once does not exist already.
 		if (bookIsDefault(0) && sharedInfoIsDefault(0))
 		{
-			Toast.makeText(c, "Just set the dam 2", Toast.LENGTH_LONG).show();
 			addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
 			addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
 		}
@@ -146,7 +140,6 @@ public class DBAccessor {
         	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
         		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
 
-        	//TODO check if the date of the currently message is older then the oldest message (if so don't add it)
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);
         	
@@ -1042,7 +1035,8 @@ public class DBAccessor {
 		updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
 	}
 	
-	/** TODO decide whether a contact should be allowed to have a key per number (so if a person has multiple
+	/** 
+	 * TODO decide whether a contact should be allowed to have a key per number (so if a person has multiple
 	 * cell phones for a single contact, )
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
