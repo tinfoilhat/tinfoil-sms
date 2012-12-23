@@ -45,14 +45,16 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER," +
+            " reference INTEGER REFERENCES trusted_contact (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " shared_info_1 TEXT," +
             " shared_info_2 TEXT);";
     
     private static final String BOOK_PATHS_TABLE_CREATE =
             "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER," +
+            " reference INTEGER REFERENCES trusted_contact (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " book_path TEXT," +
             " book_inverse_path TEXT);";
     
