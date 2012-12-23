@@ -46,17 +46,6 @@
 	            android:layout_alignParentTop="true"
 	            android:text="Send" />
 
-	        <TextView
-	            android:id="@+id/word_count"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignRight="@+id/message"
-	            android:layout_centerVertical="true"
-	            android:paddingTop="30px"
-	            android:paddingRight="10px"
-	            android:text="10"
-	            android:textSize="8sp" />
-        
 		</RelativeLayout>
 		
         
@@ -72,12 +61,11 @@
         android:background="#000000" >
 
         <TextView
-            android:id="@+id/word_count2"
+            android:id="@+id/word_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="10"
-            android:textSize="8sp" />
+            android:textSize="10sp" />
 
 	</RelativeLayout>
     

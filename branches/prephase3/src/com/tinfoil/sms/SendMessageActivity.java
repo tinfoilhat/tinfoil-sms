@@ -36,8 +36,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- * TODO put a limit on the number of characters per message
- * TODO show number of characters typed out of limit
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact
  * (a contact that has exchanged their key with the user) then it will be
@@ -65,9 +63,11 @@ public class SendMessageActivity extends Activity {
         newCont = new TrustedContact();
         tc = MessageService.dba.getAllRows();
         
-        boolean isTrusted = MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
+        //Since the number is being entered cant really set a limit on the size...
+        //Defaults to a trusted contact just to be safe
+        boolean isTrusted = true;//MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
 		
-		messageEvent = new MessageBoxWatcher(this, R.id.new_message_message, isTrusted);
+		messageEvent = new MessageBoxWatcher(this, R.id.send_word_count, isTrusted);
 
     	phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
     	List <String> contact;
@@ -126,6 +126,8 @@ public class SendMessageActivity extends Activity {
 		{
 			FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
 		}
+		
+		messageBox.addTextChangedListener(messageEvent);
         
         sendSMS.setOnClickListener(new View.OnClickListener()
         {

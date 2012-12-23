@@ -35,8 +35,6 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * TODO put a limit on the number of characters per message
- * TODO show number of characters typed out of limit
  * MessageView activity allows the user to view through all the messages 
  * from or to the defined contact. selectedNumber will equal the contact
  * that the messages belong to. If a message is sent or received the list

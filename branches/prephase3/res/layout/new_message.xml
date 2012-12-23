@@ -54,5 +54,23 @@
             android:layout_height="90dp"
             android:text="Send" />
     </LinearLayout>
+    
+     <RelativeLayout
+        android:id="@+id/counter_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/new_message_field"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="#000000" >
+
+        <TextView
+            android:id="@+id/send_word_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textSize="10sp" />
+
+	</RelativeLayout>
 
 </RelativeLayout>

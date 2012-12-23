@@ -15,16 +15,15 @@ public class MessageBoxWatcher implements TextWatcher {
 		this.trusted = trusted;
 	}
 	
-	public void afterTextChanged(Editable s) {
-		// TODO Auto-generated method stub
-	}
+	public void afterTextChanged(Editable s) {}
 
 	public void beforeTextChanged(CharSequence s, int start, int count,
 			int after) {
 		int wordCounter = s.length();
+		
 		//TODO adjust so that once it gets larger than the message size limit show D/N where D = number of characters and N = number of messages 
 		
-		if(wordCounter > 50)
+		if(wordCounter > 5)
 		{
 			wordCount.setText(String.valueOf(wordCounter));
 		}
@@ -34,9 +33,6 @@ public class MessageBoxWatcher implements TextWatcher {
 		}
 	}
 
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
 }
