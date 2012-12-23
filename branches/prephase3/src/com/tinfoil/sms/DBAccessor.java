@@ -86,11 +86,11 @@ public class DBAccessor {
 		db = contactDatabase.getWritableDatabase();
         
 		//Create a default row if once does not exist already.
-		if (bookIsDefault(0) && sharedInfoIsDefault(0))
-		{
-			addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
-			addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
-		}
+		//if (bookIsDefault(0) && sharedInfoIsDefault(0))
+		//{
+			//addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
+			//addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
+		//}
 	}
 	
 	/**
@@ -113,7 +113,6 @@ public class DBAccessor {
         long id = db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
         close();
         return id;
-		
 	}
 	
 	/**
@@ -300,11 +299,11 @@ public class DBAccessor {
 			}
 			return sharedInfo;
 		}
-		else
-		{
-			cur.close();
+		//else
+		//{
+		cur.close();
 			//Reference not found, return the default
-			Cursor dCur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
+			/*Cursor dCur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
 					new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
 					KEY_REFERENCE + " = " + 0, null, null, null, null);
 			if (dCur.moveToFirst())
@@ -328,9 +327,10 @@ public class DBAccessor {
 			else
 			{
 				close(dCur);
-			}
-		}
-		return null;
+			}*/
+		//}
+		return new String[] { DEFAULT_S1, DEFAULT_S2 };
+		//return null;
 	}
 		
 	/**
@@ -439,11 +439,11 @@ public class DBAccessor {
 			}
 			return bookPaths;
 		}
-		else
-		{
-			cur.close();
+		//else
+		//{
+		cur.close();
 			//Reference not found, return the default
-			Cursor dCur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
+			/*Cursor dCur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
 					new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH},
 					KEY_REFERENCE + " = " + 0, null, null, null, null);
 			if (dCur.moveToFirst())
@@ -467,9 +467,10 @@ public class DBAccessor {
 			else
 			{
 				close(dCur);
-			}
-		}
-		return null;
+			}*/
+		//}
+		return new String[] { DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH };
+		//return null;
 	}
 	
 	/**

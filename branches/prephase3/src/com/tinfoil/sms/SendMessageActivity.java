@@ -35,6 +35,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 /**
+ * TODO put a limit on the number of characters per message
+ * TODO show number of characters typed out of limit
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact
  * (a contact that has exchanged their key with the user) then it will be

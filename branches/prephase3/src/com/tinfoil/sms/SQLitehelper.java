@@ -42,7 +42,6 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     //TODO document db create schema
     
-    //TODO adjust the dba so that the default is not stored in the database rather it is hard coded in the program
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
@@ -50,7 +49,6 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " shared_info_1 TEXT," +
             " shared_info_2 TEXT);";
     
-    //TODO adjust the dba so that the default is not stored in the database rather it is hard coded in the program
     private static final String BOOK_PATHS_TABLE_CREATE =
             "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
