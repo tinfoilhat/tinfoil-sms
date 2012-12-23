@@ -8,7 +8,7 @@
         android:id="@+id/message_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/linearLayout2"
+        android:layout_above="@+id/linearLayout3"
         android:layout_alignParentTop="true" >
 
     </ListView>
@@ -22,23 +22,63 @@
         android:layout_alignParentRight="true"
         android:background="#000000" >
 
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.00"
-            android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-            android:maxLength="160"
-            android:maxLines="4" >
+        <RelativeLayout 
+            android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:background="#000000" >
+		    
+	        <EditText
+	            android:id="@+id/message"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_toLeftOf="@+id/send"
+	            android:layout_weight="1.00"
+	            android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+	            android:maxLines="4" >
+		            <requestFocus />
+	        </EditText>
 
-            <requestFocus />
-        </EditText>
+	        <Button
+	            android:id="@+id/send"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:layout_alignParentTop="true"
+	            android:text="Send" />
 
-        <Button
-            android:id="@+id/send"
+	        <TextView
+	            android:id="@+id/word_count"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignRight="@+id/message"
+	            android:layout_centerVertical="true"
+	            android:paddingTop="30px"
+	            android:paddingRight="10px"
+	            android:text="10"
+	            android:textSize="8sp" />
+        
+		</RelativeLayout>
+		
+        
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="#000000" >
+
+        <TextView
+            android:id="@+id/word_count2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:text="10"
+            android:textSize="8sp" />
+
+	</RelativeLayout>
     
 </RelativeLayout>

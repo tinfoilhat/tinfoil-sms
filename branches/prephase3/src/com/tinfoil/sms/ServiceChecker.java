@@ -35,7 +35,7 @@ public class ServiceChecker implements Runnable{
 		 */
 		Looper.prepare();
 		
-		//TODO Add bloody semaphores to synchronously access the database...
+		//TODO Add semaphores to synchronously access the database for the message queue thread
 		while(MessageService.dba.queueLength() > 0)
     	{
 			/*

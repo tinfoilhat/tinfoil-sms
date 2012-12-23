@@ -53,7 +53,7 @@ public class MessageSender extends BroadcastReceiver{
 			 * Solutions, creating semaphores to the database to prevent other actions from competing. 
 			 */
 			
-			/* TODO fix
+			/*
 			 * Currently this only works for when there is one message in the queue.
 			 * ***Note changes have been made but not tested
 			 * 

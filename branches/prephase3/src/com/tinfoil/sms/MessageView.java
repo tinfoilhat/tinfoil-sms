@@ -18,11 +18,11 @@
 package com.tinfoil.sms;
 
 import java.util.List;
-import android.app.AlertDialog;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputFilter.LengthFilter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,22 +32,24 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
-* MessageView activity allows the user to view through all the messages 
-* from or to the defined contact. selectedNumber will equal the contact
-* that the messages belong to. If a message is sent or received the list
-* of messages will be updated and Prephase3Activity's messages will be
-* updated as well.
-*/
+ * TODO put a limit on the number of characters per message
+ * TODO show number of characters typed out of limit
+ * MessageView activity allows the user to view through all the messages 
+ * from or to the defined contact. selectedNumber will equal the contact
+ * that the messages belong to. If a message is sent or received the list
+ * of messages will be updated and Prephase3Activity's messages will be
+ * updated as well.
+ */
 public class MessageView extends Activity {
 	private static Button sendSMS;
 	private EditText messageBox;
 	private static ListView list2;
 	private static List<String[]> msgList2;
 	private static MessageAdapter messages;
+	private static MessageBoxWatcher messageEvent;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -74,6 +76,9 @@ public class MessageView extends Activity {
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
 		MessageService.dba = new DBAccessor(this);
+		boolean isTrusted = MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
+		
+		messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
 	
 		/*
 		 * Create a list of messages sent between the user and the contact
@@ -118,12 +123,29 @@ public class MessageView extends Activity {
 			}
 		});
 		
+		//TODO link messageBox to send button so if it is empty it will be disabled 
+		
 		/*
 		 * Link the GUI items to the xml layout
 		 */
 		sendSMS = (Button) findViewById(R.id.send);
 		messageBox = (EditText) findViewById(R.id.message);
 		
+		InputFilter[] FilterArray = new InputFilter[1];
+		
+		
+		if(isTrusted)
+		{
+			FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
+		}
+		else
+		{
+			FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
+		}
+		
+		messageBox.setFilters(FilterArray);
+		
+		messageBox.addTextChangedListener(messageEvent);
 		/*
 		 * Set an action for when the user clicks on the sent button
 		 */
@@ -143,23 +165,6 @@ public class MessageView extends Activity {
 					//Encrypt the text message before sending it	
 					SMSUtility.SendMessage(Prephase3Activity.selectedNumber, text, getBaseContext());
 					updateList(getBaseContext());
-				}
-				else
-				{
-					/* TODO remove 
-					 * Might make a setting to allow "warning dialogs" such as this one.
-					 * This one though has gotten quite annoying since any accidental second
-					 * second click brings up this message.
-					 * 
-					 * Might also be a thought to have it only show the first time or just never show
-					 */
-					/*AlertDialog.Builder builder = new AlertDialog.Builder(MessageView.this);
-					builder.setMessage("You have failed to provide sufficient information")
-					       .setCancelable(true)
-					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {}});
-					AlertDialog alert = builder.create();
-					alert.show();*/
 				}
 			}
         });

@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -51,6 +52,7 @@ public class SendMessageActivity extends Activity {
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
+    private static MessageBoxWatcher messageEvent;
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,10 @@ public class SendMessageActivity extends Activity {
         Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         newCont = new TrustedContact();
         tc = MessageService.dba.getAllRows();
+        
+        boolean isTrusted = MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
+		
+		messageEvent = new MessageBoxWatcher(this, R.id.new_message_message, isTrusted);
 
     	phoneBox = (AutoCompleteTextView) findViewById(R.id.new_message_number);
     	List <String> contact;
@@ -103,9 +109,23 @@ public class SendMessageActivity extends Activity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
             public void onTextChanged(CharSequence s, int start, int before, int count){}
         });
+    	
+    	//TODO link messageBox to sms send so that when the message box is empty it will disable the send button.
       	    
         sendSMS = (Button) findViewById(R.id.new_message_send);
         messageBox = (EditText) findViewById(R.id.new_message_message);
+        
+        InputFilter[] FilterArray = new InputFilter[1];
+		
+		
+		if(isTrusted)
+		{
+			FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
+		}
+		else
+		{
+			FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
+		}
         
         sendSMS.setOnClickListener(new View.OnClickListener()
         {

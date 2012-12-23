@@ -139,13 +139,6 @@ public class Number {
 	{
 		return this.messages.get(index);
 	}
-	
-	//TODO remove
-	/*public static String millisToDate(long currentTime) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentTime);
-        return calendar.getTime().toString();
-    }*/
 
 	/**
 	 * Get the number of messages currently unread

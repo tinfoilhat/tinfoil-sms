@@ -23,7 +23,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
 /**
  * Creates a database that is read and write and provides methods to 
@@ -798,51 +797,6 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO remove
-	 * Used to retrieve a limited set of information about all the contacts
-	 * This is used to increase the speed of activities such as ManageContactsActivity
-	 * Where all the contacts are needed to be retrieved at once but a small amount of 
-	 * information is actually used.
-	 * @return ArrayList<Contact> contact
-	 */
-	/*public ArrayList<Contact> getAllRowsLimited()
-	{
-		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-				SQLitehelper.NUMBERS_TABLE_NAME, new String[]
-				{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE, 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER,
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME,
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_PUBLIC_KEY},
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE,
-				null, null, null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID);
-		ArrayList<Contact> contact = new ArrayList<Contact>();
-		long id = 0;
-		long id2 = -1;
-		
-		if (cur.moveToFirst())
-        {
-			do
-			{	
-				id = cur.getInt(cur.getColumnIndex(KEY_REFERENCE));
-				if (id != id2)
-				{
-					contact.add(new Contact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-							cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
-							cur.getString(cur.getColumnIndex(KEY_NUMBER))));
-				}
-				id2 = id;
-			}while (cur.moveToNext());
-			
-			close(cur);
-			return contact;
-        }
-		close(cur);
-		return null;
-	}*/
-	
-	/**
 	 * Get all of the rows in the database with the columns
 	 * @return : ArrayList<TrustedContact>, a list of all the
 	 * contacts in the database
@@ -1005,22 +959,6 @@ public class DBAccessor {
 		close(cur);
 		return false;
 	}
-	
-	/**
-	 * TODO remove
-	 * Update a contact's public key
-	 * @param contact
-	 */
-	/*public void updateRow (Contact contact)
-	{
-		ContentValues cv = new ContentValues();
-		long id = getId(contact.getNumber());
-		//add given values to a row
-        cv.put(KEY_PUBLIC_KEY, contact.getPublicKey());
-		open();
-		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, KEY_ID + " = " + id, null);
-		close();
-	}*/
 
 	/**
 	 * Update all of the values in a row
@@ -1047,9 +985,6 @@ public class DBAccessor {
 	{
 		long id = getId(SMSUtility.format(number));
 		updateTrustedRow(tc, number, id);
-		//updateNumberRow(tc, number, id);
-		//updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
-		//updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
 	}
 	
 	/**
@@ -1112,15 +1047,12 @@ public class DBAccessor {
 		number = SMSUtility.format(number);
 		long id = getId(number);
 		
-		resetSharedInfo(id);
-		resetBookPath(id);
-		
-		int[] num = new int[4];
+		int num = 0;
 		open();
-		num[0] = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
+		num = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
 		close();
 		
-		if (num[0] == 0)// || num[1] == 0)
+		if (num == 0)
 		{
 			return false;
 		}
@@ -1148,26 +1080,6 @@ public class DBAccessor {
 		}
 		return false;
 	}
-	
-	/**
-	 * TODO remove
-	 * Identifies which contacts are trusted
-	 * @param contacts : ArrayList<Contact> contacts the list of contacts
-	 * @return : boolean[] an array of boolean values which maps to the contacts
-	 * true if the contact is trusted
-	 * false if the contact is not trusted.
-	 * 
-	 * (NOTE: see isTrustedContact(String number) for more details)
-	 */
-	/*public boolean[] isTrustedContact (ArrayList<Contact> contacts)
-	{
-		boolean[] trusted = new boolean[contacts.size()];
-		for (int i=0;i<contacts.size();i++)
-		{
-			trusted[i] = isTrustedContact(contacts.get(i).getNumber());
-		}
-		return trusted;
-	}*/
 	
 	/**
 	 * Identifies which contacts are trusted

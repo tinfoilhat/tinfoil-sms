@@ -50,6 +50,8 @@ public abstract class SMSUtility {
 	public static String NUMBER = "com.tinfoil.sms.number";
 	public static String MESSAGE = "com.tinfoil.sms.message";
 	public static String ID = "com.tinfoil.sms.id";
+	public static final int ENCRYPTED_MESSAGE_LENGTH = 128;
+	public static final int MESSAGE_LENGTH = 160;
 	private static MessageSender MS = new MessageSender();
 	
 	/**

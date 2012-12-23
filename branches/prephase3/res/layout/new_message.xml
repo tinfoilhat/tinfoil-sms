@@ -46,7 +46,6 @@
             android:layout_height="90dp"
             android:layout_weight="1.00"
             android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-            android:maxLength="160"
             android:maxLines="4" />
 
         <Button
