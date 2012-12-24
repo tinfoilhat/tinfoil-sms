@@ -141,15 +141,16 @@ public class DBAccessor {
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);
         	
-        	if (date_cur.moveToFirst() && date_cur.getLong(0) > message.getDate())
+        	if (date_cur.moveToFirst() && date_cur.getLong(0) < message.getDate())
         	{
-		    	/*
+        		/*
 		    	 * Updated the update db sql command to account for messages having the exact same date
 		    	 */
 		    	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_ID + " = " + 
 		        		"(SELECT id FROM " + SQLitehelper.MESSAGES_TABLE_NAME + 
 		        		" WHERE "+ KEY_DATE + " = " + "(SELECT MIN("+KEY_DATE+") FROM " 
 		        		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
+        		
         	}
         	date_cur.close();
         }

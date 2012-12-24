@@ -151,7 +151,6 @@ public class MessageView extends Activity {
         {
 			public void onClick(View v) 
 			{
-				
 		        String text = messageBox.getText().toString();
 				
 				if (Prephase3Activity.selectedNumber.length() > 0 && text.length() > 0)
@@ -159,6 +158,7 @@ public class MessageView extends Activity {
 					//Sets so that a new message sent from the user will not show up as bold
 					messages.setCount(0);
 					messageBox.setText("");
+					messageEvent.resetCount();
 					
 					//Encrypt the text message before sending it	
 					SMSUtility.SendMessage(Prephase3Activity.selectedNumber, text, getBaseContext());
