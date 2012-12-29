@@ -235,4 +235,16 @@ public abstract class SMSUtility {
         }
 	}
 	
+	public static boolean isANumber(String number)
+	{
+		try {
+			Long.valueOf(number);
+		}
+		catch(NumberFormatException nfe)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 }

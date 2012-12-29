@@ -17,6 +17,7 @@
 
 package com.tinfoil.sms;
 
+import java.util.ArrayList;
 import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -54,6 +57,9 @@ public class MessageView extends Activity {
 	private static MessageBoxWatcher messageEvent;
 	private static final String[] options = new String[]{"Re-send message", "Delete message", "Copy message", "Forward message"};
 	private static String contact_name;
+	private ArrayList<TrustedContact> tc;
+	private static AutoCompleteTextView phoneBox;
+	private AlertDialog popup_alert;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -120,24 +126,35 @@ public class MessageView extends Activity {
 				
 				final int item_num = position;
 				
-				AlertDialog.Builder builder = new AlertDialog.Builder(MessageView.this);
-				builder.setTitle(contact_name)
+				
+				AlertDialog.Builder popup_builder = new AlertDialog.Builder(MessageView.this);
+				popup_builder.setTitle(contact_name)
 					   .setItems(options, new DialogInterface.OnClickListener() {
 						   
 						public void onClick(DialogInterface dialog, int which) {
 							
-							String[] message_value = (String[])list2.getItemAtPosition(item_num);
+							final String[] messageValue = (String[])list2.getItemAtPosition(item_num);
 							
-							//Toast.makeText(MessageView.this, message_value[3], Toast.LENGTH_SHORT).show();
+							Toast.makeText(MessageView.this, messageValue[1], Toast.LENGTH_SHORT).show();
 							if(which == 0)
 							{
 								//TODO implement
+								
+								/* Might not be useful since messages only get put into the message box once sent
+								 * Only real use would be re-sending after contact forgot to have trusted settings on...
+								 * With proper key exchange this shouldn't really be an issue
+								 */
 								//option = Re-send
+								if(messageValue[0].equals("Me"))
+								{
+									sendMessage(Prephase3Activity.selectedNumber, messageValue[1]);
+								}
+								//
 							}
 							else if(which == 1)
 							{
 								//option = Delete
-								MessageService.dba.deleteMessage(Long.valueOf(message_value[3]));
+								MessageService.dba.deleteMessage(Long.valueOf(messageValue[3]));
 								updateList(MessageView.this);
 							}
 							else if(which == 2)
@@ -145,17 +162,91 @@ public class MessageView extends Activity {
 								//TODO implement
 								//option = Copy message
 							}
-							else if(which == 2)
+							else if(which == 3)
 							{
-								//TODO implement
+								
 								//option = Forward message
+								phoneBox = new AutoCompleteTextView(getBaseContext());
+								
+								List <String> contact = null;
+								if(tc == null)
+								{
+									tc = MessageService.dba.getAllRows();
+								}
+								
+						    	if (tc != null)
+						    	{
+						    		if(contact == null)
+						    		{
+						    			contact =SMSUtility.contactDisplayMaker(tc);
+						    		}
+						    	}
+						    	else
+						    	{
+						    		contact = null;
+						    	}
+						    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.auto_complete_list_item, contact);
+						    	
+						    	phoneBox.setAdapter(adapter);
+								
+								AlertDialog.Builder contact_builder = new AlertDialog.Builder(MessageView.this);
+								
+								contact_builder.setTitle("Input contact number")
+									.setCancelable(true)
+									.setView(phoneBox)
+									.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+
+										public void onClick(DialogInterface dialog, int which) {
+											String []info = phoneBox.getText().toString().split(", ");
+											
+											boolean invalid = false;
+											//TODO identify whether a forwarded message has a special format
+											if(info != null)
+											{
+												
+												if(info.length == 2 && info[1] != null)
+												{
+													if(SMSUtility.isANumber(info[1]))
+													{
+														sendMessage(info[1], messageValue[1]);
+													}
+													else
+													{
+														invalid = true;
+													}
+												}
+												else
+												{
+													String num = phoneBox.getText().toString();
+													if(SMSUtility.isANumber(num))
+													{
+														sendMessage(num, messageValue[1]);
+													}
+													else
+													{
+														invalid = true;
+													}
+												}
+											}
+											
+											if(invalid)
+											{
+												Toast.makeText(getBaseContext(), "Invalid Number", Toast.LENGTH_SHORT).show();
+											}
+										}
+										
+									});
+								AlertDialog contact_alert = contact_builder.create();
+								
+								popup_alert.cancel();
+								contact_alert.show();
 							}
 						}
 						   
 					   })
 				       .setCancelable(true);
-				AlertDialog alert = builder.create();
-				alert.show();
+				popup_alert = popup_builder.create();
+				popup_alert.show();
 				/** TODO implement
 				 * Going to add a menu of things the user can do with the messages:
 				 * 1. Re-send the message
@@ -203,23 +294,26 @@ public class MessageView extends Activity {
         {
 			public void onClick(View v) 
 			{
-		        String text = messageBox.getText().toString();
-				
-				if (Prephase3Activity.selectedNumber.length() > 0 && text.length() > 0)
-				{
-					//Sets so that a new message sent from the user will not show up as bold
-					messages.setCount(0);
-					messageBox.setText("");
-					messageEvent.resetCount();
-					
-					//Encrypt the text message before sending it	
-					SMSUtility.SendMessage(Prephase3Activity.selectedNumber, text, getBaseContext());
-					updateList(getBaseContext());
-				}
+				sendMessage(Prephase3Activity.selectedNumber, messageBox.getText().toString());
 			}
         });
 		
     }   
+    
+    public void sendMessage(String number, String text)
+    {
+		if (number.length() > 0 && text.length() > 0)
+		{
+			//Sets so that a new message sent from the user will not show up as bold
+			messages.setCount(0);
+			messageBox.setText("");
+			messageEvent.resetCount();
+			
+			//Encrypt the text message before sending it	
+			SMSUtility.SendMessage(number, text, getBaseContext());
+			updateList(getBaseContext());
+		}
+    }
     
     public static void updateList(Context context)
     {
@@ -243,8 +337,8 @@ public class MessageView extends Activity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.message_view_menu, menu);
 		return true;
+		
 	}
-
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
