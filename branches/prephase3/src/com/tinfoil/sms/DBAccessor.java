@@ -162,6 +162,18 @@ public class DBAccessor {
 		
 	}
 	
+	public boolean deleteMessage(long id)
+	{
+		open();
+		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, KEY_ID + " = " + id, null);
+		close();
+		if(num == 0)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * Updates the message count for the particular given number to the given new count.
 	 * @param number : String a number.
@@ -662,7 +674,8 @@ public class DBAccessor {
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE},
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE,
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_ID},
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
@@ -683,8 +696,9 @@ public class DBAccessor {
 				}
 				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
 				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(KEY_DATE)));
+				String id = String.valueOf(cur.getLong(cur.getColumnIndex(KEY_ID)));
 				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
-				smsList.add(new String[]{name, message, date});
+				smsList.add(new String[]{name, message, date, id});
 			}while(cur.moveToNext());
 		}
 		close(cur);

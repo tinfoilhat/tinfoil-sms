@@ -19,7 +19,10 @@ package com.tinfoil.sms;
 
 import java.util.List;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
@@ -32,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
@@ -48,6 +52,8 @@ public class MessageView extends Activity {
 	private static List<String[]> msgList2;
 	private static MessageAdapter messages;
 	private static MessageBoxWatcher messageEvent;
+	private static final String[] options = new String[]{"Re-send message", "Delete message", "Copy message", "Forward message"};
+	private static String contact_name;
 	   
     /** Called when the activity is first created. */
     @Override
@@ -101,11 +107,55 @@ public class MessageView extends Activity {
         		MessageService.mNotificationManager.cancel(MessageService.INDEX);
         	}
         }
-
+		
+		//TODO set header to contact's name
+		
+		//Retreive the name of the contact from the database
+		contact_name = MessageService.dba.getRow(Prephase3Activity.selectedNumber).getName();
+		
 		//Set an action for when a user clicks on a message
 		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				
+				final int item_num = position;
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(MessageView.this);
+				builder.setTitle(contact_name)
+					   .setItems(options, new DialogInterface.OnClickListener() {
+						   
+						public void onClick(DialogInterface dialog, int which) {
+							
+							String[] message_value = (String[])list2.getItemAtPosition(item_num);
+							
+							//Toast.makeText(MessageView.this, message_value[3], Toast.LENGTH_SHORT).show();
+							if(which == 0)
+							{
+								//TODO implement
+								//option = Re-send
+							}
+							else if(which == 1)
+							{
+								//option = Delete
+								MessageService.dba.deleteMessage(Long.valueOf(message_value[3]));
+								updateList(MessageView.this);
+							}
+							else if(which == 2)
+							{
+								//TODO implement
+								//option = Copy message
+							}
+							else if(which == 2)
+							{
+								//TODO implement
+								//option = Forward message
+							}
+						}
+						   
+					   })
+				       .setCancelable(true);
+				AlertDialog alert = builder.create();
+				alert.show();
 				/** TODO implement
 				 * Going to add a menu of things the user can do with the messages:
 				 * 1. Re-send the message
@@ -114,9 +164,11 @@ public class MessageView extends Activity {
 				 * 	i.  Message
 				 * 	ii. Number
 				 * 4. View Information
-				 * 	i.  Time Received
+				 * 	i.  Time Received/Sent
 				 * 	ii. Number
 				 * 5. Forward message
+				 * 
+				 * *Please note that delete the message will only delete it from tinfoil-sms
 				 */
 			}
 		});
