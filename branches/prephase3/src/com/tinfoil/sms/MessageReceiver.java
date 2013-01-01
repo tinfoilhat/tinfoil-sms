@@ -159,7 +159,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Update the list of messages to show the new messages
 					 */
-					Prephase3Activity.updateList(context, true);
+					Prephase3Activity.updateList(context, Prephase3Activity.messageViewActive);
 					
 					/*
 					 * Set the values needed for the notification

@@ -50,8 +50,12 @@ public abstract class SMSUtility {
 	public static String NUMBER = "com.tinfoil.sms.number";
 	public static String MESSAGE = "com.tinfoil.sms.message";
 	public static String ID = "com.tinfoil.sms.id";
+	
 	public static final int ENCRYPTED_MESSAGE_LENGTH = 128;
 	public static final int MESSAGE_LENGTH = 160;
+	public static final int LIMIT = 50;
+	public static final boolean saveMessage = false;
+	
 	private static MessageSender MS = new MessageSender();
 	
 	/**
@@ -150,39 +154,46 @@ public abstract class SMSUtility {
     
     /** 
 	 * Drops the message into the in-box of the default SMS program. Tricks the
-	 * in-box to think the message was send by the original sender
+	 * in-box to think the message was send by the original sender. If the user's
+	 * settings are such to prevent messages from being saved to the native sms 
+	 * client as well the method will do nothing, there is NO need to check the 
+	 * user's settings outside. 
 	 * 
 	 * @param srcNumber : String, the number of the contact that sent the message
 	 * @param decMessage : String, the message sent from the contact
 	 * @param dest : String, the folder in the android database that the message will be stored in
 	 */
 	public static void sendToSelf(Context c, String srcNumber, String decMessage, String dest) {
-		ContentValues values = new ContentValues();
-		values.put("address", srcNumber);
-		values.put("body", decMessage);
-		
-		//Stops native sms client from reading messages as new.
-		values.put("read", true);
-		values.put("seen", true); 
-
-		/**
-		 * Need to:
-		 * 1. Make so that messages received from contacts not in database are ignored and sent to native
-		 */
-		/* Sets used to determine who sent the message, 
-		 * if type == 2 then it is sent from the user
-		 * if type == 1 it has been sent by the contact
-		 */
-		if (dest.equalsIgnoreCase(SENT))
+		//Prevent message from doing to native client given user settings
+		if(Prephase3Activity.sharedPrefs.getBoolean("native_save", false))
 		{
-			values.put("type", "2");
+			ContentValues values = new ContentValues();
+			values.put("address", srcNumber);
+			values.put("body", decMessage);
+			
+			//Stops native sms client from reading messages as new.
+			values.put("read", true);
+			values.put("seen", true); 
+	
+			/**
+			 * Need to:
+			 * 1. Make so that messages received from contacts not in database are ignored and sent to native
+			 */
+			/* Sets used to determine who sent the message, 
+			 * if type == 2 then it is sent from the user
+			 * if type == 1 it has been sent by the contact
+			 */
+			if (dest.equalsIgnoreCase(SENT))
+			{
+				values.put("type", "2");
+			}
+			else
+			{
+				values.put("type", "1");
+			}
+			
+			c.getContentResolver().insert(Uri.parse(dest), values);
 		}
-		else
-		{
-			values.put("type", "1");
-		}
-		
-		c.getContentResolver().insert(Uri.parse(dest), values);
 	}
 	
 	/**
@@ -192,7 +203,7 @@ public abstract class SMSUtility {
 	 * @param context : Context the context of the class
 	 * @return : boolean whether the message sent or not
 	 */
-	public static boolean SendMessage(String number, String text, Context context){
+	public static boolean sendMessage(String number, String text, Context context){
 		try
 		{																		
 			if (MessageService.dba.isTrustedContact(number) && 
@@ -200,26 +211,30 @@ public abstract class SMSUtility {
 			{
 				//Send an encrypted message
 				String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
-						SMSUtility.format(number)).getPublicKey(), text);
-				SMSUtility.sendSMS(context, number, encrypted);							
+						format(number)).getPublicKey(), text);
 				
+				sendSMS(context, number, encrypted);			
+				
+				
+				//TODO check if setting a message the user sent as read (rather then unread) breaks anything
 				if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
 				{
-					SMSUtility.sendToSelf(context, number, encrypted, Prephase3Activity.SENT);
+					sendToSelf(context, number, encrypted, Prephase3Activity.SENT);
 					MessageService.dba.addNewMessage(new Message 
-							(encrypted, true, true), number, true);
+							(encrypted, true, true), number, false);
 				}
 				
-				SMSUtility.sendToSelf(context, number, text, Prephase3Activity.SENT);
-				MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
+				sendToSelf(context, number, text, Prephase3Activity.SENT);
+				
+				MessageService.dba.addNewMessage(new Message(text, true, true), number, false);
 				
 				Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
 			}
 			else
 			{
 				//Sending a plain text message
-				SMSUtility.sendSMS(context, number, text);
-				SMSUtility.sendToSelf(context, number, text, Prephase3Activity.SENT);
+				sendSMS(context, number, text);
+				sendToSelf(context, number, text, Prephase3Activity.SENT);
 				
 				MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
 				

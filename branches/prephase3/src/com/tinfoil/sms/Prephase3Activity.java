@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 
@@ -60,6 +61,7 @@ public class Prephase3Activity extends Activity {
 	private static ListView list;
 	private MessageReceiver boot = new MessageReceiver();
 	private SignalListener pSL = new SignalListener();
+	public static boolean messageViewActive = false;
 	
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +97,7 @@ public class Prephase3Activity extends Activity {
 			this.getIntent().removeExtra(MessageService.notificationIntent);
 			startActivity(intent);
 		}
-		
+		Prephase3Activity.messageViewActive = false;
 		setContentView(R.layout.main);
 
 		/*
@@ -140,6 +142,7 @@ public class Prephase3Activity extends Activity {
 	 */
 	public static void updateList(Context context, boolean messageViewUpdate)
 	{
+		Toast.makeText(context, String.valueOf(messageViewUpdate), Toast.LENGTH_SHORT).show();
 		if (MessageReceiver.myActivityStarted)
 		{
 			msgList = MessageService.dba.getConversations();
@@ -164,6 +167,7 @@ public class Prephase3Activity extends Activity {
 		MessageService.dba.close();
 		stopService(new Intent(this, MessageService.class));
 		MessageReceiver.myActivityStarted = false;
+		
 		super.onDestroy();
 	}
 	

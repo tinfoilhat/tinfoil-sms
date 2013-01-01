@@ -226,7 +226,8 @@ public class ImportContacts extends Activity implements Runnable {
 	            							new String[] {SMSUtility.format(numb),
 	            							"+1" + SMSUtility.format(numb),
 	            							"1" + SMSUtility.format(numb)},
-	            							"date DESC LIMIT 50");
+	            							"date DESC LIMIT " + 
+	            							Prephase3Activity.sharedPrefs.getInt("message_limit", SMSUtility.LIMIT));
 	            					if (mCur.moveToFirst())
 	            					{
 	            						do 
@@ -275,11 +276,12 @@ public class ImportContacts extends Activity implements Runnable {
 				/*
 				 * TODO possibly come up with a more efficient method, since if the conversation 
 				 * has a lot of messages then limit*2 messages will be taken and then will be inserted (or attempted
-				 * until there is only 50)
+				 * until there is only user specified limited amount)
 				 */
 				Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
 						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
-						new String[] {id}, "date DESC LIMIT 50");
+						new String[] {id}, "date DESC LIMIT " +
+						Prephase3Activity.sharedPrefs.getInt("message_limit", SMSUtility.LIMIT));
 	
 				if (nCur.moveToFirst())
 				{
@@ -296,7 +298,8 @@ public class ImportContacts extends Activity implements Runnable {
 				
 				Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
 						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
-						new String[] {id}, "date DESC LIMIT 50");
+						new String[] {id}, "date DESC LIMIT " + 
+						Prephase3Activity.sharedPrefs.getInt("message_limit", SMSUtility.LIMIT));
 				if (sCur.moveToFirst())
 				{
 					if(newNumber == null)

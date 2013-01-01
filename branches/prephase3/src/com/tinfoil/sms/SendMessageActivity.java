@@ -85,25 +85,36 @@ public class SendMessageActivity extends Activity {
     	
     	phoneBox.addTextChangedListener(new TextWatcher(){
             public void afterTextChanged(Editable s) {
+
             	String []info = s.toString().split(", ");
-            	
-            	if (!info[0].equalsIgnoreCase(s.toString()))
+
+            	if(!info[0].equals(""))
             	{
-            		newCont.setName(info[0]);
-            		newCont.setNumber(0, info[1]);
-            	}
-            	else
-            	{
-            		//**Warning this could be a word, there is nothing protected it from them
-            		//entering a name that is not in the database. (message will not send)
-            		if (newCont.isNumbersEmpty())
-            		{
-            			newCont.addNumber(info[0]);
-            		}
-            		else
-            		{
-            			newCont.setNumber(0, info[0]);
-            		}
+            		if (!info[0].equalsIgnoreCase(s.toString()))
+	            	{
+	            		newCont.setName(info[0]);
+	            		newCont.setNumber(0, info[1]);
+	            	}
+	            	else
+	            	{
+	            		//**Warning this could be a word, there is nothing protected it from them
+	            		//entering a name that is not in the database. (message will not send)
+	            		if(SMSUtility.isANumber(info[0]))
+	            		{
+		            		if (newCont.isNumbersEmpty())
+		            		{
+		            			newCont.addNumber(info[0]);
+		            		}
+		            		else
+		            		{
+		            			newCont.setNumber(0, info[0]);
+		            		}
+	            		}
+	            		else
+	            		{
+	            			Toast.makeText(getBaseContext(), "Invaild number", Toast.LENGTH_SHORT).show();
+	            		}
+	            	}
             	}
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
@@ -139,7 +150,7 @@ public class SendMessageActivity extends Activity {
 				if (number.length() > 0 && text.length() > 0)
 				{
 					//Send the message
-					boolean sent = SMSUtility.SendMessage(newCont.getNumber(0), text, getBaseContext());
+					boolean sent = SMSUtility.sendMessage(newCont.getNumber(0), text, getBaseContext());
 					
 					//Check if the message was successful at sending
 					if (sent)

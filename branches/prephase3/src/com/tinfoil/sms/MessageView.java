@@ -86,6 +86,7 @@ public class MessageView extends Activity {
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
 		MessageService.dba = new DBAccessor(this);
+		Prephase3Activity.messageViewActive = true;
 		boolean isTrusted = MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
 		
 		messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
@@ -96,8 +97,12 @@ public class MessageView extends Activity {
 		list2 = (ListView) findViewById(R.id.message_list);
 
 		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
+		int unreadCount = MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber);
+		Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
 		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
-			MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber));
+			unreadCount);
+		
+		
 		list2.setAdapter(messages);
 		list2.setItemsCanFocus(false);	
 		
@@ -114,10 +119,10 @@ public class MessageView extends Activity {
         	}
         }
 		
-		//TODO set header to contact's name
-		
-		//Retreive the name of the contact from the database
+		//Retrieve the name of the contact from the database
 		contact_name = MessageService.dba.getRow(Prephase3Activity.selectedNumber).getName();
+		
+		//TODO set header to contact's name
 		
 		//Set an action for when a user clicks on a message
 		list2.setOnItemClickListener(new OnItemClickListener() {
@@ -138,7 +143,6 @@ public class MessageView extends Activity {
 							Toast.makeText(MessageView.this, messageValue[1], Toast.LENGTH_SHORT).show();
 							if(which == 0)
 							{
-								//TODO implement
 								
 								/* Might not be useful since messages only get put into the message box once sent
 								 * Only real use would be re-sending after contact forgot to have trusted settings on...
@@ -149,7 +153,6 @@ public class MessageView extends Activity {
 								{
 									sendMessage(Prephase3Activity.selectedNumber, messageValue[1]);
 								}
-								//
 							}
 							else if(which == 1)
 							{
@@ -231,7 +234,7 @@ public class MessageView extends Activity {
 											
 											if(invalid)
 											{
-												Toast.makeText(getBaseContext(), "Invalid Number", Toast.LENGTH_SHORT).show();
+												Toast.makeText(getBaseContext(), "Invalid number", Toast.LENGTH_SHORT).show();
 											}
 										}
 										
@@ -310,11 +313,16 @@ public class MessageView extends Activity {
 			messageEvent.resetCount();
 			
 			//Encrypt the text message before sending it	
-			SMSUtility.SendMessage(number, text, getBaseContext());
+			SMSUtility.sendMessage(number, text, getBaseContext());
 			updateList(getBaseContext());
 		}
     }
     
+    protected void onResume()
+    {
+    	super.onResume();
+   }
+        
     public static void updateList(Context context)
     {
     	if (Prephase3Activity.selectedNumber != null)
@@ -322,6 +330,8 @@ public class MessageView extends Activity {
     		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
     		messages.clear();
     		messages.addData(msgList2);
+    		
+    		//TODO fix so when entering MessageView from any state the new messages will show in bold. (until exited message view or user sends out a message)
     		MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
     	}
     }

@@ -55,7 +55,6 @@ public class DBAccessor {
 	public static final String KEY_NUMBER_REFERENCE = "number_reference";
 	
 	private static final String USER_NAME = "Me";
-	private static final int LIMIT = 50;
 	
 	public static final int LENGTH = 21;
 	public static final int OTHER_INDEX = 7;
@@ -133,7 +132,11 @@ public class DBAccessor {
         open();
         Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
-        if (cur.moveToFirst() && cur.getInt(0) >= LIMIT)
+        
+        //TODO fix options.xml so that message_limit is stored as an integer. (Currently a string to integer hack is working so fixing the preference to an integer should allow for it to work properly
+        //TODO fix the rest of the options in options.xml that are settings that involve integers once found.
+        if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+        		("message_limit", String.valueOf(SMSUtility.LIMIT))))
         {
         	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
         		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);

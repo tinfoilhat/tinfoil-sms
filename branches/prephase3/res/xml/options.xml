@@ -13,6 +13,24 @@
                    
     </PreferenceCategory>
     
+    <PreferenceCategory
+        android:key="message_category" 
+        android:title="Message Settings">
+        
+        <CheckBoxPreference 
+            android:title="Native Save" 
+            android:key="native_save" 
+            android:summary="Save messages to native sms app" 
+            android:defaultValue="false" />
+        <EditTextPreference 
+            android:title="Message Limit"
+            android:key="message_limit" 
+            android:summary="Maximum number of messages saved for contacts" 
+            android:persistent="true"
+            android:defaultValue="50"/>
+        
+    </PreferenceCategory>
+    
     <PreferenceCategory 
         android:key="contact_category"
         android:title="Contact Settings">
@@ -133,5 +151,6 @@
             android:summary="Support the Developers">
         </PreferenceScreen>  
 	</PreferenceCategory>
+    
 	
 </PreferenceScreen>

@@ -25,6 +25,7 @@ import java.util.Calendar;
  * TODO add an attribute to keep track of the number of messages defined for the particular user
  * 	The above one might not be that useful, it would be time consuming to keep track of/change and most people wouldnt use it
  * 		- Might be more useful to have a single setting defining the number of messages to store for every contact
+ * 		- Have a way to keep all
  * TODO add an attribute to keep track of the user setting of whether to also save the messages in the native sms client (its useful to do this for testing but in a security sense it would be foolish to store them because the native client will never delete them unless told to do so)
  * 	6 possibilities:
  * 		- All contact messages are passed to the native client to be saved
