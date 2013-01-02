@@ -34,12 +34,12 @@ public class TrustedContact {
 	
 	private String name;
 	private ArrayList<Number> numbers;
-	private byte[] publicKey;
-	private byte[] signature;
-	private String s1;
-	private String s2;
-	private String bookPath;
-	private String bookInversePath;
+	//private byte[] publicKey;
+	//private byte[] signature;
+	//private String s1;
+	//private String s2;
+	//private String bookPath;
+	//private String bookInversePath;
 	
 	
 	/**
@@ -48,13 +48,7 @@ public class TrustedContact {
 	public TrustedContact ()
 	{
 		this.name = null;
-		this.publicKey = null;
 		this.numbers = new ArrayList<Number>();
-		this.signature = null;
-		this.s1 = null;
-		this.s2 = null;
-		this.bookPath = null;
-		this.bookInversePath = null;
 	}
 	
 	/**
@@ -64,7 +58,7 @@ public class TrustedContact {
 	 * @param publicKey The contact's public key used to encrypt message sent to this contact
 	 * @param signature The contact's signature
 	 */
-	public TrustedContact (String name, byte[] publicKey, byte[] signature)
+	/*public TrustedContact (String name, byte[] publicKey, byte[] signature)
 	{
 		this.name = name;
 		this.publicKey = publicKey;
@@ -74,7 +68,7 @@ public class TrustedContact {
 		this.s2 = null;
 		this.bookPath = null;
 		this.bookInversePath = null;
-	}
+	}*/
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -83,21 +77,15 @@ public class TrustedContact {
 	 * @param publicKey The contact's public key used to encrypt message sent to this contact
 	 * @param numbers A list of numbers that are associated to the contact.
 	 */
-	public TrustedContact (String name, byte[] publicKey, ArrayList<String> numbers)
+	/*public TrustedContact (String name, byte[] publicKey, ArrayList<String> numbers)
 	{
 		this.name = name;
-		this.publicKey = publicKey;
 		this.numbers = new ArrayList<Number>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(new Number (numbers.get(i)));
 		}
-		this.signature = null;
-		this.s1 = null;
-		this.s2 = null;
-		this.bookPath = null;
-		this.bookInversePath = null;
-	}
+	}*/
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -108,17 +96,11 @@ public class TrustedContact {
 	public TrustedContact (String name, ArrayList<Number> numbers)
 	{
 		this.name = name;
-		this.publicKey = null;
 		this.numbers = new ArrayList<Number>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
 			this.numbers.add(numbers.get(i));
 		}
-		this.signature = null;
-		this.s1 = null;
-		this.s2 = null;
-		this.bookPath = null;
-		this.bookInversePath = null;
 	}
 	
 	/**
@@ -128,14 +110,8 @@ public class TrustedContact {
 	public TrustedContact (Number numbers)
 	{
 		this.name = numbers.getNumber();
-		this.publicKey = null;
 		this.numbers = new ArrayList<Number>();
 		this.numbers.add(numbers);
-		this.signature = null;
-		this.s1 = null;
-		this.s2 = null;
-		this.bookPath = null;
-		this.bookInversePath = null;
 	}
 	
 	/**
@@ -146,13 +122,7 @@ public class TrustedContact {
 	public TrustedContact (String name)
 	{
 		this.name = name;
-		this.publicKey = null;
 		this.numbers = new ArrayList<Number>();
-		this.signature = null;
-		this.s1 = null;
-		this.s2 = null;
-		this.bookPath = null;
-		this.bookInversePath = null;
 	}
 	
 	/**
@@ -171,121 +141,6 @@ public class TrustedContact {
 	public void setName(String name)
 	{
 		this.name = name;
-	}
-	
-	/**
-	 * Get the signature of the TrustedContact
-	 * @return : byte[] the signature of the trustedContact's key
-	 */
-	public byte[] getSignature()
-	{
-		return signature;
-	}
-	
-
-	/*public void setSignature(byte[] signature)
-	{
-		this.signature = signature;
-	}*/
-	
-	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @param s1 : String, the first piece of shared information
-	 */
-	public void setSharedInfo1(String s1)
-	{
-		this.s1 = s1;
-	}
-	
-	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @return : String, the first piece of shared information
-	 */
-	public String getSharedInfo1()
-	{
-		return s1;
-	}
-	
-	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @param s2 : String, the second piece of shared information
-	 */
-	public void setSharedInfo2(String s2)
-	{
-		this.s2 = s2;
-	}
-	
-	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @return : String, the second piece of shared information
-	 */
-	public String getSharedInfo2()
-	{
-		return s2;
-	}
-	
-	/**
-	 * Book path is used for the Steganography the bookpath
-	 * is the folder path to the entropy source used to map
-	 * encrypted text to obfuscated words. The user will have 
-	 * very little interaction with this.
-	 * @param bookPath : String, the path on the android phone to 
-	 * the entropy source
-	 */
-	public void setBookPath(String bookPath)
-	{
-		this.bookPath = bookPath;
-	}
-	
-	/**
-	 * Book path is used for the Steganography the bookpath
-	 * is the folder path to the entropy source used to map
-	 * encrypted text to obfuscated words. The user will have 
-	 * very little interaction with this.
-	 * @param : String, the path on the android phone to 
-	 * the entropy source
-	 */
-	public String getBookPath()
-	{
-		return bookPath;
-	}
-	
-	/**
-	 * Book path is used for the Steganography the bookInversePath
-	 * is the folder path to the entropy source used to map
-	 * the obfuscated words to encrypted text. The user will have 
-	 * very little interaction with this.
-	 * @param bookInversePath : String, the path on the android  
-	 * phone to the entropy source
-	 */
-	public void setBookInversePath(String bookInversePath)
-	{
-		this.bookInversePath = bookInversePath;
-	}
-	
-	/**
-	 * Book path is used for the Steganography the bookInversePath
-	 * is the folder path to the entropy source used to map
-	 * the obfuscated words to encrypted text. The user will have 
-	 * very little interaction with this.
-	 * @param : String, the path on the android phone to the 
-	 * entropy source
-	 */
-	public String getBookInversePath()
-	{
-		return bookInversePath;
 	}
 
 	/**
@@ -391,51 +246,6 @@ public class TrustedContact {
 	public boolean isNumbersEmpty()
 	{
 		if (numbers == null || numbers.size() < 1)
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Access the publicKey
-	 * @return : String the contact's public publicKey 
-	 * used for encrypting messages
-	 */
-	public String getPublicKey()
-	{
-		if (isPublicKeyNull())
-		{
-			return null;
-		}
-		return new String(publicKey);
-	}
-	
-	/**
-	 * Set the contact's public publicKey
-	 */
-	public void setPublicKey()
-	{
-		this.publicKey =  Encryption.generateKey();
-	}
-	
-	/**
-	 * Erases the public key
-	 */
-	public void clearPublicKey()
-	{
-		this.publicKey = null;
-	}
-
-	/**
-	 * Checks if the publickey is null
-	 * @return : boolean
-	 * true if the public key is null,
-	 * false if the public key is not null.
-	 */
-	public boolean isPublicKeyNull()
-	{
-		if (publicKey == null)
 		{
 			return true;
 		}

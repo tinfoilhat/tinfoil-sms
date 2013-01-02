@@ -178,14 +178,6 @@ public class Number {
 		this.unreadMessageCount++;
 	}
 
-	public byte[] getPublicKey() {
-		return publicKey;
-	}
-
-	public void setPublicKey(byte[] publicKey) {
-		this.publicKey = publicKey;
-	}
-
 	/**
 	 * Shared Information between the user and the contact.
 	 * This information will be used for the key exchange 
@@ -298,4 +290,48 @@ public class Number {
 		return bookInversePath;
 	}
 
+	/**
+	 * Access the publicKey
+	 * @return : String the contact's public publicKey 
+	 * used for encrypting messages
+	 */
+	public String getPublicKey()
+	{
+		if (isPublicKeyNull())
+		{
+			return null;
+		}
+		return new String(publicKey);
+	}
+	
+	/**
+	 * Set the contact's public publicKey
+	 */
+	public void setPublicKey()
+	{
+		this.publicKey =  Encryption.generateKey();
+	}
+	
+	/**
+	 * Erases the public key
+	 */
+	public void clearPublicKey()
+	{
+		this.publicKey = null;
+	}
+
+	/**
+	 * Checks if the publickey is null
+	 * @return : boolean
+	 * true if the public key is null,
+	 * false if the public key is not null.
+	 */
+	public boolean isPublicKeyNull()
+	{
+		if (publicKey == null)
+		{
+			return true;
+		}
+		return false;
+	}
 }
