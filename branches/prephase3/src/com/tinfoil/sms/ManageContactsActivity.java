@@ -92,10 +92,20 @@ public class ManageContactsActivity extends Activity implements Runnable {
         			int position, long id) {
         		        		
         		if (tc != null)
-        		//if (contact != null)
-        		{
+           		{
+        			/* TODO modify to popup with a menu if the contact has multiple numbers
+        			 * The layout of this will change to:
+        			 * 1. If the contact has only 1 number then it will act a it did previously 
+        			 * Else if they have more than 1 numbers then:
+        			 * 	1. User clicks on the contact's name
+        			 *  2. Pop menu shows the different numbers associated with the contact
+        			 *  3. user can click on the different numbers they wish to exchange keys with
+        			 *  4. user clicks positive button (there will also be negative button)
+        			 *  5. Key exchange takes place with those contacts. **Note might need to make a thread to run that process and make a progress wheel for the user
+        			 *  6. Contacts will show up with a check mark next to their name if at least 1 of their numbers is trusted. 
+        			 */
+        			
         			if (MessageService.dba.isTrustedContact(tc.get(position).getANumber()))
-        			//if (MessageService.dba.isTrustedContact(contact.get(position).getNumber()))
         			{
         				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
         				change(position, false);
@@ -126,18 +136,35 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	 */
 	public void change(int position, boolean add)
 	{
-		//TODO modify to popup with a menu if the contact has multiple numbers
+		
+		ArrayList<Number> numbers = tc.get(position).getNumber();
 		if (add)
-		{
-			//contact = new Contact(tc.get(position).getName(), tc.get(position).getANumber());
-			//contact.get(position).setPublicKey();
-			//tc.get(position).setPublicKey();
+		{			
+			if(numbers != null && numbers.size() > 0)
+			{
+				if(numbers.size() == 1)
+				{
+					numbers.get(0).setPublicKey();
+				}
+				else
+				{
+					//Contact has multiple numbers
+				}
+			}
 		}
 		else
 		{
-			//contact = new Contact(tc.get(position).getName(), tc.get(position).getANumber());
-			//contact.get(position).clearPublicKey();
-			//tc.get(position).clearPublicKey();
+			if(numbers != null && numbers.size() > 0)
+			{
+				if(numbers.size() == 1)
+				{
+					numbers.get(0).clearPublicKey();
+				}
+				else
+				{
+					//Contact has multiple numbers
+				}
+			}
 		}
 
 		//MessageService.dba.updateRow(contact.get(position));

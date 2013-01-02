@@ -1059,20 +1059,24 @@ public class DBAccessor {
 	 */
 	public void updateNumberRow (TrustedContact tc, String number, long id)
 	{
+		number = SMSUtility.format(number);
+		ContentValues cv = new ContentValues();
 		if (id == 0)
 		{
-			id = getId(SMSUtility.format(number));
+			id = getId(number);
 		}
-		open();
-		int num = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		Number numb = tc.getNumber(number);
+		
+		cv.put(KEY_REFERENCE, id);
+        cv.put(KEY_NUMBER, numb.getNumber());
+        cv.put(KEY_TYPE, numb.getType());
+        cv.put(KEY_UNREAD, numb.getUnreadMessageCount());
+        cv.put(KEY_PUBLIC_KEY, numb.getPublicKey());
+        cv.put(KEY_SIGNATURE, numb.getSignature());
+        
+        open();
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id, null);
 		close();
-		if (num != 0)
-		{
-			for(int i=0; i< tc.getNumber().size(); i++)
-			{
-				addNumbersRow(id, tc.getNumber().get(i));
-			}
-		}
 	}
 	
 	/**
