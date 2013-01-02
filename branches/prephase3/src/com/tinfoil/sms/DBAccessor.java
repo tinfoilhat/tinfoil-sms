@@ -137,7 +137,6 @@ public class DBAccessor {
         Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
         
-        //TODO find other places where "message_limit" is needed and replace it with this.
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(Prephase3Activity.sharedPrefs.getString
         		("message_limit", String.valueOf(SMSUtility.LIMIT))))
         {

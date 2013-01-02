@@ -16,9 +16,7 @@ CREATE TABLE user
 CREATE TABLE trusted_contact
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
-    name TEXT,
-    public_key BLOB,
-    signature BLOB 
+    name TEXT
 )
 
 /*
@@ -28,7 +26,8 @@ CREATE TABLE trusted_contact
 CREATE TABLE book_paths
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
-    reference INTEGER,
+    reference INTEGER REFERENCES numbers (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     book_path TEXT,
     book_inverse_path TEXT
 )
@@ -40,7 +39,8 @@ CREATE TABLE book_paths
 CREATE TABLE shared_information 
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, 
-    reference INTEGER,
+    reference INTEGER REFERENCES numbers (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     shared_info_1 TEXT,
     shared_info_2 TEXT
 )
@@ -62,7 +62,9 @@ CREATE TABLE messages
         ON DELETE CASCADE ON UPDATE CASCADE,
     message TEXT,
     date INTEGER,
-    sent INTEGER
+    sent INTEGER,
+    public_key BLOB,
+    signature BLOB 
 )
 
 CREATE TABLE queue

@@ -36,6 +36,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 /**
+ * TODO remove ability to exchange keys (or adjust so a popup comes up for users with multiple numbers)
  * ManageContactActivity is an activity that allows the user to exchange keys, 
  * edit and delete contacts. A list of contacts will be shown with an check box,
  * if check then the user is either exchanging or have exchanged keys with the

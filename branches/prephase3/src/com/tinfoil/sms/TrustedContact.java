@@ -21,6 +21,7 @@ package com.tinfoil.sms;
 import java.util.ArrayList;
 
 /**
+ * TODO move key and signature to numbers class
  * A class for storing information retrieved or to be stored in the database.
  * 
  * Through out tinfoil-sms TrustedContact is used to describe the class where
@@ -32,8 +33,8 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	private byte[] publicKey;		
 	private ArrayList<Number> numbers;
+	private byte[] publicKey;
 	private byte[] signature;
 	private String s1;
 	private String s2;
