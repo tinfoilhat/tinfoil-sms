@@ -105,11 +105,17 @@ public class DBAccessor {
         cv.put(KEY_NUMBER, SMSUtility.format(number.getNumber()));
         cv.put(KEY_TYPE, number.getType());
         cv.put(KEY_UNREAD, number.getUnreadMessageCount());
+        cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
+        cv.put(KEY_SIGNATURE, number.getSignature());
 
         //Insert the row into the database
         open();
         long id = db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
         close();
+        
+        updateBookPaths(id, number.getBookPath(), number.getBookInversePath());
+        updateSharedInfo(id, number.getSharedInfo1(), number.getSharedInfo2());
+        
         return id;
 	}
 	
@@ -164,7 +170,6 @@ public class DBAccessor {
         	db.insert(SQLitehelper.MESSAGES_TABLE_NAME, null, cv);
         }
         close(cur);
-		
 	}
 	
 	public boolean deleteMessage(long id)
@@ -503,9 +508,7 @@ public class DBAccessor {
 			
 			//add given values to a row
 	        cv.put(KEY_NAME, tc.getName());
-	        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
-	        cv.put(KEY_SIGNATURE, tc.getSignature());
-	        
+
 	        //Insert the row into the database
 	        open();
 	        long id = db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
@@ -515,14 +518,13 @@ public class DBAccessor {
 	        	for (int i = 0; i< tc.getNumber().size();i++)
 	        	{
 	        		long id2 = addNumbersRow(id, tc.getNumber().get(i));
+	        		
 	        		for (int j = 0; j < tc.getNumber().get(i).getMessages().size(); j++)
 	        		{
 	        			addMessageRow(id2, tc.getNumber().get(i).getMessage(j));
 	        		}
 	        	}
 	        }
-	        updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
-	        updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
 		}	              
 	}
 	
@@ -833,18 +835,25 @@ public class DBAccessor {
 		if (cur.moveToFirst())
         {
 			int i = 0;
+			int j = 0;
+			long id = 0;
+			long num_id = 0;
 			do
 			{
-				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-						cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
-						cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
+				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME))));
 				
-				long id = cur.getInt(cur.getColumnIndex(KEY_ID));
+				//cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
+				//cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))
+				
+				id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-						SQLitehelper.NUMBERS_TABLE_NAME, new String[]
+						SQLitehelper.NUMBERS_TABLE_NAME, /*new String[]
 						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD},
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD,
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY,
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_SIGNATURE,
+						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID}*/null,
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -852,24 +861,30 @@ public class DBAccessor {
 
 				if (pCur.moveToFirst())
 				{
+					j = 0;
 					do
 					{
 						tc.get(i).addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
-								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD))));
+								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
+								pCur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
+								pCur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
+						num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
+						
+						//Retrieve the book paths
+						String columns[] = getBookPath(num_id);
+						tc.get(i).getNumber().get(j).setBookPath(columns[0]);
+						tc.get(i).getNumber().get(j).setBookInversePath(columns[1]);
+						
+						//Retrieve the shared information
+						columns = getSharedInfo(num_id);
+						tc.get(i).getNumber().get(j).setSharedInfo1(columns[0]);
+						tc.get(i).getNumber().get(j).setSharedInfo2(columns[1]);
+						j++;
+						
 					}while(pCur.moveToNext());
 				}
 				pCur.close();
-				
-				//Retrieve the book paths
-				String columns[] = getBookPath(id);
-				tc.get(i).setBookPath(columns[0]);
-				tc.get(i).setBookInversePath(columns[1]);
-				
-				//Retrieve the shared information
-				columns = getSharedInfo(id);
-				tc.get(i).setSharedInfo1(columns[0]);
-				tc.get(i).setSharedInfo2(columns[1]);
 				
 				i++;
 			}while (cur.moveToNext());

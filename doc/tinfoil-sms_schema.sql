@@ -52,7 +52,9 @@ CREATE TABLE numbers
         ON DELETE CASCADE ON UPDATE CASCADE,
     number TEXT,
     type INTEGER,
-    unread INTEGER
+    unread INTEGER,
+    public_key BLOB,
+    signature BLOB
 )
 
 CREATE TABLE messages
@@ -62,9 +64,7 @@ CREATE TABLE messages
         ON DELETE CASCADE ON UPDATE CASCADE,
     message TEXT,
     date INTEGER,
-    sent INTEGER,
-    public_key BLOB,
-    signature BLOB 
+    sent INTEGER
 )
 
 CREATE TABLE queue

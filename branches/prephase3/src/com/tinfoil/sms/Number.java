@@ -49,12 +49,14 @@ public class Number {
 	 * @param unreadMessageCount The number of messages that have
 	 * not been read from this number
 	 */
-	public Number (String number, int type, int unreadMessageCount)
+	public Number (String number, int type, int unreadMessageCount,byte[] publicKey,byte[] signature)
 	{
 		this.setNumber(number);
 		this.setType(type);
 		this.setUnreadMessageCount(unreadMessageCount);
 		this.messages = new ArrayList<Message>();
+		this.publicKey = publicKey;
+		this.signature = signature;
 	}
 	
 	/**

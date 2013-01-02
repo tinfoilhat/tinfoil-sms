@@ -44,7 +44,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER REFERENCES trusted_contact (id)" +
+            " reference INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " shared_info_1 TEXT," +
             " shared_info_2 TEXT);";
@@ -52,7 +52,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String BOOK_PATHS_TABLE_CREATE =
             "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER REFERENCES trusted_contact (id)" +
+            " reference INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " book_path TEXT," +
             " book_inverse_path TEXT);";
@@ -67,9 +67,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String TRUSTED_TABLE_CREATE =
             "CREATE TABLE " + TRUSTED_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " name TEXT," +
-            " public_key BLOB," +
-            " signature BLOB );";
+            " name TEXT );";
     
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
@@ -78,7 +76,9 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " number TEXT," +
             " type INTEGER," +
-            " unread INTEGER);";
+            " unread INTEGER," +
+            " public_key BLOB," +
+            " signature BLOB);";
     
     private static final String MESSAGES_TABLE_CREATE =
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 
@@ -104,9 +104,9 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
     	db.execSQL(USER_TABLE_CREATE);
         db.execSQL(TRUSTED_TABLE_CREATE);
+        db.execSQL(NUMBERS_TABLE_CREATE);
         db.execSQL(SHARED_INFO_TABLE_CREATE);
         db.execSQL(BOOK_PATHS_TABLE_CREATE);
-        db.execSQL(NUMBERS_TABLE_CREATE);
         db.execSQL(MESSAGES_TABLE_CREATE);
         db.execSQL(QUEUE_TABLE_CREATE);
     }
