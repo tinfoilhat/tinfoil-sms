@@ -778,7 +778,7 @@ public class DBAccessor {
 		}
 		idCur.close();
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[]
-				{KEY_NAME, KEY_PUBLIC_KEY, KEY_SIGNATURE},
+				{KEY_NAME /*, KEY_PUBLIC_KEY, KEY_SIGNATURE*/},
 				KEY_ID +" = " + id, null, null, null, null);
 		
 		if (cur.moveToFirst())
@@ -850,9 +850,6 @@ public class DBAccessor {
 			do
 			{
 				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME))));
-				
-				//cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
-				//cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))
 				
 				id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
@@ -1027,8 +1024,9 @@ public class DBAccessor {
 	 */
 	public void updateKey (TrustedContact tc, String number)
 	{
-		long id = getId(SMSUtility.format(number));
-		updateTrustedRow(tc, number, id);
+		number = SMSUtility.format(number);
+		long id = getId(number);
+		updateNumberRow(tc, number, id);
 	}
 	
 	/**
