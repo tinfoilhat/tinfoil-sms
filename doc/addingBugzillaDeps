@@ -1,0 +1,23 @@
+Setting up Bugzilla for android (working progress)
+
+1. Download the neccessary libraries:
+    (So far been determined to be)
+        - j2bugzilla-2.0.jar
+        - commons-logging-1.1.jar
+        - ws-commons-util-1.0.2.jar
+        - xmlrpc-client-3.1.3.jar
+        - xmlrpc-common-3.1.3.jar
+        - xmlrpc-server-3.1.3.jar
+
+2. With these, you then need to link them to the android project.
+
+    2.1 Copy the libraries to the 'libs' folder in the android project
+    2.2 Open up eclipse.
+    2.3 Open the 'libs' folder in the 'Package Explorer'
+    2.4 Right click on the libraries and under 'Build Path' click on 'Add To Build Path'
+    2.5 Repeat for all libraries
+    2.6 Ensure that the libraries are now also showing under a 'Referenced Libraries' in the 'Package Explorer'.
+
+This should do it, try doing a clean all, and then building. If this doesnt work then you may have to undo this and just do it again. (I had this problem)
+
+If you are having problems make sure that you open up the build path (right click the library and click on 'Build Path...' and then on 'Configure Build Path...'
