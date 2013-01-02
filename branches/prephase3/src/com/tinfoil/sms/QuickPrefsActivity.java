@@ -19,6 +19,8 @@
 package com.tinfoil.sms;
 
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +34,26 @@ public class QuickPrefsActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {        
         super.onCreate(savedInstanceState);    
-        
         /*
          * Add preferences from the options.xml file.
          */
-        addPreferencesFromResource(R.xml.options);        
+        addPreferencesFromResource(R.xml.options);
+        
+        //TODO implement the OnPreferenceChangeListener for the other preferences that use numbers only
+        
+        EditTextPreference messageLimit = (EditTextPreference)findPreference("message_limit");
+        messageLimit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				if(SMSUtility.isANumber(newValue.toString()) && Integer.valueOf(newValue.toString()) >0)
+				{
+					return true;
+				}
+				return false;
+			}
+        
+        });
     }
     
     /**

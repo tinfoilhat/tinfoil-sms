@@ -114,6 +114,10 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO implement passive message deleter, (such that every time a message is added it will
+	 * check if the message count is above the limit, if it is it will delete the oldest messages
+	 * until it is under the limit
+	 * 
 	 * Add a message to the database, only a limited number of messages are stored in the database.
 	 * @param reference : long, the id of the number that the message came from or was sent to.
 	 * @param message : Message, a message object containing all the information for the message.
@@ -133,8 +137,7 @@ public class DBAccessor {
         Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
         
-        //TODO fix options.xml so that message_limit is stored as an integer. (Currently a string to integer hack is working so fixing the preference to an integer should allow for it to work properly
-        //TODO fix the rest of the options in options.xml that are settings that involve integers once found.
+        //TODO find other places where "message_limit" is needed and replace it with this.
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(Prephase3Activity.sharedPrefs.getString
         		("message_limit", String.valueOf(SMSUtility.LIMIT))))
         {
@@ -314,6 +317,7 @@ public class DBAccessor {
 			}
 			return sharedInfo;
 		}
+		//TODO remove the comments
 		//else
 		//{
 		cur.close();
