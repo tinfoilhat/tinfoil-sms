@@ -121,7 +121,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							}
 							
 							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
-									SMSUtility.format(address)).getPublicKey(), 
+									SMSUtility.format(address)).getNumber(SMSUtility.format(address)).getPublicKey(), 
 									messages[0].getMessageBody());
 							SMSUtility.sendToSelf(context, address,	
 									secretMessage , Prephase3Activity.INBOX);

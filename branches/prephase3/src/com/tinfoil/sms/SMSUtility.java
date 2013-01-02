@@ -211,7 +211,7 @@ public abstract class SMSUtility {
 			{
 				//Send an encrypted message
 				String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
-						format(number)).getPublicKey(), text);
+						format(number)).getNumber(format(number)).getPublicKey(), text);
 				
 				sendSMS(context, number, encrypted);			
 				

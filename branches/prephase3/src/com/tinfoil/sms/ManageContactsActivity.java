@@ -126,18 +126,18 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	 */
 	public void change(int position, boolean add)
 	{
-		//Contact contact;
+		//TODO modify to popup with a menu if the contact has multiple numbers
 		if (add)
 		{
 			//contact = new Contact(tc.get(position).getName(), tc.get(position).getANumber());
 			//contact.get(position).setPublicKey();
-			tc.get(position).setPublicKey();
+			//tc.get(position).setPublicKey();
 		}
 		else
 		{
 			//contact = new Contact(tc.get(position).getName(), tc.get(position).getANumber());
 			//contact.get(position).clearPublicKey();
-			tc.get(position).clearPublicKey();
+			//tc.get(position).clearPublicKey();
 		}
 
 		//MessageService.dba.updateRow(contact.get(position));
@@ -145,7 +145,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	}
 
 	/**
-	 * Reinitialises the list to ensure contacts that are
+	 * Reinitializes the list to ensure contacts that are
 	 * trusted are selected.
 	 */
 	private void initList()

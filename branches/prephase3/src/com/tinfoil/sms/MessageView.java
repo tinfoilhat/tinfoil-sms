@@ -55,7 +55,7 @@ public class MessageView extends Activity {
 	private static List<String[]> msgList2;
 	private static MessageAdapter messages;
 	private static MessageBoxWatcher messageEvent;
-	private static final String[] options = new String[]{"Re-send message", "Delete message", "Copy message", "Forward message"};
+	private static final String[] options = new String[]{"Delete message", "Copy message", "Forward message"};
 	private static String contact_name;
 	private ArrayList<TrustedContact> tc;
 	private static AutoCompleteTextView phoneBox;
@@ -122,8 +122,6 @@ public class MessageView extends Activity {
 		//Retrieve the name of the contact from the database
 		contact_name = MessageService.dba.getRow(Prephase3Activity.selectedNumber).getName();
 		
-		//TODO set header to contact's name
-		
 		//Set an action for when a user clicks on a message
 		list2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -140,32 +138,20 @@ public class MessageView extends Activity {
 							
 							final String[] messageValue = (String[])list2.getItemAtPosition(item_num);
 							
-							Toast.makeText(MessageView.this, messageValue[1], Toast.LENGTH_SHORT).show();
+							//Toast.makeText(MessageView.this, messageValue[1], Toast.LENGTH_SHORT).show();
 							if(which == 0)
-							{
-								
-								/* Might not be useful since messages only get put into the message box once sent
-								 * Only real use would be re-sending after contact forgot to have trusted settings on...
-								 * With proper key exchange this shouldn't really be an issue
-								 */
-								//option = Re-send
-								if(messageValue[0].equals("Me"))
-								{
-									sendMessage(Prephase3Activity.selectedNumber, messageValue[1]);
-								}
-							}
-							else if(which == 1)
 							{
 								//option = Delete
 								MessageService.dba.deleteMessage(Long.valueOf(messageValue[3]));
 								updateList(MessageView.this);
 							}
-							else if(which == 2)
+							else if(which == 1)
 							{
 								//TODO implement
 								//option = Copy message
+								Toast.makeText(getBaseContext(), "implement me", Toast.LENGTH_SHORT).show();
 							}
-							else if(which == 3)
+							else if(which == 2)
 							{
 								
 								//option = Forward message
@@ -252,22 +238,15 @@ public class MessageView extends Activity {
 				popup_alert.show();
 				/** TODO implement
 				 * Going to add a menu of things the user can do with the messages:
-				 * 1. Re-send the message
-				 * 2. Delete the message
-				 * 3. Copy the details
+				 * 2. Copy the details
 				 * 	i.  Message
 				 * 	ii. Number
 				 * 4. View Information
 				 * 	i.  Time Received/Sent
 				 * 	ii. Number
-				 * 5. Forward message
-				 * 
-				 * *Please note that delete the message will only delete it from tinfoil-sms
 				 */
 			}
 		});
-		
-		//TODO link messageBox to send button so if it is empty it will be disabled 
 		
 		/*
 		 * Link the GUI items to the xml layout
@@ -361,12 +340,12 @@ public class MessageView extends Activity {
 				if (MessageService.dba.isTrustedContact(SMSUtility.format
 						(Prephase3Activity.selectedNumber)))
 				{
-					tc.clearPublicKey();
+					tc.getNumber(Prephase3Activity.selectedNumber).clearPublicKey();
 					MessageService.dba.updateKey(tc, Prephase3Activity.selectedNumber);
 				}
 				else
 				{
-					tc.setPublicKey();
+					tc.getNumber(Prephase3Activity.selectedNumber).setPublicKey();
 					MessageService.dba.updateKey(tc, Prephase3Activity.selectedNumber);
 				}
 			}
