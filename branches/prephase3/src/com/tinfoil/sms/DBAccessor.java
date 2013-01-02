@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
+ * TODO go through and ensure that the getANumber is used properly
  * Creates a database that is read and write and provides methods to 
  * facilitate the reading and writing to the database. Table Names
  * are all from SQLitehelper since they are created in that class.
@@ -769,6 +770,8 @@ public class DBAccessor {
 				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
 
 		long id = 0;
+		long num_id = 0;
+		int i = 0;
 		if (idCur.moveToFirst())
 		{
 			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
@@ -780,14 +783,12 @@ public class DBAccessor {
 		
 		if (cur.moveToFirst())
         { 	
-			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)),
-					cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)), 
-					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)));
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)));
 			cur.close();
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
-					new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
+					/*new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD},
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD}*/ null,
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -795,24 +796,32 @@ public class DBAccessor {
 
 			if (pCur.moveToFirst())
 			{
+				i = 0;
 				do
 				{
 					tc.addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
-							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD))));
+							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
+							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)), 
+							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
+					
+					num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
+					
+					//Retrieve the book paths
+					String columns[] = getBookPath(num_id);
+					tc.getNumber().get(i).setBookPath(columns[0]);
+					tc.getNumber().get(i).setBookInversePath(columns[1]);
+					
+					//Retrieve the shared information
+					columns = getSharedInfo(num_id);
+					tc.getNumber().get(i).setSharedInfo1(columns[0]);
+					tc.getNumber().get(i).setSharedInfo2(columns[1]);
+					i++;
 				}while(pCur.moveToNext());
 			}
 			close(pCur);
 			
-			//Retrieve the book paths
-			String columns[] = getBookPath(id);
-			tc.setBookPath(columns[0]);
-			tc.setBookInversePath(columns[1]);
 			
-			//Retrieve the shared information
-			columns = getSharedInfo(id);
-			tc.setSharedInfo1(columns[0]);
-			tc.setSharedInfo2(columns[1]);
 			return tc;
         }
 		close(cur);
@@ -867,8 +876,9 @@ public class DBAccessor {
 						tc.get(i).addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
-								pCur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
-								pCur.getBlob(cur.getColumnIndex(KEY_SIGNATURE))));
+								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
+								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
+						
 						num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
 						
 						//Retrieve the book paths
@@ -1006,8 +1016,6 @@ public class DBAccessor {
 		long id = getId(SMSUtility.format(number));
 		updateTrustedRow(tc, number, id);
 		updateNumberRow(tc, number, id);
-		updateBookPaths(id, tc.getBookPath(), tc.getBookInversePath());
-		updateSharedInfo(id, tc.getSharedInfo1(), tc.getSharedInfo2());
 	}
 	
 	/** 
@@ -1039,8 +1047,6 @@ public class DBAccessor {
 		
 		//Trusted Table
         cv.put(KEY_NAME, tc.getName());
-        cv.put(KEY_PUBLIC_KEY, tc.getPublicKey());
-        cv.put(KEY_SIGNATURE, tc.getSignature());
         
         open();
 		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, KEY_ID + " = " + id, null);
@@ -1109,7 +1115,7 @@ public class DBAccessor {
 		TrustedContact tc = getRow(SMSUtility.format(number));
 		if (tc != null)
 		{
-			if (!tc.isPublicKeyNull())
+			if (!tc.getNumber(number).isPublicKeyNull())
 			{
 				return true;
 			}
