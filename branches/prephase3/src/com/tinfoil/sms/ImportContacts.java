@@ -227,7 +227,8 @@ public class ImportContacts extends Activity implements Runnable {
 	            							"+1" + SMSUtility.format(numb),
 	            							"1" + SMSUtility.format(numb)},
 	            							"date DESC LIMIT " + 
-	            							Prephase3Activity.sharedPrefs.getInt("message_limit", SMSUtility.LIMIT));
+	            							Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+	            							("message_limit", String.valueOf(SMSUtility.LIMIT))));
 	            					if (mCur.moveToFirst())
 	            					{
 	            						do 
@@ -281,7 +282,8 @@ public class ImportContacts extends Activity implements Runnable {
 				Cursor nCur = getContentResolver().query(Uri.parse("content://sms/inbox"), 
 						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
 						new String[] {id}, "date DESC LIMIT " +
-						Prephase3Activity.sharedPrefs.getInt("message_limit", SMSUtility.LIMIT));
+						Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+						("message_limit", String.valueOf(SMSUtility.LIMIT))));
 	
 				if (nCur.moveToFirst())
 				{
@@ -299,7 +301,8 @@ public class ImportContacts extends Activity implements Runnable {
 				Cursor sCur = getContentResolver().query(Uri.parse("content://sms/sent"), 
 						new String[]{"body", "address", "date", "type"}, "thread_id = ?",
 						new String[] {id}, "date DESC LIMIT " + 
-						Prephase3Activity.sharedPrefs.getInt("message_limit", SMSUtility.LIMIT));
+						Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+						("message_limit", String.valueOf(SMSUtility.LIMIT))));
 				if (sCur.moveToFirst())
 				{
 					if(newNumber == null)

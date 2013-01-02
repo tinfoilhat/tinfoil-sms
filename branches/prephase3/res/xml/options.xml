@@ -26,7 +26,7 @@
         <EditTextPreference 
             android:title="Message Limit"
             android:key="message_limit" 
-           	android:numeric="integer"
+           	android:inputType="number"
             android:summary="Maximum number of messages saved for contacts" 
             android:persistent="true"
             android:defaultValue="50"/>

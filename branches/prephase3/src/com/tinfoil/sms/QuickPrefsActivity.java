@@ -46,6 +46,8 @@ public class QuickPrefsActivity extends PreferenceActivity {
         {
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
+				
+				//TODO account for unlimited
 				if(SMSUtility.isANumber(newValue.toString()) && Integer.valueOf(newValue.toString()) >0)
 				{
 					return true;
