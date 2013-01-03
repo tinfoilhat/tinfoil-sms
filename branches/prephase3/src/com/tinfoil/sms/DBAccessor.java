@@ -983,12 +983,12 @@ public class DBAccessor {
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
 	 */
-	public void updateKey (TrustedContact tc, String number)
+	/*public void updateKey (Number numb)
 	{
-		number = SMSUtility.format(number);
-		long id = getId(number);
-		updateNumberRow(tc, number, id);
-	}
+		//number = SMSUtility.format(number);
+		//long id = getId(numb.getId);
+		updateNumberRow(numb);
+	}*/
 	
 	/**
 	 * Update a TrustedContact row
@@ -1013,12 +1013,34 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Update a row from the Numbers table key
+	 * @param Number the number object with the new key
+	 */
+	public void updateKey (Number number)
+	{
+		ContentValues cv = new ContentValues();
+		//Number numb = tc.getNumber(number);
+		
+		//cv.put(KEY_REFERENCE, numb.getId());
+        //cv.put(KEY_NUMBER, numb.getNumber());
+        //cv.put(KEY_TYPE, numb.getType());
+        //cv.put(KEY_UNREAD, numb.getUnreadMessageCount());
+        cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
+        cv.put(KEY_SIGNATURE, number.getSignature());
+        
+        open();
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + number.getId() 
+				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
+		close();
+	}
+	
+	/**
 	 * Update a row from the Numbers table
 	 * @param tc : TrustedContact the new information to be stored
 	 * @param number : String a number owned by the contact
 	 * @param id : long the id for the contact's database row
 	 */
-	public void updateNumberRow (TrustedContact tc, String number, long id)
+	public void updateNumberRow (Number numb, String number, long id)
 	{
 		number = SMSUtility.format(number);
 		ContentValues cv = new ContentValues();
@@ -1026,7 +1048,7 @@ public class DBAccessor {
 		{
 			id = getId(number);
 		}
-		Number numb = tc.getNumber(number);
+		//Number numb = tc.getNumber(number);
 		
 		cv.put(KEY_REFERENCE, id);
         cv.put(KEY_NUMBER, numb.getNumber());

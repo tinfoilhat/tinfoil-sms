@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -57,23 +58,25 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private ListView listView;
 	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
-	private ProgressDialog dialog;
+	private ProgressDialog loadingDialog;
+	private ProgressDialog keyDialog;
 	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
 	private boolean[] trusted;
 	private AlertDialog popup_alert;
-	private static ArrayList<Number> trustedNumbers;
-	private static ArrayList<Number> untrustedNumbers;
+	public static ArrayList<Number> trustedNumbers;
+	public static ArrayList<Number> untrustedNumbers;
 	private static ArrayList<Number> sublistTrust;
 	private static ArrayList<Number> sublistUntrust;
 	private static ArrayList<Number> numbers;
+	private static ExchangeKey keyThread = new ExchangeKey();
 
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        //***Need to override dialog to make so if BACK is pressed it exits the activity if it hasnt finished loading
-        dialog = ProgressDialog.show(this, "Loading Contacts", 
+        //TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
+        loadingDialog = ProgressDialog.show(this, "Loading Contacts", 
                 "Loading. Please wait...", true, false);
 
         setContentView(R.layout.contact);
@@ -97,7 +100,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				ManageContactsActivity.this.startActivity(new Intent
 						(ManageContactsActivity.this, AddContact.class));
 
-				return true; //This stops other on click effects from happening after this one.
+				//This stops other on click effects from happening after this one.
+				return true; 
 			}
         	
         });
@@ -223,6 +227,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 										public void onClick(DialogInterface dialog, int which) {
 											//Sublist is not added to the full list
+											sublistTrust.clear();
+											sublistUntrust.clear();
 											dialog.cancel();
 										}
 									})
@@ -231,7 +237,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         					popup_alert.show();
         				}
         				
-        				MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
+        				//MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
         			}
 	        			
         		}
@@ -243,51 +249,22 @@ public class ManageContactsActivity extends Activity implements Runnable {
         			startActivity(new Intent(getBaseContext(), AddContact.class));
         		}
         	}});
-	}
+        
+        exchangeKeys.setOnClickListener(new OnClickListener(){
 
-	/**
-	 * TODO remove
-	 * Used to toggle the contact from being in or out of the 
-	 * trusted state.
-	 * @param position : int, the position on the list of contacts.
-	 * @param add : boolean, if true the contact will be added.
-	 * If false the contact will be removed.
-	 */
-	public void change(int position, boolean add)
-	{
-		
-		ArrayList<Number> numbers = tc.get(position).getNumber();
-		if (add)
-		{			
-			if(numbers != null && numbers.size() > 0)
-			{
-				if(numbers.size() == 1)
-				{
-					numbers.get(0).setPublicKey();
-				}
-				else
-				{
-					//Contact has multiple numbers
-				}
+			public void onClick(View v) {
+				/*
+				 * Launch Exchange Keys thread.
+				 */
+				
+				//TODO Override to adjust cancel
+				keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Loading Contacts", 
+		                "Loading. Please wait...", true, false);
+				keyThread.startThread(ManageContactsActivity.this);
+				
 			}
-		}
-		else
-		{
-			if(numbers != null && numbers.size() > 0)
-			{
-				if(numbers.size() == 1)
-				{
-					numbers.get(0).clearPublicKey();
-				}
-				else
-				{
-					//Contact has multiple numbers
-				}
-			}
-		}
-		
-		//TODO fix so it will update all of the changed keys
-		MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
+        	
+        });
 	}
 
 	/**
@@ -421,7 +398,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         public void handleMessage(Message msg)
         {
         	update();
-        	dialog.dismiss();
+        	loadingDialog.dismiss();
         }
 	};
 

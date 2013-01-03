@@ -137,6 +137,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						} 
 						catch (Exception e) 
 						{
+							//TODO update to warn of man in the middle attack
 							Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 							e.printStackTrace();
 						}

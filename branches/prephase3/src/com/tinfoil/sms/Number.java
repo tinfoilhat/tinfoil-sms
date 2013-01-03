@@ -314,6 +314,7 @@ public class Number {
 	public void setPublicKey()
 	{
 		this.publicKey =  Encryption.generateKey();
+		//TODO update signature as well
 	}
 	
 	/**
@@ -322,6 +323,7 @@ public class Number {
 	public void clearPublicKey()
 	{
 		this.publicKey = null;
+		//TODO update signature as well
 	}
 
 	/**

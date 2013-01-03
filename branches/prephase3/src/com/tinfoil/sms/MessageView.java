@@ -332,7 +332,9 @@ public class MessageView extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.exchange:
-			//TODO ensure this is working
+			/*
+			 * TODO update so that this launches the exchange keys thread.
+			 */
 			TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
 					(Prephase3Activity.selectedNumber));
 			if (tc != null)
@@ -341,12 +343,12 @@ public class MessageView extends Activity {
 						(Prephase3Activity.selectedNumber)))
 				{
 					tc.getNumber(Prephase3Activity.selectedNumber).clearPublicKey();
-					MessageService.dba.updateKey(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateKey(tc.getNumber(Prephase3Activity.selectedNumber));
 				}
 				else
 				{
 					tc.getNumber(Prephase3Activity.selectedNumber).setPublicKey();
-					MessageService.dba.updateKey(tc, Prephase3Activity.selectedNumber);
+					MessageService.dba.updateKey(tc.getNumber(Prephase3Activity.selectedNumber));
 				}
 			}
 			
