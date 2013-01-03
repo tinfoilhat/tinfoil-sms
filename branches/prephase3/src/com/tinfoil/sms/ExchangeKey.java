@@ -27,13 +27,14 @@ public class ExchangeKey implements Runnable {
 		}
 		
 		//TODO update to actually use proper key exchange (via sms)
+		//Start Key exchanges 1 by 1, using the user specified time out.
 		for(int i = 0; i < ManageContactsActivity.trustedNumbers.size(); i++)
 		{
 			ManageContactsActivity.trustedNumbers.get(i).setPublicKey();
-			MessageService.dba.updateKey(ManageContactsActivity.untrustedNumbers.get(i));
+			MessageService.dba.updateKey(ManageContactsActivity.trustedNumbers.get(i));
 		}
-		//Start Key exchanges 1 by 1, using the user specified time out.
-		//TODO implement
+		
+		ManageContactsActivity.keyDialog.dismiss();
 	}
 
 }

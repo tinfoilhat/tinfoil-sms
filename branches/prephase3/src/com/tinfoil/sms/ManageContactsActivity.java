@@ -59,7 +59,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
 	private ProgressDialog loadingDialog;
-	private ProgressDialog keyDialog;
+	public static ProgressDialog keyDialog;
 	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
 	private boolean[] trusted;
@@ -134,7 +134,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         					//Contact only has a single number, check if that number is trusted
 		        			if (!MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
 		        			{
-		        				Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+		        				//Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 		        				
 		        				//numbers.get(0).setPublicKey();
 		        				index = Number.hasNumber(untrustedNumbers, numbers.get(0));
@@ -151,7 +151,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			        		}
 			        		else
 			        		{
-			        			Toast.makeText(getApplicationContext(), "Contact remove from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+			        			//Toast.makeText(getApplicationContext(), "Contact remove from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 			        			
 			        			//numbers.get(0).clearPublicKey();
 			        			index = Number.hasNumber(trustedNumbers, numbers.get(0));
@@ -258,8 +258,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				 */
 				
 				//TODO Override to adjust cancel
-				keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Loading Contacts", 
-		                "Loading. Please wait...", true, false);
+				keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
+		                "Exchanging. Please wait...", true, false);
 				keyThread.startThread(ManageContactsActivity.this);
 				
 			}
