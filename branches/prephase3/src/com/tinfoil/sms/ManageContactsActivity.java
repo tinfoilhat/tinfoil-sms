@@ -127,8 +127,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				}
         				else
         				{
-        					//TODO implement popup menu
-        					Toast.makeText(getBaseContext(), "here", Toast.LENGTH_LONG).show();
         					AlertDialog.Builder popup_builder = new AlertDialog.Builder(ManageContactsActivity.this);
         					
         					//TODO implement ListAdapter 
@@ -140,21 +138,25 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
-										// TODO Auto-generated method stub
-										
+										if(isChecked)
+										{
+											//Add to the sublist of numbers to exchange keys with
+										}
+										else
+										{
+											//Remove from the sublist of numbers to exchange keys with
+										}
 									}})
 									.setPositiveButton("Okay", new DialogInterface.OnClickListener(){
 
 										public void onClick(DialogInterface dialog, int which) {
-											// TODO Auto-generated method stub
-											
+											//Add the sublist to the full list of numbers to exchange keys with
 										}
 									})
 									.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
 										public void onClick(DialogInterface dialog, int which) {
-											// TODO Auto-generated method stub
-											
+											dialog.cancel();
 										}
 									})
         						   .setCancelable(true);

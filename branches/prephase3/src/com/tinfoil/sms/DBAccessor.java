@@ -761,14 +761,13 @@ public class DBAccessor {
 				i = 0;
 				do
 				{
-					tc.addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+					num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
+					tc.addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)), 
 							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
-					
-					num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
-					
+
 					//Retrieve the book paths
 					String columns[] = getBookPath(num_id);
 					tc.getNumber().get(i).setBookPath(columns[0]);
@@ -832,14 +831,14 @@ public class DBAccessor {
 					j = 0;
 					do
 					{
-						tc.get(i).addNumber(new Number (pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
+						num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
+						
+						tc.get(i).addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
-						
-						num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
-						
+
 						//Retrieve the book paths
 						String columns[] = getBookPath(num_id);
 						tc.get(i).getNumber().get(j).setBookPath(columns[0]);
@@ -1053,6 +1052,8 @@ public class DBAccessor {
 		 * The row must be delete and the re-added since everything could have been changed (except for the
 		 * Row key from the database but that is not stored).
 		 */
+		
+		//TODO Store the number's unique id in the Number class
 		
         open();
         db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);

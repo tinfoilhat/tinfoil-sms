@@ -26,6 +26,7 @@ import java.util.Calendar;
  */
 public class Number {
 	
+	private long id;
 	private String number;
 	private int type;
 	private int unreadMessageCount = 0;
@@ -49,8 +50,9 @@ public class Number {
 	 * @param unreadMessageCount The number of messages that have
 	 * not been read from this number
 	 */
-	public Number (String number, int type, int unreadMessageCount,byte[] publicKey,byte[] signature)
+	public Number (long id, String number, int type, int unreadMessageCount,byte[] publicKey,byte[] signature)
 	{
+		this.id = id;
 		this.setNumber(number);
 		this.setType(type);
 		this.setUnreadMessageCount(unreadMessageCount);
