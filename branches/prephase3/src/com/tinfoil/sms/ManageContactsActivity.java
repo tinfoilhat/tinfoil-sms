@@ -128,34 +128,38 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				if(numbers.size() == 1)
         				{
         					//Contact only has a single number, check if that number is trusted
-		        			if (MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
+		        			if (!MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
 		        			{
-		        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+		        				Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 		        				
 		        				//numbers.get(0).setPublicKey();
 		        				index = Number.hasNumber(untrustedNumbers, numbers.get(0));
 			        			if(index >= 0)
 			        			{
+			        				//Toast.makeText(getBaseContext(), "un- " + untrustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
 			        				untrustedNumbers.remove(index);
 			        			}
 			        			else
 			        			{
 			        				trustedNumbers.add(numbers.get(0));
+			        				//Toast.makeText(getBaseContext(), "trust+ " + trustedNumbers.get(trustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 			        			}
 			        		}
 			        		else
 			        		{
-			        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+			        			Toast.makeText(getApplicationContext(), "Contact remove from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 			        			
 			        			//numbers.get(0).clearPublicKey();
 			        			index = Number.hasNumber(trustedNumbers, numbers.get(0));
 			        			if(index >= 0)
 			        			{
+									//Toast.makeText(getBaseContext(), "trust- " + trustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
 			        				trustedNumbers.remove(index);
 			        			}
-			        			else
+			        			else  
 			        			{
 			        				untrustedNumbers.add(numbers.get(0));
+			        				//Toast.makeText(getBaseContext(), "un+ " + untrustedNumbers.get(untrustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 			        			}
 			        		}
         				}
@@ -173,17 +177,20 @@ public class ManageContactsActivity extends Activity implements Runnable {
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
 										int index = 0;
+
 										if(isChecked)
 										{
 											//Add to the sublist of numbers to exchange keys with
 											index = Number.hasNumber(sublistUntrust, numbers.get(0));
 						        			if(index >= 0)
 						        			{
+						        				//Toast.makeText(getBaseContext(), "un- " + sublistUntrust.get(index).getNumber(), Toast.LENGTH_LONG).show();
 						        				sublistUntrust.remove(index);
 						        			}
 						        			else
 						        			{
 						        				sublistTrust.add(numbers.get(which));
+						        				//Toast.makeText(getBaseContext(), "trust+ " + sublistTrust.get(sublistTrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 						        			}
 										}
 										else
@@ -192,11 +199,13 @@ public class ManageContactsActivity extends Activity implements Runnable {
 											index = Number.hasNumber(sublistTrust, numbers.get(0));
 						        			if(index >= 0)
 						        			{
+						        				//Toast.makeText(getBaseContext(), "trust- " + sublistTrust.get(index).getNumber(), Toast.LENGTH_LONG).show();
 						        				sublistTrust.remove(index);
 						        			}
 						        			else
 						        			{
-						        				sublistUntrust.remove(numbers.get(which));
+						        				sublistUntrust.add(numbers.get(which));
+//						        				//Toast.makeText(getBaseContext(), "un+ " + sublistUntrust.get(sublistUntrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 						        			}
 										}
 									}})

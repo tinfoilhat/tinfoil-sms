@@ -1036,7 +1036,8 @@ public class DBAccessor {
         cv.put(KEY_SIGNATURE, numb.getSignature());
         
         open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id, null);
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{numb.getNumber()});
 		close();
 	}
 	
@@ -1098,8 +1099,8 @@ public class DBAccessor {
 
 	/**
 	 * Checks if the given number is a trusted contact's number
-	 * @param number : String, the number of the potential trusted contact
-	 * @return : boolean
+	 * @param number String, the number of the potential trusted contact
+	 * @return boolean
 	 * true, if the contact is found in the database and is in the trusted state.
 	 * false, if the contact is not found in the database or is not the trusted state.
 	 * 
