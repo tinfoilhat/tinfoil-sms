@@ -1048,19 +1048,26 @@ public class DBAccessor {
 	 */
 	public void updateNumberRow (ArrayList<Number> number, long id)
 	{
-		/*
-		 * The row must be delete and the re-added since everything could have been changed (except for the
-		 * Row key from the database but that is not stored).
-		 */
-		
+		ContentValues cv = new ContentValues();
+	
 		//TODO Store the number's unique id in the Number class
-		
-        open();
-        db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
-		close();
 		for(int i = 0; i < number.size(); i++)
 		{
-			addNumbersRow(id, number.get(i));
+			cv.put(KEY_REFERENCE, id);
+	        cv.put(KEY_NUMBER, number.get(i).getNumber());
+	        cv.put(KEY_TYPE, number.get(i).getType());
+	        cv.put(KEY_UNREAD, number.get(i).getUnreadMessageCount());
+	        cv.put(KEY_PUBLIC_KEY, number.get(i).getPublicKey());
+	        cv.put(KEY_SIGNATURE, number.get(i).getSignature());
+	        open();
+	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+	        		+ " AND " + KEY_ID + " = " + number.get(i).getId(), null);
+			close();
+			cv.clear();
+			if(num == 0)
+			{
+				addNumbersRow(id, number.get(i));
+			}
 		}
 		
 	}

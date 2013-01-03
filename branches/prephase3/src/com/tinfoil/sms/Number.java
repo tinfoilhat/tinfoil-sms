@@ -338,4 +338,20 @@ public class Number {
 		}
 		return false;
 	}
+
+	/**
+	 * Get the unique database Id for the number
+	 * @return id the long unique id for the row in the database
+	 */
+	public long getId() {
+		return id;
+	}
+
+	/**
+	 * Get the unique database Id for the number
+	 * @param id the new long unique id for the row in the database
+	 */
+	/*public void setId(long id) {
+		this.id = id;
+	}*/
 }
