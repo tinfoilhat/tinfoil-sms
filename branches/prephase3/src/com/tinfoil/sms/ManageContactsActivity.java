@@ -40,8 +40,6 @@ import android.widget.ListView;
 
 /**
  * TODO add another indicator to show contact is trusted rather then selected
- * TODO add a button to initiate key exchange
- * TODO remove ability to exchange keys (or adjust so a popup comes up for users with multiple numbers)
  * ManageContactActivity is an activity that allows the user to exchange keys, 
  * edit and delete contacts. A list of contacts will be shown with an check box,
  * if check then the user is either exchanging or have exchanged keys with the
@@ -111,16 +109,11 @@ public class ManageContactsActivity extends Activity implements Runnable {
         		        		
         		if (tc != null)
            		{
-        			/* TODO modify to popup with a menu if the contact has multiple numbers
-        			 * The layout of this will change to:
-        			 * 1. If the contact has only 1 number then it will act a it did previously 
-        			 * Else if they have more than 1 numbers then:
-        			 * 	1. User clicks on the contact's name
-        			 *  2. Pop menu shows the different numbers associated with the contact
-        			 *  3. user can click on the different numbers they wish to exchange keys with
-        			 *  4. user clicks positive button (there will also be negative button)
-        			 *  5. Key exchange takes place with those contacts. **Note might need to make a thread to run that process and make a progress wheel for the user
-        			 *  6. Contacts will show up with a check mark next to their name if at least 1 of their numbers is trusted. 
+        			/* TODO implement second indicator to show contacts are trusted
+        			 *  1. Contacts will show up with a check mark next to their name if at least 1 of their numbers is trusted. 
+        			 *  2. Numbers in popup window have an indicator showing they are trusted
+        			 *  3. Initialize the check box list if the lists are not null
+        			 *  	- For numbers as well
         			 */
         			numbers = tc.get(position).getNumber();
         			if(numbers != null && numbers.size() > 0)
@@ -206,7 +199,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 						        			else
 						        			{
 						        				sublistUntrust.add(numbers.get(which));
-//						        				//Toast.makeText(getBaseContext(), "un+ " + sublistUntrust.get(sublistUntrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
+						        				//Toast.makeText(getBaseContext(), "un+ " + sublistUntrust.get(sublistUntrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 						        			}
 										}
 									}})

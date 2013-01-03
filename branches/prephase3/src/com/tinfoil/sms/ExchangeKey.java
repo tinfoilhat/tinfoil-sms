@@ -17,7 +17,6 @@ public class ExchangeKey implements Runnable {
 		this.c = c;
 		this.untrusted = untrusted;
 		this.trusted = trusted;
-		
 		Thread thread = new Thread(this);
 		thread.start();
 	}	
@@ -29,9 +28,9 @@ public class ExchangeKey implements Runnable {
 		 * deletion of keys. We don't care if the contact will now fail to decrypt messages that
 		 * is the user's problem
 		 */
+		
 		for(int i = 0; i < untrusted.size(); i++)
 		{
-			
 			untrusted.get(i).clearPublicKey();
 			MessageService.dba.updateKey(untrusted.get(i));
 		}
@@ -40,7 +39,6 @@ public class ExchangeKey implements Runnable {
 		//Start Key exchanges 1 by 1, using the user specified time out.
 		for(int i = 0; i < trusted.size(); i++)
 		{
-			
 			trusted.get(i).setPublicKey();
 			MessageService.dba.updateKey(trusted.get(i));
 		}
