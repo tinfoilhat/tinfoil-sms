@@ -14,7 +14,7 @@
     </ListView>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/exchange_keys"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

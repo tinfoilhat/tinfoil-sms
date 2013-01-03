@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -54,12 +55,18 @@ import android.widget.Toast;
  */
 public class ManageContactsActivity extends Activity implements Runnable {
 	private ListView listView;
+	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
 	private ProgressDialog dialog;
 	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
 	private boolean[] trusted;
 	private AlertDialog popup_alert;
+	private static ArrayList<Number> trustedNumbers;
+	private static ArrayList<Number> untrustedNumbers;
+	private static ArrayList<Number> sublistTrust;
+	private static ArrayList<Number> sublistUntrust;
+	private static ArrayList<Number> numbers;
 
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,12 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
         setContentView(R.layout.contact);
         listView = (ListView)findViewById(R.id.contact_list);
+        exchangeKeys = (Button)findViewById(R.id.exchange_keys);
+
+        trustedNumbers = new ArrayList<Number>();
+        untrustedNumbers = new ArrayList<Number>();
+        sublistTrust = new ArrayList<Number>();
+        sublistUntrust = new ArrayList<Number>();
 
         //update();
         
@@ -108,21 +121,42 @@ public class ManageContactsActivity extends Activity implements Runnable {
         			 *  5. Key exchange takes place with those contacts. **Note might need to make a thread to run that process and make a progress wheel for the user
         			 *  6. Contacts will show up with a check mark next to their name if at least 1 of their numbers is trusted. 
         			 */
-        			ArrayList<Number> numbers = tc.get(position).getNumber();
+        			numbers = tc.get(position).getNumber();
         			if(numbers != null && numbers.size() > 0)
         			{
+        				int index = -1;
         				if(numbers.size() == 1)
         				{
         					//Contact only has a single number, check if that number is trusted
 		        			if (MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
 		        			{
 		        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
-		        				numbers.get(0).setPublicKey();
+		        				
+		        				//numbers.get(0).setPublicKey();
+		        				index = Number.hasNumber(untrustedNumbers, numbers.get(0));
+			        			if(index >= 0)
+			        			{
+			        				untrustedNumbers.remove(index);
+			        			}
+			        			else
+			        			{
+			        				trustedNumbers.add(numbers.get(0));
+			        			}
 			        		}
 			        		else
 			        		{
 			        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
-			        			numbers.get(0).clearPublicKey();
+			        			
+			        			//numbers.get(0).clearPublicKey();
+			        			index = Number.hasNumber(trustedNumbers, numbers.get(0));
+			        			if(index >= 0)
+			        			{
+			        				trustedNumbers.remove(index);
+			        			}
+			        			else
+			        			{
+			        				untrustedNumbers.add(numbers.get(0));
+			        			}
 			        		}
         				}
         				else
@@ -138,24 +172,48 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
+										int index = 0;
 										if(isChecked)
 										{
 											//Add to the sublist of numbers to exchange keys with
+											index = Number.hasNumber(sublistUntrust, numbers.get(0));
+						        			if(index >= 0)
+						        			{
+						        				sublistUntrust.remove(index);
+						        			}
+						        			else
+						        			{
+						        				sublistTrust.add(numbers.get(which));
+						        			}
 										}
 										else
 										{
 											//Remove from the sublist of numbers to exchange keys with
+											index = Number.hasNumber(sublistTrust, numbers.get(0));
+						        			if(index >= 0)
+						        			{
+						        				sublistTrust.remove(index);
+						        			}
+						        			else
+						        			{
+						        				sublistUntrust.remove(numbers.get(which));
+						        			}
 										}
 									}})
 									.setPositiveButton("Okay", new DialogInterface.OnClickListener(){
 
 										public void onClick(DialogInterface dialog, int which) {
 											//Add the sublist to the full list of numbers to exchange keys with
+											trustedNumbers.addAll(sublistTrust);
+											untrustedNumbers.addAll(sublistUntrust);
+											sublistTrust.clear();
+											sublistUntrust.clear();
 										}
 									})
 									.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
 										public void onClick(DialogInterface dialog, int which) {
+											//Sublist is not added to the full list
 											dialog.cancel();
 										}
 									})
@@ -175,11 +233,11 @@ public class ManageContactsActivity extends Activity implements Runnable {
     				AddContact.editTc = null;
         			startActivity(new Intent(getBaseContext(), AddContact.class));
         		}
-
         	}});
 	}
 
 	/**
+	 * TODO remove
 	 * Used to toggle the contact from being in or out of the 
 	 * trusted state.
 	 * @param position : int, the position on the list of contacts.
@@ -231,6 +289,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	{
 		for (int i = 0; i < tc.size();i++)
 		{				
+			//TODO change so check box is not the method of indicating that a contact is trusted
 			if (trusted[i])
 			{
 				listView.setItemChecked(i, true);
@@ -333,6 +392,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	        	names[i] = tc.get(i).getName();
 	        }
 	        arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
+	        
+
 	        trusted = MessageService.dba.isTrustedContact(tc);
 		}
 		else

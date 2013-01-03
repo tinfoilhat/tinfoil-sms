@@ -354,4 +354,15 @@ public class Number {
 	/*public void setId(long id) {
 		this.id = id;
 	}*/
+	public static int hasNumber(ArrayList<Number> numbers, Number number)
+	{
+		for(int i = 0; i < numbers.size(); i++)
+		{
+			if(numbers.get(i).getNumber().equalsIgnoreCase(number.getNumber()))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
 }

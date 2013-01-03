@@ -43,7 +43,7 @@ public class ServiceChecker implements Runnable{
 			 */
 			while(!signal)
 			{
-				//Do nothing, just wait for their to be signal
+				//Do nothing, just waWit for their to be signal
 			}
 			MessageSender.success = 0;
 			Queue messageInfo = MessageService.dba.getFirstInQueue();
