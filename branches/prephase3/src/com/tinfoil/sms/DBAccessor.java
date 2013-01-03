@@ -1021,6 +1021,8 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 		//Number numb = tc.getNumber(number);
 		
+		long id = getId(number.getNumber());
+		
 		//cv.put(KEY_REFERENCE, numb.getId());
         //cv.put(KEY_NUMBER, numb.getNumber());
         //cv.put(KEY_TYPE, numb.getType());
@@ -1029,7 +1031,7 @@ public class DBAccessor {
         cv.put(KEY_SIGNATURE, number.getSignature());
         
         open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + number.getId() 
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
 				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
 		close();
 	}

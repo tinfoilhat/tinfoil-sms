@@ -36,9 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 /**
  * TODO add another indicator to show contact is trusted rather then selected
@@ -59,13 +57,12 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
 	private ProgressDialog loadingDialog;
-	public static ProgressDialog keyDialog;
 	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
 	private boolean[] trusted;
 	private AlertDialog popup_alert;
-	public static ArrayList<Number> trustedNumbers;
-	public static ArrayList<Number> untrustedNumbers;
+	private static ArrayList<Number> trustedNumbers;
+	private static ArrayList<Number> untrustedNumbers;
 	private static ArrayList<Number> sublistTrust;
 	private static ArrayList<Number> sublistUntrust;
 	private static ArrayList<Number> numbers;
@@ -258,9 +255,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				 */
 				
 				//TODO Override to adjust cancel
-				keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
+				ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
 		                "Exchanging. Please wait...", true, false);
-				keyThread.startThread(ManageContactsActivity.this);
+				
+				keyThread.startThread(ManageContactsActivity.this, untrustedNumbers, trustedNumbers);
 				
 			}
         	
