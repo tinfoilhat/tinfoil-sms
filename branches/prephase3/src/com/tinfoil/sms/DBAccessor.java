@@ -83,13 +83,6 @@ public class DBAccessor {
 	{
 		contactDatabase = new SQLitehelper(c);
 		db = contactDatabase.getWritableDatabase();
-        
-		//Create a default row if once does not exist already.
-		//if (bookIsDefault(0) && sharedInfoIsDefault(0))
-		//{
-			//addBookPath(0, DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH);
-			//addSharedInfo(0, DEFAULT_S1, DEFAULT_S2);
-		//}
 	}
 	
 	/**
@@ -322,39 +315,8 @@ public class DBAccessor {
 			}
 			return sharedInfo;
 		}
-		//TODO remove the comments
-		//else
-		//{
 		cur.close();
-			//Reference not found, return the default
-			/*Cursor dCur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
-					new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
-					KEY_REFERENCE + " = " + 0, null, null, null, null);
-			if (dCur.moveToFirst())
-			{
-				String sharedInfo[] = new String[] {dCur.getString(dCur.getColumnIndex(KEY_SHARED_INFO_1)),
-						dCur.getString(dCur.getColumnIndex(KEY_SHARED_INFO_2))};
-				if (open)
-				{
-					dCur.close();
-				}
-				else
-				{
-					close(dCur);
-				}
-				return sharedInfo;
-			}
-			if (open)
-			{
-				dCur.close();
-			}
-			else
-			{
-				close(dCur);
-			}*/
-		//}
 		return new String[] { DEFAULT_S1, DEFAULT_S2 };
-		//return null;
 	}
 		
 	/**
@@ -1016,8 +978,6 @@ public class DBAccessor {
 	}
 	
 	/** 
-	 * TODO decide whether a contact should be allowed to have a key per number (so if a person has multiple
-	 * cell phones for a single contact, )
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
@@ -1126,6 +1086,7 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO further implementation to check if the given number is trusted or any of the contact's numbers are trusted
 	 * Identifies which contacts are trusted
 	 * @param contacts : ArrayList<Contact> contacts the list of contacts
 	 * @return : boolean[] an array of boolean values which maps to the contacts

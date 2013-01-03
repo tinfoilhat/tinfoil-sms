@@ -76,7 +76,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 				AddContact.addContact = false;
 				AddContact.editTc = tc.get(position);
-				//AddContact.editTc = MessageService.dba.getRow(contact.get(position).getNumber());
 				ManageContactsActivity.this.startActivity(new Intent
 						(ManageContactsActivity.this, AddContact.class));
 
@@ -168,6 +167,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		}
 
 		//MessageService.dba.updateRow(contact.get(position));
+		
+		//TODO fix so it will update all of the changed keys
 		MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
 	}
 
@@ -178,7 +179,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private void initList()
 	{
 		for (int i = 0; i < tc.size();i++)
-		//for (int i = 0; i < contact.size();i++)
 		{				
 			if (trusted[i])
 			{
@@ -200,7 +200,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		listView.setItemsCanFocus(false);
 		
 		if (tc != null)
-		//if (contact != null)
         {
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	        initList();
@@ -229,10 +228,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add:
-		{
-			//if (tc != null)
-			//if (contact != null)
-			
+		{			
 			AddContact.addContact = true;
 			AddContact.editTc = null;
 			startActivity(new Intent(this, AddContact.class));
@@ -241,10 +237,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		}
 		case R.id.all:
 			if (tc!=null)
-			//if (contact != null)
 			{
 				for (int i = 0; i < tc.size();i++)
-				//for (int i = 0; i < contact.size();i++)
 				{
 					listView.setItemChecked(i, true);
 					change(i, true);
@@ -253,10 +247,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			return true;
 		case R.id.remove:
 			if (tc!=null)
-			//if (contact !=null)
 			{
 				for (int i = 0; i < tc.size();i++)
-				//for (int i = 0; i < contact.size();i++)
 				{
 					listView.setItemChecked(i, false);
 					change(i, false);
@@ -266,7 +258,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		case R.id.delete:
 		{
 			if (tc!=null)
-			//if (contact!=null)
 			{
 				startActivity(new Intent(getApplicationContext(), RemoveContactsActivity.class));
 			}
@@ -280,24 +271,15 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 	public void run() {
 		tc = MessageService.dba.getAllRows();
-		//contact = MessageService.dba.getAllRowsLimited();
 		
-		//if (contact != null)
 		if (tc != null)
-		{
-			/*names = new String[contact.size()];
-	        for (int i = 0; i < contact.size(); i++)
-	        {
-	        	names[i] = contact.get(i).getName();
-	        }*/
-			
+		{			
 			names = new String[tc.size()];
 	        for (int i = 0; i < tc.size(); i++)
 	        {
 	        	names[i] = tc.get(i).getName();
 	        }
 	        arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
-	        //trusted = MessageService.dba.isTrustedContact(contact);
 	        trusted = MessageService.dba.isTrustedContact(tc);
 		}
 		else

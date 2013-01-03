@@ -40,14 +40,12 @@ public class QuickPrefsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.options);
         
         //TODO implement the OnPreferenceChangeListener for the other preferences that use numbers only
-        
         EditTextPreference messageLimit = (EditTextPreference)findPreference("message_limit");
         messageLimit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
         {
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
 				
-				//TODO account for unlimited
 				if(SMSUtility.isANumber(newValue.toString()) && Integer.valueOf(newValue.toString()) >0)
 				{
 					return true;

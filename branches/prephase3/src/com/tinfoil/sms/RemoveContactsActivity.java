@@ -42,7 +42,6 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
 	private ListView listView;
 	private boolean [] contact;
 	private ArrayList<TrustedContact> tc;
-	//private ArrayList<Contact> cont;
 	private Button delete;
 	private ProgressDialog dialog;
 	private boolean clicked = false;
@@ -78,7 +77,6 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
         delete.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v) {
 				if (tc != null)
-				//if (cont != null)
 				{
 					clicked = true;
 					dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts", 
@@ -116,19 +114,14 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
 	{
 		String[] names;
 		tc  = MessageService.dba.getAllRows();
-		//cont = MessageService.dba.getAllRowsLimited();
 		
 		if (tc != null)
-		//if (cont != null)
 		{
 			//The string that is displayed for each item on the list 
 	        names = new String[tc.size()];
-			//names = new String[cont.size()];
 	        for (int i = 0; i < tc.size(); i++)
-			//for (int i = 0; i < cont.size(); i++)
 	        {
 	        	names[i] = tc.get(i).getName();
-				//names[i] = cont.get(i).getName();
 	        }
 			appAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
 		}
@@ -151,10 +144,8 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
 		switch (item.getItemId()) {
 		case R.id.all:
 			if (tc!=null)
-			//if (cont!=null)
 			{
 				for (int i = 0; i < tc.size();i++)
-				//for (int i = 0; i < cont.size();i++)
 				{
 					listView.setItemChecked(i, true);
 					contact[i] = true;
@@ -163,10 +154,8 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
 			return true;
 		case R.id.remove:
 			if (tc!=null)
-			//if (cont!=null)
 			{
 				for (int i = 0; i < tc.size();i++)
-				//for (int i = 0; i < cont.size();i++)
 				{
 					listView.setItemChecked(i, false);
 					contact[i] = false;
@@ -182,24 +171,20 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
 	public void run() {
 		if (clicked)
 		{
-			//for (int i = 0; i < cont.size(); i++)
 			for (int i = 0; i < tc.size(); i++)
 			{
 				if (contact[i])
 				{
 					MessageService.dba.removeRow(tc.get(i).getANumber());
-					//MessageService.dba.removeRow(cont.get(i).getNumber());
 				}
 			}
 		}
 			
 		update();
-		//if (cont != null)
 		if (tc != null)
 		{
-			//contact = new boolean [cont.size()];
+
 			contact = new boolean [tc.size()];
-	        //for (int i = 0; i < cont.size(); i++)
 			for (int i = 0; i < tc.size(); i++)
 	        {
 	        	contact[i] = false;
@@ -213,7 +198,6 @@ public class RemoveContactsActivity extends Activity  implements Runnable {
         public void handleMessage(Message msg)
         {
         	listView.setAdapter(appAdapt);
-        	//if (cont!= null)
         	if (tc!= null)
         	{
         		

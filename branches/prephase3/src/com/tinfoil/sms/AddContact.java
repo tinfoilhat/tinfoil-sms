@@ -109,8 +109,12 @@ public class AddContact extends Activity {
 				       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				           public void onClick(DialogInterface dialog, int id) {
 				        	   String value = input.getText().toString();
-				        	   update(value);
-				        	   input.setText("");
+				        	   if(value != "")
+				        	   {
+				        		   update(value);
+				        		   input.setText("");
+				        	   }
+				        	   //TODO alert of Invalid Number
 				           }})
 				        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
