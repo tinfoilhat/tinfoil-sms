@@ -19,7 +19,9 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,10 +34,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 /**
+ * TODO add another indicator to show contact is trusted rather then selected
+ * TODO add a button to initiate key exchange
  * TODO remove ability to exchange keys (or adjust so a popup comes up for users with multiple numbers)
  * ManageContactActivity is an activity that allows the user to exchange keys, 
  * edit and delete contacts. A list of contacts will be shown with an check box,
@@ -50,11 +55,11 @@ import android.widget.Toast;
 public class ManageContactsActivity extends Activity implements Runnable {
 	private ListView listView;
 	private ArrayList<TrustedContact> tc;
-	//private ArrayList<Contact> contact;
 	private ProgressDialog dialog;
 	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
 	private boolean[] trusted;
+	private AlertDialog popup_alert;
 
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
@@ -103,17 +108,63 @@ public class ManageContactsActivity extends Activity implements Runnable {
         			 *  5. Key exchange takes place with those contacts. **Note might need to make a thread to run that process and make a progress wheel for the user
         			 *  6. Contacts will show up with a check mark next to their name if at least 1 of their numbers is trusted. 
         			 */
-        			
-        			if (MessageService.dba.isTrustedContact(tc.get(position).getANumber()))
+        			ArrayList<Number> numbers = tc.get(position).getNumber();
+        			if(numbers != null && numbers.size() > 0)
         			{
-        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
-        				change(position, false);
-	        		}
-	        		else
-	        		{
-	        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
-	        			change(position, true);
-	        		}
+        				if(numbers.size() == 1)
+        				{
+        					//Contact only has a single number, check if that number is trusted
+		        			if (MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
+		        			{
+		        				Toast.makeText(getApplicationContext(), "Contact removed from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+		        				numbers.get(0).setPublicKey();
+			        		}
+			        		else
+			        		{
+			        			Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
+			        			numbers.get(0).clearPublicKey();
+			        		}
+        				}
+        				else
+        				{
+        					//TODO implement popup menu
+        					Toast.makeText(getBaseContext(), "here", Toast.LENGTH_LONG).show();
+        					AlertDialog.Builder popup_builder = new AlertDialog.Builder(ManageContactsActivity.this);
+        					
+        					//TODO implement ListAdapter 
+        					popup_builder.setTitle("Numbers")
+        							//.setAdapter(adapter, listener)
+        						   .setMultiChoiceItems(tc.get(position).getNumbers().toArray(new String[0]),
+        						   MessageService.dba.isNumberTrusted(numbers),
+        						   new DialogInterface.OnMultiChoiceClickListener(){
+
+									public void onClick(DialogInterface dialog,
+											int which, boolean isChecked) {
+										// TODO Auto-generated method stub
+										
+									}})
+									.setPositiveButton("Okay", new DialogInterface.OnClickListener(){
+
+										public void onClick(DialogInterface dialog, int which) {
+											// TODO Auto-generated method stub
+											
+										}
+									})
+									.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+										public void onClick(DialogInterface dialog, int which) {
+											// TODO Auto-generated method stub
+											
+										}
+									})
+        						   .setCancelable(true);
+        					popup_alert = popup_builder.create();
+        					popup_alert.show();
+        				}
+        				
+        				MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
+        			}
+	        			
         		}
         		else
         		{
@@ -165,8 +216,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				}
 			}
 		}
-
-		//MessageService.dba.updateRow(contact.get(position));
 		
 		//TODO fix so it will update all of the changed keys
 		MessageService.dba.updateKey(tc.get(position),tc.get(position).getANumber());
@@ -238,21 +287,23 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		case R.id.all:
 			if (tc!=null)
 			{
-				for (int i = 0; i < tc.size();i++)
+				//TODO change, this really isnt ideal anymore
+				/*for (int i = 0; i < tc.size();i++)
 				{
 					listView.setItemChecked(i, true);
 					change(i, true);
-				}
+				}*/
 			}
 			return true;
 		case R.id.remove:
 			if (tc!=null)
 			{
-				for (int i = 0; i < tc.size();i++)
+				//TODO change, this really isnt ideal anymore
+				/*for (int i = 0; i < tc.size();i++)
 				{
 					listView.setItemChecked(i, false);
 					change(i, false);
-				}
+				}*/
 			}
 			return true;
 		case R.id.delete:

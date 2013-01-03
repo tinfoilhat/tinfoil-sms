@@ -974,7 +974,9 @@ public class DBAccessor {
 	{
 		long id = getId(SMSUtility.format(number));
 		updateTrustedRow(tc, number, id);
-		updateNumberRow(tc, number, id);
+		
+		updateNumberRow(tc.getNumber(), id);
+		
 	}
 	
 	/** 
@@ -1040,6 +1042,29 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Update a row from the Numbers table
+	 * @param tc : TrustedContact the new information to be stored
+	 * @param number : String a number owned by the contact
+	 * @param id : long the id for the contact's database row
+	 */
+	public void updateNumberRow (ArrayList<Number> number, long id)
+	{
+		/*
+		 * The row must be delete and the re-added since everything could have been changed (except for the
+		 * Row key from the database but that is not stored).
+		 */
+		
+        open();
+        db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		close();
+		for(int i = 0; i < number.size(); i++)
+		{
+			addNumbersRow(id, number.get(i));
+		}
+		
+	}
+	
+	/**
 	 * Deletes the rows with the given number
 	 * @param number : String, the primary number of the contact to be deleted
 	 * @return : boolean
@@ -1088,7 +1113,7 @@ public class DBAccessor {
 	/**
 	 * TODO further implementation to check if the given number is trusted or any of the contact's numbers are trusted
 	 * Identifies which contacts are trusted
-	 * @param contacts : ArrayList<Contact> contacts the list of contacts
+	 * @param tc : ArrayList<TrustedContact> contacts the list of contacts
 	 * @return : boolean[] an array of boolean values which maps to the contacts
 	 * true if the contact is trusted
 	 * false if the contact is not trusted.
@@ -1100,7 +1125,46 @@ public class DBAccessor {
 		boolean[] trusted = new boolean[tc.size()];
 		for (int i=0;i<tc.size();i++)
 		{
-			trusted[i] = isTrustedContact(tc.get(i).getANumber());
+			trusted[i] = isTrustedContact(tc.get(i));
+		}
+		return trusted;
+	}
+	
+	/**
+	 * @param tc : TrustedContact the contact to check for a trusted number
+	 * @return : boolean whether the contact has a trusted number or not
+	 * true if the contact is trusted
+	 * false if the contact is not trusted.
+	 * 
+	 * (NOTE: see isTrustedContact(String number) for more details)
+	 */
+	public boolean isTrustedContact (TrustedContact tc)
+	{
+		for (int i=0;i<tc.getNumber().size();i++)
+		{
+			if(isTrustedContact(tc.getNumber().get(i).getNumber()))
+			{
+				return true;
+			}
+			
+		}
+		return false;
+	}
+	
+	/**
+	 * @param contacts : TrustedContact the contact to check for a trusted number
+	 * @return : boolean whether the contact has a trusted number or not
+	 * true if the contact is trusted
+	 * false if the contact is not trusted.
+	 * 
+	 * (NOTE: see isTrustedContact(String number) for more details)
+	 */
+	public boolean[] isNumberTrusted (ArrayList<Number> number)
+	{
+		boolean[] trusted = new boolean[number.size()];
+		for (int i=0;i<number.size();i++)
+		{
+			trusted[i] = isTrustedContact(number.get(i).getNumber());
 		}
 		return trusted;
 	}

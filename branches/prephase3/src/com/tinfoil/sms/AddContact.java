@@ -109,7 +109,7 @@ public class AddContact extends Activity {
 				       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				           public void onClick(DialogInterface dialog, int id) {
 				        	   String value = input.getText().toString();
-				        	   if(value != "")
+				        	   if(value != "" && value.length() > 0)
 				        	   {
 				        		   update(value);
 				        		   input.setText("");

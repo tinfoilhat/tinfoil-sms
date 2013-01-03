@@ -147,6 +147,8 @@ public class TrustedContact {
 	 * Get any of the numbers for the contact.
 	 * This is used for retrieving a single number
 	 * to be used. 
+	 * *NOTE: this should not be used unless it is to just get a single number to 
+	 * delete the row.
 	 * @return : String, the first non-null number found
 	 */
 	public String getANumber()
