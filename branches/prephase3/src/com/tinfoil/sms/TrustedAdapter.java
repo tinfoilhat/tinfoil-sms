@@ -17,6 +17,67 @@
 
 package com.tinfoil.sms;
 
-public class TrustedAdapter {
+import java.util.ArrayList;
 
+import com.tinfoil.sms.ContactAdapter.ContactHolder;
+
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+public class TrustedAdapter extends ArrayAdapter<String> {
+	
+	private int layoutResourceId;
+	private Context context;
+	private String[] names;
+	private boolean[] trusted;
+	
+	/*
+	 * Need list of names and whether they are trusted or not
+	 */
+	public TrustedAdapter(Context context, int layoutResourceId, String[] names, boolean[] trusted) {
+        super(context, layoutResourceId, names);
+        this.layoutResourceId = layoutResourceId;
+        this.context = context;
+        this.names = names;
+        this.trusted = trusted;
+    }
+	
+	 @Override
+	    public View getView(int position, View convertView, ViewGroup parent) {
+	        View row = convertView;
+	        TrustContactHolder holder = null;
+	        
+	        if(row == null)
+	        {
+	            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+	            row = inflater.inflate(layoutResourceId, parent, false);
+	            
+	            holder = new TrustContactHolder();
+	            holder.name = (TextView)row.findViewById(R.id.trust_name);
+	            holder.indicator = (TextView)row.findViewById(R.id.trust_indicator);
+	            
+	            row.setTag(holder);
+	        }
+	        else
+	        {
+	            holder = (TrustContactHolder)row.getTag();
+	        }
+	        
+	       	holder.name.setText(names[position]);
+	      	holder.indicator.setText(String.valueOf(trusted[position]));
+	      	
+	      	return row;
+	    }
+	    
+	    static class TrustContactHolder
+	    {
+	    	TextView name;
+	    	TextView indicator;
+	    }
+	
 }

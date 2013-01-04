@@ -1158,7 +1158,16 @@ public class DBAccessor {
 		boolean[] trusted = new boolean[tc.size()];
 		for (int i=0;i<tc.size();i++)
 		{
-			trusted[i] = isTrustedContact(tc.get(i));
+			trusted[i] = false;
+			for(int j = 0; j < tc.get(i).getNumber().size(); j++)
+			{
+				if(isTrustedContact(tc.get(i).getNumber().get(j).getNumber()))
+				{
+					trusted[i] = true;
+					break;
+				}
+			}
+			
 		}
 		return trusted;
 	}

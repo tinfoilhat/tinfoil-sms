@@ -32,6 +32,7 @@ public class ExchangeKey implements Runnable {
 	public void startThread(Context c, ArrayList<Number> untrusted, ArrayList<Number> trusted)
 	{
 		this.c = c;
+		//TODO generate the trusted and untrusted list by checking if the number has a key
 		this.untrusted = untrusted;
 		this.trusted = trusted;
 		Thread thread = new Thread(this);

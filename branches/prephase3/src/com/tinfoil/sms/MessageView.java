@@ -98,6 +98,7 @@ public class MessageView extends Activity {
 
 		msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
 		int unreadCount = MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber);
+		
 		Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
 		messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
 			unreadCount);
