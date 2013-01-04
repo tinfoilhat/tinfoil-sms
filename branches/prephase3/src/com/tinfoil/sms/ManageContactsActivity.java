@@ -269,11 +269,11 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			//TODO change so check box is not the method of indicating that a contact is trusted
 			if (trusted[i])
 			{
-				listView.setItemChecked(i, true);
+				//listView.setItemChecked(i, true);
     		}
 			else
 			{
-				listView.setItemChecked(i, false);
+				//listView.setItemChecked(i, false);
 			}
 		}
 	}
