@@ -39,6 +39,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * TODO add another indicator to show contact is trusted rather then selected
@@ -67,7 +68,12 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private static ArrayList<Number> untrustedNumbers;
 	
 	//TODO add hash to map the selected items and their locations in the list
-	private HashMap<String, Integer> selected;
+	//private HashMap<String, Integer> selected;
+	
+	private static boolean[] selected;
+	
+	private static ArrayList<boolean[]> subSelected;
+	//private HashMap<String, Integer> subSelected;
 	
 	private static ArrayList<Number> sublistTrust;
 	private static ArrayList<Number> sublistUntrust;
@@ -90,7 +96,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
         untrustedNumbers = new ArrayList<Number>();
         sublistTrust = new ArrayList<Number>();
         sublistUntrust = new ArrayList<Number>();
-        selected = new HashMap<String, Integer>();
+        //selected = new HashMap<String, Integer>();
+        //subSelected = new HashMap<String, Integer>();
+        
 
         //update();
         
@@ -130,6 +138,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				int index = -1;
         				if(numbers.size() == 1)
         				{
+        					Toast.makeText(getBaseContext(), "still clicking", Toast.LENGTH_SHORT).show();
         					//Contact only has a single number, check if that number is trusted
 		        			if (!MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
 		        			{
@@ -141,12 +150,14 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			        			{
 			        				//Toast.makeText(getBaseContext(), "un- " + untrustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
 			        				untrustedNumbers.remove(index);
-			        				selected.remove(numbers.get(0).getNumber());
+			        				selected[position] = false;
+			        				//selected.remove(numbers.get(0).getNumber());
 			        			}
 			        			else
 			        			{
 			        				trustedNumbers.add(numbers.get(0));
-			        				selected.put(numbers.get(0).getNumber(), position);
+			        				selected[position] = true;
+			        				//selected.put(numbers.get(0).getNumber(), position);
 			        				//Toast.makeText(getBaseContext(), "trust+ " + trustedNumbers.get(trustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 			        			}
 			        		}
@@ -160,31 +171,35 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			        			{
 									//Toast.makeText(getBaseContext(), "trust- " + trustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
 			        				trustedNumbers.remove(index);
-			        				selected.remove(numbers.get(0).getNumber());
+			        				selected[position] = false;
+			        				//selected.remove(numbers.get(0).getNumber());
 			        			}
 			        			else  
 			        			{
 			        				untrustedNumbers.add(numbers.get(0));
-			        				selected.put(numbers.get(0).getNumber(), position);
+			        				selected[position] = true;
+			        				//selected.put(numbers.get(0).getNumber(), position);
 			        				//Toast.makeText(getBaseContext(), "un+ " + untrustedNumbers.get(untrustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 			        			}
 			        		}
         				}
         				else
         				{
+        					final int contactIndex = position;
         					AlertDialog.Builder popup_builder = new AlertDialog.Builder(ManageContactsActivity.this);
+        					
         					
         					//TODO implement ListAdapter 
         					popup_builder.setTitle("Numbers")
         							//.setAdapter(adapter, listener)
         						   .setMultiChoiceItems(tc.get(position).getNumbers().toArray(new String[0]),
-        						   MessageService.dba.isNumberTrusted(numbers),
+        						   subSelected.get(contactIndex),
         						   new DialogInterface.OnMultiChoiceClickListener(){
 
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
 										int index = 0;
-
+										
 										if(isChecked)
 										{
 											//Add to the sublist of numbers to exchange keys with
@@ -193,10 +208,14 @@ public class ManageContactsActivity extends Activity implements Runnable {
 						        			{
 						        				//Toast.makeText(getBaseContext(), "un- " + sublistUntrust.get(index).getNumber(), Toast.LENGTH_LONG).show();
 						        				sublistUntrust.remove(index);
+						        				subSelected.get(contactIndex)[index] = false;
+						        				//subSelected.remove(numbers.get(which).getNumber());
 						        			}
 						        			else
 						        			{
 						        				sublistTrust.add(numbers.get(which));
+						        				subSelected.get(contactIndex)[which] = true;
+						        				//subSelected.put(numbers.get(which).getNumber(), which);
 						        				//Toast.makeText(getBaseContext(), "trust+ " + sublistTrust.get(sublistTrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 						        			}
 										}
@@ -208,10 +227,14 @@ public class ManageContactsActivity extends Activity implements Runnable {
 						        			{
 						        				//Toast.makeText(getBaseContext(), "trust- " + sublistTrust.get(index).getNumber(), Toast.LENGTH_LONG).show();
 						        				sublistTrust.remove(index);
+						        				subSelected.get(contactIndex)[index] = false;
+						        				//subSelected.remove(numbers.get(which).getNumber());
 						        			}
 						        			else
 						        			{
 						        				sublistUntrust.add(numbers.get(which));
+						        				//subSelected.put(numbers.get(which).getNumber(), which);
+						        				subSelected.get(contactIndex)[which] = true;
 						        				//Toast.makeText(getBaseContext(), "un+ " + sublistUntrust.get(sublistUntrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
 						        			}
 										}
@@ -222,6 +245,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 											//Add the sublist to the full list of numbers to exchange keys with
 											trustedNumbers.addAll(sublistTrust);
 											untrustedNumbers.addAll(sublistUntrust);
+											//if()
 											
 											/*
 											 * TODO identify whether at least one of the numbers is trusted
@@ -316,8 +340,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		{
 			listView.setAdapter(arrayAp);
 		}
-		
-		listView.setItemsCanFocus(false);
+		//listView.setItemsCanFocus(false);
 		
 		if (tc != null)
         {
@@ -397,15 +420,31 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		if (tc != null)
 		{			
 			names = new String[tc.size()];
+			selected = new boolean[tc.size()];
+			subSelected = new ArrayList<boolean[]>();
+			int size = 0;
+			int count = 0;
 	        for (int i = 0; i < tc.size(); i++)
 	        {
 	        	names[i] = tc.get(i).getName();
+	        	selected[i] = false;
+	        	size = tc.get(i).getNumber().size();
+	        	if(size > 1)
+	        	{
+	        		subSelected.add(new boolean[size]);
+	        		for(int j = 0; j < subSelected.get(count).length; j++)
+	        		{
+	        			subSelected.get(count)[j] = false;
+	        		}
+	        		count++;
+	        	}
 	        }
 	        //arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
 	        
 	        trusted = MessageService.dba.isTrustedContact(tc);
 	        
-	        contactAdapter = new TrustedAdapter(this, android.R.layout.simple_list_item_multiple_choice, names, trusted);
+	        //contactAdapter = new TrustedAdapter(this, android.R.layout.simple_list_item_multiple_choice, names, trusted);
+	        contactAdapter = new TrustedAdapter(this, R.layout.trusted_contact_manage, names, trusted);
 
 	        
 		}

@@ -3,17 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
+<TextView
         android:id="@+id/trust_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <CheckBox
+        android:id="@+id/trusted_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/trust_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/trust_name"
-        android:layout_alignParentRight="true"/>
-
+        android:layout_alignBottom="@+id/trusted_checkBox"
+        android:layout_toLeftOf="@+id/trusted_checkBox" />
 </RelativeLayout>

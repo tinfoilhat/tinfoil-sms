@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class TrustedAdapter extends ArrayAdapter<String> {
@@ -60,6 +61,8 @@ public class TrustedAdapter extends ArrayAdapter<String> {
 	            holder = new TrustContactHolder();
 	            holder.name = (TextView)row.findViewById(R.id.trust_name);
 	            holder.indicator = (TextView)row.findViewById(R.id.trust_indicator);
+	            holder.box = (CheckBox)row.findViewById(R.id.trusted_checkBox);
+	            //holder.box = (CheckBox)row.findViewById(R.id.checkBox1);
 	            
 	            row.setTag(holder);
 	        }
@@ -68,8 +71,18 @@ public class TrustedAdapter extends ArrayAdapter<String> {
 	            holder = (TrustContactHolder)row.getTag();
 	        }
 	        
-	       	holder.name.setText(names[position]);
+	        holder.name.setText(names[position]);
 	      	holder.indicator.setText(String.valueOf(trusted[position]));
+	        //holder.box.setText(names[position]);
+	      	
+	      	/*if(holder.box.isChecked())
+	      	{
+	      		holder.box.setChecked(false);
+	      	}
+	      	else
+	      	{
+	      		holder.box.setChecked(true);
+	      	}*/
 	      	
 	      	return row;
 	    }
@@ -78,6 +91,7 @@ public class TrustedAdapter extends ArrayAdapter<String> {
 	    {
 	    	TextView name;
 	    	TextView indicator;
+	    	CheckBox box;
 	    }
 	
 }
