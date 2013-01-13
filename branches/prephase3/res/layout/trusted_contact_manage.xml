@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tinfoil.sms.MultipleContactsLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-<TextView
-        android:id="@+id/trust_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
+	<CheckedTextView
+	    android:id="@+id/trust_name"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+	    android:singleLine="true"
+	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <CheckBox
-        android:id="@+id/trusted_checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
-
-    <TextView
-        android:id="@+id/trust_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/trusted_checkBox"
-        android:layout_toLeftOf="@+id/trusted_checkBox" />
-</RelativeLayout>
+	<TextView
+	    android:id="@+id/trust_indicator"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/trust_name"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginRight="43dp"
+	    android:singleLine="true"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+</com.tinfoil.sms.MultipleContactsLayout>
