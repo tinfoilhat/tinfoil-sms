@@ -79,7 +79,7 @@ public class ExchangeKey implements Runnable {
 					{
 						for(int j = 0; j < num.size(); j++)
 						{
-							if(subSelected.get(num.get(j)))
+							if(subSelected.get(num.get(j).getNumber()))
 							{
 								if(!MessageService.dba.isTrustedContact(num.get(j).getNumber()))
 								{
