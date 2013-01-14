@@ -74,8 +74,11 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	
 	private static boolean[] selected;
 	
+	//private static HashMap<String, HashMap<String, Boolean>> select = new HashMap<String, HashMap<String, Boolean>>();
+	
+	
 	//private static ArrayList<boolean[]> subSelected;
-	private static HashMap<String, boolean[]> subSelected;
+	private static HashMap<String, Boolean> subSelected;
 	//private HashMap<String, Integer> subSelected;
 	
 	private static ArrayList<Number> sublistTrust;
@@ -101,9 +104,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         sublistUntrust = new ArrayList<Number>();
         //selected = new HashMap<String, Integer>();
         //subSelected = new HashMap<String, Integer>();
-        
-        
-
+     
         //update();
         
         listView.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -144,38 +145,40 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				{
         					//Toast.makeText(getBaseContext(), "still clicking", Toast.LENGTH_SHORT).show();
         					//Contact only has a single number, check if that number is trusted
-		        			if (!MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
+		        			//if (!MessageService.dba.isTrustedContact(numbers.get(0).getNumber()))
+        					if(listView.isItemChecked(position))
 		        			{
 		        				//Toast.makeText(getApplicationContext(), "Contact added from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 		        				
 		        				//numbers.get(0).setPublicKey();
-		        				index = Number.hasNumber(untrustedNumbers, numbers.get(0));
+		        				/*index = Number.hasNumber(untrustedNumbers, numbers.get(0));
 			        			if(index >= 0)
 			        			{
-			        				//Toast.makeText(getBaseContext(), "un- " + untrustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
+			        				Toast.makeText(getBaseContext(), "un- " + untrustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
 			        				untrustedNumbers.remove(index);
-			        				selected[position] = false;
+			        				//selected[position] = false;
 			        				//selected.remove(numbers.get(0).getNumber());
 			        			}
 			        			else
 			        			{
 			        				trustedNumbers.add(numbers.get(0));
-			        				selected[position] = true;
+			        				//selected[position] = true;
 			        				//selected.put(numbers.get(0).getNumber(), position);
-			        				//Toast.makeText(getBaseContext(), "trust+ " + trustedNumbers.get(trustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
-			        			}
+			        				Toast.makeText(getBaseContext(), "trust+ " + trustedNumbers.get(trustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
+			        			}*/
+			        			selected[position] = true;
 			        		}
 			        		else
 			        		{
 			        			//Toast.makeText(getApplicationContext(), "Contact remove from\nTrusted Contacts", Toast.LENGTH_SHORT).show();
 			        			
 			        			//numbers.get(0).clearPublicKey();
-			        			index = Number.hasNumber(trustedNumbers, numbers.get(0));
+			        			/*index = Number.hasNumber(trustedNumbers, numbers.get(0));
 			        			if(index >= 0)
 			        			{
-									//Toast.makeText(getBaseContext(), "trust- " + trustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
+									Toast.makeText(getBaseContext(), "trust- " + trustedNumbers.get(index).getNumber(), Toast.LENGTH_LONG).show();
 			        				trustedNumbers.remove(index);
-			        				selected[position] = false;
+			        				
 			        				//selected.remove(numbers.get(0).getNumber());
 			        			}
 			        			else  
@@ -183,8 +186,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			        				untrustedNumbers.add(numbers.get(0));
 			        				selected[position] = true;
 			        				//selected.put(numbers.get(0).getNumber(), position);
-			        				//Toast.makeText(getBaseContext(), "un+ " + untrustedNumbers.get(untrustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
-			        			}
+			        				Toast.makeText(getBaseContext(), "un+ " + untrustedNumbers.get(untrustedNumbers.size()-1).getNumber(), Toast.LENGTH_LONG).show();
+			        			}*/
+			        			selected[position] = false;
 			        		}
         				}
         				else
@@ -204,57 +208,70 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
         					AlertDialog.Builder popup_builder = new AlertDialog.Builder(ManageContactsActivity.this);
         					
+        					boolean[] trustNum = new boolean[numbers.size()]; 
+        					for(int i = 0; i < numbers.size(); i++)
+        					{
+        						trustNum[i] = subSelected.get(numbers.get(i).getNumber());
+        					}
+        					
         					//TODO implement ListAdapter 
         					popup_builder.setTitle("Numbers")
         							//.setAdapter(adapter, listener)
         						   .setMultiChoiceItems(tc.get(contactIndex).getNumbers().toArray(new String[0]),
         						   //subSelected.get(contactIndex),
-        					       subSelected.get(tc.get(contactIndex).getNumber(0)),
+        						   trustNum,
         						   new DialogInterface.OnMultiChoiceClickListener(){
 
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
 										int index = 0;
 										
+										//if(!MessageService.dba.isTrustedContact(numbers.get(which).getNumber()))
 										if(isChecked)
 										{
 											//Add to the sublist of numbers to exchange keys with
-											index = Number.hasNumber(sublistUntrust, numbers.get(0));
+											/*index = Number.hasNumber(sublistUntrust, numbers.get(which));
 						        			if(index >= 0)
 						        			{
 						        				//Toast.makeText(getBaseContext(), "un- " + sublistUntrust.get(index).getNumber(), Toast.LENGTH_LONG).show();
 						        				sublistUntrust.remove(index);
 						        				//subSelected.get(contactIndex)[index] = false;
-						        				subSelected.get(tc.get(contactIndex).getNumber(0))[which] = true;
+						        				
+						        				//subSelected.get(tc.get(contactIndex).getNumber(which)) = true;
 						        				//subSelected.remove(numbers.get(which).getNumber());
 						        			}
 						        			else
 						        			{
 						        				sublistTrust.add(numbers.get(which));
 						        				//subSelected.get(contactIndex)[which] = true;
-						        				subSelected.get(tc.get(contactIndex).getNumber(0))[which] = true;
+						        				Toast.makeText(getBaseContext(), tc.get(contactIndex).getNumber(which), Toast.LENGTH_SHORT).show();
+						        				//Toast.makeText(getBaseContext(), String.valueOf(subSelected.get(tc.get(contactIndex).getNumber(which))[which]), Toast.LENGTH_SHORT).show();
+						        				//subSelected.put(tc.get(contactIndex).getNumber(which), true);
 						        				//subSelected.put(numbers.get(which).getNumber(), which);
 						        				//Toast.makeText(getBaseContext(), "trust+ " + sublistTrust.get(sublistTrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
-						        			}
+						        			}*/
+						        			subSelected.put(tc.get(contactIndex).getNumber(which), true);
 										}
 										else
 										{
+											
 											//Remove from the sublist of numbers to exchange keys with
-											index = Number.hasNumber(sublistTrust, numbers.get(0));
+											/*index = Number.hasNumber(sublistTrust, numbers.get(which));
 						        			if(index >= 0)
 						        			{
 						        				//Toast.makeText(getBaseContext(), "trust- " + sublistTrust.get(index).getNumber(), Toast.LENGTH_LONG).show();
 						        				sublistTrust.remove(index);
-						        				subSelected.get(tc.get(contactIndex).getNumber(0))[index] = false;
+						        				//subSelected.put(tc.get(contactIndex).getNumber(which), false);
 						        				//subSelected.remove(numbers.get(which).getNumber());
 						        			}
 						        			else
 						        			{
 						        				sublistUntrust.add(numbers.get(which));
 						        				//subSelected.put(numbers.get(which).getNumber(), which);
-						        				subSelected.get(tc.get(contactIndex).getNumber(0))[which] = false;
+						        				
 						        				//Toast.makeText(getBaseContext(), "un+ " + sublistUntrust.get(sublistUntrust.size()-1).getNumber(), Toast.LENGTH_LONG).show();
-						        			}
+						        			}*/
+						        			subSelected.put(tc.get(contactIndex).getNumber(which), false);
 										}
 									}})
 									.setPositiveButton("Okay", new DialogInterface.OnClickListener(){
@@ -268,7 +285,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 											for(int i = 0; i < tc.get(contactIndex).getNumber().size(); i++)
 											{
-												if(subSelected.get(tc.get(contactIndex).getNumber(0))[i])
+												if(subSelected.get(tc.get(contactIndex).getNumber(i)))
 												{
 													checked = true;
 													break;
@@ -276,7 +293,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 											}
 											
 											listView.setItemChecked(contactIndex, checked);
-											
+											selected[contactIndex] = checked;
 											
 											/*
 											 * TODO identify whether at least one of the numbers is trusted
@@ -328,7 +345,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
 		                "Exchanging. Please wait...", true, false);
 				
-				keyThread.startThread(ManageContactsActivity.this, untrustedNumbers, trustedNumbers);
+				//keyThread.startThread(ManageContactsActivity.this, untrustedNumbers, trustedNumbers);
+				keyThread.startThread(ManageContactsActivity.this, tc, subSelected, selected);	
 				
 			}
         	
@@ -387,6 +405,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	 */
 	protected void onResume()
 	{
+		//TODO This should be called in on Create and also after the exchange keys thread is finished
 		Thread thread = new Thread(this);
 	    thread.start();
 		super.onResume();
@@ -453,8 +472,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		{			
 			names = new String[tc.size()];
 			selected = new boolean[tc.size()];
-			subSelected = new HashMap<String, boolean[]>();
-			boolean[] tempArray; 
+			subSelected = new HashMap<String, Boolean>();
+			boolean tempArray = false; 
 			int size = 0;
 			//int count = 0;
 	        for (int i = 0; i < tc.size(); i++)
@@ -462,33 +481,34 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	        	names[i] = tc.get(i).getName();
 	        	selected[i] = false;
 	        	size = tc.get(i).getNumber().size();
-	        	if(size > 1)
-	        	{
+	        	//if(size > 1)
+	        	//{
 	        		//subSelected.add(new boolean[size]);
-	        		tempArray = new boolean[size];
-	        		for(int j = 0; j < size; j++)
-	        		{
+	        		//tempArray = new boolean[size];
+	        	for(int j = 0; j < size; j++)
+	        	{
 	        			//subSelected.get(count)[j] = false;
-	        			tempArray[j] = false;
-	        			//TODO change to use primary key from trusted contact table
-	        			subSelected.put(tc.get(i).getNumber(0), tempArray);
-	        		}
-	        		//count++;
+	        			//tempArray = false;
+	        			
+		       		//TODO change to use primary key from trusted contact table
+		        	subSelected.put(tc.get(i).getNumber(j), tempArray);
 	        	}
+
+	        		//count++;
+	        	//}
 	        }
+	        
 	        //arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
 	        
 	        trusted = MessageService.dba.isTrustedContact(tc);
 	        
 	        //contactAdapter = new TrustedAdapter(this, android.R.layout.simple_list_item_multiple_choice, names, trusted);
 	        contactAdapter = new TrustedAdapter(this, R.layout.trusted_contact_manage, names, trusted);
-
-	        
 		}
 		else
 		{
 			names = new String[1];
-        	names[0] = "Add a Contact";
+        	names[0] = "Add a Co	ntact";
         	
         	arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
 		}		
