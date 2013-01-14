@@ -66,8 +66,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	
 	private boolean notChecked = false;
 	
-	private static ArrayList<Number> trustedNumbers;
-	private static ArrayList<Number> untrustedNumbers;
+	//private static ArrayList<Number> trustedNumbers;
+	//private static ArrayList<Number> untrustedNumbers;
 	
 	//TODO add hash to map the selected items and their locations in the list
 	//private HashMap<String, Integer> selected;
@@ -81,8 +81,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private static HashMap<String, Boolean> subSelected;
 	//private HashMap<String, Integer> subSelected;
 	
-	private static ArrayList<Number> sublistTrust;
-	private static ArrayList<Number> sublistUntrust;
+	//private static ArrayList<Number> sublistTrust;
+	//private static ArrayList<Number> sublistUntrust;
 	private static ArrayList<Number> numbers;
 	private static ExchangeKey keyThread = new ExchangeKey();
 
@@ -98,10 +98,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
         listView = (ListView)findViewById(R.id.contact_list);
         exchangeKeys = (Button)findViewById(R.id.exchange_keys);
 
-        trustedNumbers = new ArrayList<Number>();
-        untrustedNumbers = new ArrayList<Number>();
-        sublistTrust = new ArrayList<Number>();
-        sublistUntrust = new ArrayList<Number>();
+        //trustedNumbers = new ArrayList<Number>();
+        //untrustedNumbers = new ArrayList<Number>();
+        //sublistTrust = new ArrayList<Number>();
+        //sublistUntrust = new ArrayList<Number>();
         //selected = new HashMap<String, Integer>();
         //subSelected = new HashMap<String, Integer>();
      
@@ -132,9 +132,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
         		if (tc != null)
            		{
         			/* TODO implement second indicator to show contacts are trusted
-        			 *  1. Contacts will show up with a check mark next to their name if at least 1 of their numbers is trusted. 
-        			 *  2. Numbers in popup window have an indicator showing they are trusted
-        			 *  3. Initialize the check box list if the lists are not null
+        			 *  1. Numbers in popup window have an indicator showing they are trusted
+        			 *  2. Initialize the check box list if the lists are not null
         			 *  	- For numbers as well
         			 */
         			numbers = tc.get(position).getNumber();
@@ -280,8 +279,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 											//Add the sublist to the full list of numbers to exchange keys with
 											
 											boolean checked = false;
-											trustedNumbers.addAll(sublistTrust);
-											untrustedNumbers.addAll(sublistUntrust);
+											//trustedNumbers.addAll(sublistTrust);
+											//untrustedNumbers.addAll(sublistUntrust);
 
 											for(int i = 0; i < tc.get(contactIndex).getNumber().size(); i++)
 											{
@@ -294,24 +293,17 @@ public class ManageContactsActivity extends Activity implements Runnable {
 											
 											listView.setItemChecked(contactIndex, checked);
 											selected[contactIndex] = checked;
-											
-											/*
-											 * TODO identify whether at least one of the numbers is trusted
-											 * IF it is then it should be added to the selected hash
-											 * IF not then if a number has now been selected then it should be added
-											 * IF no number is trusted and no number is selected then it should not be added 
-											 */
-												
-											sublistTrust.clear();
-											sublistUntrust.clear();
+										
+											//sublistTrust.clear();
+											//sublistUntrust.clear();
 										}
 									})
 									.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
 										public void onClick(DialogInterface dialog, int which) {
 											//Sublist is not added to the full list
-											sublistTrust.clear();
-											sublistUntrust.clear();
+											//sublistTrust.clear();
+											//sublistUntrust.clear();
 											listView.setItemChecked(contactIndex, !notChecked);
 											dialog.cancel();
 										}
@@ -345,19 +337,15 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
 		                "Exchanging. Please wait...", true, false);
 				
-				//keyThread.startThread(ManageContactsActivity.this, untrustedNumbers, trustedNumbers);
 				keyThread.startThread(ManageContactsActivity.this, tc, subSelected, selected);	
-				
-			}
-        	
-        });
+			}});
 	}
 
 	/**
 	 * Reinitializes the list to ensure contacts that are
 	 * trusted are selected.
 	 */
-	private void initList()
+	/*private void initList()
 	{
 		if(trustedNumbers != null || untrustedNumbers != null)
 		{
@@ -375,7 +363,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				//TODO implement
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Updates the list of contacts
@@ -395,7 +383,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		if (tc != null)
         {
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        initList();
+	        //initList();
         }
 
 	}
@@ -473,7 +461,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			names = new String[tc.size()];
 			selected = new boolean[tc.size()];
 			subSelected = new HashMap<String, Boolean>();
-			boolean tempArray = false; 
+			//boolean tempArray = false; 
 			int size = 0;
 			//int count = 0;
 	        for (int i = 0; i < tc.size(); i++)
@@ -491,7 +479,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	        			//tempArray = false;
 	        			
 		       		//TODO change to use primary key from trusted contact table
-		        	subSelected.put(tc.get(i).getNumber(j), tempArray);
+		        	subSelected.put(tc.get(i).getNumber(j), false);
 	        	}
 
 	        		//count++;

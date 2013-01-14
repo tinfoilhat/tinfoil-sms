@@ -49,14 +49,10 @@ public class ExchangeKey implements Runnable {
 	}	
 	
 	public void run() {
-		
-		/*
-		 * TODO create trusted and untrusted list
-		 */
-		ArrayList<Number> num = null; 
-		
+			
 		if(trusted == null && untrusted == null)
 		{
+			ArrayList<Number> num = null; 
 			trusted = new ArrayList<Number>();
 			untrusted = new ArrayList<Number>();
 			for(int i = 0; i < tc.size(); i++)
@@ -93,7 +89,6 @@ public class ExchangeKey implements Runnable {
 						}
 					}
 				}
-				
 			}
 		}
 		
