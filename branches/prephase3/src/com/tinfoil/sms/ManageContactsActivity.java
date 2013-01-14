@@ -64,6 +64,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	private boolean[] trusted;
 	private AlertDialog popup_alert;
 	
+	private boolean notChecked = false;
+	
 	private static ArrayList<Number> trustedNumbers;
 	private static ArrayList<Number> untrustedNumbers;
 	
@@ -189,6 +191,17 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				{
         					final int contactIndex = position;
         					
+        					/* Update the check box after the items in the sublist have been choosen */
+        					if(listView.isItemChecked(contactIndex))
+        					{
+        						notChecked = true;
+        					}
+        					else
+        					{
+        						notChecked = false;
+        					}
+       						listView.setItemChecked(contactIndex, !notChecked);
+
         					AlertDialog.Builder popup_builder = new AlertDialog.Builder(ManageContactsActivity.this);
         					
         					//TODO implement ListAdapter 
@@ -282,6 +295,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 											//Sublist is not added to the full list
 											sublistTrust.clear();
 											sublistUntrust.clear();
+											listView.setItemChecked(contactIndex, !notChecked);
 											dialog.cancel();
 										}
 									})
