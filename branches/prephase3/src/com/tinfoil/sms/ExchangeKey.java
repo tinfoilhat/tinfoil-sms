@@ -52,7 +52,7 @@ public class ExchangeKey implements Runnable {
 			
 		if(trusted == null && untrusted == null)
 		{
-			ArrayList<Number> num = null; 
+			ArrayList<Number> num = null;
 			trusted = new ArrayList<Number>();
 			untrusted = new ArrayList<Number>();
 			for(int i = 0; i < tc.size(); i++)
