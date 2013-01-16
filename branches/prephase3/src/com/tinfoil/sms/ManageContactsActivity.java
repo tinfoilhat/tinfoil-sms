@@ -108,10 +108,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
         		
         		if (tc != null)
            		{
-        			/* TODO implement
-        			 *  1. Numbers in popup window have an indicator showing they are trusted
-        			 *  2. Initialize the check box list if the lists are not null
-        			 *  	- For numbers as well
+        			/*
+        			 * TODO implement using expandable lists
+        			 * Decided to implement the list using expandable lists
         			 */
         			numbers = tc.get(position).getNumber();
         			if(numbers != null && numbers.size() > 0)
@@ -159,8 +158,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
-										//int index = 0;
-										
+																				
 										if(isChecked)
 										{
 						        			subSelected.put(tc.get(contactIndex).getNumber(which), true);

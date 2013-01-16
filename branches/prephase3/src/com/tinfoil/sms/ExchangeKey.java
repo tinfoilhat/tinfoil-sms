@@ -24,7 +24,7 @@ import android.content.Context;
 
 public class ExchangeKey implements Runnable {
 
-	private Context c;
+	private Context c;		//Currently not used but IS needed because messages will be sent from this thread
 	public static ProgressDialog keyDialog;
 	private ArrayList<Number> untrusted;
 	private ArrayList<Number> trusted;
@@ -32,24 +32,37 @@ public class ExchangeKey implements Runnable {
 	private boolean[] selected;
 	private ArrayList<TrustedContact> tc;
 	
+	/**
+	 * A constructor used by the ManageContactsActivity to set up the key exchange thread
+	 * @param c The context of the activity
+	 * @param tc The list of contacts
+	 * @param subSelected The hash of numbers whether they are selected or not
+	 * @param selected The list of whether contacts have been selected or not
+	 */
 	public void startThread(Context c, ArrayList<TrustedContact> tc, HashMap<String, Boolean> subSelected, boolean[] selected) //ArrayList<Number> untrusted, ArrayList<Number> trusted)
 	{
 		this.c = c;
-		//TODO generate the trusted and untrusted list by checking if the number has a key
-		//this.untrusted = untrusted;
+		
 		this.subSelected = subSelected;
 		this.selected = selected;
 		this.tc = tc;
-		//this.trusted = trusted;
 		this.trusted = null;
 		this.untrusted = null;
 		
+		/*
+		 * Start the thread from the constructor
+		 */
 		Thread thread = new Thread(this);
 		thread.start();
 	}	
 	
 	public void run() {
-			
+		
+		/* 
+		 * Used by ManageContacts Activity to determine from the 
+		 * contacts that have been selected need to exchange keys or
+		 * stop sending secure messages
+		 */
 		if(trusted == null && untrusted == null)
 		{
 			ArrayList<Number> num = null;
@@ -117,6 +130,7 @@ public class ExchangeKey implements Runnable {
 			}
 		}
 		
+		//Dismisses the load dialog since the load is finished
 		keyDialog.dismiss();
 	}
 
