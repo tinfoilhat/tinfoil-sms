@@ -26,11 +26,15 @@ public class ExchangeKey implements Runnable {
 
 	private Context c;		//Currently not used but IS needed because messages will be sent from this thread
 	public static ProgressDialog keyDialog;
-	private ArrayList<Number> untrusted;
-	private ArrayList<Number> trusted;
-	private HashMap<String, Boolean> subSelected;
-	private boolean[] selected;
-	private ArrayList<TrustedContact> tc;
+	private ArrayList<String> untrusted;
+	private ArrayList<String> trusted;
+	//private HashMap<String, Boolean> subSelected;
+	//private boolean[] selected;
+	//private ArrayList<TrustedContact> tc;
+	
+	private ArrayList<ContactParent> contacts;
+	
+	private Number number;
 	
 	/**
 	 * A constructor used by the ManageContactsActivity to set up the key exchange thread
@@ -39,13 +43,24 @@ public class ExchangeKey implements Runnable {
 	 * @param subSelected The hash of numbers whether they are selected or not
 	 * @param selected The list of whether contacts have been selected or not
 	 */
-	public void startThread(Context c, ArrayList<TrustedContact> tc, HashMap<String, Boolean> subSelected, boolean[] selected) //ArrayList<Number> untrusted, ArrayList<Number> trusted)
+	/*public void startThread(Context c, ArrayList<TrustedContact> tc, HashMap<String, Boolean> subSelected, boolean[] selected)
 	{
 		this.c = c;
 		
 		this.subSelected = subSelected;
 		this.selected = selected;
 		this.tc = tc;
+		this.trusted = null;
+		this.untrusted = null;
+		
+		Thread thread = new Thread(this);
+		thread.start();
+	}*/
+	
+	public void startThread(Context c, ArrayList<ContactParent> contacts)
+	{
+		this.c = c;
+		this.contacts = contacts;
 		this.trusted = null;
 		this.untrusted = null;
 		
@@ -65,45 +80,29 @@ public class ExchangeKey implements Runnable {
 		 */
 		if(trusted == null && untrusted == null)
 		{
-			ArrayList<Number> num = null;
-			trusted = new ArrayList<Number>();
-			untrusted = new ArrayList<Number>();
-			for(int i = 0; i < tc.size(); i++)
+			trusted = new ArrayList<String>();
+			untrusted = new ArrayList<String>();
+			
+			for(int i = 0; i < contacts.size(); i++)
 			{
-				num = tc.get(i).getNumber();
-				if(selected[i])
+				for(int j = 0; j < contacts.get(i).getNumbers().size(); j++)
 				{
-					if(num.size() == 1)
+					if(contacts.get(i).getNumber(j).isSelected())
 					{
-						if(!MessageService.dba.isTrustedContact(num.get(0).getNumber()))
+						if(!contacts.get(i).getNumber(j).isTrusted())
 						{
-							trusted.add(num.get(0));
+							trusted.add(contacts.get(i).getNumber(j).getNumber());
 						}
 						else
 						{
-							untrusted.add(num.get(0));
+							untrusted.add(contacts.get(i).getNumber(j).getNumber());
 						}
-					}
-					else
-					{
-						for(int j = 0; j < num.size(); j++)
-						{
-							if(subSelected.get(num.get(j).getNumber()))
-							{
-								if(!MessageService.dba.isTrustedContact(num.get(j).getNumber()))
-								{
-									trusted.add(num.get(j));
-								}
-								else
-								{
-									untrusted.add(num.get(j));
-								}
-							}
-						}
-					}
+					}				
 				}
 			}
 		}
+		
+		
 		
 		/*
 		 * This is actually how removing contacts from trusted should look since it is just a
@@ -114,8 +113,10 @@ public class ExchangeKey implements Runnable {
 		{
 			for(int i = 0; i < untrusted.size(); i++)
 			{
-				untrusted.get(i).clearPublicKey();
-				MessageService.dba.updateKey(untrusted.get(i));
+				//untrusted.get(i).clearPublicKey();
+				number = MessageService.dba.getRow(untrusted.get(i)).getNumber(untrusted.get(i));
+				number.clearPublicKey();
+				MessageService.dba.updateKey(number);
 			}
 		}
 		
@@ -125,8 +126,9 @@ public class ExchangeKey implements Runnable {
 		{
 			for(int i = 0; i < trusted.size(); i++)
 			{
-				trusted.get(i).setPublicKey();
-				MessageService.dba.updateKey(trusted.get(i));
+				number = MessageService.dba.getRow(trusted.get(i)).getNumber(trusted.get(i));
+				number.setPublicKey();
+				MessageService.dba.updateKey(number);
 			}
 		}
 		
