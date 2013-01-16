@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,7 +35,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ArrayAdapter;
@@ -55,44 +55,28 @@ import android.widget.ListView;
  * menu which will start RemoveContactActivity. 
  */
 public class ManageContactsActivity extends Activity implements Runnable {
-	//private ListView listView;
+
 	private ExpandableListView listView;
 	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
 	private ProgressDialog loadingDialog;
-	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
-	//private TrustedAdapter contactAdapter;
 	private boolean[] trusted;
-	private AlertDialog popup_alert;
 	
 	private ArrayList<ContactParent> contacts;
 	private ArrayList<ContactChild> contactNumbers;
 	private static ManageContactAdapter adapter;
-	
-	private boolean notChecked = false;
-	
-	private static boolean[] selected;
-	
-	private static HashMap<String, Boolean> subSelected;
 
-	private static ArrayList<Number> numbers;
 	private static ExchangeKey keyThread = new ExchangeKey();
 
     /** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        //TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
-        loadingDialog = ProgressDialog.show(this, "Loading Contacts", 
-                "Loading. Please wait...", true, false);
 
         setContentView(R.layout.contact);
         listView = (ExpandableListView)findViewById(R.id.contacts_list);
         exchangeKeys = (Button)findViewById(R.id.exchange_keys);
      
-        //update();
-        
         listView.setOnItemLongClickListener(new OnItemLongClickListener(){
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -133,117 +117,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				return true;
 			}});
         
-        /*listView.setOnItemClickListener(new OnItemClickListener()
-		{
-        	public void onItemClick(AdapterView<?> parent, View view,
-        			int position, long id) {
-        		
-        		if (tc != null)
-           		{
-        			//TODO implement using expandable lists
-        			//Decided to implement the list using expandable lists
-        			
-        			numbers = tc.get(position).getNumber();
-        			if(numbers != null && numbers.size() > 0)
-        			{        				
-        				if(numbers.size() == 1)
-        				{
-        					//Contact only has a single number, check if that number is trusted
-        					if(listView.isItemChecked(position))
-		        			{
-			        			selected[position] = true;
-			        		}
-			        		else
-			        		{
-			        			selected[position] = false;
-			        		}
-        				}
-        				else
-        				{
-        					final int contactIndex = position;
-        					
-        					 //Update the check box after the items in the sublist have been chosen
-        					if(listView.isItemChecked(contactIndex))
-        					{
-        						notChecked = true;
-        					}
-        					else
-        					{
-        						notChecked = false;
-        					}
-       						listView.setItemChecked(contactIndex, !notChecked);
-
-        					AlertDialog.Builder popup_builder = new AlertDialog.Builder(ManageContactsActivity.this);
-        					
-        					boolean[] trustNum = new boolean[numbers.size()]; 
-        					for(int i = 0; i < numbers.size(); i++)
-        					{
-        						trustNum[i] = subSelected.get(numbers.get(i).getNumber());
-        					}
-        					        					
-        					//TODO implement ListAdapter 
-        					popup_builder.setTitle("Numbers")
-        							//.setAdapter(adapter, listener)
-        						   .setMultiChoiceItems(tc.get(contactIndex).getNumbers().toArray(new String[0]),
-        						   trustNum, new DialogInterface.OnMultiChoiceClickListener(){
-
-									public void onClick(DialogInterface dialog,
-											int which, boolean isChecked) {
-																				
-										if(isChecked)
-										{
-						        			subSelected.put(tc.get(contactIndex).getNumber(which), true);
-										}
-										else
-										{
-						        			subSelected.put(tc.get(contactIndex).getNumber(which), false);
-										}
-									}})
-									.setPositiveButton("Okay", new DialogInterface.OnClickListener(){
-
-										public void onClick(DialogInterface dialog, int which) {
-											//Add the sublist to the full list of numbers to exchange keys with
-											
-											boolean checked = false;
-											
-											for(int i = 0; i < tc.get(contactIndex).getNumber().size(); i++)
-											{
-												if(subSelected.get(tc.get(contactIndex).getNumber(i)))
-												{
-													checked = true;
-													break;
-												}
-											}
-											
-											listView.setItemChecked(contactIndex, checked);
-											selected[contactIndex] = checked;
-										}
-									})
-									.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-
-										public void onClick(DialogInterface dialog, int which) {
-											
-											//TODO undo the changes made
-											listView.setItemChecked(contactIndex, !notChecked);
-											dialog.cancel();
-										}
-									}).setCancelable(true);
-        					popup_alert = popup_builder.create();
-        					popup_alert.show();
-        				}
-        				
-        			}
-	        			
-        		}
-        		else
-        		{
-        			//Go to add contact
-        			AddContact.addContact = true;
-    				AddContact.editTc = null;
-        			startActivity(new Intent(getBaseContext(), AddContact.class));
-        		}
-        	}});*/
-        
         exchangeKeys.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) {
@@ -255,35 +128,17 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
 		                "Exchanging. Please wait...", true, false);
 				
-				//keyThread.startThread(ManageContactsActivity.this, tc, subSelected, selected);	
 				keyThread.startThread(ManageContactsActivity.this, adapter.getContacts());
+				
+				ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener(){
+
+					public void onDismiss(DialogInterface dialog) {
+						startThread();
+					}					
+				});
 			}});
 	}
-
-	/**
-	 * Reinitializes the list to ensure contacts that are
-	 * trusted are selected.
-	 */
-	/*private void initList()
-	{
-		if(trustedNumbers != null || untrustedNumbers != null)
-		{
-			for (int i = 0; i < trustedNumbers.size();i++)
-			{
-				//TODO implement
-				
-				// i does not equal the list's index
-				//listView.setItemChecked(i, true);
-				
-				
-			}
-			for(int i = 0; i < untrustedNumbers.size(); i++)
-			{
-				//TODO implement
-			}
-		}
-	}*/
-
+	
 	/**
 	 * Updates the list of contacts
 	 */
@@ -302,21 +157,26 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		if (tc != null)
         {
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        //initList();
         }
-
 	}
-
+	
 	/*
 	 * Added the onResume to update the list of contacts
 	 */
 	protected void onResume()
 	{
 		//TODO This should be called in on Create and also after the exchange keys thread is finished
+		startThread();		
+	}
+	
+	private void startThread()
+	{
+		//TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
+        loadingDialog = ProgressDialog.show(this, "Loading Contacts", 
+                "Loading. Please wait...", true, false);
 		Thread thread = new Thread(this);
 	    thread.start();
 		super.onResume();
-		
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -377,15 +237,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		
 		if (tc != null)
 		{			
-			//names = new String[tc.size()];
-			//selected = new boolean[tc.size()];
-			//subSelected = new HashMap<String, Boolean>();
 			contacts = new ArrayList<ContactParent>();
-			
-
 			int size = 0;
-			
-			
 			
 	        for (int i = 0; i < tc.size(); i++)
 	        {
@@ -404,24 +257,14 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	        	contacts.add(new ContactParent(tc.get(i).getName(), contactNumbers));
 	        }
 	        
-	        //TODO create contact list
-	        
 	        adapter = new ManageContactAdapter(this, contacts);
-	        //listView.setAdapter(adapter);
-	        
-	        //arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
-	        
-	        
-	        
-	        //contactAdapter = new TrustedAdapter(this, android.R.layout.simple_list_item_multiple_choice, names, trusted);
-	        //contactAdapter = new TrustedAdapter(this, R.layout.trusted_contact_manage, names, trusted);
-		}
+	    }
 		else
-		{
-			names = new String[1];
-        	names[0] = "Add a Contact";
+		{			
+			//TODO fix
         	
-        	arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+        	arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+        			new String[]{"Add a Contact"});
 		}		
 		
 		handler.sendEmptyMessage(0);

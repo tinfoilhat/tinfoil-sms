@@ -18,7 +18,6 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import android.app.ProgressDialog;
 import android.content.Context;
 
@@ -27,36 +26,15 @@ public class ExchangeKey implements Runnable {
 	private Context c;		//Currently not used but IS needed because messages will be sent from this thread
 	public static ProgressDialog keyDialog;
 	private ArrayList<String> untrusted;
-	private ArrayList<String> trusted;
-	//private HashMap<String, Boolean> subSelected;
-	//private boolean[] selected;
-	//private ArrayList<TrustedContact> tc;
-	
+	private ArrayList<String> trusted;	
 	private ArrayList<ContactParent> contacts;
-	
 	private Number number;
 	
 	/**
 	 * A constructor used by the ManageContactsActivity to set up the key exchange thread
 	 * @param c The context of the activity
-	 * @param tc The list of contacts
-	 * @param subSelected The hash of numbers whether they are selected or not
-	 * @param selected The list of whether contacts have been selected or not
-	 */
-	/*public void startThread(Context c, ArrayList<TrustedContact> tc, HashMap<String, Boolean> subSelected, boolean[] selected)
-	{
-		this.c = c;
-		
-		this.subSelected = subSelected;
-		this.selected = selected;
-		this.tc = tc;
-		this.trusted = null;
-		this.untrusted = null;
-		
-		Thread thread = new Thread(this);
-		thread.start();
-	}*/
-	
+	 * @param contacts The list of contacts
+	 */	
 	public void startThread(Context c, ArrayList<ContactParent> contacts)
 	{
 		this.c = c;
@@ -101,9 +79,7 @@ public class ExchangeKey implements Runnable {
 				}
 			}
 		}
-		
-		
-		
+
 		/*
 		 * This is actually how removing contacts from trusted should look since it is just a
 		 * deletion of keys. We don't care if the contact will now fail to decrypt messages that
