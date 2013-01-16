@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/contact_list"
-        android:layout_width="match_parent"
-        android:layout_height="440dp"
-        android:layout_above="@+id/button1"
-        android:choiceMode="multipleChoice" >
-
-    </ListView>
+    <ExpandableListView
+        android:id="@+id/contacts_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:transcriptMode="alwaysScroll"
+        android:cacheColorHint="#00000000"
+        android:listSelector="@android:color/transparent"
+        />
 
     <Button
         android:id="@+id/exchange_keys"

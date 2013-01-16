@@ -1143,6 +1143,27 @@ public class DBAccessor {
 		return false;
 	}
 	
+	public boolean[] isTrustedContact(ArrayList<Number> number)
+	{
+		if (number != null)
+		{
+			boolean[] trusted = new boolean[number.size()];
+			for(int i = 0; i < number.size(); i++)
+			{
+				if (!number.get(i).isPublicKeyNull())
+				{
+					trusted[i] = true;
+				}
+				else
+				{
+					trusted[i] = false;
+				}
+			}
+			return trusted;
+		}
+		return null;
+	}
+	
 	/**
 	 * TODO further implementation to check if the given number is trusted or any of the contact's numbers are trusted
 	 * Identifies which contacts are trusted
@@ -1153,7 +1174,7 @@ public class DBAccessor {
 	 * 
 	 * (NOTE: see isTrustedContact(String number) for more details)
 	 */
-	public boolean[] isTrustedContact (ArrayList<TrustedContact> tc)
+	/*public boolean[] isTrustedContact (ArrayList<TrustedContact> tc)
 	{
 		boolean[] trusted = new boolean[tc.size()];
 		for (int i=0;i<tc.size();i++)
@@ -1170,7 +1191,7 @@ public class DBAccessor {
 			
 		}
 		return trusted;
-	}
+	}*/
 	
 	/**
 	 * @param tc : TrustedContact the contact to check for a trusted number

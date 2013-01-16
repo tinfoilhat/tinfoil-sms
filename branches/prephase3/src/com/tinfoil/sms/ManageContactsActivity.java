@@ -36,8 +36,11 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 /**
@@ -52,15 +55,20 @@ import android.widget.ListView;
  * menu which will start RemoveContactActivity. 
  */
 public class ManageContactsActivity extends Activity implements Runnable {
-	private ListView listView;
+	//private ListView listView;
+	private ExpandableListView listView;
 	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
 	private ProgressDialog loadingDialog;
 	private String[] names = null;
 	private ArrayAdapter<String> arrayAp;
-	private TrustedAdapter contactAdapter;
+	//private TrustedAdapter contactAdapter;
 	private boolean[] trusted;
 	private AlertDialog popup_alert;
+	
+	private ArrayList<ContactParent> contacts;
+	private ArrayList<ContactChild> contactNumbers;
+	private static ManageContactAdaptor adapter;
 	
 	private boolean notChecked = false;
 	
@@ -80,7 +88,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
                 "Loading. Please wait...", true, false);
 
         setContentView(R.layout.contact);
-        listView = (ListView)findViewById(R.id.contact_list);
+        listView = (ExpandableListView)findViewById(R.id.contacts_list);
         exchangeKeys = (Button)findViewById(R.id.exchange_keys);
      
         //update();
@@ -89,7 +97,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
         			int position, long id) {
-
+				
 				AddContact.addContact = false;
 				AddContact.editTc = tc.get(position);
 				ManageContactsActivity.this.startActivity(new Intent
@@ -100,18 +108,41 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			}
         	
         });
-                      
-        listView.setOnItemClickListener(new OnItemClickListener()
+        
+        listView.setOnChildClickListener(new OnChildClickListener(){
+
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+				
+				if (tc != null)
+           		{
+					CheckedTextView checked_text = (CheckedTextView)v.findViewById(R.id.trust_name);
+					
+					adapter.getContacts().get(groupPosition).getNumber(childPosition).toggle();
+					
+					checked_text.setChecked(adapter.getContacts().get(groupPosition).getNumber(childPosition).isSelected());
+           		}
+				else
+				{
+					//Go to add contact
+        			AddContact.addContact = true;
+    				AddContact.editTc = null;
+        			startActivity(new Intent(getBaseContext(), AddContact.class));
+				}
+				
+				return true;
+			}});
+        
+        /*listView.setOnItemClickListener(new OnItemClickListener()
 		{
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
         		
         		if (tc != null)
            		{
-        			/*
-        			 * TODO implement using expandable lists
-        			 * Decided to implement the list using expandable lists
-        			 */
+        			//TODO implement using expandable lists
+        			//Decided to implement the list using expandable lists
+        			
         			numbers = tc.get(position).getNumber();
         			if(numbers != null && numbers.size() > 0)
         			{        				
@@ -131,7 +162,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				{
         					final int contactIndex = position;
         					
-        					/* Update the check box after the items in the sublist have been chosen */
+        					 //Update the check box after the items in the sublist have been chosen
         					if(listView.isItemChecked(contactIndex))
         					{
         						notChecked = true;
@@ -211,7 +242,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
     				AddContact.editTc = null;
         			startActivity(new Intent(getBaseContext(), AddContact.class));
         		}
-        	}});
+        	}});*/
         
         exchangeKeys.setOnClickListener(new OnClickListener(){
 
@@ -259,7 +290,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	{
 		if(tc != null)
 		{
-			listView.setAdapter(contactAdapter);
+			listView.setAdapter(adapter);
 		}
 		else
 		{
@@ -345,31 +376,44 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		
 		if (tc != null)
 		{			
-			names = new String[tc.size()];
-			selected = new boolean[tc.size()];
-			subSelected = new HashMap<String, Boolean>();
+			//names = new String[tc.size()];
+			//selected = new boolean[tc.size()];
+			//subSelected = new HashMap<String, Boolean>();
+			contacts = new ArrayList<ContactParent>();
+			
 
 			int size = 0;
 			
+			
+			
 	        for (int i = 0; i < tc.size(); i++)
 	        {
-	        	names[i] = tc.get(i).getName();
-	        	selected[i] = false;
 	        	size = tc.get(i).getNumber().size();
 	       
+	        	contactNumbers = new ArrayList<ContactChild>();
+	        	
+	        	trusted = MessageService.dba.isTrustedContact(tc.get(i).getNumber());
+	        	
 	        	for(int j = 0; j < size; j++)
 	        	{	        			
 		       		//TODO change to use primary key from trusted contact table
-		        	subSelected.put(tc.get(i).getNumber(j), false);
+	        		contactNumbers.add(new ContactChild(tc.get(i).getNumber(j), 
+	        				trusted[j],false));
 	        	}
+	        	contacts.add(new ContactParent(tc.get(i).getName(), contactNumbers));
 	        }
+	        
+	        //TODO create contact list
+	        
+	        adapter = new ManageContactAdaptor(this, contacts);
+	        //listView.setAdapter(adapter);
 	        
 	        //arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
 	        
-	        trusted = MessageService.dba.isTrustedContact(tc);
+	        
 	        
 	        //contactAdapter = new TrustedAdapter(this, android.R.layout.simple_list_item_multiple_choice, names, trusted);
-	        contactAdapter = new TrustedAdapter(this, R.layout.trusted_contact_manage, names, trusted);
+	        //contactAdapter = new TrustedAdapter(this, R.layout.trusted_contact_manage, names, trusted);
 		}
 		else
 		{

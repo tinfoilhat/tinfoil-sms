@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-	<CheckedTextView
-	    android:id="@+id/trust_name"
+	<TextView
+	    android:id="@+id/contact_name"
+	    android:paddingLeft="40dip"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentRight="true"
 	    android:layout_alignParentTop="true"
-	    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 	    android:singleLine="true"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<TextView
-	    android:id="@+id/trust_indicator"
+	    android:id="@+id/contact_indicator"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_alignBottom="@+id/trust_name"
+	    android:layout_alignBottom="@+id/contact_name"
 	    android:layout_alignParentRight="true"
 	    android:layout_marginRight="43dp"
 	    android:singleLine="true"
