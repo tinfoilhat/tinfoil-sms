@@ -68,7 +68,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	
 	private ArrayList<ContactParent> contacts;
 	private ArrayList<ContactChild> contactNumbers;
-	private static ManageContactAdaptor adapter;
+	private static ManageContactAdapter adapter;
 	
 	private boolean notChecked = false;
 	
@@ -406,7 +406,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	        
 	        //TODO create contact list
 	        
-	        adapter = new ManageContactAdaptor(this, contacts);
+	        adapter = new ManageContactAdapter(this, contacts);
 	        //listView.setAdapter(adapter);
 	        
 	        //arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
