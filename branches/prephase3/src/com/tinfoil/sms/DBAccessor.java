@@ -425,38 +425,9 @@ public class DBAccessor {
 			}
 			return bookPaths;
 		}
-		//else
-		//{
+
 		cur.close();
-			//Reference not found, return the default
-			/*Cursor dCur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-					new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH},
-					KEY_REFERENCE + " = " + 0, null, null, null, null);
-			if (dCur.moveToFirst())
-			{
-				String bookPaths[] = new String[] {dCur.getString(dCur.getColumnIndex(KEY_BOOK_PATH)),
-						dCur.getString(dCur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
-				if (open)
-				{
-					dCur.close();
-				}
-				else
-				{
-					close(dCur);
-				}
-				return bookPaths;
-			}
-			if (open)
-			{
-				dCur.close();
-			}
-			else
-			{
-				close(dCur);
-			}*/
-		//}
 		return new String[] { DEFAULT_BOOK_PATH, DEFAULT_BOOK_INVERSE_PATH };
-		//return null;
 	}
 	
 	/**
@@ -747,11 +718,8 @@ public class DBAccessor {
         { 	
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)));
 			cur.close();
-			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME, 
-					/*new String[] {SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD}*/ null,
-					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME,
+					null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
 					null, null, null, null);
@@ -1019,14 +987,9 @@ public class DBAccessor {
 	public void updateKey (Number number)
 	{
 		ContentValues cv = new ContentValues();
-		//Number numb = tc.getNumber(number);
 		
 		long id = getId(number.getNumber());
 		
-		//cv.put(KEY_REFERENCE, numb.getId());
-        //cv.put(KEY_NUMBER, numb.getNumber());
-        //cv.put(KEY_TYPE, numb.getType());
-        //cv.put(KEY_UNREAD, numb.getUnreadMessageCount());
         cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
         cv.put(KEY_SIGNATURE, number.getSignature());
         
@@ -1050,7 +1013,6 @@ public class DBAccessor {
 		{
 			id = getId(number);
 		}
-		//Number numb = tc.getNumber(number);
 		
 		cv.put(KEY_REFERENCE, id);
         cv.put(KEY_NUMBER, numb.getNumber());
@@ -1143,6 +1105,15 @@ public class DBAccessor {
 		return false;
 	}
 	
+	/**
+	 * Check whether the numbers given are trusted return a boolean array that maps to the given number array list
+	 * @param tc : ArrayList<Number> contacts the list of contacts
+	 * @return : boolean[] an array of boolean values which maps to the contacts
+	 * true if the contact is trusted
+	 * false if the contact is not trusted.
+	 * 
+	 * (NOTE: see isTrustedContact(String number) for more details)
+	 */
 	public boolean[] isTrustedContact(ArrayList<Number> number)
 	{
 		if (number != null)
@@ -1165,8 +1136,7 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO further implementation to check if the given number is trusted or any of the contact's numbers are trusted
-	 * Identifies which contacts are trusted
+	 * TODO remove
 	 * @param tc : ArrayList<TrustedContact> contacts the list of contacts
 	 * @return : boolean[] an array of boolean values which maps to the contacts
 	 * true if the contact is trusted

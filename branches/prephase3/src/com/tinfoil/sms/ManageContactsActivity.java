@@ -124,7 +124,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				 * Launch Exchange Keys thread.
 				 */
 				
-				//TODO Override to adjust cancel
 				ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
 		                "Exchanging. Please wait...", true, false);
 				
@@ -165,7 +164,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	 */
 	protected void onResume()
 	{
-		//TODO This should be called in on Create and also after the exchange keys thread is finished
 		startThread();		
 	}
 	

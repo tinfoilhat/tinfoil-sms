@@ -44,12 +44,10 @@ public class ManageContactAdapter extends BaseExpandableListAdapter{
 	}
 	
 	public Object getChild(int groupPosition, int childPosition) {
-		// TODO Auto-generated method stub
 		return contacts.get(groupPosition).getNumbers().get(childPosition);
 	}
 
 	public long getChildId(int groupPosition, int childPosition) {
-		// TODO Auto-generated method stub
 		return (long)childPosition;
 	}
 
@@ -123,12 +121,10 @@ public class ManageContactAdapter extends BaseExpandableListAdapter{
 	}
 
 	public boolean hasStableIds() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 	
@@ -136,7 +132,6 @@ public class ManageContactAdapter extends BaseExpandableListAdapter{
     {
     	CheckedTextView name;
     	TextView indicator;
-    	//CheckBox box;
     }
 	
 	private static class ContactHolder
