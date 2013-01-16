@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ArrayAdapter;
@@ -56,7 +57,8 @@ import android.widget.ListView;
  */
 public class ManageContactsActivity extends Activity implements Runnable {
 
-	private ExpandableListView listView;
+	private ExpandableListView extendableList;
+	private ListView listView;
 	private Button exchangeKeys;
 	private ArrayList<TrustedContact> tc;
 	private ProgressDialog loadingDialog;
@@ -74,10 +76,11 @@ public class ManageContactsActivity extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.contact);
-        listView = (ExpandableListView)findViewById(R.id.contacts_list);
+        extendableList = (ExpandableListView)findViewById(R.id.contacts_list);
+        listView = (ListView)findViewById(R.id.empty_list);
         exchangeKeys = (Button)findViewById(R.id.exchange_keys);
      
-        listView.setOnItemLongClickListener(new OnItemLongClickListener(){
+        extendableList.setOnItemLongClickListener(new OnItemLongClickListener(){
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
         			int position, long id) {
@@ -90,30 +93,31 @@ public class ManageContactsActivity extends Activity implements Runnable {
 				//This stops other on click effects from happening after this one.
 				return true; 
 			}
-        	
         });
         
-        listView.setOnChildClickListener(new OnChildClickListener(){
+        listView.setOnItemClickListener(new OnItemClickListener(){
+
+			public void onItemClick(AdapterView<?> parent, View view,
+        		int position, long id) {
+				
+				//Go to add contact
+    			AddContact.addContact = true;
+				AddContact.editTc = null;
+    			startActivity(new Intent(getBaseContext(), AddContact.class));
+			}        	
+        });
+        
+        extendableList.setOnChildClickListener(new OnChildClickListener(){
 
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
 				
-				if (tc != null)
-           		{
-					CheckedTextView checked_text = (CheckedTextView)v.findViewById(R.id.trust_name);
-					
-					adapter.getContacts().get(groupPosition).getNumber(childPosition).toggle();
-					
-					checked_text.setChecked(adapter.getContacts().get(groupPosition).getNumber(childPosition).isSelected());
-           		}
-				else
-				{
-					//Go to add contact
-        			AddContact.addContact = true;
-    				AddContact.editTc = null;
-        			startActivity(new Intent(getBaseContext(), AddContact.class));
-				}
+				CheckedTextView checked_text = (CheckedTextView)v.findViewById(R.id.trust_name);
 				
+				adapter.getContacts().get(groupPosition).getNumber(childPosition).toggle();
+				
+				checked_text.setChecked(adapter.getContacts().get(groupPosition).getNumber(childPosition).isSelected());
+
 				return true;
 			}});
         
@@ -145,17 +149,21 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	{
 		if(tc != null)
 		{
-			listView.setAdapter(adapter);
+			extendableList.setAdapter(adapter);
+			listView.setVisibility(ListView.INVISIBLE);
+			extendableList.setVisibility(ListView.VISIBLE);
 		}
 		else
 		{
 			listView.setAdapter(arrayAp);
+			extendableList.setVisibility(ListView.INVISIBLE);
+			listView.setVisibility(ListView.VISIBLE);
 		}
 		//listView.setItemsCanFocus(false);
 		
 		if (tc != null)
         {
-	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         }
 	}
 	

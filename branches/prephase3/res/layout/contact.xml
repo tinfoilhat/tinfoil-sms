@@ -12,6 +12,16 @@
         android:cacheColorHint="#00000000"
         android:listSelector="@android:color/transparent"
         />
+    
+    <ListView
+        android:id="@+id/empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="invisible" >
+
+    </ListView>
 
     <Button
         android:id="@+id/exchange_keys"
@@ -21,5 +31,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:text="Exchange Keys" />
+
+    
 
 </RelativeLayout>
