@@ -115,11 +115,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
         			 */
         			numbers = tc.get(position).getNumber();
         			if(numbers != null && numbers.size() > 0)
-        			{
-        				
+        			{        				
         				if(numbers.size() == 1)
         				{
-        					//Toast.makeText(getBaseContext(), "still clicking", Toast.LENGTH_SHORT).show();
         					//Contact only has a single number, check if that number is trusted
         					if(listView.isItemChecked(position))
 		        			{
@@ -134,7 +132,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         				{
         					final int contactIndex = position;
         					
-        					/* Update the check box after the items in the sublist have been choosen */
+        					/* Update the check box after the items in the sublist have been chosen */
         					if(listView.isItemChecked(contactIndex))
         					{
         						notChecked = true;
