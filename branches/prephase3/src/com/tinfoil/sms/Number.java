@@ -34,6 +34,7 @@ public class Number {
 	private ArrayList<Message> messages;
 
 	private byte[] publicKey;
+	private byte[] symmetricKey;
 	private byte[] signature;
 	private String s1;
 	private String s2;
@@ -50,7 +51,8 @@ public class Number {
 	 * @param unreadMessageCount The number of messages that have
 	 * not been read from this number
 	 */
-	public Number (long id, String number, int type, int unreadMessageCount,byte[] publicKey,byte[] signature)
+	public Number (long id, String number, int type, int unreadMessageCount, 
+			byte[] publicKey, byte[] symmetricKey, byte[] signature)
 	{
 		this.id = id;
 		this.setNumber(number);
@@ -58,6 +60,7 @@ public class Number {
 		this.setUnreadMessageCount(unreadMessageCount);
 		this.messages = new ArrayList<Message>();
 		this.publicKey = publicKey;
+		this.symmetricKey = symmetricKey;
 		this.signature = signature;
 	}
 	
@@ -366,5 +369,21 @@ public class Number {
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * Get the symmetric key
+	 * @return The symmetric key
+	 */
+	public byte[] getSymmetricKey() {
+		return symmetricKey;
+	}
+
+	/**
+	 * Set the symmetric key 
+	 * @param symmetricKey
+	 */
+	public void setSymmetricKey(byte[] symmetricKey) {
+		this.symmetricKey = symmetricKey;
 	}
 }
