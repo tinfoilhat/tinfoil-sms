@@ -341,7 +341,7 @@ public class MessageView extends Activity {
 
                 if (tc != null)
                 {
-                    if (MessageService.dba.isTrustedContact(SMSUtility.format
+                    if (!MessageService.dba.isTrustedContact(SMSUtility.format
                             (Prephase3Activity.selectedNumber)))
                     {
                         keyThread.startThread(this, SMSUtility.format(Prephase3Activity.selectedNumber), null);
