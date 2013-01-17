@@ -16,61 +16,60 @@
  */
 
 package com.tinfoil.sms;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+public class MultipleContactsLayout extends RelativeLayout implements Checkable {
 
-public class MultipleContactsLayout extends RelativeLayout implements Checkable{
-	
-	CheckedTextView checkbox;
-	
-	public MultipleContactsLayout(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
-	
-	public MultipleContactsLayout(Context context) {
-		super(context);
-	}	
+    CheckedTextView checkbox;
 
-	public boolean isChecked() {
-		if(checkbox != null)
-		{
-			return checkbox.isChecked();
-		}
-		return false;
-	}
+    public MultipleContactsLayout(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public void setChecked(boolean checked) {
-		if(checkbox != null)
-		{
-			checkbox.setChecked(checked);
-		}
-		
-	}
+    public MultipleContactsLayout(final Context context) {
+        super(context);
+    }
 
-	public void toggle() {
-		if(checkbox != null)
-		{
-			checkbox.toggle();
-		}		
-	}
-	
-	@Override
+    public boolean isChecked() {
+        if (this.checkbox != null)
+        {
+            return this.checkbox.isChecked();
+        }
+        return false;
+    }
+
+    public void setChecked(final boolean checked) {
+        if (this.checkbox != null)
+        {
+            this.checkbox.setChecked(checked);
+        }
+
+    }
+
+    public void toggle() {
+        if (this.checkbox != null)
+        {
+            this.checkbox.toggle();
+        }
+    }
+
+    @Override
     protected void onFinishInflate() {
-    	super.onFinishInflate();
-    	// find checked text view
-		int childCount = getChildCount();
-		for (int i = 0; i < childCount; ++i) {
-			View v = getChildAt(i);
-			if (v instanceof CheckedTextView) {
-				checkbox = (CheckedTextView)v;
-			}
-		}    	
+        super.onFinishInflate();
+        // find checked text view
+        final int childCount = this.getChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            final View v = this.getChildAt(i);
+            if (v instanceof CheckedTextView) {
+                this.checkbox = (CheckedTextView) v;
+            }
+        }
     }
 
 }
