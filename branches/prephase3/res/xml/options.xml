@@ -43,7 +43,7 @@
                 <intent
              		android:action="android.intent.action.VIEW"
              		android:targetPackage="com.tinfoil.sms"
-             		android:targetClass="com.tinfoil.sms.setttings.ImportContacts" />
+             		android:targetClass="com.tinfoil.sms.settings.ImportContacts" />
         
     	</PreferenceScreen>
    		<PreferenceScreen
