@@ -20,31 +20,31 @@
         android:icon="@drawable/ic_launcher"
         android:label="Tinfoil-SMS" >
         <activity
-            android:name=".message.SendMessageActivity"
+            android:name=".sms.SendMessageActivity"
             android:label="Send Message" />
         <activity
-            android:name=".contacts.AddContact"
+            android:name=".settings.AddContact"
             android:label="Add Contact" />
         <activity
-            android:name=".QuickPrefsActivity"
+            android:name=".settings.QuickPrefsActivity"
             android:label="Settings" />
         <activity
-            android:name=".contacts.ManageContactsActivity"
+            android:name=".settings.ManageContactsActivity"
             android:configChanges="orientation"
             android:label="Contacts" />
         <activity
-            android:name=".message.MessageView"
+            android:name=".sms.MessageView"
             android:label="Messages" />
         <activity
-            android:name=".contacts.ImportContacts"
+            android:name=".settings.ImportContacts"
             android:configChanges="orientation"
             android:label="Import Contacts" />
         <activity
-            android:name=".contacts.RemoveContactsActivity"
+            android:name=".settings.RemoveContactsActivity"
             android:configChanges="orientation"
             android:label="Delete Contacts" />
         <activity
-            android:name=".Prephase3Activity"
+            android:name=".sms.Prephase3Activity"
             android:label="Tinfoil-SMS" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,14 +53,14 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".message.MessageReceiver" >
+        <receiver android:name=".utility.MessageReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".message.MessageService" />
+        <service android:name=".utility.MessageService" />
     </application>
 
 </manifest>
