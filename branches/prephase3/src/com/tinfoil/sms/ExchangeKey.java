@@ -53,15 +53,27 @@ public class ExchangeKey implements Runnable {
         /*
          * Start the thread from the constructor
          */
-        final Thread thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
     }
 
     public void startThread(final Context c, final String trusted, final String untrusted)
     {
         this.c = c;
-        this.trusted.add(trusted);
-        this.untrusted.add(untrusted);
+        this.trusted = new ArrayList<String>();
+        this.untrusted = new ArrayList<String>();
+        
+        if(trusted != null)
+        {
+        	this.trusted.add(trusted);
+        }
+        
+        if(untrusted != null)
+        {
+        	this.untrusted.add(untrusted);
+        }
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     public void run() {
