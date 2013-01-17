@@ -54,6 +54,7 @@ CREATE TABLE numbers
     type INTEGER,
     unread INTEGER,
     public_key BLOB,
+    symmetric_key BLOB,
     signature BLOB
 )
 

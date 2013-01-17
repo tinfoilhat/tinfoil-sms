@@ -55,6 +55,8 @@ public class DBAccessor {
 	
 	public static final String KEY_NUMBER_REFERENCE = "number_reference";
 	
+	public static final String KEY_SYMMETRIC_KEY = "symmetric_key";
+	
 	private static final String USER_NAME = "Me";
 	
 	public static final int LENGTH = 21;
@@ -733,7 +735,8 @@ public class DBAccessor {
 					tc.addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
 							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)), 
+							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
+							pCur.getBlob(pCur.getColumnIndex(KEY_SYMMETRIC_KEY)),
 							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
 
 					//Retrieve the book paths
@@ -805,6 +808,7 @@ public class DBAccessor {
 								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
+								pCur.getBlob(pCur.getColumnIndex(KEY_SYMMETRIC_KEY)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
 
 						//Retrieve the book paths
