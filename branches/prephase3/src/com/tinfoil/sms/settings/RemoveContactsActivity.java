@@ -54,8 +54,9 @@ public class RemoveContactsActivity extends Activity implements Runnable {
 
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         this.setContentView(R.layout.remove_contacts);
         this.clicked = false;
 

@@ -79,7 +79,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.contact);

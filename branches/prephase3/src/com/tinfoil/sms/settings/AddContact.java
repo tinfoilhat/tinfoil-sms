@@ -65,7 +65,7 @@ public class AddContact extends Activity {
     private static AlertDialog alert;
 
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.add_contact);
 

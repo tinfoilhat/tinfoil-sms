@@ -37,9 +37,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.R.id;
-import com.tinfoil.sms.R.layout;
-import com.tinfoil.sms.R.menu;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.SignalListener;
@@ -65,7 +62,8 @@ import com.tinfoil.sms.utility.MessageService;
  * page.
  */
 public class Prephase3Activity extends Activity {
-    //public static DBAccessor dba;
+
+	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
     public static final String SENT = "content://sms/sent";
     public static SharedPreferences sharedPrefs;
@@ -80,7 +78,7 @@ public class Prephase3Activity extends Activity {
 
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, this.pSL.LISTEN_SIGNAL_STRENGTHS);

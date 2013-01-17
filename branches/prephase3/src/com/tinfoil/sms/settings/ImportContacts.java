@@ -65,7 +65,7 @@ public class ImportContacts extends Activity implements Runnable {
     private boolean clicked = false;
 
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.importcontacts);
         this.clicked = false;

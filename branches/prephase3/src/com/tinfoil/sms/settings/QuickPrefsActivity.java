@@ -19,7 +19,6 @@
 package com.tinfoil.sms.settings;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.R.xml;
 import com.tinfoil.sms.utility.SMSUtility;
 
 import android.os.Bundle;
@@ -36,8 +35,9 @@ public class QuickPrefsActivity extends PreferenceActivity {
 	 * Left as default
 	 */
     @Override
-    public void onCreate(Bundle savedInstanceState) {        
-        super.onCreate(savedInstanceState);    
+    protected void onCreate(Bundle savedInstanceState) {        
+        super.onCreate(savedInstanceState);
+        
         /*
          * Add preferences from the options.xml file.
          */
