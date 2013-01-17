@@ -32,6 +32,13 @@ import com.tinfoil.sms.R;
 
 public class MessageAdapter extends ArrayAdapter<String[]> {
 
+	private static class MessageHolder
+    {
+        TextView c_name;
+        TextView c_message;
+        TextView c_date;
+    }
+	
     private final Context context;
     private final int layoutResourceId;
     private List<String[]> data = null;
@@ -103,12 +110,5 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         }
 
         return row;
-    }
-
-    static class MessageHolder
-    {
-        TextView c_name;
-        TextView c_message;
-        TextView c_date;
     }
 }

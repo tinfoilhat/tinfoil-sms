@@ -20,7 +20,6 @@ package com.tinfoil.sms.adapter;
 import java.util.List;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.R.id;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,6 +32,13 @@ import android.widget.TextView;
 
 public class ConversationAdapter extends ArrayAdapter<String[]>{
 
+	private static class MessageHolder
+    {
+    	TextView c_name;
+    	TextView c_count;
+    	TextView c_message;
+    }
+	
     private Context context; 
     private int layoutResourceId;    
     private List<String[]> data = null;
@@ -96,12 +102,5 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         holder.c_message.setText(contact[2]);
         
         return row;
-    }
-    
-    static class MessageHolder
-    {
-    	TextView c_name;
-    	TextView c_count;
-    	TextView c_message;
     }
 }

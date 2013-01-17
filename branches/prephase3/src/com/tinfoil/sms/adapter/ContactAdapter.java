@@ -31,6 +31,12 @@ import com.tinfoil.sms.database.DBAccessor;
 
 public class ContactAdapter extends ArrayAdapter<String> {
 
+	private static class ContactHolder
+    {
+        TextView number;
+        TextView type;
+    }
+	
     private final Context context;
     private final int layoutResourceId;
     private TrustedContact data = null;
@@ -72,11 +78,5 @@ public class ContactAdapter extends ArrayAdapter<String> {
             holder.type.setText(type);
         }
         return row;
-    }
-
-    static class ContactHolder
-    {
-        TextView number;
-        TextView type;
     }
 }
