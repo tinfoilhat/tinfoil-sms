@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.contacts;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,13 +25,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class ContactAdapter extends ArrayAdapter<String>{
+import com.tinfoil.sms.DBAccessor;
+import com.tinfoil.sms.R;
 
-    private Context context; 
-    private int layoutResourceId;    
+public class ContactAdapter extends ArrayAdapter<String> {
+
+    private final Context context;
+    private final int layoutResourceId;
     private TrustedContact data = null;
-    
-    public ContactAdapter(Context context, int layoutResourceId, TrustedContact tc) {
+
+    public ContactAdapter(final Context context, final int layoutResourceId, final TrustedContact tc) {
         super(context, layoutResourceId, tc.getNumbers());
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -40,39 +43,39 @@ public class ContactAdapter extends ArrayAdapter<String>{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
         View row = convertView;
         ContactHolder holder = null;
-        
-        if(row == null)
+
+        if (row == null)
         {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
-            
+            final LayoutInflater inflater = ((Activity) this.context).getLayoutInflater();
+            row = inflater.inflate(this.layoutResourceId, parent, false);
+
             holder = new ContactHolder();
-            holder.number = (TextView)row.findViewById(R.id.stored_number);
-            holder.type = (TextView)row.findViewById(R.id.primary_number);
-            
+            holder.number = (TextView) row.findViewById(R.id.stored_number);
+            holder.type = (TextView) row.findViewById(R.id.primary_number);
+
             row.setTag(holder);
         }
         else
         {
-            holder = (ContactHolder)row.getTag();
+            holder = (ContactHolder) row.getTag();
         }
-        
-        String number = data.getNumber(position);
-        String type = DBAccessor.TYPES[data.getNumber().get(position).getType()];
+
+        final String number = this.data.getNumber(position);
+        final String type = DBAccessor.TYPES[this.data.getNumber().get(position).getType()];
         if (number != null)
         {
-        	holder.number.setText(number);
-        	holder.type.setText(type);
+            holder.number.setText(number);
+            holder.type.setText(type);
         }
         return row;
     }
-    
+
     static class ContactHolder
     {
-    	TextView number;
-    	TextView type;
+        TextView number;
+        TextView type;
     }
 }

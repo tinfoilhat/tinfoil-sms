@@ -20,27 +20,27 @@
         android:icon="@drawable/ic_launcher"
         android:label="Tinfoil-SMS" >
         <activity
-            android:name=".SendMessageActivity"
+            android:name=".message.SendMessageActivity"
             android:label="Send Message" />
         <activity
-            android:name=".AddContact"
+            android:name=".contacts.AddContact"
             android:label="Add Contact" />
         <activity
             android:name=".QuickPrefsActivity"
             android:label="Settings" />
         <activity
-            android:name=".ManageContactsActivity"
+            android:name=".contacts.ManageContactsActivity"
             android:configChanges="orientation"
             android:label="Contacts" />
         <activity
-            android:name=".MessageView"
+            android:name=".message.MessageView"
             android:label="Messages" />
         <activity
-            android:name=".ImportContacts"
+            android:name=".contacts.ImportContacts"
             android:configChanges="orientation"
             android:label="Import Contacts" />
         <activity
-            android:name=".RemoveContactsActivity"
+            android:name=".contacts.RemoveContactsActivity"
             android:configChanges="orientation"
             android:label="Delete Contacts" />
         <activity
@@ -53,14 +53,14 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".MessageReceiver" >
+        <receiver android:name=".message.MessageReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".MessageService" />
+        <service android:name=".message.MessageService" />
     </application>
 
 </manifest>

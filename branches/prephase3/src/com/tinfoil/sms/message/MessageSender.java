@@ -15,7 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.message;
+
+import com.tinfoil.sms.SMSUtility;
+import com.tinfoil.sms.ServiceChecker;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;

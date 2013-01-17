@@ -19,6 +19,8 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 
+import com.tinfoil.sms.message.Message;
+
 /**
  * A class used to store information from the numbers table
  *

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.message;
 
 import java.util.List;
 
@@ -28,83 +28,87 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class MessageAdapter extends ArrayAdapter<String[]>{
+import com.tinfoil.sms.R;
 
-    private Context context; 
-    private int layoutResourceId;    
+public class MessageAdapter extends ArrayAdapter<String[]> {
+
+    private final Context context;
+    private final int layoutResourceId;
     private List<String[]> data = null;
     private int count;
-    
-    public MessageAdapter(Context context, int layoutResourceId, List<String[]> data, int count) {
+
+    public MessageAdapter(final Context context, final int layoutResourceId, final List<String[]> data, final int count) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
         this.count = count;
     }
-    
+
     /**
      * Add new rows to be formated to the end of the list
-     * @param data : List<String[]> 
+     * 
+     * @param data
+     *            : List<String[]>
      */
-    public void addData(List<String[]> data)
+    public void addData(final List<String[]> data)
     {
-    	for (int i = 0; i < data.size(); i++)
-    	{
-    		this.add(data.get(i));
-    	}
+        for (int i = 0; i < data.size(); i++)
+        {
+            this.add(data.get(i));
+        }
     }
-    public void setCount(int count)
+
+    public void setCount(final int count)
     {
-    	this.count = count;
+        this.count = count;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
         View row = convertView;
         MessageHolder holder = null;
-        
-        if(row == null)
+
+        if (row == null)
         {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
-            
+            final LayoutInflater inflater = ((Activity) this.context).getLayoutInflater();
+            row = inflater.inflate(this.layoutResourceId, parent, false);
+
             holder = new MessageHolder();
-            holder.c_name = (TextView)row.findViewById(R.id.c_name);
-            holder.c_message = (TextView)row.findViewById(R.id.c_message);
-            holder.c_date = (TextView)row.findViewById(R.id.c_date);
-            
+            holder.c_name = (TextView) row.findViewById(R.id.c_name);
+            holder.c_message = (TextView) row.findViewById(R.id.c_message);
+            holder.c_date = (TextView) row.findViewById(R.id.c_date);
+
             row.setTag(holder);
         }
         else
         {
-            holder = (MessageHolder)row.getTag();
+            holder = (MessageHolder) row.getTag();
         }
-        
-        String contact[] = data.get(position);
+
+        final String contact[] = this.data.get(position);
         holder.c_name.setText(contact[0]);
         holder.c_date.setText(contact[2]);
         holder.c_message.setText(contact[1]);
-        
-        if (position < count)
+
+        if (position < this.count)
         {
-        	holder.c_name.setTypeface(null, Typeface.BOLD);
-        	holder.c_message.setTypeface(null, Typeface.BOLD);
+            holder.c_name.setTypeface(null, Typeface.BOLD);
+            holder.c_message.setTypeface(null, Typeface.BOLD);
         }
         else
         {
-        	holder.c_name.setTypeface(null, Typeface.NORMAL);
-        	holder.c_message.setTypeface(null, Typeface.NORMAL);
+            holder.c_name.setTypeface(null, Typeface.NORMAL);
+            holder.c_message.setTypeface(null, Typeface.NORMAL);
         }
-        
-        
+
         return row;
     }
-    
+
     static class MessageHolder
     {
-    	TextView c_name;
-    	TextView c_message;
-    	TextView c_date;
+        TextView c_name;
+        TextView c_message;
+        TextView c_date;
     }
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.tinfoil.sms.DBAccessor;
+import com.tinfoil.sms.ExchangeKey;
+import com.tinfoil.sms.Prephase3Activity;
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.SMSUtility;
+import com.tinfoil.sms.contacts.TrustedContact;
 
 /**
  * MessageView activity allows the user to view through all the messages from or

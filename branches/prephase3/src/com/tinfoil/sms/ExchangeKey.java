@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import com.tinfoil.sms.contacts.ContactParent;
+import com.tinfoil.sms.message.MessageService;
+
 public class ExchangeKey implements Runnable {
 
     private Context c; //Currently not used but IS needed because messages will be sent from this thread

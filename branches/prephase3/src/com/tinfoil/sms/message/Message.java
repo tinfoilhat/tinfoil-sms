@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.message;
 
 import java.util.Calendar;
 

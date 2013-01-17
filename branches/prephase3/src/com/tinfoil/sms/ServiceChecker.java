@@ -17,6 +17,9 @@
 
 package com.tinfoil.sms;
 
+import com.tinfoil.sms.message.MessageSender;
+import com.tinfoil.sms.message.MessageService;
+
 import android.content.Context;
 import android.os.Looper;
 

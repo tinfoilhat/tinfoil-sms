@@ -27,7 +27,7 @@ import android.util.Base64;
 /* 
  * A simple abstract class that implements various ciphers using a number
  */
-abstract class Encryption
+public abstract class Encryption
 {
     private static final byte[] KEY = "test123".getBytes();
     private static final int ROT_SHIFT = 13;

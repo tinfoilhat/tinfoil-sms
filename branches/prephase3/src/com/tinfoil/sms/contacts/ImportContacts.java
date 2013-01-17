@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.contacts;
 
 import java.util.ArrayList;
 
@@ -37,6 +37,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.tinfoil.sms.Number;
+import com.tinfoil.sms.Prephase3Activity;
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.SMSUtility;
+import com.tinfoil.sms.message.Message;
+import com.tinfoil.sms.message.MessageService;
 
 /**
  * ImportContact activity allows for contacts to be imported from the native

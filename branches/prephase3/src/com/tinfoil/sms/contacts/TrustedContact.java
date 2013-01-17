@@ -16,9 +16,12 @@
  */
 
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.contacts;
 
 import java.util.ArrayList;
+
+import com.tinfoil.sms.Number;
+import com.tinfoil.sms.SMSUtility;
 
 /**
  * TODO move key and signature to numbers class

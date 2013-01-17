@@ -19,6 +19,10 @@ package com.tinfoil.sms;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.tinfoil.sms.contacts.TrustedContact;
+import com.tinfoil.sms.message.Message;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

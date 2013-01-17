@@ -21,6 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.tinfoil.sms.contacts.TrustedContact;
+import com.tinfoil.sms.message.Message;
+import com.tinfoil.sms.message.MessageSender;
+import com.tinfoil.sms.message.MessageService;
+
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;

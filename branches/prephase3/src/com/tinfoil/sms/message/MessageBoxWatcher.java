@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms;
+package com.tinfoil.sms.message;
+
+import com.tinfoil.sms.SMSUtility;
 
 import android.app.Activity;
 import android.text.Editable;

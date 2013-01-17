@@ -36,6 +36,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tinfoil.sms.message.MessageReceiver;
+import com.tinfoil.sms.message.MessageService;
+import com.tinfoil.sms.message.MessageView;
+import com.tinfoil.sms.message.SendMessageActivity;
+
 /**
  * <ul>
  * <li>TODO add the proper version number and name to the manifest</li>
