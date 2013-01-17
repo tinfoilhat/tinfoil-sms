@@ -174,11 +174,7 @@ public abstract class SMSUtility {
 			//Stops native sms client from reading messages as new.
 			values.put("read", true);
 			values.put("seen", true); 
-	
-			/**
-			 * Need to:
-			 * 1. Make so that messages received from contacts not in database are ignored and sent to native
-			 */
+
 			/* Sets used to determine who sent the message, 
 			 * if type == 2 then it is sent from the user
 			 * if type == 1 it has been sent by the contact
@@ -250,8 +246,14 @@ public abstract class SMSUtility {
         }
 	}
 	
+	/**
+	 * Identifies if the given String is a valid Long
+	 * @param number A number in string format
+	 * @return Whether the given String is a valid Long number.
+	 */
 	public static boolean isANumber(String number)
 	{
+		//TODO use regular expressions
 		try {
 			Long.valueOf(number);
 		}

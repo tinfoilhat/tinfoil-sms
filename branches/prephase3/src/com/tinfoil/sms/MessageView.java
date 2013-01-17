@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -60,6 +61,7 @@ public class MessageView extends Activity {
 	private ArrayList<TrustedContact> tc;
 	private static AutoCompleteTextView phoneBox;
 	private AlertDialog popup_alert;
+	private static ExchangeKey keyThread = new ExchangeKey();
 	   
     /** Called when the activity is first created. */
     @Override
@@ -338,18 +340,20 @@ public class MessageView extends Activity {
 			 */
 			TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
 					(Prephase3Activity.selectedNumber));
+
+			ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys", 
+	                "Exchanging. Please wait...", true, false);
+
 			if (tc != null)
 			{
 				if (MessageService.dba.isTrustedContact(SMSUtility.format
 						(Prephase3Activity.selectedNumber)))
 				{
-					tc.getNumber(Prephase3Activity.selectedNumber).clearPublicKey();
-					MessageService.dba.updateKey(tc.getNumber(Prephase3Activity.selectedNumber));
+					keyThread.startThread(this, SMSUtility.format(Prephase3Activity.selectedNumber), null);
 				}
 				else
 				{
-					tc.getNumber(Prephase3Activity.selectedNumber).setPublicKey();
-					MessageService.dba.updateKey(tc.getNumber(Prephase3Activity.selectedNumber));
+					keyThread.startThread(this, null, SMSUtility.format(Prephase3Activity.selectedNumber));
 				}
 			}
 			

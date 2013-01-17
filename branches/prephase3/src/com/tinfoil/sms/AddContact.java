@@ -34,7 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * TODO add the ability to edit shared informations
- * TODO allow user to initiate key exchange
+ * TODO allow user to initiate key exchange (implement other things first)
  * TODO allow user to edit book paths
  * TODO add an option to delete numbers
  * This Activity is used for adding and editing contacts. The activity is able to identify which one it 

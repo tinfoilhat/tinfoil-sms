@@ -33,14 +33,7 @@ import java.util.ArrayList;
 public class TrustedContact {
 	
 	private String name;
-	private ArrayList<Number> numbers;
-	//private byte[] publicKey;
-	//private byte[] signature;
-	//private String s1;
-	//private String s2;
-	//private String bookPath;
-	//private String bookInversePath;
-	
+	private ArrayList<Number> numbers;	
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -50,42 +43,6 @@ public class TrustedContact {
 		this.name = null;
 		this.numbers = new ArrayList<Number>();
 	}
-	
-	/**
-	 * A class for storing information retrieved or to be stored in the database. 
-	 * 
-	 * @param name The contact's name 
-	 * @param publicKey The contact's public key used to encrypt message sent to this contact
-	 * @param signature The contact's signature
-	 */
-	/*public TrustedContact (String name, byte[] publicKey, byte[] signature)
-	{
-		this.name = name;
-		this.publicKey = publicKey;
-		this.numbers = new ArrayList<Number>();
-		this.signature = null;
-		this.s1 = null;
-		this.s2 = null;
-		this.bookPath = null;
-		this.bookInversePath = null;
-	}*/
-	
-	/**
-	 * A class for storing information retrieved or to be stored in the database. 
-	 * 
-	 * @param name The contact's name 
-	 * @param publicKey The contact's public key used to encrypt message sent to this contact
-	 * @param numbers A list of numbers that are associated to the contact.
-	 */
-	/*public TrustedContact (String name, byte[] publicKey, ArrayList<String> numbers)
-	{
-		this.name = name;
-		this.numbers = new ArrayList<Number>();
-		for (int i = 0; i<numbers.size(); i++)
-		{
-			this.numbers.add(new Number (numbers.get(i)));
-		}
-	}*/
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -202,7 +159,7 @@ public class TrustedContact {
 	
 	/**
 	 * Access a contact's number from their contact list
-	 * @return : String
+	 * @return Number
 	 */
 	public Number getNumber(String number)
 	{

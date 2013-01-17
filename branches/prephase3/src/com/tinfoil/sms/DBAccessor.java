@@ -1114,7 +1114,7 @@ public class DBAccessor {
 	 * 
 	 * (NOTE: see isTrustedContact(String number) for more details)
 	 */
-	public boolean[] isTrustedContact(ArrayList<Number> number)
+	/*public boolean[] isTrustedContact(ArrayList<Number> number)
 	{
 		if (number != null)
 		{
@@ -1133,7 +1133,7 @@ public class DBAccessor {
 			return trusted;
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * TODO remove

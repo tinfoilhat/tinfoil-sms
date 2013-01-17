@@ -18,10 +18,8 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
@@ -126,8 +124,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 			public void onClick(View v) {
 				/*
 				 * Launch Exchange Keys thread.
-				 */
-				
+				 */				
 				ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys", 
 		                "Exchanging. Please wait...", true, false);
 				
@@ -172,6 +169,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	 */
 	protected void onResume()
 	{
+		super.onResume();
 		startThread();		
 	}
 	
@@ -205,18 +203,20 @@ public class ManageContactsActivity extends Activity implements Runnable {
 		case R.id.all:
 			if (tc!=null)
 			{
-				//TODO change, this really isnt ideal anymore
-				/*for (int i = 0; i < tc.size();i++)
+				//TODO re-implement
+				/*ArrayList<ContactParent> contact = adapter.getContacts();
+				for(int i = 0; i < contact.size(); i++)
 				{
-					listView.setItemChecked(i, true);
-					change(i, true);
+					adapter.getContacts().get(groupPosition).getNumber(childPosition).toggle();
+					
+					checked_text.setChecked(adapter.getContacts().get(groupPosition).getNumber(childPosition).isSelected());
 				}*/
 			}
 			return true;
 		case R.id.remove:
 			if (tc!=null)
 			{
-				//TODO change, this really isnt ideal anymore
+				//TODO re-implement
 				/*for (int i = 0; i < tc.size();i++)
 				{
 					listView.setItemChecked(i, false);
@@ -252,7 +252,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	       
 	        	contactNumbers = new ArrayList<ContactChild>();
 	        	
-	        	trusted = MessageService.dba.isTrustedContact(tc.get(i).getNumber());
+	        	trusted = MessageService.dba.isNumberTrusted(tc.get(i).getNumber());
 	        	
 	        	for(int j = 0; j < size; j++)
 	        	{	        			

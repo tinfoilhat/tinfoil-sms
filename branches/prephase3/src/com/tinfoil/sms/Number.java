@@ -18,7 +18,6 @@
 package com.tinfoil.sms;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * A class used to store information from the numbers table
@@ -31,8 +30,7 @@ public class Number {
 	private int type;
 	private int unreadMessageCount = 0;
 	private ArrayList<Message> messages;
-	
-	//Transferring key, signature, shared secretes and book paths to numbers class
+
 	private byte[] publicKey;
 	private byte[] signature;
 	private String s1;

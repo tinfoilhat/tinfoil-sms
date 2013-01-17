@@ -47,7 +47,14 @@ public class ExchangeKey implements Runnable {
 		 */
 		Thread thread = new Thread(this);
 		thread.start();
-	}	
+	}
+	
+	public void startThread(Context c, String trusted, String untrusted)
+	{
+		this.c = c;
+		this.trusted.add(trusted);
+		this.untrusted.add(untrusted);
+	}
 	
 	public void run() {
 		

@@ -29,6 +29,18 @@ import android.widget.TextView;
 
 public class ManageContactAdapter extends BaseExpandableListAdapter{
 
+	private static class TrustContactHolder
+	{
+		CheckedTextView name;
+		TextView indicator;
+	}
+
+	private static class ContactHolder
+	{
+		TextView name;
+		TextView indicator;
+	}
+
 	private LayoutInflater inflater;
 	ArrayList<ContactParent> contacts;
 	
@@ -127,17 +139,4 @@ public class ManageContactAdapter extends BaseExpandableListAdapter{
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
 		return true;
 	}
-	
-	private static class TrustContactHolder
-    {
-    	CheckedTextView name;
-    	TextView indicator;
-    }
-	
-	private static class ContactHolder
-	{
-		TextView name;
-    	TextView indicator;
-	}
-
 }
