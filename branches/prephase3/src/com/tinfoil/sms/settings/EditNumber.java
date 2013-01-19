@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class EditNumber extends Activity{
     
@@ -61,10 +62,9 @@ public class EditNumber extends Activity{
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
         }
         
-        
-        phoneNumber.setText(originalNumber);
-        
         tc = MessageService.dba.getRow(originalNumber);
+        
+        phoneNumber.setText(originalNumber);        
         
         sharedInfo1.setText(tc.getNumber(originalNumber).getSharedInfo1());
         
@@ -78,7 +78,20 @@ public class EditNumber extends Activity{
 
 			public void onClick(View v) {
 				Number tempNumber = tc.getNumber(originalNumber);
+				tempNumber.setNumber(phoneNumber.getText().toString());
+				tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
+				tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
+				tempNumber.setBookPath(bookPath.getText().toString());
+				tempNumber.setBookInversePath(bookInverse.getText().toString());
 				
+				MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
+				
+				/*TODO finish with setResult(int resultCode, Intent data);
+				 * The result code will be that to update the list (aka finish okay)\
+				 * Truly though the list only needs to be update if originalNumber != tempNumber.getNumber();
+				 * 
+				 */
+				finish();
 			}
         });
 	}

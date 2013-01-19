@@ -959,7 +959,8 @@ public class DBAccessor {
 		
 	}
 	
-	/** 
+	/**
+	 * TODO remove
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
@@ -1018,7 +1019,7 @@ public class DBAccessor {
 	 * @param number : String a number owned by the contact
 	 * @param id : long the id for the contact's database row
 	 */
-	public void updateNumberRow (Number numb, String number, long id)
+	public void updateNumberRow(Number numb, String number, long id)
 	{
 		number = SMSUtility.format(number);
 		ContentValues cv = new ContentValues();
@@ -1035,8 +1036,8 @@ public class DBAccessor {
         cv.put(KEY_SIGNATURE, numb.getSignature());
         
         open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{numb.getNumber()});
+        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number});
 		close();
 	}
 	

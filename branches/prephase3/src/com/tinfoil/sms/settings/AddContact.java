@@ -206,6 +206,8 @@ public class AddContact extends Activity {
                     alert.show();*/
                 	Intent intent = new Intent(AddContact.this, EditNumber.class);
                 	intent.putExtra(AddContact.EDIT_NUMBER, AddContact.this.contactEdit.getNumber(position));
+                	
+                	//TODO use request code to properly get return data
                 	AddContact.this.startActivity(intent);
                 }
             }
@@ -333,5 +335,17 @@ public class AddContact extends Activity {
         this.listView.setItemsCanFocus(false);
 
         this.listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	//TODO handle result code
+    }
+    
+    protected void onResume()
+    {
+    	super.onResume();
+    	//TODO update number list
     }
 }
