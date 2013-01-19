@@ -233,9 +233,19 @@ public class DBAccessor {
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
+        
+        if(s1.equalsIgnoreCase("") || s1.equalsIgnoreCase(DEFAULT_S1))
+        {
+        	s1 = DBAccessor.DEFAULT_S1;
+        }
         cv.put(KEY_SHARED_INFO_1, s1);
+        
+        if(s2.equalsIgnoreCase("") || s2.equalsIgnoreCase(DEFAULT_S2))
+        {
+        	s2 = DBAccessor.DEFAULT_S2;
+        }
         cv.put(KEY_SHARED_INFO_2, s2);
-
+        
         //Insert the row into the database
         open();
         db.insert(SQLitehelper.SHARED_INFO_TABLE_NAME, null, cv);
@@ -250,12 +260,12 @@ public class DBAccessor {
 	 */
 	public void updateSharedInfo(long reference, String s1, String s2)
 	{
-		if ((s1 != null || s2 != null) && (!s1.equalsIgnoreCase(DEFAULT_S1)
-				|| !s2.equalsIgnoreCase(DEFAULT_S2)))
-		{
-			resetSharedInfo(reference);
+		resetSharedInfo(reference);
+		if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
+				(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
+        {
 			addSharedInfo(reference, s1, s2);
-		}
+        }
 	}
 	
 	/**
@@ -342,9 +352,22 @@ public class DBAccessor {
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
+        
+        if(bookPath.equalsIgnoreCase("") || 
+        		bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH))
+        {
+        	bookPath = DBAccessor.DEFAULT_BOOK_PATH;
+        }
         cv.put(KEY_BOOK_PATH, bookPath);
-        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
+        
+        if(bookInversePath.equalsIgnoreCase("") ||
+        		bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH))
+        {
+        	bookInversePath = DBAccessor.DEFAULT_BOOK_INVERSE_PATH;
+        }
 
+        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
+        
         //Insert the row into the database
         open();
         db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
@@ -373,13 +396,13 @@ public class DBAccessor {
 	 */
 	public void updateBookPaths(long reference, String bookPath, String bookInversePath)
 	{
-		if ((bookPath != null || bookInversePath != null) && 
-				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)
-				|| !bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
-		{
-			resetBookPath(reference);
+		resetBookPath(reference);
+		if(((!bookPath.equalsIgnoreCase("") || !bookInversePath.equalsIgnoreCase("")) &&
+				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)) ||
+				!bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
+        {
 			addBookPath(reference, bookPath, bookInversePath);
-		}
+        }
 	}
 	
 	/**

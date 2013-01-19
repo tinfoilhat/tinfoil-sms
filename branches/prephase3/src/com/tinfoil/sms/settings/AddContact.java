@@ -59,6 +59,7 @@ public class AddContact extends Activity {
 	public static final String EDIT_NUMBER = "edit_number";
 	public static final int REQUEST_CODE = 1;
 	public static final String POSITION = "position";
+	public static final int NEW_NUMBER_CODE = -1;
 	
     public static TrustedContact editTc;
     public static boolean addContact;
@@ -341,7 +342,7 @@ public class AddContact extends Activity {
     		
 	    	if(update && number != null)
 	    	{    		
-    			if(position == 0)
+    			if(position == AddContact.NEW_NUMBER_CODE)
     			{
     				update(number);
     			}

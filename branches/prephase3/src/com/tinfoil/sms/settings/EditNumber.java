@@ -69,12 +69,16 @@ public class EditNumber extends Activity{
         if(intent != null)
         {
         	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
-        	position = intent.getIntExtra(AddContact.POSITION, 0);
+        	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
             this.getIntent().removeExtra(AddContact.POSITION);
         }
+        else
+        {
+        	finish();
+        }
         
-        if(position != 0)
+        if(position != AddContact.NEW_NUMBER_CODE)
         {
         	tc = MessageService.dba.getRow(originalNumber);
         
@@ -105,11 +109,9 @@ public class EditNumber extends Activity{
         save.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) {
-				if(phoneNumber.getText().toString().length() > 0 &&
-						sharedInfo1.getText().toString().length() > 0 &&
-						sharedInfo2.getText().toString().length() > 0 &&
-						bookPath.getText().toString().length() > 0 &&
-						bookInverse.getText().toString().length() > 0)
+				
+				if(phoneNumber.getText().toString() != null &&
+						phoneNumber.getText().toString().length() > 0)
 				{
 					Number tempNumber = tc.getNumber(originalNumber);
 					tempNumber.setNumber(phoneNumber.getText().toString());

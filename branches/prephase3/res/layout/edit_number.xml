@@ -40,7 +40,8 @@
         android:layout_alignLeft="@+id/s1_text"
         android:layout_below="@+id/s1_text"
         android:ems="10"
-        android:inputType="text" />
+        android:inputType="text"
+        android:hint="default" />
 
     <TextView
         android:id="@+id/s2_text"
@@ -57,7 +58,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/s2_text"
         android:ems="10"
-        android:inputType="text" />
+        android:inputType="text"
+        android:hint="default" />
     
     <TextView
         android:id="@+id/book_path_text"
@@ -74,7 +76,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/book_path_text"
         android:ems="10"
-        android:inputType="text" />
+        android:inputType="text"
+        android:hint="default" />
     
     <TextView
         android:id="@+id/book_inverse_text"
@@ -91,7 +94,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/book_inverse_text"
         android:ems="10"
-        android:inputType="text" />
+        android:inputType="text"
+        android:hint="default" />
     
     <Button
         android:id="@+id/save"
