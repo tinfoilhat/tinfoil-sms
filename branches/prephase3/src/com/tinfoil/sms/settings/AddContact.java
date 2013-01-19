@@ -102,6 +102,8 @@ public class AddContact extends Activity {
         this.update(null);
 
         /*
+         * TODO update this to call EditNumber with empty boxes (or default filled)
+         * 
          * Add a dialog for when a user clicks on the add new number button.
          * A message dialog pops-up with an input section allowing the user to
          * enter the new number. 
@@ -110,7 +112,7 @@ public class AddContact extends Activity {
 
             public void onClick(View v) {
 
-                final EditText input = new EditText(AddContact.this.getBaseContext());
+                /*final EditText input = new EditText(AddContact.this.getBaseContext());
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
                 builder.setMessage("Enter the new number:")
@@ -133,13 +135,19 @@ public class AddContact extends Activity {
                             }
                         });
                 alert = builder.create();
-                alert.show();
+                alert.show();*/
+            	
+            	Intent intent = new Intent(AddContact.this, EditNumber.class);
+            	//intent.putExtra(AddContact.EDIT_NUMBER, AddContact.this.contactEdit.getNumber(position));
+            	//intent.putExtra(AddContact.POSITION, position);
+            	
+            	//TODO use request code to properly get return data
+            	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
             }
 
         });
 
         /*
-         * TODO update this to call EditNumber with empty boxes (or default filled)
          * When a user clicks on a number for a longer period of time a dialog is started
          * to determine what type of number the number is (mobile, home, ...)
          * 

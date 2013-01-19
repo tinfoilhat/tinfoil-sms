@@ -89,9 +89,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
         this.extendableList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-            public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-                    final int position, final long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                    int position, long id) {
 
+            	//TODO stop the children from entering this activity.
                 AddContact.addContact = false;
                 AddContact.editTc = ManageContactsActivity.this.tc.get(position);
                 ManageContactsActivity.this.startActivity(new Intent

@@ -76,11 +76,11 @@ public class DBAccessor {
     	"Main", "Other Fax", "Telex", "TTY TTD", "Work Mobile", "Work Pager", "Assistant", 
     	"MMS"};
 	
-	private static final String DEFAULT_BOOK_PATH = "path/path";
-	private static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
+	public static final String DEFAULT_BOOK_PATH = "path/path";
+	public static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
 	
-	private static final String DEFAULT_S1 = "Initiator";
-	private static final String DEFAULT_S2 = "Receiver";
+	public static final String DEFAULT_S1 = "Initiator";
+	public static final String DEFAULT_S2 = "Receiver";
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -1027,6 +1027,7 @@ public class DBAccessor {
 		{
 			id = getId(number);
 		}
+		long num_id = getNumberId(number);
 		
 		cv.put(KEY_REFERENCE, id);
         cv.put(KEY_NUMBER, numb.getNumber());
@@ -1039,6 +1040,10 @@ public class DBAccessor {
         db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
 				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number});
 		close();
+		
+		
+		updateBookPaths(num_id, numb.getBookPath(), numb.getBookInversePath());
+		updateSharedInfo(num_id, numb.getSharedInfo1(), numb.getSharedInfo2());
 	}
 	
 	/**

@@ -20,6 +20,7 @@ package com.tinfoil.sms.settings;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 import android.app.Activity;
@@ -73,47 +74,70 @@ public class EditNumber extends Activity{
             this.getIntent().removeExtra(AddContact.POSITION);
         }
         
-        tc = MessageService.dba.getRow(originalNumber);
+        if(position != 0)
+        {
+        	tc = MessageService.dba.getRow(originalNumber);
         
-        phoneNumber.setText(originalNumber);        
-        
-        sharedInfo1.setText(tc.getNumber(originalNumber).getSharedInfo1());
-        
-        sharedInfo2.setText(tc.getNumber(originalNumber).getSharedInfo2());
-        
-        bookPath.setText(tc.getNumber(originalNumber).getBookPath());
-        
-        bookInverse.setText(tc.getNumber(originalNumber).getBookInversePath());
+	        phoneNumber.setText(originalNumber);        
+	        
+	        sharedInfo1.setText(tc.getNumber(originalNumber).getSharedInfo1());
+	        
+	        sharedInfo2.setText(tc.getNumber(originalNumber).getSharedInfo2());
+	        
+	        bookPath.setText(tc.getNumber(originalNumber).getBookPath());
+	        
+	        bookInverse.setText(tc.getNumber(originalNumber).getBookInversePath());
+        }
+        else
+        {
+        	tc = new TrustedContact();
+        	//phoneNumber.setText();        
+	        
+	        sharedInfo1.setText(DBAccessor.DEFAULT_S1);
+	        
+	        sharedInfo2.setText(DBAccessor.DEFAULT_S2);
+	        
+	        bookPath.setText(DBAccessor.DEFAULT_BOOK_PATH);
+	        
+	        bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
+        }
         
         save.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) {
-				Number tempNumber = tc.getNumber(originalNumber);
-				tempNumber.setNumber(phoneNumber.getText().toString());
-				tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
-				tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
-				tempNumber.setBookPath(bookPath.getText().toString());
-				tempNumber.setBookInversePath(bookInverse.getText().toString());
-				
-				MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
-				
-				Intent data = new Intent();
-				
-				if(tempNumber.getNumber().equalsIgnoreCase(originalNumber))
-				{					
-					data.putExtra(EditNumber.UPDATE, false);					
-				}
-				else
+				if(phoneNumber.getText().toString().length() > 0 &&
+						sharedInfo1.getText().toString().length() > 0 &&
+						sharedInfo2.getText().toString().length() > 0 &&
+						bookPath.getText().toString().length() > 0 &&
+						bookInverse.getText().toString().length() > 0)
 				{
-					data.putExtra(EditNumber.UPDATE, true);
+					Number tempNumber = tc.getNumber(originalNumber);
+					tempNumber.setNumber(phoneNumber.getText().toString());
+					tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
+					tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
+					tempNumber.setBookPath(bookPath.getText().toString());
+					tempNumber.setBookInversePath(bookInverse.getText().toString());
+					
+					MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
+					
+					Intent data = new Intent();
+					
+					if(tempNumber.getNumber().equalsIgnoreCase(originalNumber))
+					{					
+						data.putExtra(EditNumber.UPDATE, false);					
+					}
+					else
+					{
+						data.putExtra(EditNumber.UPDATE, true);
+					}
+					
+					data.putExtra(EditNumber.NEW, tempNumber.getNumber());
+					data.putExtra(AddContact.POSITION, position);
+					
+					EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
+	
+					EditNumber.this.finish();
 				}
-				
-				data.putExtra(EditNumber.NEW, tempNumber.getNumber());
-				data.putExtra(AddContact.POSITION, position);
-				
-				EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
-
-				EditNumber.this.finish();
 			}
         });
 	}
