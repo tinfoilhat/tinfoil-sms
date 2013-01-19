@@ -29,10 +29,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class EditNumber extends Activity{
     
+	public static final String UPDATE = "update";
+	public static final String NEW = "new_number";
+	
 	private EditText phoneNumber;
 	private EditText sharedInfo1;
 	private EditText sharedInfo2;
@@ -41,12 +43,19 @@ public class EditNumber extends Activity{
 	private Button save;
 	private TrustedContact tc;
 	private String originalNumber;
+	private static int position;
 	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
         
+        
+        /*TODO consider how to handle the saving aspect
+         * - have multiple save buttons (current)
+         * - have a single save button (in addContact) and have this as temp passing back the object (not as ideal)
+         */
+       
         phoneNumber = (EditText)findViewById(R.id.phone_number);
         sharedInfo1 = (EditText)findViewById(R.id.shared_secret_1);
         sharedInfo2 = (EditText)findViewById(R.id.shared_secret_2);
@@ -58,8 +67,10 @@ public class EditNumber extends Activity{
         
         if(intent != null)
         {
-        	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);   
+        	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
+        	position = intent.getIntExtra(AddContact.POSITION, 0);
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
+            this.getIntent().removeExtra(AddContact.POSITION);
         }
         
         tc = MessageService.dba.getRow(originalNumber);
@@ -86,12 +97,23 @@ public class EditNumber extends Activity{
 				
 				MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
 				
-				/*TODO finish with setResult(int resultCode, Intent data);
-				 * The result code will be that to update the list (aka finish okay)\
-				 * Truly though the list only needs to be update if originalNumber != tempNumber.getNumber();
-				 * 
-				 */
-				finish();
+				Intent data = new Intent();
+				
+				if(tempNumber.getNumber().equalsIgnoreCase(originalNumber))
+				{					
+					data.putExtra(EditNumber.UPDATE, false);					
+				}
+				else
+				{
+					data.putExtra(EditNumber.UPDATE, true);
+				}
+				
+				data.putExtra(EditNumber.NEW, tempNumber.getNumber());
+				data.putExtra(AddContact.POSITION, position);
+				
+				EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
+
+				EditNumber.this.finish();
 			}
         });
 	}
