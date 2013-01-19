@@ -20,9 +20,11 @@ package com.tinfoil.sms.settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -30,6 +32,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ContactAdapter;
@@ -54,6 +57,9 @@ import com.tinfoil.sms.utility.MessageService;
  * activity has started if need to contactEdit = editTc.
  */
 public class AddContact extends Activity {
+	
+	public static final String EDIT_NUMBER = "edit_number";
+	
     public static TrustedContact editTc;
     public static boolean addContact;
     private String originalNumber;
@@ -176,7 +182,7 @@ public class AddContact extends Activity {
                     final int position, final long id) {
                 if (AddContact.this.contactEdit != null)
                 {
-                    final EditText input = new EditText(AddContact.this.getBaseContext());
+                    /*final EditText input = new EditText(AddContact.this.getBaseContext());
                     input.setText(AddContact.this.contactEdit.getNumber(position));
                     input.setInputType(InputType.TYPE_CLASS_PHONE);
 
@@ -197,7 +203,10 @@ public class AddContact extends Activity {
                                 }
                             });
                     alert = builder.create();
-                    alert.show();
+                    alert.show();*/
+                	Intent intent = new Intent(AddContact.this, EditNumber.class);
+                	intent.putExtra(AddContact.EDIT_NUMBER, AddContact.this.contactEdit.getNumber(position));
+                	AddContact.this.startActivity(intent);
                 }
             }
         });
@@ -319,7 +328,6 @@ public class AddContact extends Activity {
         {
             this.contactEdit = new TrustedContact("");
             this.listView.setAdapter(new ContactAdapter(this, R.layout.add_number, this.contactEdit));
-
         }
 
         this.listView.setItemsCanFocus(false);

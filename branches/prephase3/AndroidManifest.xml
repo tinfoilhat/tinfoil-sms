@@ -24,7 +24,7 @@
             android:label="Send Message" />
         <activity
             android:name=".settings.AddContact"
-            android:label="Add Contact" />
+            android:label="Edit Contact" />
         <activity
             android:name=".settings.QuickPrefsActivity"
             android:label="Settings" />
@@ -39,6 +39,10 @@
             android:name=".settings.ImportContacts"
             android:configChanges="orientation"
             android:label="Import Contacts" />
+        <activity
+            android:name=".settings.EditNumber"
+            android:configChanges="orientation"
+            android:label="Edit Number" />
         <activity
             android:name=".settings.RemoveContactsActivity"
             android:configChanges="orientation"

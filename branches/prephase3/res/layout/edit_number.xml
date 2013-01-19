@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/phone_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Phone" />
+
+    <EditText
+        android:id="@+id/phone_number"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/phone_text"
+        android:layout_below="@+id/phone_text"
+        android:ems="10"
+        android:inputType="phone" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/s1_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/phone_number"
+        android:layout_below="@+id/phone_number"
+        android:text="Shared Secret 1" />
+
+    <EditText
+        android:id="@+id/shared_secret_1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/s1_text"
+        android:layout_below="@+id/s1_text"
+        android:ems="10"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/s2_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/shared_secret_1"
+        android:text="Shared Secret 2" />
+
+    <EditText
+        android:id="@+id/shared_secret_2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/s2_text"
+        android:ems="10"
+        android:inputType="text" />
+    
+    <TextView
+        android:id="@+id/book_path_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/shared_secret_2"
+        android:text="Book Path" />
+
+    <EditText
+        android:id="@+id/book_path"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/book_path_text"
+        android:ems="10"
+        android:inputType="text" />
+    
+    <TextView
+        android:id="@+id/book_inverse_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/book_path"
+        android:text="Book Inverse Path" />
+
+    <EditText
+        android:id="@+id/book_inverse"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/book_inverse_text"
+        android:ems="10"
+        android:inputType="text" />
+    
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/book_inverse"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/book_inverse"
+        android:text="Save" />
+    
+</RelativeLayout>
