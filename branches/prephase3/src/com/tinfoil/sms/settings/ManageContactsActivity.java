@@ -39,6 +39,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 
@@ -91,12 +92,14 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                     int position, long id) {
-
+            	
+            	Toast.makeText(getBaseContext(), "position = " + String.valueOf(position), Toast.LENGTH_SHORT).show();
+            	Toast.makeText(getBaseContext(), "id = " + String.valueOf(id), Toast.LENGTH_SHORT).show();
             	//TODO stop the children from entering this activity.
-                AddContact.addContact = false;
+                /*AddContact.addContact = false;
                 AddContact.editTc = ManageContactsActivity.this.tc.get(position);
                 ManageContactsActivity.this.startActivity(new Intent
-                        (ManageContactsActivity.this, AddContact.class));
+                        (ManageContactsActivity.this, AddContact.class));*/
 
                 //This stops other on click effects from happening after this one.
                 return true;

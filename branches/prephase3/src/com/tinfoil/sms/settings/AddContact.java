@@ -102,47 +102,14 @@ public class AddContact extends Activity {
          */
         this.update(null);
 
-        /*
-         * TODO update this to call EditNumber with empty boxes (or default filled)
-         * 
-         * Add a dialog for when a user clicks on the add new number button.
-         * A message dialog pops-up with an input section allowing the user to
-         * enter the new number. 
+        /* 
+         * starts EditNumber with the default shared info and book paths
          */
         this.addNumber.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
-                /*final EditText input = new EditText(AddContact.this.getBaseContext());
-                input.setInputType(InputType.TYPE_CLASS_PHONE);
-                AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-                builder.setMessage("Enter the new number:")
-                        .setCancelable(true)
-                        .setView(input)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, final int id) {
-                                final String value = input.getText().toString();
-                                if (value != "" && value.length() > 0)
-                                {
-                                    AddContact.this.update(value);
-                                    input.setText("");
-                                }
-                                //TODO alert of Invalid Number
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, final int whichButton) {
-                                dialog.cancel(); // Canceled.
-                            }
-                        });
-                alert = builder.create();
-                alert.show();*/
-            	
             	Intent intent = new Intent(AddContact.this, EditNumber.class);
-            	//intent.putExtra(AddContact.EDIT_NUMBER, AddContact.this.contactEdit.getNumber(position));
-            	//intent.putExtra(AddContact.POSITION, position);
-            	
-            	//TODO use request code to properly get return data
             	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
             }
 
@@ -195,8 +162,6 @@ public class AddContact extends Activity {
                 	Intent intent = new Intent(AddContact.this, EditNumber.class);
                 	intent.putExtra(AddContact.EDIT_NUMBER, AddContact.this.contactEdit.getNumber(position));
                 	intent.putExtra(AddContact.POSITION, position);
-                	
-                	//TODO use request code to properly get return data
                 	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
                 }
             }

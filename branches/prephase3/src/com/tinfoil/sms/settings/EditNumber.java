@@ -52,7 +52,8 @@ public class EditNumber extends Activity{
         this.setContentView(R.layout.edit_number);
         
         
-        /*TODO consider how to handle the saving aspect
+        /* TODO comment
+         * TODO consider how to handle the saving aspect
          * - have multiple save buttons (current)
          * - have a single save button (in addContact) and have this as temp passing back the object (not as ideal)
          */
@@ -94,8 +95,7 @@ public class EditNumber extends Activity{
         }
         else
         {
-        	tc = new TrustedContact();
-        	//phoneNumber.setText();        
+        	tc = new TrustedContact();    
 	        
 	        sharedInfo1.setText(DBAccessor.DEFAULT_S1);
 	        
