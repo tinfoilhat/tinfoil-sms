@@ -191,7 +191,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         }
     }
     
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    /*protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
     	super.onActivityResult(requestCode, resultCode, data);
     	
@@ -199,19 +199,15 @@ public class ManageContactsActivity extends Activity implements Runnable {
     	{
     		if(resultCode == ManageContactsActivity.UPDATE)
     		{
-    			//implement
+    			this.startThread();
     		}
     	}
-    }
-
-    /*
-     * Added the onResume to update the list of contacts
-     */
-    @Override
+    }*/
+    
     protected void onResume()
     {
-        super.onResume();
-        this.startThread();
+    	super.onResume();
+    	this.startThread();
     }
 
     private void startThread()

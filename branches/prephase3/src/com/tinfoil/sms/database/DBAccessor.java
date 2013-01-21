@@ -261,11 +261,14 @@ public class DBAccessor {
 	public void updateSharedInfo(long reference, String s1, String s2)
 	{
 		resetSharedInfo(reference);
-		if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
-				(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
-        {
-			addSharedInfo(reference, s1, s2);
-        }
+		if(s1 != null && s2 != null)
+		{
+			if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
+					(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
+	        {
+				addSharedInfo(reference, s1, s2);
+	        }
+		}
 	}
 	
 	/**
@@ -397,12 +400,15 @@ public class DBAccessor {
 	public void updateBookPaths(long reference, String bookPath, String bookInversePath)
 	{
 		resetBookPath(reference);
-		if(((!bookPath.equalsIgnoreCase("") || !bookInversePath.equalsIgnoreCase("")) &&
-				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)) ||
-				!bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
-        {
-			addBookPath(reference, bookPath, bookInversePath);
-        }
+		if(bookPath != null && bookInversePath != null)
+		{
+			if(((!bookPath.equalsIgnoreCase("") || !bookInversePath.equalsIgnoreCase("")) &&
+					(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)) ||
+					!bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
+	        {
+				addBookPath(reference, bookPath, bookInversePath);
+	        }
+		}
 	}
 	
 	/**

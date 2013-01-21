@@ -110,9 +110,14 @@ public class AddContact extends Activity {
             public void onClick(View v) {
 
             	Intent intent = new Intent(AddContact.this, EditNumber.class);
+            	if(!contactEdit.isNumbersEmpty())
+            	{
+            		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
+            		intent.putExtra(AddContact.POSITION, -1);
+            	}
+            	//intent.putExtra(name, value)
             	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
             }
-
         });
 
         /*
@@ -176,7 +181,6 @@ public class AddContact extends Activity {
         if (this.contactEdit != null && this.contactEdit.getName() != null)
         {
             this.contactName.setText(this.contactEdit.getName());
-
         }
 
         /*

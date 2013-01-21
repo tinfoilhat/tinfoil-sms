@@ -43,8 +43,6 @@ import android.widget.EditText;
  * AddContact.POSITION, the position of the given number in the
  * contact's numbers array list, -1 if it is a new number
  * EditNumber.ADD, whether the number is to update or deleted
- * 
- * 
  */
 public class EditNumber extends Activity{
     
@@ -61,17 +59,15 @@ public class EditNumber extends Activity{
 	private TrustedContact tc;
 	private String originalNumber;
 	private static int position;
+	private static boolean newNumber = false;
 	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
         
-        
-        /* TODO comment
-         * TODO consider how to handle the saving aspect
-         * - have multiple save buttons (current)
-         * - have a single save button (in addContact) and have this as temp passing back the object (not as ideal)
+        /* 
+         * TODO comment
          */
        
         phoneNumber = (EditText)findViewById(R.id.phone_number);
@@ -87,8 +83,11 @@ public class EditNumber extends Activity{
         {
         	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
         	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);
+        	//newNumber = intent.getBooleanExtra(ADD, false);
+        	
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
             this.getIntent().removeExtra(AddContact.POSITION);
+            //this.getIntent().removeExtra(EditNumber.ADD);
         }
         else
         {
@@ -111,7 +110,7 @@ public class EditNumber extends Activity{
         }
         else
         {
-        	tc = new TrustedContact();    
+        	//tc = new TrustedContact();    
 	        
 	        sharedInfo1.setText(DBAccessor.DEFAULT_S1);
 	        
@@ -129,18 +128,49 @@ public class EditNumber extends Activity{
 				if(phoneNumber.getText().toString() != null &&
 						phoneNumber.getText().toString().length() > 0)
 				{
-					Number tempNumber = tc.getNumber(originalNumber);
-					tempNumber.setNumber(phoneNumber.getText().toString());
+					Number tempNumber;
+					
+					if(tc == null)
+					{
+						if(originalNumber != null)
+						{
+							tc = MessageService.dba.getRow(originalNumber);
+						}
+						tempNumber = new Number(phoneNumber.getText().toString());
+					}
+					else
+					{
+						tempNumber = tc.getNumber(originalNumber);
+						tempNumber.setNumber(phoneNumber.getText().toString());
+					}
+					
 					tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
 					tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
 					tempNumber.setBookPath(bookPath.getText().toString());
 					tempNumber.setBookInversePath(bookInverse.getText().toString());
 					
-					MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
+					if(originalNumber != null)
+					{
+						if(position == AddContact.NEW_NUMBER_CODE)
+						{
+							tc.addNumber(tempNumber);
+							MessageService.dba.updateRow(tc, originalNumber);
+						}
+						{
+							MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
+						}
+					}
+					else
+					{
+						TrustedContact tc = new TrustedContact();
+						tc.addNumber(tempNumber);
+						MessageService.dba.addRow(tc);
+					}
+					
 					
 					Intent data = new Intent();
 					
-					if(tempNumber.getNumber().equalsIgnoreCase(originalNumber))
+					if(originalNumber != null && tempNumber.getNumber().equalsIgnoreCase(originalNumber))
 					{					
 						data.putExtra(EditNumber.UPDATE, false);					
 					}
