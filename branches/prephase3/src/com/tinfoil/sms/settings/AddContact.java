@@ -116,7 +116,6 @@ public class AddContact extends Activity {
             		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
             		intent.putExtra(AddContact.POSITION, -1);
             	}
-            	//intent.putExtra(name, value)
             	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -124,9 +123,6 @@ public class AddContact extends Activity {
         /*
          * When a user clicks on a number for a longer period of time a dialog is started
          * to determine what type of number the number is (mobile, home, ...)
-         * 
-         * ***Please note: Since this is a task within itself the onclickListener is silenced
-         * after fulfilling the declared method.
          * 
          * ***Please note: This does not have a impact on the program. If a user sets the
          * number to pager or anything else and then tries to send a message to the number
@@ -149,7 +145,6 @@ public class AddContact extends Activity {
                 if (alert != null) {
                     alert.show();
                 }
-
                 return true;
             }
         });
@@ -213,40 +208,19 @@ public class AddContact extends Activity {
                 {
                     if (addContact)
                     {
-                        //if (!MessageService.dba.inDatabase(AddContact.this.contactEdit.getANumber()))
-                        {
-                            MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
-                            AddContact.this.contactEdit = null;
-                            editTc = null;
-                            AddContact.this.finish();
-                        }
-                        /*else
-                        {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-                            builder.setMessage("Contact is already in the database")
-                                    .setCancelable(true)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, final int id) {
-
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, final int whichButton) {
-                                            dialog.cancel(); // Canceled.
-                                        }
-                                    });
-                            alert = builder.create();
-                            alert.show();
-                        }*/
+                    	MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
                     }
                     else
                     {
                         MessageService.dba.updateNumberType(AddContact.this.contactEdit, AddContact.this.originalNumber);
-                        AddContact.this.contactEdit = null;
-                        editTc = null;
-                        AddContact.this.finish();
                     }
-                } else
+                    
+                    AddContact.this.contactEdit = null;
+                    editTc = null;
+                    AddContact.this.finish();
+                    
+                }
+                else
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
                     builder.setMessage("Insufficient information provided")
@@ -344,7 +318,6 @@ public class AddContact extends Activity {
         switch (item.getItemId()) {
             case R.id.delete_contact: {
             
-            	//TODO test delete
             	MessageService.dba.removeRow(contactEdit.getANumber());
             	
             	finish();

@@ -34,7 +34,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * TODO go through and ensure that the getANumber is used properly
  * Creates a database that is read and write and provides methods to 
  * facilitate the reading and writing to the database. Table Names
  * are all from SQLitehelper since they are created in that class.
@@ -151,9 +150,6 @@ public class DBAccessor {
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(Prephase3Activity.sharedPrefs.getString
         		("message_limit", String.valueOf(SMSUtility.LIMIT))))
         {
-        	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
-        		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
-
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);
         	
@@ -823,13 +819,7 @@ public class DBAccessor {
 				
 				id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-						SQLitehelper.NUMBERS_TABLE_NAME, /*new String[]
-						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_SIGNATURE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID}*/null,
+						SQLitehelper.NUMBERS_TABLE_NAME, null,
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -1084,7 +1074,6 @@ public class DBAccessor {
 				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number});
 		close();
 		
-		
 		updateBookPaths(num_id, numb.getBookPath(), numb.getBookInversePath());
 		updateSharedInfo(num_id, numb.getSharedInfo1(), numb.getSharedInfo2());
 	}
@@ -1141,9 +1130,6 @@ public class DBAccessor {
 			cv.clear();
 			if(num == 0)
 			{
-				//open();
-				//db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
-				//close();
 				addNumbersRow(id, number.get(i));
 			}
 		}
