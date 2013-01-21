@@ -150,7 +150,7 @@ public class EditNumber extends Activity{
                         data.putExtra(EditNumber.UPDATE, true);
                     }
 
-                    data.putExtra(EditNumber.NEW, tempNumber.getNumber());
+                    data.putExtra(EditNumber.NUMBER, tempNumber.getNumber());
                     data.putExtra(AddContact.POSITION, position);
                     data.putExtra(EditNumber.ADD, true);
 					
