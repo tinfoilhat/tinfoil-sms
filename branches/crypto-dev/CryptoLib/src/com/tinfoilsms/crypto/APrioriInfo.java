@@ -20,25 +20,25 @@ import org.spongycastle.crypto.DataLengthException;
 
 
  /**
- * Shared information, contains the shared information S1 & S2 that 
- * users have agreed upon before initiating the exchange
+ * Information communicated by both parties involved in the key exchange before
+ * the actual key exchange takes place (a priori), contains the a priori shared 
+ * information S1 & S2 that users have agreed upon before initiating the exchange
  */
-public final class SharedInfo
+public final class APrioriInfo
 {
-
     private byte[]  S1;
     private byte[]  S2;
 	
 	/**
-	 * Defines the two parameters for constructor which are the shared
-	 * information S1 & S2, the values cannot be empty
+	 * Defines the two parameters for constructor which are the a priori
+	 * shared information S1 & S2, the values cannot be empty
 	 * 
 	 * @param S1 Shared information S1
 	 * @param S2 Shared information S2
 	 * 
 	 * @throws DataLengthException if shared information is empty
 	 */
-	public SharedInfo(String S1, String S2)
+	public APrioriInfo(String S1, String S2)
 			throws DataLengthException
 	{
 		if (S1.length() == 0 || S2.length() == 0)
@@ -51,7 +51,7 @@ public final class SharedInfo
 	}
 
 	/**
-	 * Gets the shared information S1
+	 * Gets the a priori shared information S1
 	 * @return shared information, S1
 	 */
     public byte[] getS1()
@@ -60,7 +60,7 @@ public final class SharedInfo
     }
     
 	/**
-	 * Gets the shared information S2
+	 * Gets the a priori shared information S2
 	 * @return shared information, S2
 	 */
     public byte[] getS2()
