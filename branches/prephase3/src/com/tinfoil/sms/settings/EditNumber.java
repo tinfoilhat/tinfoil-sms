@@ -26,6 +26,7 @@ import com.tinfoil.sms.utility.MessageService;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -43,6 +44,8 @@ import android.widget.EditText;
  * AddContact.POSITION, the position of the given number in the
  * contact's numbers array list, -1 if it is a new number
  * EditNumber.ADD, whether the number is to update or deleted
+ * 
+ * 
  */
 public class EditNumber extends Activity{
     
@@ -59,7 +62,6 @@ public class EditNumber extends Activity{
 	private TrustedContact tc;
 	private String originalNumber;
 	private static int position;
-	private static boolean newNumber = false;
 	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -82,12 +84,9 @@ public class EditNumber extends Activity{
         if(intent != null)
         {
         	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
-        	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);
-        	//newNumber = intent.getBooleanExtra(ADD, false);
-        	
+        	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);   	
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
             this.getIntent().removeExtra(AddContact.POSITION);
-            //this.getIntent().removeExtra(EditNumber.ADD);
         }
         else
         {
@@ -190,5 +189,10 @@ public class EditNumber extends Activity{
 				}
 			}
         });
-	}
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 }
