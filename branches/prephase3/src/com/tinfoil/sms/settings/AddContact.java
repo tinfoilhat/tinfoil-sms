@@ -23,6 +23,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.WindowManager;
@@ -324,4 +327,39 @@ public class AddContact extends Activity {
 	    	}
     	}
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.manage_contacts_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add: {
+                AddContact.addContact = true;
+                AddContact.editTc = null;
+                this.startActivity(new Intent(this, AddContact.class));
+
+                return true;
+            }
+            case R.id.all:
+                
+                return true;
+            case R.id.remove:
+               
+                return true;
+            case R.id.delete: {
+               
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+    
 }
