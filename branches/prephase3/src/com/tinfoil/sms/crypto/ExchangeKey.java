@@ -39,10 +39,8 @@ public class ExchangeKey implements Runnable {
      * A constructor used by the ManageContactsActivity to set up the key
      * exchange thread
      * 
-     * @param c
-     *            The context of the activity
-     * @param contacts
-     *            The list of contacts
+     * @param c The context of the activity
+     * @param contacts The list of contacts
      */
     public void startThread(final Context c, final ArrayList<ContactParent> contacts)
     {

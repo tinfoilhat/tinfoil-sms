@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO move key and signature to numbers class
  * A class for storing information retrieved or to be stored in the database.
  * 
  * Through out tinfoil-sms TrustedContact is used to describe the class where

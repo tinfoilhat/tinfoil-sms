@@ -134,9 +134,7 @@ public class SendMessageActivity extends Activity {
             public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
             }
         });
-
-        //TODO link messageBox to sms send so that when the message box is empty it will disable the send button.
-
+        
         this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
         this.messageBox = (EditText) this.findViewById(R.id.new_message_message);
 

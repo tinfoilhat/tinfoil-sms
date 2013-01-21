@@ -41,8 +41,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
- * TODO add an option to delete numbers This Activity is used for adding and
- * editing contacts. The activity is able to identify which one it is doing
+ * The activity is able to identify which one it is doing
  * by the information provided to the activity. If the variable addContact ==
  * false then a previously created/imported contact is being edited. Thus editTc
  * != null and will have the contact's information.If addContact == true and
@@ -245,9 +244,8 @@ public class AddContact extends Activity {
     /**
      * Update the list of numbers shown.
      * 
-     * @param newNumber
-     *            : String a new number to be added to the list, if null no new
-     *            number is added
+     * @param newNumber String a new number to be added to the list,
+     * if null no new number is added
      */
     public void update(String newNumber)
     {

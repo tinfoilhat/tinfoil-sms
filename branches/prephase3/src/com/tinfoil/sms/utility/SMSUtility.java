@@ -230,7 +230,6 @@ public abstract class SMSUtility {
 
                 sendSMS(context, number, encrypted);
 
-                //TODO check if setting a message the user sent as read (rather then unread) breaks anything
                 if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
                 {
                     sendToSelf(context, number, encrypted, Prephase3Activity.SENT);

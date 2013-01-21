@@ -44,8 +44,6 @@ import android.widget.EditText;
  * AddContact.POSITION, the position of the given number in the
  * contact's numbers array list, -1 if it is a new number
  * EditNumber.ADD, whether the number is to update or deleted
- * 
- * 
  */
 public class EditNumber extends Activity{
     
@@ -67,11 +65,7 @@ public class EditNumber extends Activity{
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
-        
-        /* 
-         * TODO comment
-         */
-       
+
         phoneNumber = (EditText)findViewById(R.id.phone_number);
         sharedInfo1 = (EditText)findViewById(R.id.shared_secret_1);
         sharedInfo2 = (EditText)findViewById(R.id.shared_secret_2);
@@ -81,8 +75,12 @@ public class EditNumber extends Activity{
         
         Intent intent = this.getIntent();
         
+        /* Check if there is intent */
         if(intent != null)
         {
+        	/*
+        	 * Get the extra values in the intent.
+        	 */
         	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
         	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);   	
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
@@ -93,8 +91,14 @@ public class EditNumber extends Activity{
         	finish();
         }
         
+        /*
+         * Is the number a new number
+         */
         if(position != AddContact.NEW_NUMBER_CODE)
         {
+        	/*
+        	 * Initialize the values to be adjusted
+        	 */
         	tc = MessageService.dba.getRow(originalNumber);
         
 	        phoneNumber.setText(originalNumber);        
@@ -109,8 +113,9 @@ public class EditNumber extends Activity{
         }
         else
         {
-        	//tc = new TrustedContact();    
-	        
+        	/*
+        	 * Initialize the values to the default values
+        	 */
 	        sharedInfo1.setText(DBAccessor.DEFAULT_S1);
 	        
 	        sharedInfo2.setText(DBAccessor.DEFAULT_S2);
@@ -124,6 +129,7 @@ public class EditNumber extends Activity{
 
 			public void onClick(View v) {
 				
+				/* Is there a valid number */
 				if(phoneNumber.getText().toString() != null &&
 						phoneNumber.getText().toString().length() > 0)
 				{
@@ -131,23 +137,38 @@ public class EditNumber extends Activity{
 					
 					if(tc == null)
 					{
+						/* Number is a new number */						
 						if(originalNumber != null)
 						{
+							/* 
+							 * The contact is not new and has another number.
+							 * Get the contact from the database
+							 */
 							tc = MessageService.dba.getRow(originalNumber);
 						}
 						tempNumber = new Number(phoneNumber.getText().toString());
 					}
 					else
 					{
+						/*
+						 * Editing the current number. Get the Number row
+						 * for the previous number.
+						 */
 						tempNumber = tc.getNumber(originalNumber);
 						tempNumber.setNumber(phoneNumber.getText().toString());
 					}
 					
+					/*
+					 * Set the updated information
+					 */
 					tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
 					tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
 					tempNumber.setBookPath(bookPath.getText().toString());
 					tempNumber.setBookInversePath(bookInverse.getText().toString());
 					
+					/*
+					 * Update/Add the number to the database
+					 */
 					if(originalNumber != null)
 					{
 						if(position == AddContact.NEW_NUMBER_CODE)
@@ -170,6 +191,9 @@ public class EditNumber extends Activity{
 					
 					Intent data = new Intent();
 					
+					/*
+					 * Return intent with given parameters 
+					 */
 					if(originalNumber != null && tempNumber.getNumber().equalsIgnoreCase(originalNumber))
 					{					
 						data.putExtra(EditNumber.UPDATE, false);					
@@ -183,6 +207,10 @@ public class EditNumber extends Activity{
 					data.putExtra(AddContact.POSITION, position);
 					data.putExtra(EditNumber.ADD, true);
 					
+					/*
+					 * Set result code to identify that whether the list in
+					 * ManageContactsActivity.
+					 */
 					EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
 	
 					EditNumber.this.finish();

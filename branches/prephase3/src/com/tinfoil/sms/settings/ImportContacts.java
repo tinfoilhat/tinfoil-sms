@@ -287,7 +287,6 @@ public class ImportContacts extends Activity implements Runnable {
             while (convCur.moveToNext())
             {
                 id = convCur.getString(convCur.getColumnIndex("thread_id"));
-                //newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
 
                 /*
                  * TODO possibly come up with a more efficient method, since if the conversation 

@@ -1088,7 +1088,6 @@ public class DBAccessor {
 	{
 		ContentValues cv = new ContentValues();
 	
-		//TODO Store the number's unique id in the Number class
 		for(int i = 0; i < number.size(); i++)
 		{	
 	        cv.put(KEY_TYPE, number.get(i).getType());
@@ -1113,7 +1112,6 @@ public class DBAccessor {
 	{
 		ContentValues cv = new ContentValues();
 	
-		//TODO Store the number's unique id in the Number class
 		for(int i = 0; i < number.size(); i++)
 		{
 			cv.put(KEY_REFERENCE, id);

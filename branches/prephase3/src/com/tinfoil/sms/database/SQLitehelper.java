@@ -40,7 +40,6 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String MESSAGES_TABLE_NAME = "messages";
     public static final String QUEUE_TABLE_NAME = "queue";
     
-    //TODO document db create schema
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
             " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
