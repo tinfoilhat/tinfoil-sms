@@ -298,24 +298,29 @@ public class AddContact extends Activity {
     	boolean update = false;
     	String number = null;
     	int position = 0;
+    	boolean addNumber = false;
     	
-    	if(requestCode == resultCode)
+    	if(requestCode == resultCode && resultCode == AddContact.REQUEST_CODE)
     	{
     		update = data.getBooleanExtra(EditNumber.UPDATE, true);
-    		number = data.getStringExtra(EditNumber.NEW);
+    		number = data.getStringExtra(EditNumber.NUMBER);
     		position = data.getIntExtra(AddContact.POSITION, 0);
+    		addNumber = data.getBooleanExtra(EditNumber.ADD, true);
     		
 	    	if(update && number != null)
-	    	{    		
-    			if(position == AddContact.NEW_NUMBER_CODE)
-    			{
-    				update(number);
-    			}
-    			else
-    			{
-    				contactEdit.setNumber(position, number);
-    				update(null);
-    			}
+	    	{    	
+	    		if(addNumber)
+	    		{
+	    			if(position == AddContact.NEW_NUMBER_CODE)
+	    			{
+	    				update(number);
+	    			}
+	    			else
+	    			{
+	    				contactEdit.setNumber(position, number);
+	    				update(null);
+	    			}
+	    		}
 	    	}
     	}
     }

@@ -31,10 +31,26 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * An activity used to edit a single number from a given contact. 
+ * 
+ * This activity returns a AddContact.RESULT_CODE if changes have
+ * been made and the list needs to be update, else returns default
+ * result code.
+ * The Extras are included are:
+ * EditNumber.UPDATE, whether the number has been updated or not
+ * EditNumber.NUMBER, the number that has been edited
+ * AddContact.POSITION, the position of the given number in the
+ * contact's numbers array list, -1 if it is a new number
+ * EditNumber.ADD, whether the number is to update or deleted
+ * 
+ * 
+ */
 public class EditNumber extends Activity{
     
 	public static final String UPDATE = "update";
-	public static final String NEW = "new_number";
+	public static final String NUMBER = "number";
+	public static final String ADD = "add";
 	
 	private EditText phoneNumber;
 	private EditText sharedInfo1;
@@ -133,8 +149,9 @@ public class EditNumber extends Activity{
 						data.putExtra(EditNumber.UPDATE, true);
 					}
 					
-					data.putExtra(EditNumber.NEW, tempNumber.getNumber());
+					data.putExtra(EditNumber.NUMBER, tempNumber.getNumber());
 					data.putExtra(AddContact.POSITION, position);
+					data.putExtra(EditNumber.ADD, true);
 					
 					EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
 	
