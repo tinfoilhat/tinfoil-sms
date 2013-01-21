@@ -989,6 +989,20 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Update all of the values in a row
+	 * @param tc : Trusted Contact, the new values for the row
+	 * @param number : the number of the contact in the database
+	 */
+	public void updateNumberType (TrustedContact tc, String number)
+	{
+		long id = getId(SMSUtility.format(number));
+		updateTrustedRow(tc, number, id);
+		
+		updateNumberRowType(tc.getNumber(), id);
+		
+	}
+	
+	/**
 	 * TODO remove
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
@@ -1081,6 +1095,31 @@ public class DBAccessor {
 	 * @param number : String a number owned by the contact
 	 * @param id : long the id for the contact's database row
 	 */
+	public void updateNumberRowType (ArrayList<Number> number, long id)
+	{
+		ContentValues cv = new ContentValues();
+	
+		//TODO Store the number's unique id in the Number class
+		for(int i = 0; i < number.size(); i++)
+		{	
+	        cv.put(KEY_TYPE, number.get(i).getType());
+	        
+	        open();
+	        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+	        		+ " AND " + KEY_NUMBER + " = " + number.get(i).getNumber(), null);
+			close();
+			
+			cv.clear();
+		}
+		
+	}
+	
+	/**
+	 * Update a row from the Numbers table
+	 * @param tc : TrustedContact the new information to be stored
+	 * @param number : String a number owned by the contact
+	 * @param id : long the id for the contact's database row
+	 */
 	public void updateNumberRow (ArrayList<Number> number, long id)
 	{
 		ContentValues cv = new ContentValues();
@@ -1098,9 +1137,13 @@ public class DBAccessor {
 	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
 	        		+ " AND " + KEY_ID + " = " + number.get(i).getId(), null);
 			close();
+			
 			cv.clear();
 			if(num == 0)
 			{
+				//open();
+				//db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+				//close();
 				addNumbersRow(id, number.get(i));
 			}
 		}

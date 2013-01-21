@@ -110,6 +110,7 @@ public class AddContact extends Activity {
             public void onClick(View v) {
 
             	Intent intent = new Intent(AddContact.this, EditNumber.class);
+            	
             	if(!contactEdit.isNumbersEmpty())
             	{
             		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
@@ -191,6 +192,7 @@ public class AddContact extends Activity {
             public void onClick(View v) {
                 String name = AddContact.this.contactName.getText().toString();
                 boolean empty = false;
+                
                 if (name == null)
                 {
                     if (!AddContact.this.contactEdit.isNumbersEmpty())
@@ -211,14 +213,14 @@ public class AddContact extends Activity {
                 {
                     if (addContact)
                     {
-                        if (!MessageService.dba.inDatabase(AddContact.this.contactEdit.getANumber()))
+                        //if (!MessageService.dba.inDatabase(AddContact.this.contactEdit.getANumber()))
                         {
-                            MessageService.dba.addRow(AddContact.this.contactEdit);
+                            MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
                             AddContact.this.contactEdit = null;
                             editTc = null;
                             AddContact.this.finish();
                         }
-                        else
+                        /*else
                         {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
                             builder.setMessage("Contact is already in the database")
@@ -235,11 +237,11 @@ public class AddContact extends Activity {
                                     });
                             alert = builder.create();
                             alert.show();
-                        }
+                        }*/
                     }
                     else
                     {
-                        MessageService.dba.updateRow(AddContact.this.contactEdit, AddContact.this.originalNumber);
+                        MessageService.dba.updateNumberType(AddContact.this.contactEdit, AddContact.this.originalNumber);
                         AddContact.this.contactEdit = null;
                         editTc = null;
                         AddContact.this.finish();
@@ -340,7 +342,7 @@ public class AddContact extends Activity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.delete: {
+            case R.id.delete_contact: {
             
             	//TODO test delete
             	MessageService.dba.removeRow(contactEdit.getANumber());

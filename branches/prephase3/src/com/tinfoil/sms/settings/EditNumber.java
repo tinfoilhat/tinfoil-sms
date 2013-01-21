@@ -156,6 +156,7 @@ public class EditNumber extends Activity{
 							tc.addNumber(tempNumber);
 							MessageService.dba.updateRow(tc, originalNumber);
 						}
+						else
 						{
 							MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
 						}
