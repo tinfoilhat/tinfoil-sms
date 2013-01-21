@@ -63,6 +63,8 @@ import com.tinfoil.sms.utility.MessageService;
  */
 public class ManageContactsActivity extends Activity implements Runnable {
 
+	public static final int UPDATE = 1;
+	
     private ExpandableListView extendableList;
     private ListView listView;
     private Button exchangeKeys;
@@ -89,16 +91,30 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
         this.extendableList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-            public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-                    final int position, final long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                    int position, long id) {
 
-                AddContact.addContact = false;
-                AddContact.editTc = ManageContactsActivity.this.tc.get(position);
-                ManageContactsActivity.this.startActivity(new Intent
-                        (ManageContactsActivity.this, AddContact.class));
+            	if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                   
+                	
+                    AddContact.addContact = false;
+                    AddContact.editTc = ManageContactsActivity.this.tc.get(
+                    		ExpandableListView.getPackedPositionGroup(id));
+                   
+                    //ManageContactsActivity.this.startActivity(new Intent
+                      //      (ManageContactsActivity.this, AddContact.class));
+                    
+                    Intent intent = new Intent(ManageContactsActivity.this, AddContact.class);
+                    
+                    
+                    ManageContactsActivity.this.startActivityForResult(intent, UPDATE);
+                    
+                    //This stops other on click effects from happening after this one.
+                    return true;
+                }
 
-                //This stops other on click effects from happening after this one.
-                return true;
+                //Child long clicked
+                return false;
             }
         });
 
@@ -174,15 +190,24 @@ public class ManageContactsActivity extends Activity implements Runnable {
             this.extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         }
     }
-
-    /*
-     * Added the onResume to update the list of contacts
-     */
-    @Override
+    
+    /*protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	
+    	if(requestCode == resultCode)
+    	{
+    		if(resultCode == ManageContactsActivity.UPDATE)
+    		{
+    			this.startThread();
+    		}
+    	}
+    }*/
+    
     protected void onResume()
     {
-        super.onResume();
-        this.startThread();
+    	super.onResume();
+    	this.startThread();
     }
 
     private void startThread()

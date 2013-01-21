@@ -34,7 +34,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * TODO go through and ensure that the getANumber is used properly
  * Creates a database that is read and write and provides methods to 
  * facilitate the reading and writing to the database. Table Names
  * are all from SQLitehelper since they are created in that class.
@@ -76,11 +75,11 @@ public class DBAccessor {
     	"Main", "Other Fax", "Telex", "TTY TTD", "Work Mobile", "Work Pager", "Assistant", 
     	"MMS"};
 	
-	private static final String DEFAULT_BOOK_PATH = "path/path";
-	private static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
+	public static final String DEFAULT_BOOK_PATH = "path/path";
+	public static final String DEFAULT_BOOK_INVERSE_PATH = "path/inverse";
 	
-	private static final String DEFAULT_S1 = "Initiator";
-	private static final String DEFAULT_S2 = "Receiver";
+	public static final String DEFAULT_S1 = "Initiator";
+	public static final String DEFAULT_S2 = "Receiver";
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -151,9 +150,6 @@ public class DBAccessor {
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(Prephase3Activity.sharedPrefs.getString
         		("message_limit", String.valueOf(SMSUtility.LIMIT))))
         {
-        	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
-        		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
-
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);
         	
@@ -233,9 +229,19 @@ public class DBAccessor {
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
+        
+        if(s1.equalsIgnoreCase("") || s1.equalsIgnoreCase(DEFAULT_S1))
+        {
+        	s1 = DBAccessor.DEFAULT_S1;
+        }
         cv.put(KEY_SHARED_INFO_1, s1);
+        
+        if(s2.equalsIgnoreCase("") || s2.equalsIgnoreCase(DEFAULT_S2))
+        {
+        	s2 = DBAccessor.DEFAULT_S2;
+        }
         cv.put(KEY_SHARED_INFO_2, s2);
-
+        
         //Insert the row into the database
         open();
         db.insert(SQLitehelper.SHARED_INFO_TABLE_NAME, null, cv);
@@ -250,11 +256,14 @@ public class DBAccessor {
 	 */
 	public void updateSharedInfo(long reference, String s1, String s2)
 	{
-		if ((s1 != null || s2 != null) && (!s1.equalsIgnoreCase(DEFAULT_S1)
-				|| !s2.equalsIgnoreCase(DEFAULT_S2)))
+		resetSharedInfo(reference);
+		if(s1 != null && s2 != null)
 		{
-			resetSharedInfo(reference);
-			addSharedInfo(reference, s1, s2);
+			if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
+					(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
+	        {
+				addSharedInfo(reference, s1, s2);
+	        }
 		}
 	}
 	
@@ -342,9 +351,22 @@ public class DBAccessor {
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
+        
+        if(bookPath.equalsIgnoreCase("") || 
+        		bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH))
+        {
+        	bookPath = DBAccessor.DEFAULT_BOOK_PATH;
+        }
         cv.put(KEY_BOOK_PATH, bookPath);
-        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
+        
+        if(bookInversePath.equalsIgnoreCase("") ||
+        		bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH))
+        {
+        	bookInversePath = DBAccessor.DEFAULT_BOOK_INVERSE_PATH;
+        }
 
+        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
+        
         //Insert the row into the database
         open();
         db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
@@ -373,12 +395,15 @@ public class DBAccessor {
 	 */
 	public void updateBookPaths(long reference, String bookPath, String bookInversePath)
 	{
-		if ((bookPath != null || bookInversePath != null) && 
-				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)
-				|| !bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
+		resetBookPath(reference);
+		if(bookPath != null && bookInversePath != null)
 		{
-			resetBookPath(reference);
-			addBookPath(reference, bookPath, bookInversePath);
+			if(((!bookPath.equalsIgnoreCase("") || !bookInversePath.equalsIgnoreCase("")) &&
+					(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)) ||
+					!bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
+	        {
+				addBookPath(reference, bookPath, bookInversePath);
+	        }
 		}
 	}
 	
@@ -794,13 +819,7 @@ public class DBAccessor {
 				
 				id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-						SQLitehelper.NUMBERS_TABLE_NAME, /*new String[]
-						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_SIGNATURE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID}*/null,
+						SQLitehelper.NUMBERS_TABLE_NAME, null,
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -959,7 +978,22 @@ public class DBAccessor {
 		
 	}
 	
-	/** 
+	/**
+	 * Update all of the values in a row
+	 * @param tc : Trusted Contact, the new values for the row
+	 * @param number : the number of the contact in the database
+	 */
+	public void updateNumberType (TrustedContact tc, String number)
+	{
+		long id = getId(SMSUtility.format(number));
+		updateTrustedRow(tc, number, id);
+		
+		updateNumberRowType(tc.getNumber(), id);
+		
+	}
+	
+	/**
+	 * TODO remove
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
@@ -1018,7 +1052,7 @@ public class DBAccessor {
 	 * @param number : String a number owned by the contact
 	 * @param id : long the id for the contact's database row
 	 */
-	public void updateNumberRow (Number numb, String number, long id)
+	public void updateNumberRow(Number numb, String number, long id)
 	{
 		number = SMSUtility.format(number);
 		ContentValues cv = new ContentValues();
@@ -1026,6 +1060,7 @@ public class DBAccessor {
 		{
 			id = getId(number);
 		}
+		long num_id = getNumberId(number);
 		
 		cv.put(KEY_REFERENCE, id);
         cv.put(KEY_NUMBER, numb.getNumber());
@@ -1035,9 +1070,37 @@ public class DBAccessor {
         cv.put(KEY_SIGNATURE, numb.getSignature());
         
         open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{numb.getNumber()});
+        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number});
 		close();
+		
+		updateBookPaths(num_id, numb.getBookPath(), numb.getBookInversePath());
+		updateSharedInfo(num_id, numb.getSharedInfo1(), numb.getSharedInfo2());
+	}
+	
+	/**
+	 * Update a row from the Numbers table
+	 * @param tc : TrustedContact the new information to be stored
+	 * @param number : String a number owned by the contact
+	 * @param id : long the id for the contact's database row
+	 */
+	public void updateNumberRowType (ArrayList<Number> number, long id)
+	{
+		ContentValues cv = new ContentValues();
+	
+		//TODO Store the number's unique id in the Number class
+		for(int i = 0; i < number.size(); i++)
+		{	
+	        cv.put(KEY_TYPE, number.get(i).getType());
+	        
+	        open();
+	        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+	        		+ " AND " + KEY_NUMBER + " = " + number.get(i).getNumber(), null);
+			close();
+			
+			cv.clear();
+		}
+		
 	}
 	
 	/**
@@ -1063,6 +1126,7 @@ public class DBAccessor {
 	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
 	        		+ " AND " + KEY_ID + " = " + number.get(i).getId(), null);
 			close();
+			
 			cv.clear();
 			if(num == 0)
 			{

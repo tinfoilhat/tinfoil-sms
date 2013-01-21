@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, Prephase1Activity!</string>
     <string name="app_name">prephase1</string>
     <string name="vibration_default_length">500</string>
+    <string name="phone_text">Phone Number</string>
     
+    <string name="s1_text">Shared Secret 1</string>
+    <string name="shared_secret_1">default</string>
     
+    <string name="s2_text">Shared Secret 2</string>
+    <string name="shared_secret_2">default</string>
+    
+    <string name="book_path_text">Book Path</string>
+    <string name="book_path">default</string>
+    <string name="book_inverse_text">Book Inverse Path</string>
+    <string name="book_inverse">default</string>
+    <string name="save">Save</string>
+    <string name="contact_name">name</string>
+    <string name="number">Number</string>
 </resources>

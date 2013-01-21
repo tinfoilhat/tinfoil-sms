@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:hint="name" >
+        android:hint="@string/contact_name" >
 
         <requestFocus />
     </EditText>
@@ -22,7 +22,7 @@
         android:layout_alignLeft="@+id/contact_name"
         android:layout_below="@+id/contact_name"
         android:layout_marginTop="16dp"
-        android:text="Number"
+        android:text="@string/number"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView

@@ -143,7 +143,7 @@ public class TrustedContact {
 	
 	/**
 	 * Add a number to the contact's numbers list
-	 * @param number : String
+	 * @param number Number
 	 */
 	public void addNumber(Number number)
 	{
@@ -206,11 +206,7 @@ public class TrustedContact {
 	 */
 	public boolean isNumbersEmpty()
 	{
-		if (numbers == null || numbers.size() < 1)
-		{
-			return true;
-		}
-		return false;
+		return numbers.isEmpty();
 	}
 	
 	/**
