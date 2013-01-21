@@ -63,6 +63,8 @@ import com.tinfoil.sms.utility.MessageService;
  */
 public class ManageContactsActivity extends Activity implements Runnable {
 
+	public static final int UPDATE = 1;
+	
     private ExpandableListView extendableList;
     private ListView listView;
     private Button exchangeKeys;
@@ -98,8 +100,14 @@ public class ManageContactsActivity extends Activity implements Runnable {
                     AddContact.addContact = false;
                     AddContact.editTc = ManageContactsActivity.this.tc.get(
                     		ExpandableListView.getPackedPositionGroup(id));
-                    ManageContactsActivity.this.startActivity(new Intent
-                            (ManageContactsActivity.this, AddContact.class));
+                   
+                    //ManageContactsActivity.this.startActivity(new Intent
+                      //      (ManageContactsActivity.this, AddContact.class));
+                    
+                    Intent intent = new Intent(ManageContactsActivity.this, AddContact.class);
+                    
+                    
+                    ManageContactsActivity.this.startActivityForResult(intent, UPDATE);
                     
                     //This stops other on click effects from happening after this one.
                     return true;
@@ -181,6 +189,19 @@ public class ManageContactsActivity extends Activity implements Runnable {
         {
             this.extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         }
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	
+    	if(requestCode == resultCode)
+    	{
+    		if(resultCode == ManageContactsActivity.UPDATE)
+    		{
+    			//implement
+    		}
+    	}
     }
 
     /*

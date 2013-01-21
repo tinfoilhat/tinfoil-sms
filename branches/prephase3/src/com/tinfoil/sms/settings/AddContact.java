@@ -22,12 +22,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -35,7 +33,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ContactAdapter;
@@ -332,29 +329,21 @@ public class AddContact extends Activity {
     public boolean onCreateOptionsMenu(final Menu menu) {
 
         final MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.manage_contacts_menu, menu);
+        inflater.inflate(R.menu.add_contact_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.add: {
-                AddContact.addContact = true;
-                AddContact.editTc = null;
-                this.startActivity(new Intent(this, AddContact.class));
-
-                return true;
-            }
-            case R.id.all:
-                
-                return true;
-            case R.id.remove:
-               
-                return true;
             case R.id.delete: {
-               
-                return true;
+            
+            	//TODO test delete
+            	MessageService.dba.removeRow(contactEdit.getANumber());
+            	
+            	finish();
+            	
+            	return true;
             }
             default:
                 return super.onOptionsItemSelected(item);
