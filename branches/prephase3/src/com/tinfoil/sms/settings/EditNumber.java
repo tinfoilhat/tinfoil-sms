@@ -44,8 +44,6 @@ import android.widget.EditText;
  * AddContact.POSITION, the position of the given number in the
  * contact's numbers array list, -1 if it is a new number
  * EditNumber.ADD, whether the number is to update or deleted
- * 
- * 
  */
 public class EditNumber extends Activity{
     
@@ -67,93 +65,152 @@ public class EditNumber extends Activity{
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
+
+        phoneNumber = (EditText)findViewById(R.id.phone_number);
+        sharedInfo1 = (EditText)findViewById(R.id.shared_secret_1);
+        sharedInfo2 = (EditText)findViewById(R.id.shared_secret_2);
+        bookPath = (EditText)findViewById(R.id.book_path);
+        bookInverse = (EditText)findViewById(R.id.book_inverse);
+        save = (Button)findViewById(R.id.save);
         
+        Intent intent = this.getIntent();
         
-        /* TODO comment
-         * TODO consider how to handle the saving aspect
-         * - have multiple save buttons (current)
-         * - have a single save button (in addContact) and have this as temp passing back the object (not as ideal)
-         */
-
-        this.phoneNumber = (EditText) this.findViewById(R.id.phone_number);
-        this.sharedInfo1 = (EditText) this.findViewById(R.id.shared_secret_1);
-        this.sharedInfo2 = (EditText) this.findViewById(R.id.shared_secret_2);
-        this.bookPath = (EditText) this.findViewById(R.id.book_path);
-        this.bookInverse = (EditText) this.findViewById(R.id.book_inverse);
-        this.save = (Button) this.findViewById(R.id.save);
-
-        final Intent intent = this.getIntent();
-
-        if (intent != null)
+        /* Check if there is intent */
+        if(intent != null)
         {
-            this.originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
-            position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);
+        	/*
+        	 * Get the extra values in the intent.
+        	 */
+        	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
+        	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);   	
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
             this.getIntent().removeExtra(AddContact.POSITION);
         }
         else
         {
-            this.finish();
+        	finish();
         }
-
-        if (position != AddContact.NEW_NUMBER_CODE)
+        
+        /*
+         * Is the number a new number
+         */
+        if(position != AddContact.NEW_NUMBER_CODE)
         {
-            this.tc = MessageService.dba.getRow(this.originalNumber);
-
-            this.phoneNumber.setText(this.originalNumber);
-
-            this.sharedInfo1.setText(this.tc.getNumber(this.originalNumber).getSharedInfo1());
-
-            this.sharedInfo2.setText(this.tc.getNumber(this.originalNumber).getSharedInfo2());
-
-            this.bookPath.setText(this.tc.getNumber(this.originalNumber).getBookPath());
-
-            this.bookInverse.setText(this.tc.getNumber(this.originalNumber).getBookInversePath());
+        	/*
+        	 * Initialize the values to be adjusted
+        	 */
+        	tc = MessageService.dba.getRow(originalNumber);
+        
+	        phoneNumber.setText(originalNumber);        
+	        
+	        sharedInfo1.setText(tc.getNumber(originalNumber).getSharedInfo1());
+	        
+	        sharedInfo2.setText(tc.getNumber(originalNumber).getSharedInfo2());
+	        
+	        bookPath.setText(tc.getNumber(originalNumber).getBookPath());
+	        
+	        bookInverse.setText(tc.getNumber(originalNumber).getBookInversePath());
         }
         else
         {
-            this.tc = new TrustedContact();
-
-            this.sharedInfo1.setText(DBAccessor.DEFAULT_S1);
-
-            this.sharedInfo2.setText(DBAccessor.DEFAULT_S2);
-
-            this.bookPath.setText(DBAccessor.DEFAULT_BOOK_PATH);
-
-            this.bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
+        	/*
+        	 * Initialize the values to the default values
+        	 */
+	        sharedInfo1.setText(DBAccessor.DEFAULT_S1);
+	        
+	        sharedInfo2.setText(DBAccessor.DEFAULT_S2);
+	        
+	        bookPath.setText(DBAccessor.DEFAULT_BOOK_PATH);
+	        
+	        bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
         }
         
-        this.save.setOnClickListener(new OnClickListener() {
+        save.setOnClickListener(new OnClickListener(){
 
-            public void onClick(View v) {
-
-                if (EditNumber.this.phoneNumber.getText().toString() != null &&
-                        EditNumber.this.phoneNumber.getText().toString().length() > 0)
-                {
-                    Number tempNumber = EditNumber.this.tc.getNumber(EditNumber.this.originalNumber);
-                    tempNumber.setNumber(EditNumber.this.phoneNumber.getText().toString());
-                    tempNumber.setSharedInfo1(EditNumber.this.sharedInfo1.getText().toString());
-                    tempNumber.setSharedInfo2(EditNumber.this.sharedInfo2.getText().toString());
-                    tempNumber.setBookPath(EditNumber.this.bookPath.getText().toString());
-                    tempNumber.setBookInversePath(EditNumber.this.bookInverse.getText().toString());
-
-                    MessageService.dba.updateNumberRow(tempNumber, EditNumber.this.originalNumber, 0);
-
-                    Intent data = new Intent();
-
-                    if (tempNumber.getNumber().equalsIgnoreCase(EditNumber.this.originalNumber))
-                    {
-                        data.putExtra(EditNumber.UPDATE, false);
-                    }
-                    else
-                    {
-                        data.putExtra(EditNumber.UPDATE, true);
-                    }
-
-                    data.putExtra(EditNumber.NUMBER, tempNumber.getNumber());
-                    data.putExtra(AddContact.POSITION, position);
-                    data.putExtra(EditNumber.ADD, true);
+			public void onClick(View v) {
+				
+				/* Is there a valid number */
+				if(phoneNumber.getText().toString() != null &&
+						phoneNumber.getText().toString().length() > 0)
+				{
+					Number tempNumber;
 					
+					if(tc == null)
+					{
+						/* Number is a new number */						
+						if(originalNumber != null)
+						{
+							/* 
+							 * The contact is not new and has another number.
+							 * Get the contact from the database
+							 */
+							tc = MessageService.dba.getRow(originalNumber);
+						}
+						tempNumber = new Number(phoneNumber.getText().toString());
+					}
+					else
+					{
+						/*
+						 * Editing the current number. Get the Number row
+						 * for the previous number.
+						 */
+						tempNumber = tc.getNumber(originalNumber);
+						tempNumber.setNumber(phoneNumber.getText().toString());
+					}
+					
+					/*
+					 * Set the updated information
+					 */
+					tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
+					tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
+					tempNumber.setBookPath(bookPath.getText().toString());
+					tempNumber.setBookInversePath(bookInverse.getText().toString());
+					
+					/*
+					 * Update/Add the number to the database
+					 */
+					if(originalNumber != null)
+					{
+						if(position == AddContact.NEW_NUMBER_CODE)
+						{
+							tc.addNumber(tempNumber);
+							MessageService.dba.updateRow(tc, originalNumber);
+						}
+						else
+						{
+							MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
+						}
+					}
+					else
+					{
+						TrustedContact tc = new TrustedContact();
+						tc.addNumber(tempNumber);
+						MessageService.dba.addRow(tc);
+					}
+					
+					
+					Intent data = new Intent();
+					
+					/*
+					 * Return intent with given parameters 
+					 */
+					if(originalNumber != null && tempNumber.getNumber().equalsIgnoreCase(originalNumber))
+					{					
+						data.putExtra(EditNumber.UPDATE, false);					
+					}
+					else
+					{
+						data.putExtra(EditNumber.UPDATE, true);
+					}
+					
+					data.putExtra(EditNumber.NUMBER, tempNumber.getNumber());
+					data.putExtra(AddContact.POSITION, position);
+					data.putExtra(EditNumber.ADD, true);
+					
+					/*
+					 * Set result code to identify that whether the list in
+					 * ManageContactsActivity.
+					 */
 					EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
 	
 					EditNumber.this.finish();

@@ -16,6 +16,8 @@
  */
 package com.tinfoilsms.crypto;
 
+import java.util.Arrays;
+
 import org.spongycastle.crypto.DataLengthException;
 import org.spongycastle.crypto.Digest;
 
@@ -52,7 +54,7 @@ public abstract class ECGKeyExchange
      */
     static public byte[] signPubKey(Digest digest, 
     								byte[] encodedPubKey, 
-									SharedInfo sharedInfo, 
+									APrioriInfo sharedInfo, 
 									boolean isInitiator)
 	throws DataLengthException
     {
@@ -121,7 +123,7 @@ public abstract class ECGKeyExchange
      */
     static public boolean verifyPubKey(Digest digest, 
     								   byte[] signedPubKey, 
-    								   SharedInfo sharedInfo,
+    								   APrioriInfo sharedInfo,
     								   boolean isInitiator)
 	throws DataLengthException
     {
@@ -169,15 +171,37 @@ public abstract class ECGKeyExchange
 		
 		/*
 		 * Verify that the calculated signature matches the signature of the
-		 * signed public key received
+		 * signed public key received, returns true if the signatures match
 		 */
-		if (are_same(calcSignature, origSignature))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return signatureEquals(calcSignature, origSignature);
+    }
+
+    
+	/**
+	 * Verifies if two signatures are exactly equal using a byte-level
+	 * comparison of the values. Usually used to verify the signature 
+	 * of a key that has been exchanged.
+	 * 
+	 * @param sig1 The first signature to compare
+	 * @param sig2 The second signature to compare
+	 * 
+	 * @return boolean, true if the signatures are identical
+	 */
+    private static boolean signatureEquals(byte[] sig1, byte[] sig2)
+    {
+        if (sig1.length != sig2.length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i != sig1.length; ++i)
+        {
+            if (sig1[i] != sig2[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

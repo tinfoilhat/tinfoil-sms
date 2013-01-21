@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO move key and signature to numbers class
  * A class for storing information retrieved or to be stored in the database.
  * 
  * Through out tinfoil-sms TrustedContact is used to describe the class where
@@ -143,7 +142,7 @@ public class TrustedContact {
 	
 	/**
 	 * Add a number to the contact's numbers list
-	 * @param number : String
+	 * @param number Number
 	 */
 	public void addNumber(Number number)
 	{
@@ -206,11 +205,7 @@ public class TrustedContact {
 	 */
 	public boolean isNumbersEmpty()
 	{
-		if (numbers == null || numbers.size() < 1)
-		{
-			return true;
-		}
-		return false;
+		return numbers.isEmpty();
 	}
 	
 	/**

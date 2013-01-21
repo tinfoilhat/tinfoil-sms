@@ -339,10 +339,7 @@ public class MessageView extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.exchange:
-                /*
-                 * TODO update so that this launches the exchange keys thread.
-                 */
-                final TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
+                TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
                         (Prephase3Activity.selectedNumber));
 
                 ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",

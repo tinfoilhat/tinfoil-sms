@@ -22,9 +22,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -32,7 +33,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ContactAdapter;
@@ -41,8 +41,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
- * TODO add an option to delete numbers This Activity is used for adding and
- * editing contacts. The activity is able to identify which one it is doing
+ * The activity is able to identify which one it is doing
  * by the information provided to the activity. If the variable addContact ==
  * false then a previously created/imported contact is being edited. Thus editTc
  * != null and will have the contact's information.If addContact == true and
@@ -110,17 +109,19 @@ public class AddContact extends Activity {
             public void onClick(View v) {
 
             	Intent intent = new Intent(AddContact.this, EditNumber.class);
+            	
+            	if(!contactEdit.isNumbersEmpty())
+            	{
+            		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
+            		intent.putExtra(AddContact.POSITION, -1);
+            	}
             	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
             }
-
         });
 
         /*
          * When a user clicks on a number for a longer period of time a dialog is started
          * to determine what type of number the number is (mobile, home, ...)
-         * 
-         * ***Please note: Since this is a task within itself the onclickListener is silenced
-         * after fulfilling the declared method.
          * 
          * ***Please note: This does not have a impact on the program. If a user sets the
          * number to pager or anything else and then tries to send a message to the number
@@ -143,7 +144,6 @@ public class AddContact extends Activity {
                 if (alert != null) {
                     alert.show();
                 }
-
                 return true;
             }
         });
@@ -176,7 +176,6 @@ public class AddContact extends Activity {
         if (this.contactEdit != null && this.contactEdit.getName() != null)
         {
             this.contactName.setText(this.contactEdit.getName());
-
         }
 
         /*
@@ -187,6 +186,7 @@ public class AddContact extends Activity {
             public void onClick(View v) {
                 String name = AddContact.this.contactName.getText().toString();
                 boolean empty = false;
+                
                 if (name == null)
                 {
                     if (!AddContact.this.contactEdit.isNumbersEmpty())
@@ -207,40 +207,19 @@ public class AddContact extends Activity {
                 {
                     if (addContact)
                     {
-                        if (!MessageService.dba.inDatabase(AddContact.this.contactEdit.getANumber()))
-                        {
-                            MessageService.dba.addRow(AddContact.this.contactEdit);
-                            AddContact.this.contactEdit = null;
-                            editTc = null;
-                            AddContact.this.finish();
-                        }
-                        else
-                        {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-                            builder.setMessage("Contact is already in the database")
-                                    .setCancelable(true)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, final int id) {
-
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, final int whichButton) {
-                                            dialog.cancel(); // Canceled.
-                                        }
-                                    });
-                            alert = builder.create();
-                            alert.show();
-                        }
+                    	MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
                     }
                     else
                     {
-                        MessageService.dba.updateRow(AddContact.this.contactEdit, AddContact.this.originalNumber);
-                        AddContact.this.contactEdit = null;
-                        editTc = null;
-                        AddContact.this.finish();
+                        MessageService.dba.updateNumberType(AddContact.this.contactEdit, AddContact.this.originalNumber);
                     }
-                } else
+                    
+                    AddContact.this.contactEdit = null;
+                    editTc = null;
+                    AddContact.this.finish();
+                    
+                }
+                else
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
                     builder.setMessage("Insufficient information provided")
@@ -265,9 +244,8 @@ public class AddContact extends Activity {
     /**
      * Update the list of numbers shown.
      * 
-     * @param newNumber
-     *            : String a new number to be added to the list, if null no new
-     *            number is added
+     * @param newNumber String a new number to be added to the list,
+     * if null no new number is added
      */
     public void update(String newNumber)
     {
@@ -324,4 +302,30 @@ public class AddContact extends Activity {
 	    	}
     	}
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.add_contact_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_contact: {
+            
+            	MessageService.dba.removeRow(contactEdit.getANumber());
+            	
+            	finish();
+            	
+            	return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+    
 }

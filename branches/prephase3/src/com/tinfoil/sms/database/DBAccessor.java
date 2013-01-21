@@ -34,7 +34,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * TODO go through and ensure that the getANumber is used properly
  * Creates a database that is read and write and provides methods to 
  * facilitate the reading and writing to the database. Table Names
  * are all from SQLitehelper since they are created in that class.
@@ -151,9 +150,6 @@ public class DBAccessor {
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(Prephase3Activity.sharedPrefs.getString
         		("message_limit", String.valueOf(SMSUtility.LIMIT))))
         {
-        	//db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_DATE + " = " + 
-        		//	"(SELECT MIN("+KEY_DATE+") FROM " + SQLitehelper.MESSAGES_TABLE_NAME + ")", null);
-
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);
         	
@@ -261,11 +257,14 @@ public class DBAccessor {
 	public void updateSharedInfo(long reference, String s1, String s2)
 	{
 		resetSharedInfo(reference);
-		if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
-				(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
-        {
-			addSharedInfo(reference, s1, s2);
-        }
+		if(s1 != null && s2 != null)
+		{
+			if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
+					(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
+	        {
+				addSharedInfo(reference, s1, s2);
+	        }
+		}
 	}
 	
 	/**
@@ -397,12 +396,15 @@ public class DBAccessor {
 	public void updateBookPaths(long reference, String bookPath, String bookInversePath)
 	{
 		resetBookPath(reference);
-		if(((!bookPath.equalsIgnoreCase("") || !bookInversePath.equalsIgnoreCase("")) &&
-				(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)) ||
-				!bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
-        {
-			addBookPath(reference, bookPath, bookInversePath);
-        }
+		if(bookPath != null && bookInversePath != null)
+		{
+			if(((!bookPath.equalsIgnoreCase("") || !bookInversePath.equalsIgnoreCase("")) &&
+					(!bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH)) ||
+					!bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH)))
+	        {
+				addBookPath(reference, bookPath, bookInversePath);
+	        }
+		}
 	}
 	
 	/**
@@ -817,13 +819,7 @@ public class DBAccessor {
 				
 				id = cur.getInt(cur.getColumnIndex(KEY_ID));
 				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-						SQLitehelper.NUMBERS_TABLE_NAME, /*new String[]
-						{SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER, 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_TYPE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_SIGNATURE,
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID}*/null,
+						SQLitehelper.NUMBERS_TABLE_NAME, null,
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -983,6 +979,20 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Update all of the values in a row
+	 * @param tc : Trusted Contact, the new values for the row
+	 * @param number : the number of the contact in the database
+	 */
+	public void updateNumberType (TrustedContact tc, String number)
+	{
+		long id = getId(SMSUtility.format(number));
+		updateTrustedRow(tc, number, id);
+		
+		updateNumberRowType(tc.getNumber(), id);
+		
+	}
+	
+	/**
 	 * TODO remove
 	 * Update all of the values in a row
 	 * @param tc : Trusted Contact, the new values for the row
@@ -1064,9 +1074,32 @@ public class DBAccessor {
 				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number});
 		close();
 		
-		
 		updateBookPaths(num_id, numb.getBookPath(), numb.getBookInversePath());
 		updateSharedInfo(num_id, numb.getSharedInfo1(), numb.getSharedInfo2());
+	}
+	
+	/**
+	 * Update a row from the Numbers table
+	 * @param tc : TrustedContact the new information to be stored
+	 * @param number : String a number owned by the contact
+	 * @param id : long the id for the contact's database row
+	 */
+	public void updateNumberRowType (ArrayList<Number> number, long id)
+	{
+		ContentValues cv = new ContentValues();
+	
+		for(int i = 0; i < number.size(); i++)
+		{	
+	        cv.put(KEY_TYPE, number.get(i).getType());
+	        
+	        open();
+	        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+	        		+ " AND " + KEY_NUMBER + " = " + number.get(i).getNumber(), null);
+			close();
+			
+			cv.clear();
+		}
+		
 	}
 	
 	/**
@@ -1079,7 +1112,6 @@ public class DBAccessor {
 	{
 		ContentValues cv = new ContentValues();
 	
-		//TODO Store the number's unique id in the Number class
 		for(int i = 0; i < number.size(); i++)
 		{
 			cv.put(KEY_REFERENCE, id);
@@ -1092,6 +1124,7 @@ public class DBAccessor {
 	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
 	        		+ " AND " + KEY_ID + " = " + number.get(i).getId(), null);
 			close();
+			
 			cv.clear();
 			if(num == 0)
 			{
