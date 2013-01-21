@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tinfoil.sms.R;
@@ -33,7 +34,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
 
 	private static class ContactHolder
     {
-        TextView number;
+		TextView number;
         TextView type;
     }
 	
@@ -41,7 +42,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
     private final int layoutResourceId;
     private TrustedContact data = null;
 
-    public ContactAdapter(final Context context, final int layoutResourceId, final TrustedContact tc) {
+    public ContactAdapter(Context context, int layoutResourceId, TrustedContact tc) {
         super(context, layoutResourceId, tc.getNumbers());
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -50,7 +51,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getView(final int position, final View convertView, final ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ContactHolder holder = null;
 
@@ -69,7 +70,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
         {
             holder = (ContactHolder) row.getTag();
         }
-
+        
         final String number = this.data.getNumber(position);
         final String type = DBAccessor.TYPES[this.data.getNumber().get(position).getType()];
         if (number != null)
