@@ -17,6 +17,12 @@
 
 package com.tinfoil.sms.settings;
 
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.utility.MessageService;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,32 +32,43 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.tinfoil.sms.R;
-import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
-
-public class EditNumber extends Activity {
-
-    public static final String UPDATE = "update";
-    public static final String NEW = "new_number";
-
-    private EditText phoneNumber;
-    private EditText sharedInfo1;
-    private EditText sharedInfo2;
-    private EditText bookPath;
-    private EditText bookInverse;
-    private Button save;
-    private TrustedContact tc;
-    private String originalNumber;
-    private static int position;
-
-    @Override
+/**
+ * An activity used to edit a single number from a given contact. 
+ * 
+ * This activity returns a AddContact.RESULT_CODE if changes have
+ * been made and the list needs to be update, else returns default
+ * result code.
+ * The Extras are included are:
+ * EditNumber.UPDATE, whether the number has been updated or not
+ * EditNumber.NUMBER, the number that has been edited
+ * AddContact.POSITION, the position of the given number in the
+ * contact's numbers array list, -1 if it is a new number
+ * EditNumber.ADD, whether the number is to update or deleted
+ * 
+ * 
+ */
+public class EditNumber extends Activity{
+    
+	public static final String UPDATE = "update";
+	public static final String NUMBER = "number";
+	public static final String ADD = "add";
+	
+	private EditText phoneNumber;
+	private EditText sharedInfo1;
+	private EditText sharedInfo2;
+	private EditText bookPath;
+	private EditText bookInverse;
+	private Button save;
+	private TrustedContact tc;
+	private String originalNumber;
+	private static int position;
+	
+	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
-
+        
+        
         /* TODO comment
          * TODO consider how to handle the saving aspect
          * - have multiple save buttons (current)
@@ -105,15 +122,15 @@ public class EditNumber extends Activity {
 
             this.bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
         }
-
+        
         this.save.setOnClickListener(new OnClickListener() {
 
-            public void onClick(final View v) {
+            public void onClick(View v) {
 
                 if (EditNumber.this.phoneNumber.getText().toString() != null &&
                         EditNumber.this.phoneNumber.getText().toString().length() > 0)
                 {
-                    final Number tempNumber = EditNumber.this.tc.getNumber(EditNumber.this.originalNumber);
+                    Number tempNumber = EditNumber.this.tc.getNumber(EditNumber.this.originalNumber);
                     tempNumber.setNumber(EditNumber.this.phoneNumber.getText().toString());
                     tempNumber.setSharedInfo1(EditNumber.this.sharedInfo1.getText().toString());
                     tempNumber.setSharedInfo2(EditNumber.this.sharedInfo2.getText().toString());
@@ -122,7 +139,7 @@ public class EditNumber extends Activity {
 
                     MessageService.dba.updateNumberRow(tempNumber, EditNumber.this.originalNumber, 0);
 
-                    final Intent data = new Intent();
+                    Intent data = new Intent();
 
                     if (tempNumber.getNumber().equalsIgnoreCase(EditNumber.this.originalNumber))
                     {
@@ -135,12 +152,13 @@ public class EditNumber extends Activity {
 
                     data.putExtra(EditNumber.NEW, tempNumber.getNumber());
                     data.putExtra(AddContact.POSITION, position);
-
-                    EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
-
-                    EditNumber.this.finish();
-                }
-            }
+                    data.putExtra(EditNumber.ADD, true);
+					
+					EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
+	
+					EditNumber.this.finish();
+				}
+			}
         });
     }
 

@@ -96,10 +96,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
             	Toast.makeText(getBaseContext(), "position = " + String.valueOf(position), Toast.LENGTH_SHORT).show();
             	Toast.makeText(getBaseContext(), "id = " + String.valueOf(id), Toast.LENGTH_SHORT).show();
             	//TODO stop the children from entering this activity.
-                /*AddContact.addContact = false;
+                AddContact.addContact = false;
                 AddContact.editTc = ManageContactsActivity.this.tc.get(position);
                 ManageContactsActivity.this.startActivity(new Intent
-                        (ManageContactsActivity.this, AddContact.class));*/
+                        (ManageContactsActivity.this, AddContact.class));
 
                 //This stops other on click effects from happening after this one.
                 return true;
