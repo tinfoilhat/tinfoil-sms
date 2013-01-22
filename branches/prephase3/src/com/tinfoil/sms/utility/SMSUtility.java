@@ -25,7 +25,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.messageQueue.MessageSender;
-import com.tinfoil.sms.sms.Prephase3Activity;
+import com.tinfoil.sms.sms.ConversationView;
 
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -180,7 +180,7 @@ public abstract class SMSUtility {
      */
     public static void sendToSelf(final Context c, final String srcNumber, final String decMessage, final String dest) {
         //Prevent message from doing to native client given user settings
-        if (Prephase3Activity.sharedPrefs.getBoolean("native_save", false))
+        if (ConversationView.sharedPrefs.getBoolean("native_save", false))
         {
             final ContentValues values = new ContentValues();
             values.put("address", srcNumber);
@@ -222,7 +222,7 @@ public abstract class SMSUtility {
         try
         {
             if (MessageService.dba.isTrustedContact(number) &&
-                    Prephase3Activity.sharedPrefs.getBoolean("enable", true))
+                    ConversationView.sharedPrefs.getBoolean("enable", true))
             {
                 //Send an encrypted message
                 final String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
@@ -230,14 +230,14 @@ public abstract class SMSUtility {
 
                 sendSMS(context, number, encrypted);
 
-                if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
+                if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {
-                    sendToSelf(context, number, encrypted, Prephase3Activity.SENT);
+                    sendToSelf(context, number, encrypted, ConversationView.SENT);
                     MessageService.dba.addNewMessage(new Message
                             (encrypted, true, true), number, false);
                 }
 
-                sendToSelf(context, number, text, Prephase3Activity.SENT);
+                sendToSelf(context, number, text, ConversationView.SENT);
 
                 MessageService.dba.addNewMessage(new Message(text, true, true), number, false);
 
@@ -247,7 +247,7 @@ public abstract class SMSUtility {
             {
                 //Sending a plain text message
                 sendSMS(context, number, text);
-                sendToSelf(context, number, text, Prephase3Activity.SENT);
+                sendToSelf(context, number, text, ConversationView.SENT);
 
                 MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
 

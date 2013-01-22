@@ -20,7 +20,7 @@ package com.tinfoil.sms.utility;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.encryption.Encryption;
-import com.tinfoil.sms.sms.Prephase3Activity;
+import com.tinfoil.sms.sms.ConversationView;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -66,10 +66,10 @@ public class MessageReceiver extends BroadcastReceiver {
 				 * Checks if the database interface has been initialized and if tinfoil-sms's 
 				 * preference interface has been dealt with
 				 */
-				if (MessageService.dba == null || Prephase3Activity.sharedPrefs == null)
+				if (MessageService.dba == null || ConversationView.sharedPrefs == null)
 				{
 					MessageService.dba = new DBAccessor(context);
-					Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+					ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 				}
 				
 				String address = messages[0].getOriginatingAddress();
@@ -84,12 +84,12 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Checks if the user has enabled the vibration option
 					 */
-					if (Prephase3Activity.sharedPrefs.getBoolean("vibrate", true))
+					if (ConversationView.sharedPrefs.getBoolean("vibrate", true))
 							//&& Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
 					{
 						Vibrator vibrator;
 						vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-						String value = Prephase3Activity.sharedPrefs.getString("vibrate_length", VIBRATOR_LENTH);
+						String value = ConversationView.sharedPrefs.getString("vibrate_length", VIBRATOR_LENTH);
 						vibrator.vibrate(Long.valueOf(value));
 					}
 
@@ -100,7 +100,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					 * enabled.
 					 */
 					if (MessageService.dba.isTrustedContact((address)) && 
-							Prephase3Activity.sharedPrefs.getBoolean("enable", true)) {
+							ConversationView.sharedPrefs.getBoolean("enable", true)) {
 						
 						/*
 						 * Now send the decrypted message to ourself, set
@@ -110,7 +110,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						try {
 							
 							SMSUtility.sendToSelf(context, messages[0].getOriginatingAddress(), 
-									messages[0].getMessageBody(), Prephase3Activity.INBOX);
+									messages[0].getMessageBody(), ConversationView.INBOX);
 	
 							//Updates the last message received
 							Message newMessage = null;
@@ -119,7 +119,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							 * Checks if the user has set encrypted messages to be shown in
 							 * messageView
 							 */
-							if (Prephase3Activity.sharedPrefs.getBoolean("showEncrypt", true))
+							if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
 							{
 								newMessage = new Message(messages[0].getMessageBody(), true, false);
 								MessageService.dba.addNewMessage(newMessage, address, true);
@@ -129,7 +129,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									SMSUtility.format(address)).getNumber(SMSUtility.format(address)).getPublicKey(), 
 									messages[0].getMessageBody());
 							SMSUtility.sendToSelf(context, address,	
-									secretMessage , Prephase3Activity.INBOX);
+									secretMessage , ConversationView.INBOX);
 							
 							/*
 							 * Store the message in the database
@@ -154,7 +154,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * Send and store a plain text message to the contact
 						 */
 						SMSUtility.sendToSelf(context, address,
-								messages[0].getMessageBody(), Prephase3Activity.INBOX);
+								messages[0].getMessageBody(), ConversationView.INBOX);
 						
 						
 						Message newMessage = new Message(messages[0].getMessageBody(), true, false);
@@ -165,7 +165,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Update the list of messages to show the new messages
 					 */
-					Prephase3Activity.updateList(context, Prephase3Activity.messageViewActive);
+					ConversationView.updateList(context, ConversationView.messageViewActive);
 					
 					/*
 					 * Set the values needed for the notification

@@ -42,7 +42,7 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.sms.Prephase3Activity;
+import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -242,7 +242,7 @@ public class ImportContacts extends Activity implements Runnable {
                                                 "+1" + SMSUtility.format(numb),
                                                 "1" + SMSUtility.format(numb) },
                                         "date DESC LIMIT " +
-                                                Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+                                                Integer.valueOf(ConversationView.sharedPrefs.getString
                                                         ("message_limit", String.valueOf(SMSUtility.LIMIT))));
                                 if (mCur != null && mCur.moveToFirst())
                                 {
@@ -296,7 +296,7 @@ public class ImportContacts extends Activity implements Runnable {
                 final Cursor nCur = this.getContentResolver().query(Uri.parse("content://sms/inbox"),
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
-                                Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+                                Integer.valueOf(ConversationView.sharedPrefs.getString
                                         ("message_limit", String.valueOf(SMSUtility.LIMIT))));
 
                 if (nCur != null && nCur.moveToFirst())
@@ -315,7 +315,7 @@ public class ImportContacts extends Activity implements Runnable {
                 final Cursor sCur = this.getContentResolver().query(Uri.parse("content://sms/sent"),
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
-                                Integer.valueOf(Prephase3Activity.sharedPrefs.getString
+                                Integer.valueOf(ConversationView.sharedPrefs.getString
                                         ("message_limit", String.valueOf(SMSUtility.LIMIT))));
 
                 if (sCur != null && sCur.moveToFirst())
