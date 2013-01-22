@@ -16,8 +16,6 @@
  */
 package com.tinfoilsms.crypto;
 
-import java.util.Arrays;
-
 import org.spongycastle.crypto.DataLengthException;
 import org.spongycastle.crypto.Digest;
 
@@ -145,13 +143,13 @@ public abstract class ECGKeyExchange
     			origSignature, 0, digest.getDigestSize());
     	
     	/*
-    	 * Set the shared information as S1 if initiating key exchange, S2 if
-    	 * responding to key exchange
+    	 * Set the shared information as S2 if the initiator of the key exchange
+    	 * or S1 if responding to a key exchange
     	 */
     	if (isInitiator) {
-    		S = sharedInfo.getS1();
+    		S = sharedInfo.getS2();
 		} else { 
-    		S = sharedInfo.getS2();		// Use S2 for the recipient	
+    		S = sharedInfo.getS1();		// Use S2 for the recipient	
 		}
     	
     	/*
