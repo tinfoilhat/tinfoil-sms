@@ -32,7 +32,7 @@ import com.tinfoil.sms.dataStructures.ContactParent;
 
 public class ManageContactAdapter extends BaseExpandableListAdapter {
 
-    private static class TrustContactHolder
+	private static class TrustContactHolder
     {
         CheckedTextView name;
         TextView indicator;
@@ -139,7 +139,7 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public boolean isChildSelectable(final int groupPosition, final int childPosition) {
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 }

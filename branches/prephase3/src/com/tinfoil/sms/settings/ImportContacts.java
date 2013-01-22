@@ -47,6 +47,7 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
+ * TODO implement on Dialog finish to check if the user exited the load (to then finish the task)
  * ImportContact activity allows for contacts to be imported from the native
  * database to the tinfoil-sms database. When a contact is imported, a contacts'
  * numbers, last message, date of last message, and type is stored. Once a
@@ -286,7 +287,6 @@ public class ImportContacts extends Activity implements Runnable {
             while (convCur.moveToNext())
             {
                 id = convCur.getString(convCur.getColumnIndex("thread_id"));
-                //newNumber = new Number(null, convCur.getString(convCur.getColumnIndex("snippet")));
 
                 /*
                  * TODO possibly come up with a more efficient method, since if the conversation 
