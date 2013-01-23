@@ -20,6 +20,7 @@ package com.tinfoil.sms.adapter;
 import java.util.List;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.utility.MessageService;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ConversationAdapter extends ArrayAdapter<String[]>{
@@ -37,6 +39,7 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
     	TextView c_name;
     	TextView c_count;
     	TextView c_message;
+    	ImageView indicator;
     }
 	
     private Context context; 
@@ -76,6 +79,7 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
             holder.c_name = (TextView)row.findViewById(R.id.c_name);
             holder.c_message = (TextView)row.findViewById(R.id.c_message);
             holder.c_count = (TextView)row.findViewById(R.id.c_count);
+            holder.indicator = (ImageView)row.findViewById(R.id.conversation_icon);
             
             row.setTag(holder);
         }
@@ -99,6 +103,16 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         	holder.c_count.setText(" (" + contact[3] +")");
         	holder.c_message.setTypeface(null, Typeface.BOLD);
         }
+        
+        if(MessageService.dba.isTrustedContact(contact[0]))
+        {
+        	holder.indicator.setVisibility(ImageView.VISIBLE);
+        }
+        else
+        {
+        	holder.indicator.setVisibility(ImageView.INVISIBLE);
+        }
+        
         holder.c_message.setText(contact[2]);
         
         return row;
