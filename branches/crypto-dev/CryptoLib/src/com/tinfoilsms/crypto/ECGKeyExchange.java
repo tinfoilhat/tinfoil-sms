@@ -149,7 +149,7 @@ public abstract class ECGKeyExchange
     	if (isInitiator) {
     		S = sharedInfo.getS2();
 		} else { 
-    		S = sharedInfo.getS1();		// Use S2 for the recipient	
+    		S = sharedInfo.getS1();		// Use S1 for the recipient	
 		}
     	
     	/*
