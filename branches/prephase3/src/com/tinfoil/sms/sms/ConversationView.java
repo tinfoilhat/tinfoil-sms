@@ -61,7 +61,7 @@ import com.tinfoil.sms.utility.MessageService;
  * user can also select 'settings' which will take them to the main settings
  * page.
  */
-public class Prephase3Activity extends Activity {
+public class ConversationView extends Activity {
 
 	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
@@ -111,7 +111,7 @@ public class Prephase3Activity extends Activity {
             this.getIntent().removeExtra(MessageService.notificationIntent);
             this.startActivity(intent);
         }
-        Prephase3Activity.messageViewActive = false;
+        ConversationView.messageViewActive = false;
         this.setContentView(R.layout.main);
 
         /*
@@ -141,9 +141,9 @@ public class Prephase3Activity extends Activity {
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
 
-                final Intent intent = new Intent(Prephase3Activity.this.getBaseContext(), MessageView.class);
-                intent.putExtra(Prephase3Activity.selectedNumberIntent, msgList.get(position)[0]);
-                Prephase3Activity.this.startActivity(intent);
+                final Intent intent = new Intent(ConversationView.this.getBaseContext(), MessageView.class);
+                intent.putExtra(ConversationView.selectedNumberIntent, msgList.get(position)[0]);
+                ConversationView.this.startActivity(intent);
             }
         });
 

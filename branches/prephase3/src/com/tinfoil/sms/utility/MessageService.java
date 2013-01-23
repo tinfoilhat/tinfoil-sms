@@ -27,7 +27,7 @@ import android.os.IBinder;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.sms.MessageView;
-import com.tinfoil.sms.sms.Prephase3Activity;
+import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageService extends Service {
     public static DBAccessor dba;
@@ -57,7 +57,7 @@ public class MessageService extends Service {
          * to allow notifications
          */
         if (contentTitle != null && contentText != null &&
-                Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
+                ConversationView.sharedPrefs.getBoolean("notification_bar", true))
         {
             Intent notifyIntent = null;
             PendingIntent in = null;
@@ -75,7 +75,7 @@ public class MessageService extends Service {
                 contentText = dba.getUnreadMessageCount() + " unread messages";
 
                 //No extra is added so the user will be brought to the main menu
-                notifyIntent = new Intent(this.getApplicationContext(), Prephase3Activity.class);
+                notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
                 notifyIntent.putExtra(multipleNotificationIntent, true);
                 in = PendingIntent.getActivity(this,
                         0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -94,7 +94,7 @@ public class MessageService extends Service {
                 }
                 else
                 {
-                    notifyIntent = new Intent(this.getApplicationContext(), Prephase3Activity.class);
+                    notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
                     notifyIntent.putExtra(notificationIntent, address);
                     in = PendingIntent.getActivity(this,
                             0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);

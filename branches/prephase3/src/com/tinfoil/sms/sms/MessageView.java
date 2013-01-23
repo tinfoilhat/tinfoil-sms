@@ -78,11 +78,11 @@ public class MessageView extends Activity {
         //Finds the number of the recently sent message attached to the notification
         if (this.getIntent().hasExtra(MessageService.notificationIntent))
         {
-            Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(MessageService.notificationIntent);
+            ConversationView.selectedNumber = this.getIntent().getStringExtra(MessageService.notificationIntent);
         }
-        else if (this.getIntent().hasExtra(Prephase3Activity.selectedNumberIntent))
+        else if (this.getIntent().hasExtra(ConversationView.selectedNumberIntent))
         {
-            Prephase3Activity.selectedNumber = this.getIntent().getStringExtra(Prephase3Activity.selectedNumberIntent);
+            ConversationView.selectedNumber = this.getIntent().getStringExtra(ConversationView.selectedNumberIntent);
         }
         else
         {
@@ -95,8 +95,8 @@ public class MessageView extends Activity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         MessageService.dba = new DBAccessor(this);
-        Prephase3Activity.messageViewActive = true;
-        final boolean isTrusted = MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
+        ConversationView.messageViewActive = true;
+        final boolean isTrusted = MessageService.dba.isTrustedContact(ConversationView.selectedNumber);
 
         messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
 
@@ -105,8 +105,8 @@ public class MessageView extends Activity {
          */
         list2 = (ListView) this.findViewById(R.id.message_list);
 
-        msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
-        final int unreadCount = MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber);
+        msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
+        final int unreadCount = MessageService.dba.getUnreadMessageCount(ConversationView.selectedNumber);
 
         Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
         messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
@@ -118,10 +118,10 @@ public class MessageView extends Activity {
         /*
          * Reset the number of unread messages for the contact to 0
          */
-        if (MessageService.dba.getUnreadMessageCount(Prephase3Activity.selectedNumber) > 0)
+        if (MessageService.dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
         {
             //All messages are now read since the user has entered the conversation.
-            MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+            MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
             if (MessageService.mNotificationManager != null)
             {
                 MessageService.mNotificationManager.cancel(MessageService.INDEX);
@@ -129,7 +129,7 @@ public class MessageView extends Activity {
         }
 
         //Retrieve the name of the contact from the database
-        contact_name = MessageService.dba.getRow(Prephase3Activity.selectedNumber).getName();
+        contact_name = MessageService.dba.getRow(ConversationView.selectedNumber).getName();
 
         //Set an action for when a user clicks on a message
         list2.setOnItemClickListener(new OnItemClickListener() {
@@ -279,7 +279,7 @@ public class MessageView extends Activity {
         {
             public void onClick(final View v)
             {
-                MessageView.this.sendMessage(Prephase3Activity.selectedNumber, MessageView.this.messageBox.getText().toString());
+                MessageView.this.sendMessage(ConversationView.selectedNumber, MessageView.this.messageBox.getText().toString());
             }
         });
 
@@ -308,14 +308,14 @@ public class MessageView extends Activity {
 
     public static void updateList(final Context context)
     {
-        if (Prephase3Activity.selectedNumber != null)
+        if (ConversationView.selectedNumber != null)
         {
-            msgList2 = MessageService.dba.getSMSList(Prephase3Activity.selectedNumber);
+            msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
             messages.clear();
             messages.addData(msgList2);
 
             //TODO fix so when entering MessageView from any state the new messages will show in bold. (until exited message view or user sends out a message)
-            MessageService.dba.updateMessageCount(Prephase3Activity.selectedNumber, 0);
+            MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
         }
     }
 
@@ -340,7 +340,7 @@ public class MessageView extends Activity {
         switch (item.getItemId()) {
             case R.id.exchange:
                 TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
-                        (Prephase3Activity.selectedNumber));
+                        (ConversationView.selectedNumber));
 
                 ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
                         "Exchanging. Please wait...", true, false);
@@ -348,13 +348,13 @@ public class MessageView extends Activity {
                 if (tc != null)
                 {
                     if (!MessageService.dba.isTrustedContact(SMSUtility.format
-                            (Prephase3Activity.selectedNumber)))
+                            (ConversationView.selectedNumber)))
                     {
-                        keyThread.startThread(this, SMSUtility.format(Prephase3Activity.selectedNumber), null);
+                        keyThread.startThread(this, SMSUtility.format(ConversationView.selectedNumber), null);
                     }
                     else
                     {
-                        keyThread.startThread(this, null, SMSUtility.format(Prephase3Activity.selectedNumber));
+                        keyThread.startThread(this, null, SMSUtility.format(ConversationView.selectedNumber));
                     }
                 }
 

@@ -69,7 +69,7 @@ public class SendMessageActivity extends Activity {
 
         MessageService.dba = new DBAccessor(this);
 
-        Prephase3Activity.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.newCont = new TrustedContact();
         this.tc = MessageService.dba.getAllRows();
 

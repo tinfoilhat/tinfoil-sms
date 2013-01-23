@@ -48,7 +48,7 @@
             android:configChanges="orientation"
             android:label="Delete Contacts" />
         <activity
-            android:name=".sms.Prephase3Activity"
+            android:name=".sms.ConversationView"
             android:label="Tinfoil-SMS" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

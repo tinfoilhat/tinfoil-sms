@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tinfoil.sms.R;
@@ -35,16 +36,19 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
 	private static class TrustContactHolder
     {
         CheckedTextView name;
-        TextView indicator;
+        //TextView indicator;
+        ImageView image;
     }
 
     private static class ContactHolder
     {
         TextView name;
-        TextView indicator;
+        //TextView indicator;
+        ImageView image;
     }
 
     private final LayoutInflater inflater;
+    private static final float nameSize = 25;
     ArrayList<ContactParent> contacts;
 
     public ManageContactAdapter(final Context context, final ArrayList<ContactParent> contact)
@@ -77,7 +81,9 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         row = this.inflater.inflate(R.layout.trusted_contact_manage, parent, false);
         holder = new TrustContactHolder();
         holder.name = (CheckedTextView) row.findViewById(R.id.trust_name);
-        holder.indicator = (TextView) row.findViewById(R.id.trust_indicator);
+        //holder.indicator = (TextView) row.findViewById(R.id.trust_indicator);
+        holder.image = (ImageView) row.findViewById(R.id.contact_icon);
+        
 
         /*	row.setTag(holder);
         }	
@@ -90,7 +96,16 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
 
         holder.name.setChecked(this.contacts.get(groupPosition).getNumber(childPosition).isSelected());
 
-        holder.indicator.setText(String.valueOf(this.contacts.get(groupPosition).getNumber(childPosition).isTrusted()));
+        //holder.indicator.setText(String.valueOf(this.contacts.get(groupPosition).getNumber(childPosition).isTrusted()));
+        
+        if(this.contacts.get(groupPosition).getNumber(childPosition).isTrusted())
+        {
+        	holder.image.setVisibility(ImageView.VISIBLE);
+        }
+        else
+        {
+        	holder.image.setVisibility(ImageView.INVISIBLE);
+        }
 
         return row;
     }
@@ -121,7 +136,8 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         row = this.inflater.inflate(R.layout.contact_layout, parent, false);
         holder = new ContactHolder();
         holder.name = (TextView) row.findViewById(R.id.contact_name);
-        holder.indicator = (TextView) row.findViewById(R.id.contact_indicator);
+        //holder.indicator = (TextView) row.findViewById(R.id.contact_indicator);
+        holder.image = (ImageView) row.findViewById(R.id.contact_icon);
 
         //	row.setTag(holder);
         /*}
@@ -129,9 +145,20 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         {
             holder = (ContactHolder)row.getTag();
         }*/
-
+        
         holder.name.setText(this.contacts.get(groupPosition).getName());
-        holder.indicator.setText(String.valueOf(this.contacts.get(groupPosition).isTrusted()));
+        holder.name.setTextSize(nameSize);
+        //holder.indicator.setText(String.valueOf(this.contacts.get(groupPosition).isTrusted()));
+        
+        if(this.contacts.get(groupPosition).isTrusted())
+        {
+        	holder.image.setVisibility(ImageView.VISIBLE);
+        }
+        else
+        {
+        	holder.image.setVisibility(ImageView.INVISIBLE);
+        }
+        
         return row;
     }
 
