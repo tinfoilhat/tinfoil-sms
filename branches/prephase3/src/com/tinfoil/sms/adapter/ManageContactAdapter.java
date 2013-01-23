@@ -45,6 +45,7 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
     }
 
     private final LayoutInflater inflater;
+    private static final float nameSize = 25;
     ArrayList<ContactParent> contacts;
 
     public ManageContactAdapter(final Context context, final ArrayList<ContactParent> contact)
@@ -129,8 +130,9 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         {
             holder = (ContactHolder)row.getTag();
         }*/
-
+        
         holder.name.setText(this.contacts.get(groupPosition).getName());
+        holder.name.setTextSize(nameSize);
         holder.indicator.setText(String.valueOf(this.contacts.get(groupPosition).isTrusted()));
         return row;
     }
