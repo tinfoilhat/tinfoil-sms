@@ -64,7 +64,7 @@ public class TrustedAdapter extends ArrayAdapter<String> {
             
             holder = new TrustContactHolder();
             holder.name = (CheckedTextView)row.findViewById(R.id.trust_name);
-            holder.indicator = (TextView)row.findViewById(R.id.trust_indicator);
+            //holder.indicator = (TextView)row.findViewById(R.id.trust_indicator);
             //holder.box = (CheckBox)row.findViewById(R.id.trusted_checkBox);
             //holder.box = (CheckBox)row.findViewById(R.id.checkBox1);
             

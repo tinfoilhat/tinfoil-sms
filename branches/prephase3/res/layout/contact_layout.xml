@@ -13,15 +13,14 @@
 	    android:layout_alignParentTop="true"
 	    android:singleLine="true"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-	<TextView
-	    android:id="@+id/contact_indicator"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignBottom="@+id/contact_name"
+	
+	<ImageView
+	    android:id="@+id/contact_icon"
+	    android:src="@drawable/ic_launcher"
 	    android:layout_alignParentRight="true"
-	    android:layout_marginRight="43dp"
-	    android:singleLine="true"
-	    android:textAppearance="?android:attr/textAppearanceSmall" />
+	    android:layout_centerInParent="true"
+	    android:layout_width="20dp"
+	    android:layout_height="20dp"
+	    />
     
 </RelativeLayout>
