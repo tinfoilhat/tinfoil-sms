@@ -49,9 +49,6 @@ import com.tinfoil.sms.utility.MessageService;
  * <li>TODO add the proper version number and name to the manifest</li>
  * <li>TODO adjust the list view to default (if empty) to suggest importing
  * contact or composing a message or adding a contact, it can really be either.</li>
- * <li>TODO update the layout to indicate whether the conversation is trusted or
- * not Prephase3Activity is the activity that is launched for the start of the
- * program.</li>
  * </ul>
  * This activity shows all of the conversations the user has with contacts. The
  * list Will be updated every time a message is received. Upon clicking any of
