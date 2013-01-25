@@ -7,7 +7,7 @@
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; without evensetAllSelected the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
@@ -108,6 +108,17 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         }
 
         return row;
+    }
+    
+    public void setAllSelected(boolean selectAll)
+    {
+    	for(int i = 0; i < contacts.size(); i++)
+    	{
+    		for(int j = 0; j < contacts.get(i).getNumbers().size(); j++)
+    		{
+    			contacts.get(i).getNumber(j).setSelected(selectAll);
+    		}
+    	}
     }
 
     public int getChildrenCount(final int groupPosition) {

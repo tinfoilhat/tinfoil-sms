@@ -13,15 +13,18 @@
         android:listSelector="@android:color/transparent"
         />
     
-    <ListView
-        android:id="@+id/empty_list"
+    <TextView
+        android:id="@+id/add_a_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:text="Add a Contact"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:visibility="invisible" >
 
-    </ListView>
+    </TextView>
 
     <Button
         android:id="@+id/exchange_keys"
