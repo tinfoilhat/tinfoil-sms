@@ -59,7 +59,7 @@ public class ECGKeyUtilTest
 		assertTrue(expPubKey.getQ().getX().toBigInteger().equals(pubKey.getQ().getX().toBigInteger()));
 		assertTrue(expPubKey.getQ().getY().toBigInteger().equals(pubKey.getQ().getY().toBigInteger()));
 		
-		System.out.print("ExpPubKey: \tX = " + expPubKey.getQ().getX().toBigInteger());
+		System.out.print("\nExpPubKey: \tX = " + expPubKey.getQ().getX().toBigInteger());
 		System.out.println(", Y = " + expPubKey.getQ().getY().toBigInteger());
 		System.out.print("PubKey: \tX = " + pubKey.getQ().getX().toBigInteger());
 		System.out.println(", Y = " + pubKey.getQ().getY().toBigInteger());
