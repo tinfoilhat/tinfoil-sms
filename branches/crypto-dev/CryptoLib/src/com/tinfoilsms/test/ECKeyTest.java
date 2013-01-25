@@ -51,7 +51,7 @@ public class ECKeyTest
 		/* Keep creating new keypairs and assure that there are no cycles and that the
 		 * keys are uniformly random... this test needs to be improved and done properly...
 		 */
-		for (int i = 0; i < 1000; ++i)
+		for (int i = 0; i < 100; ++i)
 		{
 			key = new ECKey(param.getECDomainParam());
 			key.init();
