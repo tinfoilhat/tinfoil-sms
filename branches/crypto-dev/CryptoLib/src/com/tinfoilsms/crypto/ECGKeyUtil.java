@@ -90,9 +90,34 @@ public abstract class ECGKeyUtil
     
     
     /**
-     * encodeBase64PriKey A function which takes an ECC private key parameter object
-     * and returns the private key D BigInteger value that is encoded as base64 for
-     * proper storage and transmission in textual form.
+     * encodePriKey A function which takes an ECC private key parameter object
+     * and returns the private key D BigInteger value as a byte array
+     * 
+     * @param keyParam The Elliptic Curve key parameter which contains the curve
+     * specifications and domain parameters
+     * @param priKey an ECC private key parameter object which implements CipherParameters
+     * @return A byte array of the private key D BigInteger value
+     * @throws InvalidParameterException
+     */
+    static public byte[] encodePriKey(ECKeyParam keyParam, CipherParameters priKey)
+    		throws InvalidParameterException
+	{
+    	if (priKey instanceof ECPrivateKeyParameters)
+    	{
+    		/* Return the private key D BigInteger value as byte array */
+    		return ((ECPrivateKeyParameters) priKey).getD().toByteArray();
+    	}
+    	else
+    	{
+    		throw new InvalidParameterException("The private key provided is not an ECPrivateKeyParameters");
+    	}
+	}
+    
+    
+    /**
+     * encodeBase64PriKey A wrapper function which takes an ECC private key parameter
+     * object and returns the private key D BigInteger value that is encoded as base64
+     * for proper storage and transmission in textual form.
      * 
      * @param keyParam The Elliptic Curve key parameter which contains the curve
      * specifications and domain parameters
@@ -103,17 +128,10 @@ public abstract class ECGKeyUtil
     static public byte[] encodeBase64PriKey(ECKeyParam keyParam, CipherParameters priKey)
     		throws InvalidParameterException
 	{
-    	if (priKey instanceof ECPrivateKeyParameters)
-    	{
     		/* Return the private key D BigInteger value encoded as base64 */
     		return Base64.encode(
-    				((ECPrivateKeyParameters) priKey).getD().toByteArray(), 
+    				encodePriKey(keyParam, priKey), 
     				Base64.DEFAULT);
-    	}
-    	else
-    	{
-    		throw new InvalidParameterException("The private key provided is not an ECPrivateKeyParameters");
-    	}
 	}
     
     
@@ -168,7 +186,7 @@ public abstract class ECGKeyUtil
      * @param signedPubkey A byte array of the ASN.1 encoded public key Q that is signed
      * @return An ECC public key parameter for Q, ECPublicKeyParametersimplements
      */
-    public ECPublicKeyParameters decodeSignedPubKey(ECKeyParam keyParam, 
+    static public ECPublicKeyParameters decodeSignedPubKey(ECKeyParam keyParam, 
 													Digest digest, 
 													byte[] signedPubKey)
     {
@@ -202,7 +220,7 @@ public abstract class ECGKeyUtil
      * @param signedPubkey A byte array of the ASN.1 encoded public key Q that is signed
      * @return An ECC public key parameter for Q, ECPublicKeyParametersimplements
      */
-    public ECPublicKeyParameters decodeBase64SignedPubKey(ECKeyParam keyParam, 
+    static public ECPublicKeyParameters decodeBase64SignedPubKey(ECKeyParam keyParam, 
     													  Digest digest, 
 														  byte[] signedPubKey)
     {
@@ -221,7 +239,7 @@ public abstract class ECGKeyUtil
      * @param priKey a byte array of the private key D BigInteger value
      * @return an ECPrivateKeyParameters object for the private key D BigInteger value
      */
-    public ECPrivateKeyParameters decodePriKey(ECKeyParam keyParam,
+    static public ECPrivateKeyParameters decodePriKey(ECKeyParam keyParam,
     												 byte[] encodedPriKey)
     {
     	return new ECPrivateKeyParameters(
@@ -240,7 +258,7 @@ public abstract class ECGKeyUtil
      * @param priKey a base64 encoded byte array of the private key D BigInteger value
      * @return an ECPrivateKeyParameters object for the private key D BigInteger value
      */
-    public ECPrivateKeyParameters decodeBase64PriKey(ECKeyParam keyParam,
+    static public ECPrivateKeyParameters decodeBase64PriKey(ECKeyParam keyParam,
     												 byte[] encodedPriKey)
     {
     	return decodePriKey(keyParam, Base64.decode(encodedPriKey, Base64.DEFAULT));
