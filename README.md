@@ -53,7 +53,6 @@ Copyright (Really Copyleft)
 All of the source code in this repository, where the copyright notice is indicated in the source
 code, is licensed under the [GNU General Public License, Version 3](http://www.gnu.org/licenses/gpl.html).
 For a complete listing of the authors and copyright owners of Tinfoil-SMS, please see the AUTHORS file.
-
 Furthermore, we make use of several libraries, some of which are licensed under the Apache license, all of
 these of course retain their original copyright. Please see the NOTICE and CONTRIBUTIONS files for a complete
 listing of the other open source libraries which we used to make this project possible, our most humble gratitude
