@@ -204,7 +204,8 @@ public class MessageView extends Activity {
                                                         if (info.length == 2 && info[1] != null)
                                                         {
                                                             if (SMSUtility.isANumber(info[1]))
-                                                            {
+                                                            {                                           	
+                                                            	//TODO fix number not in db error	
                                                                 MessageView.this.sendMessage(info[1], messageValue[1]);
                                                             }
                                                             else
@@ -244,17 +245,9 @@ public class MessageView extends Activity {
                         .setCancelable(true);
                 MessageView.this.popup_alert = popup_builder.create();
                 MessageView.this.popup_alert.show();
-                /**
-                 * TODO implement Going to add a menu of things the user can do
-                 * with the messages: 2. Copy the details i. Message ii. Number
-                 * 4. View Information i. Time Received/Sent ii. Number
-                 */
             }
         });
 
-        /*
-         * Link the GUI items to the xml layout
-         */
         sendSMS = (Button) this.findViewById(R.id.send);
         this.messageBox = (EditText) this.findViewById(R.id.message);
 
@@ -360,9 +353,11 @@ public class MessageView extends Activity {
 
                 return true;
             case R.id.delete:
-                /*
-                 * TODO add Delete Thread and another option to delete groups of messages within the thread
-                 */
+            	
+                if(MessageService.dba.deleteMessage(ConversationView.selectedNumber))
+                {
+                	finish();
+                }
                 return true;
 
             default:

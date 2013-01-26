@@ -41,8 +41,9 @@ import android.widget.Toast;
  * database and format the data going into tinfoil-sms's database.
  */
 public abstract class SMSUtility {
-    private static final Pattern p = Pattern.compile("^[+]1.{10}");
+    private static final Pattern phoneNumber = Pattern.compile("^[+]1.{10}");
     private static final Pattern numOnly = Pattern.compile("\\W");
+    private static final String numberPattern = "\\d*";
     private static final SmsManager sms = SmsManager.getDefault();
     public static final String SENT = "content://sms/sent";
 
@@ -60,9 +61,8 @@ public abstract class SMSUtility {
     /**
      * Create an array of Strings to display for the auto-complete
      * 
-     * @param tc
-     *            : List<TrustedContact> all the TrustedContacts
-     * @return : List<String> a list of all the contacts and their numbers for
+     * @param tc All the TrustedContacts
+     * @return A list of all the contacts and their numbers for
      *         the auto complete list.
      */
     public static List<String> contactDisplayMaker(final List<TrustedContact> tc)
@@ -82,9 +82,8 @@ public abstract class SMSUtility {
     /**
      * Removes the preceding '1' or '+1' for the given number
      * 
-     * @param number
-     *            : String, the number of the contact
-     * @return : String, the number without the preceding '1' or '+1'
+     * @param number The number of the contact
+     * @return The number without the preceding '1' or '+1'
      */
     public static String format(String number)
     {
@@ -92,7 +91,7 @@ public abstract class SMSUtility {
         {
             number = number.substring(1);
         }
-        else if (number.matches(p.pattern()))
+        else if (number.matches(phoneNumber.pattern()))
         {
             number = number.substring(2);
         }
@@ -104,10 +103,8 @@ public abstract class SMSUtility {
     /**
      * Sends the given message to the phone with the given number
      * 
-     * @param number
-     *            : String, the number of the phone that the message is sent to
-     * @param message
-     *            : String, the message, encrypted that will be sent to the
+     * @param number The number of the phone that the message is sent to
+     * @param message The message, encrypted that will be sent to the
      *            contact
      */
     public static void sendSMS(final Context c, final String number, final String message)
@@ -134,10 +131,8 @@ public abstract class SMSUtility {
     /**
      * Sends the given message to the phone with the given number
      * 
-     * @param number
-     *            : String, the number of the phone that the message is sent to
-     * @param message
-     *            : String, the message, encrypted that will be sent to the
+     * @param number The number of the phone that the message is sent to
+     * @param message The message, encrypted that will be sent to the
      *            contact
      */
     public static void sendSMS(final Context c, final String number, final String message, final long id)
@@ -170,12 +165,9 @@ public abstract class SMSUtility {
      * native sms client as well the method will do nothing, there is NO need to
      * check the user's settings outside.
      * 
-     * @param srcNumber
-     *            : String, the number of the contact that sent the message
-     * @param decMessage
-     *            : String, the message sent from the contact
-     * @param dest
-     *            : String, the folder in the android database that the message
+     * @param srcNumber The number of the contact that sent the message
+     * @param decMessage The message sent from the contact
+     * @param dest The folder in the android database that the message
      *            will be stored in
      */
     public static void sendToSelf(final Context c, final String srcNumber, final String decMessage, final String dest) {
@@ -210,12 +202,9 @@ public abstract class SMSUtility {
     /**
      * Sends a message as encrypted or plain text based on the contact's state.
      * 
-     * @param number
-     *            : String the number the text message is being sent to
-     * @param text
-     *            : String the text message
-     * @param context
-     *            : Context the context of the class
+     * @param number The number the text message is being sent to
+     * @param text The text message
+     * @param context The context of the class
      * @return : boolean whether the message sent or not
      */
     public static boolean sendMessage(final String number, final String text, final Context context) {
@@ -265,20 +254,16 @@ public abstract class SMSUtility {
     /**
      * Identifies if the given String is a valid Long
      * 
-     * @param number
-     *            A number in string format
+     * @param number A number in string format
      * @return Whether the given String is a valid Long number.
      */
     public static boolean isANumber(final String number)
     {
-        //TODO use regular expressions
-        try {
-            Long.valueOf(number);
-        } catch (final NumberFormatException nfe)
-        {
-            return false;
-        }
-        return true;
+    	if(number.matches(numberPattern))
+    	{
+    		return true;
+    	}
+    	return false;
     }
 
 }

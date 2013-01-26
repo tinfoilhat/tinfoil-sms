@@ -67,8 +67,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	public static final int UPDATE = 1;
 	
     private ExpandableListView extendableList;
-    //private ListView listView;
-    private TextView addAContact;
+    private ListView listView;
+    //private TextView addAContact;
     private Button exchangeKeys;
     private ArrayList<TrustedContact> tc;
     private ProgressDialog loadingDialog;
@@ -88,8 +88,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
         this.setContentView(R.layout.contact);
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
-        //this.listView = (ListView) this.findViewById(R.id.empty_list);
-        this.addAContact = (TextView) this.findViewById(R.id.add_a_contact);
+        this.listView = (ListView) this.findViewById(R.id.empty_list);
+        //this.addAContact = (TextView) this.findViewById(R.id.add_a_contact);
         this.exchangeKeys = (Button) this.findViewById(R.id.exchange_keys);
 
         this.extendableList.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -103,10 +103,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
                     AddContact.addContact = false;
                     AddContact.editTc = ManageContactsActivity.this.tc.get(
                     		ExpandableListView.getPackedPositionGroup(id));
-                   
-                    //ManageContactsActivity.this.startActivity(new Intent
-                      //      (ManageContactsActivity.this, AddContact.class));
-                    
+
                     Intent intent = new Intent(ManageContactsActivity.this, AddContact.class);
                     
                     
@@ -121,7 +118,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
             }
         });
 
-        /*this.listView.setOnItemClickListener(new OnItemClickListener() {
+        this.listView.setOnItemClickListener(new OnItemClickListener() {
 
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
@@ -131,20 +128,19 @@ public class ManageContactsActivity extends Activity implements Runnable {
                 AddContact.editTc = null;
                 ManageContactsActivity.this.startActivity(new Intent(ManageContactsActivity.this.getBaseContext(), AddContact.class));
             }
-        });*/
+        });
         
-        this.addAContact.setOnClickListener(new OnClickListener() {
+        /*this.addAContact.setOnClickListener(new OnClickListener() {
 
         	public void onClick(View v) {
         		//Go to add contact
                 AddContact.addContact = true;
                 AddContact.editTc = null;
                 
-                //TODO update to use result codes
                 ManageContactsActivity.this.startActivity(
                 		new Intent(ManageContactsActivity.this.getBaseContext(), AddContact.class));
 			}
-        });
+        });*/
         
 
         this.extendableList.setOnChildClickListener(new OnChildClickListener() {
@@ -191,16 +187,16 @@ public class ManageContactsActivity extends Activity implements Runnable {
         if (this.tc != null)
         {
             this.extendableList.setAdapter(adapter);
-            //this.listView.setVisibility(ListView.INVISIBLE);
-            this.addAContact.setVisibility(ListView.INVISIBLE);
+            this.listView.setVisibility(ListView.INVISIBLE);
+            //this.addAContact.setVisibility(ListView.INVISIBLE);
             this.extendableList.setVisibility(ListView.VISIBLE);
         }
         else
         {
-            //this.listView.setAdapter(this.arrayAp);
+            this.listView.setAdapter(this.arrayAp);
             this.extendableList.setVisibility(ListView.INVISIBLE);
-            //this.listView.setVisibility(ListView.VISIBLE);
-            this.addAContact.setVisibility(ListView.VISIBLE);
+            this.listView.setVisibility(ListView.VISIBLE);
+            //this.addAContact.setVisibility(ListView.VISIBLE);
         }
         //listView.setItemsCanFocus(false);
 
@@ -310,13 +306,11 @@ public class ManageContactsActivity extends Activity implements Runnable {
 
             adapter = new ManageContactAdapter(this, this.contacts);
         }
-        /*else
+        else
         {
-            //TODO implement with TextView rather then a ListView
-
             this.arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                     new String[] { "Add a Contact" });
-        }*/
+        }
 
         this.handler.sendEmptyMessage(0);
     }

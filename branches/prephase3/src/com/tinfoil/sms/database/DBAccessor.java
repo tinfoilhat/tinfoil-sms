@@ -185,6 +185,22 @@ public class DBAccessor {
 		return true;
 	}
 	
+	public boolean deleteMessage(String number)
+	{
+		number = SMSUtility.format(number);
+		long id = getNumberId(number);
+		
+		open();
+		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		close();
+		
+		if(num > 0)
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Updates the message count for the particular given number to the given new count.
 	 * @param number : String a number.
