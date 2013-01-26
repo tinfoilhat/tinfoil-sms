@@ -205,8 +205,7 @@ public class MessageView extends Activity {
                                                         {
                                                             if (SMSUtility.isANumber(info[1]))
                                                             {                                           	
-                                                            	//TODO fix number not in db error	
-                                                                MessageView.this.sendMessage(info[1], messageValue[1]);
+                                                            	SMSUtility.sendMessage(info[1], messageValue[1], getBaseContext());
                                                             }
                                                             else
                                                             {
@@ -218,7 +217,7 @@ public class MessageView extends Activity {
                                                             final String num = phoneBox.getText().toString();
                                                             if (SMSUtility.isANumber(num))
                                                             {
-                                                                MessageView.this.sendMessage(num, messageValue[1]);
+                                                            	SMSUtility.sendMessage(num, messageValue[1], getBaseContext());
                                                             }
                                                             else
                                                             {

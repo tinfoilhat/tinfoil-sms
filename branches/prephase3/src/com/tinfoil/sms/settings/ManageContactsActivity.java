@@ -39,7 +39,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 

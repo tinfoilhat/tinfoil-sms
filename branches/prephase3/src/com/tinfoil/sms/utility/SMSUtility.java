@@ -165,6 +165,7 @@ public abstract class SMSUtility {
      * native sms client as well the method will do nothing, there is NO need to
      * check the user's settings outside.
      * 
+     * @param c The context of the message sending
      * @param srcNumber The number of the contact that sent the message
      * @param decMessage The message sent from the contact
      * @param dest The folder in the android database that the message
@@ -205,7 +206,7 @@ public abstract class SMSUtility {
      * @param number The number the text message is being sent to
      * @param text The text message
      * @param context The context of the class
-     * @return : boolean whether the message sent or not
+     * @return boolean whether the message sent or not
      */
     public static boolean sendMessage(final String number, final String text, final Context context) {
         try
@@ -238,7 +239,10 @@ public abstract class SMSUtility {
                 sendSMS(context, number, text);
                 sendToSelf(context, number, text, ConversationView.SENT);
 
-                MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
+                if(MessageService.dba.inDatabase(number))
+                {
+                	MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
+                }
 
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
             }

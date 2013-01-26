@@ -1009,19 +1009,6 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO remove
-	 * Update all of the values in a row
-	 * @param tc : Trusted Contact, the new values for the row
-	 * @param number : the number of the contact in the database
-	 */
-	/*public void updateKey (Number numb)
-	{
-		//number = SMSUtility.format(number);
-		//long id = getId(numb.getId);
-		updateNumberRow(numb);
-	}*/
-	
-	/**
 	 * Update a TrustedContact row
 	 * @param tc : TrustedContact the new information to be stored
 	 * @param number : String a number owned by the contact
@@ -1195,64 +1182,6 @@ public class DBAccessor {
 		}
 		return false;
 	}
-	
-	/**
-	 * Check whether the numbers given are trusted return a boolean array that maps to the given number array list
-	 * @param tc : ArrayList<Number> contacts the list of contacts
-	 * @return : boolean[] an array of boolean values which maps to the contacts
-	 * true if the contact is trusted
-	 * false if the contact is not trusted.
-	 * 
-	 * (NOTE: see isTrustedContact(String number) for more details)
-	 */
-	/*public boolean[] isTrustedContact(ArrayList<Number> number)
-	{
-		if (number != null)
-		{
-			boolean[] trusted = new boolean[number.size()];
-			for(int i = 0; i < number.size(); i++)
-			{
-				if (!number.get(i).isPublicKeyNull())
-				{
-					trusted[i] = true;
-				}
-				else
-				{
-					trusted[i] = false;
-				}
-			}
-			return trusted;
-		}
-		return null;
-	}*/
-	
-	/**
-	 * TODO remove
-	 * @param tc : ArrayList<TrustedContact> contacts the list of contacts
-	 * @return : boolean[] an array of boolean values which maps to the contacts
-	 * true if the contact is trusted
-	 * false if the contact is not trusted.
-	 * 
-	 * (NOTE: see isTrustedContact(String number) for more details)
-	 */
-	/*public boolean[] isTrustedContact (ArrayList<TrustedContact> tc)
-	{
-		boolean[] trusted = new boolean[tc.size()];
-		for (int i=0;i<tc.size();i++)
-		{
-			trusted[i] = false;
-			for(int j = 0; j < tc.get(i).getNumber().size(); j++)
-			{
-				if(isTrustedContact(tc.get(i).getNumber().get(j).getNumber()))
-				{
-					trusted[i] = true;
-					break;
-				}
-			}
-			
-		}
-		return trusted;
-	}*/
 	
 	/**
 	 * @param tc : TrustedContact the contact to check for a trusted number
