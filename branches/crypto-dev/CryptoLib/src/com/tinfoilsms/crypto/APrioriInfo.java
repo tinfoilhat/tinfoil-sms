@@ -26,8 +26,8 @@ import org.spongycastle.crypto.DataLengthException;
  */
 public final class APrioriInfo
 {
-    private byte[]  S1;
-    private byte[]  S2;
+    private final byte[]  S1;
+    private final byte[]  S2;
 	
 	/**
 	 * Defines the two parameters for constructor which are the a priori
