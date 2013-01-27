@@ -28,15 +28,16 @@ import org.spongycastle.crypto.Digest;
  * In the event that the users initiate a key exchange without any shared
  * information the default shared information S1 = "initiator" and 
  * S2 = "recipient" are used.
+ * 
+ * TODO: SOMEHOW IMPROVE THE SECURITY OF THE KEY EXCHANGE USING A SOURCE OF
+ * HIGHER ENTROPY OR USING THE SHARED INFORMATION TO CREATE A ONE-TIME PAD
  */
 public abstract class ECGKeyExchange
 {
-    /*
-     * NOTE: THIS SHOULD THROW AN EXCEPTION IF S1 "OR" S2 ARE NULL, BUT S1 "AND" S2 NULL IS OK
-     * 
+    /* 
      * signPubKey A function which takes an ASN.1 encoded public key Q and 
-     * signs the public key using the shared information S1 if initiating the key
-     * exchange or S2 if responding to a key exchange.
+     * signs the public key using the shared information S1 + S2 if initiating the key
+     * exchange or S2 + S1 if responding to a key exchange.
      * 
      * The function returns the signed public key which is a byte array containing the hash
      * of the public key concatenated with the public key.
@@ -63,22 +64,28 @@ public abstract class ECGKeyExchange
 
     	/*
     	 * The shared information to use for signing the public key
-    	 * The digest input which is the public key concatenated with S1 or S2
-    	 * Signed public key byte array to hold the public key and hash 
+    	 * The digest input which is the public key concatenated with S1 + S2
+    	 * or S2 + S1 Signed public key byte array to hold the public key and hash 
     	 */
-    	byte[] S;
+    	byte[] S = new byte[sharedInfo.getS1().length + sharedInfo.getS2().length];
     	byte[] digestInput;
     	byte[] signedPubKey = new byte[encodedPubKey.length + digest.getDigestSize()];
     	System.arraycopy(encodedPubKey, 0, signedPubKey, 0, encodedPubKey.length);
     	
     	/*
-    	 * Set the shared information as S1 if initiating key exchange, S2 if
+    	 * Set the shared information as S1 + S2 if initiating key exchange, S2 + S1 if
     	 * responding to key exchange
     	 */
-    	if (isInitiator) {
-    		S = sharedInfo.getS1();
-		} else { 
-    		S = sharedInfo.getS2();		// Use S2 for the recipient	
+    	if (isInitiator)
+    	{
+    		System.arraycopy(sharedInfo.getS1(), 0, S, 0, sharedInfo.getS1().length);
+    		System.arraycopy(sharedInfo.getS2(), 0, S, sharedInfo.getS1().length, sharedInfo.getS2().length);
+		}
+    	else
+    	{ 
+    		/* Use S2 + S1 for the recipient */	
+    		System.arraycopy(sharedInfo.getS2(), 0, S, 0, sharedInfo.getS2().length);
+    		System.arraycopy(sharedInfo.getS1(), 0, S, sharedInfo.getS2().length, sharedInfo.getS1().length);
 		}
     	
     	/*
@@ -100,15 +107,14 @@ public abstract class ECGKeyExchange
     }
     
     
-    /*
-     * NOTE: THIS SHOULD THROW AN EXCEPTION IF S1 OR S2 ARE NULL, BUT S1 AND S2 NULL IS OK
-     * 
+    /* 
      * verify_publickey A function which takes a signed public key and verifies
-     * the public key using the shared information S1 if initiating the key exchange
-     * or S2 if responding to a key exchange.
+     * the public key using the shared information S1 + S2 if initiating the key
+     * exchange or S2 + S1 if responding to a key exchange.
      * 
      * The function returns true if the signature of the signed public key received
-     * matches the calculated signature of the public key concatenated with S1 or S2.
+     * matches the calculated signature of the public key concatenated with S1 + S2
+     * or S2 + S1.
      * 
      * @param digest the digest function to use for signing the key such as SHA256
      * @param signedPubKey byte array containing public key concatenated with the hash of the public key 
@@ -132,10 +138,10 @@ public abstract class ECGKeyExchange
     	
     	/*
     	 * The shared information to use for verifying the public key
-    	 * The digest input which is the public key concatenated with S1 or S2
-    	 * The originator of the public key's signature and the calculated signature
+    	 * The digest input which is the public key concatenated with S1 + S2
+    	 * or S2 + S1.
     	 */
-    	byte[] S;
+    	byte[] S = new byte[sharedInfo.getS1().length + sharedInfo.getS2().length];
     	byte[] digestInput;
     	byte[] origSignature = new byte[digest.getDigestSize()];
     	byte[] calcSignature = new byte[digest.getDigestSize()];
@@ -143,13 +149,19 @@ public abstract class ECGKeyExchange
     			origSignature, 0, digest.getDigestSize());
     	
     	/*
-    	 * Set the shared information as S2 if the initiator of the key exchange
-    	 * or S1 if responding to a key exchange
+    	 * Set the shared information as S2 + S1 if the initiator of the key exchange
+    	 * or S1 + S2 if responding to a key exchange
     	 */
-    	if (isInitiator) {
-    		S = sharedInfo.getS2();
-		} else { 
-    		S = sharedInfo.getS1();		// Use S1 for the recipient	
+    	if (isInitiator)
+    	{
+    		System.arraycopy(sharedInfo.getS2(), 0, S, 0, sharedInfo.getS2().length);
+    		System.arraycopy(sharedInfo.getS1(), 0, S, sharedInfo.getS2().length, sharedInfo.getS1().length);
+		}
+    	else
+    	{ 
+    		/* Use S1 + S2 for the recipient */	
+    		System.arraycopy(sharedInfo.getS1(), 0, S, 0, sharedInfo.getS1().length);
+    		System.arraycopy(sharedInfo.getS2(), 0, S, sharedInfo.getS1().length, sharedInfo.getS2().length);
 		}
     	
     	/*
