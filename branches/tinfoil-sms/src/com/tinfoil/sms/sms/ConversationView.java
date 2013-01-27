@@ -45,6 +45,8 @@ import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
+ * TODO change wrap_content to '0dp'
+ * see https://developer.android.com/training/basics/firstapp/building-ui.html
  * <ul>
  * <li>TODO add the proper version number and name to the manifest</li>
  * <li>TODO adjust the list view to default (if empty) to suggest importing
