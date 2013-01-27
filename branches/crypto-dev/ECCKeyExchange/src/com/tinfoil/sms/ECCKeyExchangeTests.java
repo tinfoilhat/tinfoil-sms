@@ -157,15 +157,15 @@ public class ECCKeyExchangeTests extends ECCKeyExchangeActivity
 			 * any component should be 256-bit
 			 */
 	        IESEngine      i1 = new IESEngine(
-			                    new ECDHCBasicAgreement(),
-			                    new KDF2BytesGenerator(new SHA256Digest()),
-			                    new HMac(new SHA256Digest()),
-			                    c1);
+				                    new ECDHCBasicAgreement(),
+				                    new KDF2BytesGenerator(new SHA256Digest()),
+				                    new HMac(new SHA256Digest()),
+				                    c1);
 	        IESEngine      i2 = new IESEngine(
-			                    new ECDHCBasicAgreement(),
-			                    new KDF2BytesGenerator(new SHA256Digest()),
-			                    new HMac(new SHA256Digest()),
-			                    c2);
+				                    new ECDHCBasicAgreement(),
+				                    new KDF2BytesGenerator(new SHA256Digest()),
+				                    new HMac(new SHA256Digest()),
+				                    c2);
 	        
 	        IESParameters p = new IESWithCipherParameters(S1, S2, 256, 256);
 	        
