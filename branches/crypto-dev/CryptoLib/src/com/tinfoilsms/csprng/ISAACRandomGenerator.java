@@ -36,34 +36,39 @@ public class ISAACRandomGenerator implements RandomGenerator
 	private ISAACEngine engine;
 	private byte[] seed;
 	
-	/**
-	 *	Default constructor, at the moment does nothing 
-	 */
-	public ISAACRandomGenerator()
-	{
-		
-	}
-	
 	
 	/**
-	 * Initialize the ISAAC random generator with an initial seed value.
-	 * Currently only ISAAC engine is supported, but in future ISAAC+ will
-	 * also be supported. The seed value must be specified, future versions
-	 * will enforce a minimum level of entropy, week seeds will throw exceptions!
+	 * Default constructor, at the moment only ISAAC engine is supported, 
+	 * but in future ISAAC+ will also be supported.
 	 * 
 	 * @param engine The ISAAC engine, currently ISAAC+ is NOT supported
-	 * @param seed The seed value, must be specified
 	 * 
 	 * @throws IllegalArgumentException if the stream cipher is not ISAAC
-     * @throws DataLengthException if the seed is not specified or has weak entropy
 	 */
-	public void init(StreamCipher engine, byte[] seed)
-			throws DataLengthException, IllegalArgumentException
+	public ISAACRandomGenerator(StreamCipher engine)
+			throws IllegalArgumentException
 	{
 		if (! (engine instanceof ISAACEngine))
 		{
 			throw new IllegalArgumentException("Invalid stream engine, at the moment ONLY ISAACEngine is supported!");
 		}
+		
+		this.engine = (ISAACEngine)engine;
+	}
+	
+	
+	/**
+	 * Initialize the ISAAC random generator with an initial seed value. The seed 
+	 * value must be specified, future versions will enforce a minimum level of 
+	 * entropy, week seeds will throw exceptions!
+	 * 
+	 * @param seed The seed value, must be specified
+	 * 
+     * @throws DataLengthException if the seed is not specified or has weak entropy
+	 */
+	public void init(byte[] seed)
+			throws DataLengthException
+	{
 		/*
 		 * TODO Add a check to throw an exception if the level of entropy does not 
 		 * meet minimum requirements
@@ -74,7 +79,6 @@ public class ISAACRandomGenerator implements RandomGenerator
 		}
 		
 		this.seed = seed;
-		this.engine = (ISAACEngine)engine;
 		
 		// Initialize the stream cipher engine
 		engine.init(true, new KeyParameter(seed));
