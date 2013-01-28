@@ -19,6 +19,7 @@ package com.tinfoilsms.crypto;
 import java.util.Arrays;
 
 import org.spongycastle.crypto.CipherParameters;
+import org.spongycastle.crypto.DataLengthException;
 import org.spongycastle.crypto.prng.RandomGenerator;
 import org.spongycastle.crypto.MaxBytesExceededException;
 
@@ -120,20 +121,40 @@ public class Nonce implements CipherParameters
 	 * exception, this prevents having to deal with the halting problem, where
 	 * the program will run indefinitely generating random data.
 	 * 
+	 * You must execute nextNonce after initializing the object in order to
+	 * generate a unique nonce value.
+	 * 
 	 * @param seed The seed value for the CSPRNG, must be specified
+	 * @param nonceLen The default length of the nonce to generate, 0 to use
+	 * the length of the prior nonce value. Must be specified if Nonce was 
+	 * constructed without a prior nonce value.
 	 * 
 	 * @throws MaxBytesExceededException If CSPRNG reaches MAXCYCLES trying to
 	 * return to the initial Nonce state, usually when the seed data provided is
 	 * different than the previous seed data used to generate the last nonce state
+	 * 
+	 * @throws DataLengthException If the nonceLength was not provided and the object
+	 * was not instantiated with the prior nonce value of the last state.
 	 */
-	public void init(byte[] seed)
-		throws MaxBytesExceededException
+	public void init(byte[] seed, int nonceLen)
+		throws MaxBytesExceededException, DataLengthException
 	{
+		if (nonce == null && nonceLen == 0)
+		{
+			throw new DataLengthException("You must provide a nonce length if no prior " +
+					"nonce value was given to the constructor!");
+		}
+		
 		/* Initialize CSPRNG */
 		csprng.init(seed);
 		
-		/* if nonce state specified initialize nonce to last state */
-		if (nonce != null)
+		/* Construct a new empty nonce if no prior state provided */
+		if (nonce == null)
+		{
+			nonce = new byte[nonceLen];
+		}
+		/* Nonce state specified initialize nonce to last state */
+		else
 		{
 			byte[] curNonce = new byte[nonce.length];
 			
@@ -159,12 +180,15 @@ public class Nonce implements CipherParameters
 	
 	
 	/**
-	 * Generates the next nonce which can be accessed using the getNonce()
-	 * method.
+	 * Generates the next nonce and returns it
+	 * 
+	 * @return The nonce
 	 */
-	public void nextNonce()
+	public byte[] nextNonce()
 	{
+		nonce = new byte[nonce.length];
 		csprng.nextBytes(nonce);
+		return nonce;
 	}
 	
 	
