@@ -47,12 +47,13 @@ public class MessageReceiver extends BroadcastReceiver {
 			/*
 			 * Might have to update this so that it accounts for multiple messages received
 			 */
-			if (messages.length > -1) {
+			//if (messages.length > -1) {
+			for(int i = 0; i < messages.length; i++)
+			{
+				String address = messages[i].getOriginatingAddress();
+				String message = messages[i].getMessageBody();
 				
-
-				String address = messages[0].getOriginatingAddress();
-				String message = messages[0].getMessageBody();
-				
+				Toast.makeText(context, address + ": " + message, Toast.LENGTH_LONG).show();
 				//1. Check if number is in db
 				//	1.1. Check if contact is trusted
 				//		1.1.1. Decrypt Message
@@ -62,6 +63,7 @@ public class MessageReceiver extends BroadcastReceiver {
 				//		1.2.1. Continue key exchange
 				//		1.2.2. Add to trusted and so on..
 				//	1.3. Regular message received
+				//2. Don't care
 
 				/*
 				 * For this test the following assumptions are made:
@@ -77,13 +79,12 @@ public class MessageReceiver extends BroadcastReceiver {
 				 * TODO implement validation for whether a message is a key exchange message
 				 */
 		    	
-				Toast.makeText(context, "Message Received", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(context, "Message Received", Toast.LENGTH_SHORT).show();
 					
 				// Prevent other applications from seeing the message received
 				this.abortBroadcast();
-				
-					
 			}
+			
 		}
     }
 }

@@ -52,6 +52,7 @@ public class MessageReceiver extends BroadcastReceiver {
 			}
 
 			/*
+			 * TODO account for multiple messages
 			 * Might have to update this so that it accounts for multiple messages received
 			 */
 			if (messages.length > -1) {

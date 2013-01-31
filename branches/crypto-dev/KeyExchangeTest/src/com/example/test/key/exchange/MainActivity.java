@@ -18,7 +18,15 @@ public class MainActivity extends Activity {
 	private static final SmsManager sms = SmsManager.getDefault();
 	
 	private static final String NUMBER = "5555215556";
-	private static  String message = "blah";
+	private static String message;
+	
+	public static String shared_info_1 = "This is the Initiator";
+	public static String shared_info_2 = "This is the Receiver";
+	
+	public static byte[] public_key;
+	public static byte[] private_key;
+	
+	public static byte[] contact_public_key;
 	
 	
     @Override

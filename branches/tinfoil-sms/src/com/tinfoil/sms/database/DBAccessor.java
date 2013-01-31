@@ -83,7 +83,6 @@ public class DBAccessor {
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
-	//private ContentResolver cr;
 
 	/**
 	 * Creates a database that is read and write
