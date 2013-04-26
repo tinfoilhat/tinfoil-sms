@@ -628,7 +628,7 @@ public class DBAccessor {
     /**
      * Open the database to be used
      */
-	public void open()
+	public synchronized void open()
 	{
 		db = contactDatabase.getWritableDatabase();
 	}
@@ -637,7 +637,7 @@ public class DBAccessor {
 	 * Close the database
 	 * @param cur : Cursor, the cursor to close 
 	 */
-	public void close(Cursor cur)
+	public synchronized void close(Cursor cur)
 	{
 		cur.close();
 		db.close();
@@ -646,7 +646,7 @@ public class DBAccessor {
 	/**
 	 * Close the database
 	 */
-	public void close()
+	public synchronized void close()
 	{
 		db.close();
 	}

@@ -78,13 +78,15 @@ public class MessageView extends Activity {
         //Finds the number of the recently sent message attached to the notification
         if (this.getIntent().hasExtra(MessageService.notificationIntent))
         {
-            ConversationView.selectedNumber = this.getIntent().getStringExtra(MessageService.notificationIntent);
+            ConversationView.selectedNumber = this.getIntent().getStringExtra
+            		(MessageService.notificationIntent);
         }
         else if (this.getIntent().hasExtra(ConversationView.selectedNumberIntent))
         {
-            ConversationView.selectedNumber = this.getIntent().getStringExtra(ConversationView.selectedNumberIntent);
+            ConversationView.selectedNumber = this.getIntent().getStringExtra
+            		(ConversationView.selectedNumberIntent);
         }
-        else
+        else 
         {
             this.finish();
         }
