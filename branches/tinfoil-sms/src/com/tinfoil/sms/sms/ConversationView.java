@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.messageQueue.MessageSender;
 import com.tinfoil.sms.messageQueue.SignalListener;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
@@ -74,6 +75,8 @@ public class ConversationView extends Activity {
     private final MessageReceiver boot = new MessageReceiver();
     private final SignalListener pSL = new SignalListener();
     public static boolean messageViewActive = false;
+    
+    public static MessageSender messageSender = new MessageSender();
 
     /** Called when the activity is first created. */
     @Override
@@ -87,6 +90,8 @@ public class ConversationView extends Activity {
         MessageService.mNotificationManager.cancelAll();
 
         MessageService.dba = new DBAccessor(this);
+        
+        this.messageSender.startThread(getApplicationContext());
 
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
@@ -180,9 +185,15 @@ public class ConversationView extends Activity {
     }
 
     @Override
-    protected void onDestroy()
+    protected void onPause()
     {
-        MessageService.dba.close();
+    	 MessageService.dba.close();
+    	 super.onPause();
+    }
+    
+    @Override
+    protected void onDestroy()
+    {	       
         this.stopService(new Intent(this, MessageService.class));
         MessageReceiver.myActivityStarted = false;
 

@@ -24,7 +24,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
-import com.tinfoil.sms.messageQueue.Queue;
+import com.tinfoil.sms.messageQueue.QueueEntry;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -91,7 +91,9 @@ public class DBAccessor {
 	public DBAccessor (Context c)
 	{
 		contactDatabase = new SQLitehelper(c);
-		db = contactDatabase.getWritableDatabase();
+		
+		//TODO query the queue of messages to see if any are waiting
+		//Create a flag to signify messages in queue
 	}
 	
 	/**
@@ -628,8 +630,24 @@ public class DBAccessor {
     /**
      * Open the database to be used
      */
-	public synchronized void open()
+	public void open()
 	{
+		/*db.
+		while(db.isOpen())
+		{
+			synchronized(Thread.currentThread()) {
+				try {
+					Thread.currentThread().wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}*/
+		//if(db.isOpen())
+		
+		//TODO create readable DB access
+		//TODO open db in thread
+		//db.
 		db = contactDatabase.getWritableDatabase();
 	}
 	
@@ -637,18 +655,21 @@ public class DBAccessor {
 	 * Close the database
 	 * @param cur : Cursor, the cursor to close 
 	 */
-	public synchronized void close(Cursor cur)
+	public void close(Cursor cur)
 	{
 		cur.close();
 		db.close();
+		
+		//this.notifyAll();
 	}
 	
 	/**
 	 * Close the database
 	 */
-	public synchronized void close()
+	public void close()
 	{
 		db.close();
+		//this.notifyAll();
 	}
 	
 	/**
@@ -746,7 +767,7 @@ public class DBAccessor {
 	 * with the columns: name, number, key, verified.
 	 * @param number : String the number of the contact to retrieve 
 	 * @return TrustedContact, the row of data.
-	 */
+	 */ 
 	public TrustedContact getRow(String number)
 	{		
 		open();
@@ -883,7 +904,7 @@ public class DBAccessor {
 	 * Get number of messages that are unread for all numbers
 	 * @return : int, the number of messages unread for all numbers
 	 */
-	public int getUnreadMessageCount() {
+	public  int getUnreadMessageCount() {
 		open();
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{"SUM("+KEY_UNREAD+")"},
 				null, null, null, null, KEY_ID);
@@ -1228,7 +1249,7 @@ public class DBAccessor {
 	 * @param message : String the message that will be sent to the contact with the given number.
 	 * **Please note the message is not changed, it will be stored and sent as is.  
 	 */
-	public void addMessageToQueue (String number, String message)
+	public synchronized void addMessageToQueue (String number, String message)
 	{
 		long numberReference = getNumberId(number);
 		ContentValues cv = new ContentValues();
@@ -1239,15 +1260,21 @@ public class DBAccessor {
         open();
         db.insert(SQLitehelper.QUEUE_TABLE_NAME, null, cv);
 		close();
+	
+		ConversationView.messageSender.threadNotify();
 	}
 	
 	/**
+	 * Create a wait if the queue is found to be empty. (DB must be closed upon finding that it is empty)
+	 * - It will wait until addMessageToQueue notifies that there is one added
+	 * 
 	 * Get the first element within the queue.
 	 * @return : Queue the number and message stored in the queue
 	 */
-	public Queue getFirstInQueue ()
+	public synchronized QueueEntry getFirstInQueue ()
 	{
 		open();
+	
 		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, 
 				KEY_NUMBER_REFERENCE, KEY_MESSAGE}, KEY_ID + 
 				" = (SELECT MIN(" + KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
@@ -1256,13 +1283,13 @@ public class DBAccessor {
 		if (cur.moveToFirst())
 		{
 			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
-			Queue entry = new Queue(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
+			QueueEntry entry = new QueueEntry(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
 					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id);
 			close(cur);
-			//deleteQueueEntry(id);
+			deleteQueueEntry(id);
 			return entry;
 		}
-		close(cur);
+		close(cur);		
 		return null;
 	}
 	
@@ -1280,7 +1307,7 @@ public class DBAccessor {
 	/**
 	 * Delete the first entry in the queue
 	 */
-	public void deleteFirstQueueEntry()
+	public synchronized void deleteFirstQueueEntry()
 	{
 		open();
 		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = (SELECT MIN(" + KEY_ID + ") FROM " + 
@@ -1292,7 +1319,7 @@ public class DBAccessor {
 	 * Get the current length of the queue
 	 * @return : long the length of the queue
 	 */
-	public int queueLength()
+	/*public synchronized int queueLength()
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, 
@@ -1307,7 +1334,7 @@ public class DBAccessor {
 		}
 		close(cur);
 		return 0;
-	}
+	}*/
 	
 	//TODO remove
 	/*public void placeOnTop(String number, String message, long id)

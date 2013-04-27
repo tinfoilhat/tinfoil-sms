@@ -33,7 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -45,6 +45,7 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
 import com.tinfoil.sms.crypto.ExchangeKey;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
@@ -129,15 +130,16 @@ public class MessageView extends Activity {
                 MessageService.mNotificationManager.cancel(MessageService.INDEX);
             }
         }
+       //list2.setOnItemLongClickListener(listener)
 
         //Retrieve the name of the contact from the database
         contact_name = MessageService.dba.getRow(ConversationView.selectedNumber).getName();
 
         //Set an action for when a user clicks on a message
-        list2.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> parent, final View view,
-                    final int position, final long id) {
-
+        
+        list2.setOnItemLongClickListener(new OnItemLongClickListener() {
+        	public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
                 final int item_num = position;
 
                 final AlertDialog.Builder popup_builder = new AlertDialog.Builder(MessageView.this);
@@ -207,7 +209,7 @@ public class MessageView extends Activity {
                                                         {
                                                             if (SMSUtility.isANumber(info[1]))
                                                             {                                           	
-                                                            	SMSUtility.sendMessage(info[1], messageValue[1], getBaseContext());
+                                                            	SMSUtility.sendMessage(getBaseContext(), info[1], messageValue[1]);
                                                             }
                                                             else
                                                             {
@@ -219,7 +221,7 @@ public class MessageView extends Activity {
                                                             final String num = phoneBox.getText().toString();
                                                             if (SMSUtility.isANumber(num))
                                                             {
-                                                            	SMSUtility.sendMessage(num, messageValue[1], getBaseContext());
+                                                            	SMSUtility.sendMessage(getBaseContext(), num, messageValue[1]);
                                                             }
                                                             else
                                                             {
@@ -246,7 +248,9 @@ public class MessageView extends Activity {
                         .setCancelable(true);
                 MessageView.this.popup_alert = popup_builder.create();
                 MessageView.this.popup_alert.show();
-            }
+            			
+				return false;
+			}
         });
 
         sendSMS = (Button) this.findViewById(R.id.send);
@@ -273,7 +277,15 @@ public class MessageView extends Activity {
         {
             public void onClick(final View v)
             {
-                MessageView.this.sendMessage(ConversationView.selectedNumber, MessageView.this.messageBox.getText().toString());
+            	String text = MessageView.this.messageBox.getText().toString();
+            	//Toast.makeText(getBaseContext(), ""+ text.length(), Toast.LENGTH_LONG).show();
+            	if(text != null && text.length() > 0)
+                {
+            		MessageService.dba.addNewMessage(new Message(text, true,
+            				true), ConversationView.selectedNumber, true);
+                            	MessageView.this.sendMessage(ConversationView.selectedNumber, 
+                            			text);
+                }
             }
         });
 
@@ -287,9 +299,10 @@ public class MessageView extends Activity {
             messages.setCount(0);
             this.messageBox.setText("");
             messageEvent.resetCount();
+            MessageService.dba.addMessageToQueue(number, text);
 
             //Encrypt the text message before sending it	
-            SMSUtility.sendMessage(number, text, this.getBaseContext());
+            //SMSUtility.sendMessage(number, text, this.getBaseContext());
             updateList(this.getBaseContext());
         }
     }

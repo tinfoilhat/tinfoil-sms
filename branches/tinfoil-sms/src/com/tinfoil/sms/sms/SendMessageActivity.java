@@ -162,7 +162,7 @@ public class SendMessageActivity extends Activity {
                     if (number.length() > 0 && text.length() > 0)
                     {
                         //Send the message
-                        final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.newCont.getNumber(0), text, SendMessageActivity.this.getBaseContext());
+                        final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
 
                         //Check if the message was successful at sending
                         if (sent)

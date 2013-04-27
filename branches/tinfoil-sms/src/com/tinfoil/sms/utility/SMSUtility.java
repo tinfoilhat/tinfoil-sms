@@ -23,8 +23,9 @@ import java.util.regex.Pattern;
 
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.encryption.Encryption;
-import com.tinfoil.sms.messageQueue.MessageSender;
+import com.tinfoil.sms.messageQueue.MessageSenderBack;
 import com.tinfoil.sms.sms.ConversationView;
 
 import android.app.PendingIntent;
@@ -56,7 +57,7 @@ public abstract class SMSUtility {
     public static final int LIMIT = 50;
     public static final boolean saveMessage = false;
 
-    private static MessageSender MS = new MessageSender();
+    private static MessageSenderBack MS = new MessageSenderBack();
 
     /**
      * Create an array of Strings to display for the auto-complete
@@ -99,7 +100,7 @@ public abstract class SMSUtility {
 
         return number;
     }
-
+    
     /**
      * Sends the given message to the phone with the given number
      * 
@@ -113,8 +114,7 @@ public abstract class SMSUtility {
 
         final Intent intent = new Intent(SENT);
         intent.putExtra(NUMBER, number);
-        intent.putExtra(MESSAGE, message);
-        intent.putExtra(ID, 0);
+        intent.putExtra(MESSAGE, message); 
         final PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -202,13 +202,13 @@ public abstract class SMSUtility {
 
     /**
      * Sends a message as encrypted or plain text based on the contact's state.
-     * 
+     * @param context The context of the class
      * @param number The number the text message is being sent to
      * @param text The text message
-     * @param context The context of the class
+     * 
      * @return boolean whether the message sent or not
      */
-    public static boolean sendMessage(final String number, final String text, final Context context) {
+    public static boolean sendMessage(final Context context, final String number, final String text) {
         try
         {
             if (MessageService.dba.isTrustedContact(number) &&
@@ -229,7 +229,7 @@ public abstract class SMSUtility {
 
                 sendToSelf(context, number, text, ConversationView.SENT);
 
-                MessageService.dba.addNewMessage(new Message(text, true, true), number, false);
+                //MessageService.dba.addNewMessage(new Message(text, true, true), number, false);
 
                 Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
             }
@@ -239,10 +239,66 @@ public abstract class SMSUtility {
                 sendSMS(context, number, text);
                 sendToSelf(context, number, text, ConversationView.SENT);
 
-                if(MessageService.dba.inDatabase(number))
+                /*if(MessageService.dba.inDatabase(number))
                 {
                 	MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
+                }*/
+
+                Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        } catch (final Exception e)
+        {
+            Toast.makeText(context, "FAILED TO SEND", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * Sends a message as encrypted or plain text based on the contact's state.
+     * @param context The context of the class
+     * @param number The number the text message is being sent to
+     * @param text The text message
+     * 
+     * @return boolean whether the message sent or not
+     */
+    public static boolean sendMessage(DBAccessor dba, final Context context, final String number, final String text) {
+        try
+        {
+            if (dba.isTrustedContact(number) &&
+                    ConversationView.sharedPrefs.getBoolean("enable", true))
+            {
+                //Send an encrypted message
+                final String encrypted = Encryption.aes_encrypt(dba.getRow(
+                        format(number)).getNumber(format(number)).getPublicKey(), text);
+
+                sendSMS(context, number, encrypted);
+
+                if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
+                {
+                    sendToSelf(context, number, encrypted, ConversationView.SENT);
+                    dba.addNewMessage(new Message
+                            (encrypted, true, true), number, false);
                 }
+
+                sendToSelf(context, number, text, ConversationView.SENT);
+
+                //dba.addNewMessage(new Message(text, true, true), number, false);
+
+                Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+            	Thread.sleep(4000);
+                //Sending a plain text message
+                sendSMS(context, number, text);
+                sendToSelf(context, number, text, ConversationView.SENT);
+
+                /*if(dba.inDatabase(number))
+                {
+                	dba.addNewMessage(new Message(text, true, true), number, true);
+                }*/
 
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
             }

@@ -17,12 +17,12 @@
 
 package com.tinfoil.sms.messageQueue;
 
-public class Queue {
+public class QueueEntry {
 	private String number;
 	private String message;
 	private long id;
 	
-	public Queue (String number, String message, long id)
+	public QueueEntry (String number, String message, long id)
 	{
 		this.setNumber(number);
 		this.setMessage(message);

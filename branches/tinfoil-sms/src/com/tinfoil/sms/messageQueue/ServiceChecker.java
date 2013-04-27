@@ -56,7 +56,7 @@ public class ServiceChecker implements Runnable {
         Looper.prepare();
 
         //TODO Add semaphores to synchronously access the database for the message queue thread
-        while (MessageService.dba.queueLength() > 0)
+        //while (MessageService.dba.queueLength() > 0)
         {
             /*
              * TODO remove busy wait
@@ -65,8 +65,8 @@ public class ServiceChecker implements Runnable {
             {
                 //Do nothing, just waWit for their to be signal
             }
-            MessageSender.success = 0;
-            final Queue messageInfo = MessageService.dba.getFirstInQueue();
+            MessageSenderBack.success = 0;
+            final QueueEntry messageInfo = MessageService.dba.getFirstInQueue();
 
             SMSUtility.sendSMS(this.c, messageInfo.getNumber(), messageInfo.getMessage(), messageInfo.getId());
 
