@@ -208,8 +208,10 @@ public class MessageView extends Activity {
                                                         if (info.length == 2 && info[1] != null)
                                                         {
                                                             if (SMSUtility.isANumber(info[1]))
-                                                            {                                           	
-                                                            	SMSUtility.sendMessage(getBaseContext(), info[1], messageValue[1]);
+                                                            {                      
+                                                            	//TODO change to MessageView.sendMessage(number,text);
+                                                            	//SMSUtility.sendMessage(getBaseContext(), info[1], messageValue[1]);
+                                                            	MessageView.this.sendMessage(info[1],messageValue[1]);
                                                             }
                                                             else
                                                             {
@@ -270,27 +272,21 @@ public class MessageView extends Activity {
         this.messageBox.setFilters(FilterArray);
 
         this.messageBox.addTextChangedListener(messageEvent);
-        /*
-         * Set an action for when the user clicks on the sent button
-         */
-        sendSMS.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(final View v)
-            {
-            	String text = MessageView.this.messageBox.getText().toString();
-            	
-            	if(text != null && text.length() > 0)
-                {
-            		MessageService.dba.addNewMessage(new Message(text, true,
-            				true), ConversationView.selectedNumber, true);
-                    MessageView.this.sendMessage(ConversationView.selectedNumber, 
-                            			text);
-                }
-            }
-        });
-
     }
 
+    
+    public void sendMessage(View view)
+    {
+    	String text = MessageView.this.messageBox.getText().toString();
+    	
+    	if(text != null && text.length() > 0)
+        {
+    		MessageService.dba.addNewMessage(new Message(text, true,
+    				true), ConversationView.selectedNumber, true);
+            sendMessage(ConversationView.selectedNumber, text);
+        }
+    }
+    
     public void sendMessage(final String number, final String text)
     {
         if (number.length() > 0 && text.length() > 0)

@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -18,7 +18,10 @@
 
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="Tinfoil-SMS" >
+        android:label="Tinfoil-SMS"
+        android:allowClearUserData="true"
+        android:allowBackup="false">
+        
         <activity
             android:name=".sms.SendMessageActivity"
             android:label="Send Message" />
