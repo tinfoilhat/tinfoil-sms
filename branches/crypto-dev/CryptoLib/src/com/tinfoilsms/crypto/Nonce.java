@@ -222,11 +222,11 @@ public class Nonce implements CipherParameters
 	
 	
 	/**
-	 * Resets the CSPRNG
-	 * 
-	 * TODO: IMPLEMENT, must also be implemented in ISAACRandomGenerator
+	 * Resets the CSPRNG used by the None, after resetting the CSPRNG you must 
+	 * either re-initialize or re-seed it.
 	 */
 	public void reset()
 	{
+	    csprng.reset();
 	}
 }

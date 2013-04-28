@@ -234,4 +234,14 @@ public class ISAACRandomGenerator implements RandomGenerator
 		
 		return new BigInteger(out).intValue();
 	}
+	
+	
+	/**
+	 * Resets the CSPRNG, after resetting the CSPRNG you must either re-initialize
+	 * it or add additional seed material.
+	 */
+	public void reset()
+	{
+	    this.engine.reset();
+	}
 }
