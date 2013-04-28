@@ -5,6 +5,7 @@ import com.tinfoil.sms.utility.SMSUtility;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 public class MessageSender implements Runnable{
 
@@ -14,6 +15,7 @@ public class MessageSender implements Runnable{
 	//private ConcurrentLinkedQueue<QueueEntry> message = new ConcurrentLinkedQueue<QueueEntry>();
 	private Thread thread;
 	private DBAccessor sender;
+	private boolean signal = false;
 	
 	public void startThread(Context c) {
 		this.c = c;
@@ -46,6 +48,20 @@ public class MessageSender implements Runnable{
 				}
 			}
 			
+			while(!signal)
+			{
+				Log.v("Signal", "none");
+				synchronized(this){
+					try {
+						this.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			Log.v("Signal", "some");
+			
 			synchronized(this){
 				empty = true;
 			}
@@ -53,16 +69,26 @@ public class MessageSender implements Runnable{
 			if(mes != null) {
 				SMSUtility.sendMessage(this.sender, c, mes.getNumber(), mes.getMessage());
 			}
-		}
-		
+		}		
 	}
 	
-	public void threadNotify()
+	public void threadNotify(boolean setEmpty)
 	{
-		empty = false;
+		if(setEmpty)
+		{
+			empty = false;
+		}
 		synchronized (this) {
 			notifyAll();
 		}
+	}
+
+	public synchronized boolean isSignal() {
+		return signal;
+	}
+
+	public synchronized void setSignal(boolean signal) {
+		this.signal = signal;
 	}
 }
 	

@@ -1261,7 +1261,7 @@ public class DBAccessor {
         db.insert(SQLitehelper.QUEUE_TABLE_NAME, null, cv);
 		close();
 	
-		ConversationView.messageSender.threadNotify();
+		ConversationView.messageSender.threadNotify(true);
 	}
 	
 	/**

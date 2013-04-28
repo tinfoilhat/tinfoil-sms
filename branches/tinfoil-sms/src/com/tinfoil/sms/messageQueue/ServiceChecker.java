@@ -23,6 +23,10 @@ import com.tinfoil.sms.utility.SMSUtility;
 import android.content.Context;
 import android.os.Looper;
 
+/**
+ * This is an old class and is being replaced by MessageSender.java
+ * Do not remove yet
+ */
 public class ServiceChecker implements Runnable {
     private Context c;
     //private ServiceState s = new ServiceState();

@@ -17,8 +17,11 @@
 
 package com.tinfoil.sms.messageQueue;
 
+import com.tinfoil.sms.sms.ConversationView;
+
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
+import android.util.Log;
 
 public class SignalListener extends PhoneStateListener{
 
@@ -28,24 +31,28 @@ public class SignalListener extends PhoneStateListener{
 		//signalStrength.
 		if (strength >= 0 && strength <= 31 || strength == 99 )
 		{
+			Log.v("Strength", ""+strength);
 			if (strength == 0 || strength == 99)
 			{
-				ServiceChecker.signal = false;
+				ConversationView.messageSender.setSignal(false);
 				/*
 				 * Could use wait() and notify() rather then busy waiting
 				 */
 				//MessageSender.sc.notify();
+				ConversationView.messageSender.threadNotify(false);
 				
 			}
 			else{
-				ServiceChecker.signal = true;
+				ConversationView.messageSender.setSignal(true);
 				/*try {
 					MessageSender.sc.wait();
 				} 
 				catch (InterruptedException e) {
 					e.printStackTrace();
 				}*/
+				
 			}
+			
 		}
 		
 		super.onSignalStrengthsChanged(signalStrength);

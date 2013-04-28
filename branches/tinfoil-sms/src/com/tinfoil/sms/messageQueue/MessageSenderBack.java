@@ -28,6 +28,11 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
+/**
+ * This is an older class and is being replaced by MessageSender.java
+ * Do not remove yet
+ *
+ */
 public class MessageSenderBack extends BroadcastReceiver {
     public static ServiceChecker sc = new ServiceChecker();
     public static byte success = 0;
@@ -91,14 +96,15 @@ public class MessageSenderBack extends BroadcastReceiver {
                 // If id = 0 then the message is being sent for the first time (not yet in the queue)
                 if (id == 0) {
                     Toast.makeText(c, "SMS put in queue to send", Toast.LENGTH_SHORT).show();
-                    MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER),
-                            bundle.getString(SMSUtility.MESSAGE));
+                    Toast.makeText(c, bundle.getString(SMSUtility.MESSAGE), Toast.LENGTH_LONG).show();
+                    //MessageService.dba.addMessageToQueue(bundle.getString(SMSUtility.NUMBER),
+                      //      bundle.getString(SMSUtility.MESSAGE));
 
-                    intent.removeExtra(SMSUtility.NUMBER);
-                    intent.removeExtra(SMSUtility.MESSAGE);
+                    //intent.removeExtra(SMSUtility.NUMBER);
+                    //intent.removeExtra(SMSUtility.MESSAGE);
 
                     //**Temporary fix for no signal problem
-                    Toast.makeText(c, "No signal, Message Failed to Send", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(c, "No signal, Message Failed to Send", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(c, "No signal", Toast.LENGTH_SHORT).show();
 
                     //Start the Thread to start checking for messages
@@ -108,7 +114,7 @@ public class MessageSenderBack extends BroadcastReceiver {
                 else {
 
                     //There was service but not enough/not long enough to send a message from queue
-                    Toast.makeText(c, "SMS still in queue", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(c, "SMS still in queue", Toast.LENGTH_SHORT).show();
 
                     //Success variable was intended to identify that the variable was
                     //success = 0 (not in queue)

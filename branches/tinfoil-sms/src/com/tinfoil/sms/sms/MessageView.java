@@ -278,12 +278,12 @@ public class MessageView extends Activity {
             public void onClick(final View v)
             {
             	String text = MessageView.this.messageBox.getText().toString();
-            	//Toast.makeText(getBaseContext(), ""+ text.length(), Toast.LENGTH_LONG).show();
+            	
             	if(text != null && text.length() > 0)
                 {
             		MessageService.dba.addNewMessage(new Message(text, true,
             				true), ConversationView.selectedNumber, true);
-                            	MessageView.this.sendMessage(ConversationView.selectedNumber, 
+                    MessageView.this.sendMessage(ConversationView.selectedNumber, 
                             			text);
                 }
             }
