@@ -36,7 +36,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -58,7 +57,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  * will be updated and Prephase3Activity's messages will be updated as well.
  */
 public class MessageView extends Activity {
-    private static Button sendSMS;
+    //private static Button sendSMS;
     private EditText messageBox;
     private static ListView list2;
     private static List<String[]> msgList2;
@@ -209,7 +208,6 @@ public class MessageView extends Activity {
                                                         {
                                                             if (SMSUtility.isANumber(info[1]))
                                                             {                      
-                                                            	//TODO change to MessageView.sendMessage(number,text);
                                                             	//SMSUtility.sendMessage(getBaseContext(), info[1], messageValue[1]);
                                                             	MessageView.this.sendMessage(info[1],messageValue[1]);
                                                             }
@@ -245,7 +243,6 @@ public class MessageView extends Activity {
                                     contact_alert.show();
                                 }
                             }
-
                         })
                         .setCancelable(true);
                 MessageView.this.popup_alert = popup_builder.create();
@@ -255,7 +252,7 @@ public class MessageView extends Activity {
 			}
         });
 
-        sendSMS = (Button) this.findViewById(R.id.send);
+        //sendSMS = (Button) this.findViewById(R.id.send);
         this.messageBox = (EditText) this.findViewById(R.id.message);
 
         final InputFilter[] FilterArray = new InputFilter[1];

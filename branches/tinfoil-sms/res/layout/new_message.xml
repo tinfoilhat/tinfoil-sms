@@ -29,8 +29,8 @@
         android:layout_above="@+id/new_message_field"
         android:layout_marginTop="10pt"
         android:background="#000000">
-        
     </LinearLayout>
+    
     <LinearLayout
         android:id="@+id/new_message_field"
         android:layout_width="wrap_content"
@@ -52,7 +52,8 @@
             android:id="@+id/new_message_send"
             android:layout_width="wrap_content"
             android:layout_height="90dp"
-            android:text="Send" />
+            android:text="Send"
+            android:onClick="sendMessage"/>
     </LinearLayout>
     
      <RelativeLayout

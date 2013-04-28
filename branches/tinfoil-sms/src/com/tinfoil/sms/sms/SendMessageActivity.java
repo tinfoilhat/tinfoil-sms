@@ -32,12 +32,12 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.AddContact;
@@ -55,7 +55,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class SendMessageActivity extends Activity {
     private static MessageBoxWatcher messageEvent;
-    private Button sendSMS;
+    //private Button sendSMS;
     private AutoCompleteTextView phoneBox;
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;
@@ -135,7 +135,7 @@ public class SendMessageActivity extends Activity {
             }
         });
         
-        this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
+        //this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
         this.messageBox = (EditText) this.findViewById(R.id.new_message_message);
 
         final InputFilter[] FilterArray = new InputFilter[1];
@@ -151,66 +151,74 @@ public class SendMessageActivity extends Activity {
 
         this.messageBox.addTextChangedListener(messageEvent);
 
-        this.sendSMS.setOnClickListener(new View.OnClickListener()
+        /*this.sendSMS.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(final View v)
             {
-                if (!SendMessageActivity.this.newCont.getNumber().isEmpty()) {
-                    final String number = SendMessageActivity.this.newCont.getNumber(0);
-                    final String text = SendMessageActivity.this.messageBox.getText().toString();
+                
+            }
+        });*/
+    }
+    
+    public void sendMessage (View view)
+    {
+    	if (!SendMessageActivity.this.newCont.getNumber().isEmpty()) {
+            final String number = SendMessageActivity.this.newCont.getNumber(0);
+            final String text = SendMessageActivity.this.messageBox.getText().toString();
 
-                    if (number.length() > 0 && text.length() > 0)
+            if (number.length() > 0 && text.length() > 0)
+            {
+                //Send the message
+                //final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
+
+                MessageService.dba.addNewMessage(new Message(text, true, true), ConversationView.selectedNumber, true);
+                MessageService.dba.addMessageToQueue(number, text);
+                
+                //Check if the message was successful at sending
+                //if (sent)
+                //{
+                    if (!MessageService.dba.inDatabase(number))
                     {
-                        //Send the message
-                        final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
 
-                        //Check if the message was successful at sending
-                        if (sent)
-                        {
-                            if (!MessageService.dba.inDatabase(number))
-                            {
-
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
-                                builder.setMessage("Would you like to add " + number + " to your contacts list?")
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(final DialogInterface dialog, final int id) {
-                                                AddContact.editTc = new TrustedContact("");
-                                                AddContact.editTc.addNumber(number);
-                                                AddContact.addContact = true;
-                                                SendMessageActivity.this.startActivity(new Intent(
-                                                        SendMessageActivity.this, AddContact.class));
-                                                SendMessageActivity.this.finish();
-                                            }
-                                        })
-                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                            public void onClick(final DialogInterface dialog, final int id) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                final AlertDialog alert = builder.create();
-                                alert.show();
-                            }
-                            SendMessageActivity.this.messageBox.setText("");
-                            SendMessageActivity.this.phoneBox.setText("");
-                        }
-                    }
-                    else
-                    {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
-                        builder.setMessage("You have failed to provide sufficient information")
+                        builder.setMessage("Would you like to add " + number + " to your contacts list?")
                                 .setCancelable(false)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     public void onClick(final DialogInterface dialog, final int id) {
+                                        AddContact.editTc = new TrustedContact("");
+                                        AddContact.editTc.addNumber(number);
+                                        AddContact.addContact = true;
+                                        SendMessageActivity.this.startActivity(new Intent(
+                                                SendMessageActivity.this, AddContact.class));
+                                        SendMessageActivity.this.finish();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, final int id) {
+                                        dialog.cancel();
                                     }
                                 });
                         final AlertDialog alert = builder.create();
                         alert.show();
                     }
-
-                }
+                    SendMessageActivity.this.messageBox.setText("");
+                    SendMessageActivity.this.phoneBox.setText("");
+                //}
             }
-        });
+            else
+            {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
+                builder.setMessage("You have failed to provide sufficient information")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, final int id) {
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+            }
+
+        }
     }
 
     /*public boolean onCreateOptionsMenu(Menu menu) {
