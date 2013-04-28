@@ -17,6 +17,10 @@
 
 package com.tinfoil.sms.messageQueue;
 
+/**
+ * The data structure for storing entries retrieved or sent to the database's
+ * messaging queue.
+ */
 public class QueueEntry {
 	private String number;
 	private String message;
@@ -29,26 +33,50 @@ public class QueueEntry {
 		this.setId(id);
 	}
 
+	/**
+	 * Get the number.
+	 * @return The number.
+	 */
 	public String getNumber() {
 		return number;
 	}
 
+	/**
+	 * Set the number.
+	 * @param number The new number
+	 */
 	public void setNumber(String number) {
 		this.number = number;
 	}
 
+	/**
+	 * The message from the queue.
+	 * @return The message.
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * Set the message to a new message.
+	 * @param message The new message
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
+	/**
+	 * The queue entry's id.
+	 * @return The id of the queue entry.
+	 */
 	public long getId() {
 		return id;
 	}
-
+	
+	/**
+	 * Set the queue entry's id.
+	 * @param id The new id.
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}

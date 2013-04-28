@@ -1245,9 +1245,9 @@ public class DBAccessor {
 	/**
 	 * Adding a message to the queue to be sent when there is service to send the message. 
 	 * Once the message has been sent it will be removed from the queue.
+	 * **Please note the message is not changed, it will be stored and sent as is.
 	 * @param number : String the number for the contact that the message will be sent to
 	 * @param message : String the message that will be sent to the contact with the given number.
-	 * **Please note the message is not changed, it will be stored and sent as is.  
 	 */
 	public synchronized void addMessageToQueue (String number, String message)
 	{
@@ -1265,11 +1265,10 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Create a wait if the queue is found to be empty. (DB must be closed upon finding that it is empty)
-	 * - It will wait until addMessageToQueue notifies that there is one added
-	 * 
 	 * Get the first element within the queue.
-	 * @return : Queue the number and message stored in the queue
+	 * *Note the entry is also removed from the queue.
+	 * @return The first element in the queue stored in the database. If the
+	 * queue is empty then the return is null.
 	 */
 	public synchronized QueueEntry getFirstInQueue ()
 	{
@@ -1286,6 +1285,7 @@ public class DBAccessor {
 			QueueEntry entry = new QueueEntry(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
 					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id);
 			close(cur);
+			
 			deleteQueueEntry(id);
 			return entry;
 		}

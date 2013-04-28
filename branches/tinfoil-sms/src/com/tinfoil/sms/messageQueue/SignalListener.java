@@ -27,11 +27,31 @@ public class SignalListener extends PhoneStateListener{
 
 	public void onSignalStrengthsChanged(SignalStrength signalStrength)
 	{
+		/*
+		 * When the signal strength changes the flag that indicates whether the
+		 * phone has service or not will change.
+		 * 
+		 * This might be better to implement on a broadcast receiver level since
+		 * this is only has to do with changes of state. The phone may launch in
+		 * a no service state but there would be no way to identify that is the
+		 * case.
+		 * 
+		 * For a broadcast receiver a message that fails to send would be caught
+		 * If it didn't send because of lack of service, then the message could
+		 * be placed back on the top of the queue and the thread could sleep
+		 * until this flag is updated 
+		 */
 		int strength = signalStrength.getGsmSignalStrength();
 		//signalStrength.
 		if (strength >= 0 && strength <= 31 || strength == 99 )
 		{
 			Log.v("Strength", ""+strength);
+			
+			/*
+			 * If the phone has 0 or 99 signal strength then they do not have
+			 * enough strength to send a message and all messages sent will be
+			 * queued and wait till more service is found.
+			 */
 			if (strength == 0 || strength == 99)
 			{
 				ConversationView.messageSender.setSignal(false);
@@ -43,6 +63,9 @@ public class SignalListener extends PhoneStateListener{
 				
 			}
 			else{
+				/*
+				 * Once enough service is found the flag is updated.
+				 */
 				ConversationView.messageSender.setSignal(true);
 				/*try {
 					MessageSender.sc.wait();
