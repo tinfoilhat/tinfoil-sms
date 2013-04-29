@@ -31,7 +31,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
@@ -47,7 +46,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
     private ListView listView;
     private boolean[] contact;
     private ArrayList<TrustedContact> tc;
-    private Button delete;
+    //private Button delete;
     private ProgressDialog dialog;
     private boolean clicked = false;
     private ArrayAdapter<String> appAdapt;
@@ -60,7 +59,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
         this.setContentView(R.layout.remove_contacts);
         this.clicked = false;
 
-        this.delete = (Button) this.findViewById(R.id.delete_cont);
+        //this.delete = (Button) this.findViewById(R.id.delete_cont);
 
         this.listView = (ListView) this.findViewById(R.id.removeable_contact_list);
 
@@ -82,21 +81,26 @@ public class RemoveContactsActivity extends Activity implements Runnable {
             }
         });
 
-        this.delete.setOnClickListener(new View.OnClickListener() {
+        /*this.delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
-                if (RemoveContactsActivity.this.tc != null)
-                {
-                    RemoveContactsActivity.this.clicked = true;
-                    RemoveContactsActivity.this.dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts",
-                            "Deleting. Please wait...", true, false);
-                    final Thread thread2 = new Thread(RemoveContactsActivity.this);
-                    thread2.start();
-
-                    //update();
-                }
+                
 
             }
-        });
+        });*/
+    }
+    
+    public void deleteSelected(View view)
+    {
+    	if (RemoveContactsActivity.this.tc != null)
+        {
+            RemoveContactsActivity.this.clicked = true;
+            RemoveContactsActivity.this.dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts",
+                    "Deleting. Please wait...", true, false);
+            final Thread thread2 = new Thread(RemoveContactsActivity.this);
+            thread2.start();
+
+            //update();
+        }
     }
 
     /**

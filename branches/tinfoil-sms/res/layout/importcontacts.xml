@@ -15,10 +15,12 @@
     <Button 
         android:id="@+id/confirm"
         android:layout_width="fill_parent"
-        android:layout_height="20pt"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:clickable="true"
-        android:text="Import Contacts" />
+        android:text="Import Contacts"
+        android:onClick="importSelected" />
 
 </RelativeLayout>

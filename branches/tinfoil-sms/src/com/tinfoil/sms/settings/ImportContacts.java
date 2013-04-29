@@ -35,7 +35,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
@@ -57,7 +56,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  * ManageContactsActivity.
  */
 public class ImportContacts extends Activity implements Runnable {
-    private Button confirm;
+    //private Button confirm;
     private ListView importList;
     private ArrayList<TrustedContact> tc;
     private boolean disable;
@@ -70,7 +69,7 @@ public class ImportContacts extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.importcontacts);
         this.clicked = false;
-        this.confirm = (Button) this.findViewById(R.id.confirm);
+        //this.confirm = (Button) this.findViewById(R.id.confirm);
         this.importList = (ListView) this.findViewById(R.id.import_contact_list);
 
         this.dialog = ProgressDialog.show(this, "Searching",
@@ -78,21 +77,12 @@ public class ImportContacts extends Activity implements Runnable {
         final Thread thread = new Thread(this);
         thread.start();
 
-        this.confirm.setOnClickListener(new View.OnClickListener() {
+        /*this.confirm.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(final View v) {
-                //Add Contacts to the tinfoil-sms database from android's database
-                if (!ImportContacts.this.disable)
-                {
-                    ImportContacts.this.clicked = true;
-                    final Thread thread2 = new Thread(ImportContacts.this);
-                    thread2.start();
-
-                    ImportContacts.this.dialog = ProgressDialog.show(ImportContacts.this, "Importing",
-                            "Saving Contacts...", true, false);
-                }
+               
             }
-        });
+        });*/
 
         this.importList.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(final AdapterView<?> parent, final View view,
@@ -104,6 +94,20 @@ public class ImportContacts extends Activity implements Runnable {
                 }
             }
         });
+    }
+    
+    public void importSelected(View view)
+    {
+    	//Add Contacts to the tinfoil-sms database from android's database
+        if (!ImportContacts.this.disable)
+        {
+            ImportContacts.this.clicked = true;
+            final Thread thread2 = new Thread(ImportContacts.this);
+            thread2.start();
+
+            ImportContacts.this.dialog = ProgressDialog.show(ImportContacts.this, "Importing",
+                    "Saving Contacts...", true, false);
+        }
     }
 
     public void remove(final int position)
