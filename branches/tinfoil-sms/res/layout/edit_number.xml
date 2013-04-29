@@ -118,6 +118,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="@string/save" />
+        android:text="@string/save"
+        android:onClick="saveNumberInfo" />
     
 </RelativeLayout>
