@@ -31,12 +31,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -68,7 +66,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
     private ExpandableListView extendableList;
     private ListView listView;
     //private TextView addAContact;
-    private Button exchangeKeys;
+    //private Button exchangeKeys;
     private ArrayList<TrustedContact> tc;
     private ProgressDialog loadingDialog;
     private ArrayAdapter<String> arrayAp;
@@ -89,7 +87,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
         //this.addAContact = (TextView) this.findViewById(R.id.add_a_contact);
-        this.exchangeKeys = (Button) this.findViewById(R.id.exchange_keys);
+        //this.exchangeKeys = (Button) this.findViewById(R.id.exchange_keys);
 
         this.extendableList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -157,27 +155,31 @@ public class ManageContactsActivity extends Activity implements Runnable {
             }
         });
 
-        this.exchangeKeys.setOnClickListener(new OnClickListener() {
+        /*this.exchangeKeys.setOnClickListener(new OnClickListener() {
 
             public void onClick(final View v) {
-                /*
-                 * Launch Exchange Keys thread.
-                 */
-                ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys",
-                        "Exchanging. Please wait...", true, false);
+                
+            }
+        });*/
+    }
 
-                keyThread.startThread(ManageContactsActivity.this, adapter.getContacts());
+    public void keyExchange(View view)
+    {
+    	/*
+         * Launch Exchange Keys thread.
+         */
+        ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys",
+                "Exchanging. Please wait...", true, false);
 
-                ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
+        keyThread.startThread(ManageContactsActivity.this, adapter.getContacts());
 
-                    public void onDismiss(final DialogInterface dialog) {
-                        ManageContactsActivity.this.startThread();
-                    }
-                });
+        ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
+
+            public void onDismiss(final DialogInterface dialog) {
+                ManageContactsActivity.this.startThread();
             }
         });
     }
-
     /**
      * Updates the list of contacts
      */
