@@ -30,7 +30,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -65,9 +64,9 @@ public class AddContact extends Activity {
     private String originalNumber;
     private TrustedContact contactEdit;
     private ListView listView;
-    private Button add;
+    //private Button add;
     private EditText contactName;
-    private Button addNumber;
+    //private Button addNumber;
     private static AlertDialog alert;
 
     @Override
@@ -81,7 +80,7 @@ public class AddContact extends Activity {
         //contactNumber = new EditText(this);
 
         this.listView = (ListView) this.findViewById(R.id.contact_numbers);
-        this.addNumber = (Button) this.findViewById(R.id.add_new_number);
+        //this.addNumber = (Button) this.findViewById(R.id.add_new_number);
 
         /*
          * Check if a user is editing a contact or creating a new contact.
@@ -104,7 +103,7 @@ public class AddContact extends Activity {
         /* 
          * starts EditNumber with the default shared info and book paths
          */
-        this.addNumber.setOnClickListener(new View.OnClickListener() {
+        /*this.addNumber.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
@@ -117,7 +116,7 @@ public class AddContact extends Activity {
             	}
             	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
             }
-        });
+        });*/
 
         /*
          * When a user clicks on a number for a longer period of time a dialog is started
@@ -167,7 +166,7 @@ public class AddContact extends Activity {
             }
         });
 
-        this.add = (Button) this.findViewById(R.id.add);
+        //this.add = (Button) this.findViewById(R.id.add);
         this.contactName = (EditText) this.findViewById(R.id.contact_name);
 
         /*
@@ -181,64 +180,89 @@ public class AddContact extends Activity {
         /*
          * Add/Save the user to the database and exit the activity.
          */
-        this.add.setOnClickListener(new View.OnClickListener() {
+        /*this.add.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                String name = AddContact.this.contactName.getText().toString();
-                boolean empty = false;
                 
-                if (name == null)
-                {
-                    if (!AddContact.this.contactEdit.isNumbersEmpty())
-                    {
-                        name = AddContact.this.contactEdit.getANumber();
-                    }
-                    else
-                    {
-                        empty = true;
-                    }
-                }
-                else
-                {
-                    AddContact.this.contactEdit.setName(name);
-                }
-
-                if (!empty && AddContact.this.contactEdit.getName().length() > 0 && !AddContact.this.contactEdit.isNumbersEmpty())
-                {
-                    if (addContact)
-                    {
-                    	MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
-                    }
-                    else
-                    {
-                        MessageService.dba.updateNumberType(AddContact.this.contactEdit, AddContact.this.originalNumber);
-                    }
-                    
-                    AddContact.this.contactEdit = null;
-                    editTc = null;
-                    AddContact.this.finish();
-                    
-                }
-                else
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-                    builder.setMessage("Insufficient information provided")
-                            .setCancelable(true)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(final DialogInterface dialog, final int id) {
-
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(final DialogInterface dialog, final int whichButton) {
-                                    dialog.cancel();// Canceled.
-                                }
-                            });
-                    alert = builder.create();
-                    alert.show();
-                }
             }
-        });
+        });*/
+    }
+    
+    /**
+     * The onClick action for when the add new number button is clicked.
+     * @param view
+     */
+    public void addNewNumber(View view)
+    {
+    	Intent intent = new Intent(AddContact.this, EditNumber.class);
+    	
+    	if(!contactEdit.isNumbersEmpty())
+    	{
+    		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
+    		intent.putExtra(AddContact.POSITION, -1);
+    	}
+    	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
+    }
+    
+    /**
+     * The onClick action for when the user clicks on save information
+     * @param view
+     */
+    public void saveInformation(View view)
+    {
+    	String name = AddContact.this.contactName.getText().toString();
+        boolean empty = false;
+        
+        if (name == null)
+        {
+            if (!AddContact.this.contactEdit.isNumbersEmpty())
+            {
+                name = AddContact.this.contactEdit.getANumber();
+            }
+            else
+            {
+                empty = true;
+            }
+        }
+        else
+        {
+            AddContact.this.contactEdit.setName(name);
+        }
+
+        if (!empty && AddContact.this.contactEdit.getName().length() > 0 && !AddContact.this.contactEdit.isNumbersEmpty())
+        {
+            if (addContact)
+            {
+            	MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
+            }
+            else
+            {
+                MessageService.dba.updateNumberType(AddContact.this.contactEdit, AddContact.this.originalNumber);
+            }
+            
+            AddContact.this.contactEdit = null;
+            editTc = null;
+            AddContact.this.finish();
+            
+        }
+        else
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
+            builder.setMessage("Insufficient information provided")
+                    .setCancelable(true)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int whichButton) {
+                            dialog.cancel();// Canceled.
+                        }
+                    });
+            alert = builder.create();
+            alert.show();
+        }
     }
 
     /**

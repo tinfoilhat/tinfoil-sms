@@ -137,9 +137,6 @@ public class MessageReceiver extends BroadcastReceiver {
 							 */
 							newMessage = new Message(secretMessage, true, false);
 							MessageService.dba.addNewMessage(newMessage, address, true);
-							
-							
-							
 						} 
 						catch (Exception e) 
 						{
