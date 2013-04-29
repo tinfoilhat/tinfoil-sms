@@ -208,7 +208,7 @@ public abstract class SMSUtility {
      * 
      * @return boolean whether the message sent or not
      */
-    public static boolean sendMessage(final Context context, final String number, final String text) {
+    /*public static boolean sendMessage(final Context context, final String number, final String text) {
         try
         {
             if (MessageService.dba.isTrustedContact(number) &&
@@ -242,7 +242,7 @@ public abstract class SMSUtility {
                 /*if(MessageService.dba.inDatabase(number))
                 {
                 	MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
-                }*/
+                }/
 
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
             }
@@ -253,7 +253,7 @@ public abstract class SMSUtility {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
     
     /**
      * Sends a message as encrypted or plain text based on the contact's state.

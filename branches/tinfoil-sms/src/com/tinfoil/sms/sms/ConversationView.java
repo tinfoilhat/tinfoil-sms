@@ -91,7 +91,7 @@ public class ConversationView extends Activity {
 
         MessageService.dba = new DBAccessor(this);
         
-        this.messageSender.startThread(getApplicationContext());
+        messageSender.startThread(getApplicationContext());
 
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {

@@ -221,7 +221,8 @@ public class MessageView extends Activity {
                                                             final String num = phoneBox.getText().toString();
                                                             if (SMSUtility.isANumber(num))
                                                             {
-                                                            	SMSUtility.sendMessage(getBaseContext(), num, messageValue[1]);
+                                                            	MessageView.this.sendMessage(num,messageValue[1]);
+                                                            	//SMSUtility.sendMessage(getBaseContext(), num, messageValue[1]);
                                                             }
                                                             else
                                                             {
