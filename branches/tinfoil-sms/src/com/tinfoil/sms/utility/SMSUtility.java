@@ -25,7 +25,8 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.encryption.Encryption;
-import com.tinfoil.sms.messageQueue.MessageSenderBack;
+import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
+import com.tinfoil.sms.messageQueue.QueueEntry;
 import com.tinfoil.sms.sms.ConversationView;
 
 import android.app.PendingIntent;
@@ -57,7 +58,7 @@ public abstract class SMSUtility {
     public static final int LIMIT = 50;
     public static final boolean saveMessage = false;
 
-    private static MessageSenderBack MS = new MessageSenderBack();
+    private static MessageBroadcastReciever MS = new MessageBroadcastReciever();
 
     /**
      * Create an array of Strings to display for the auto-complete
@@ -108,7 +109,7 @@ public abstract class SMSUtility {
      * @param message The message, encrypted that will be sent to the
      *            contact
      */
-    public static void sendSMS(final Context c, final String number, final String message)
+    /*public static void sendSMS(final Context c, final String number, final String message)
     {
         final String SENT = "SMS_SENT";
 
@@ -124,9 +125,9 @@ public abstract class SMSUtility {
         sms.sendTextMessage(number, null, message, sentPI, null);
         /*if(ServiceChecker.signal){
         	sms.sendTextMessage(number, null, message, sentPI, null);   
-        }*/
+        }/
         c.unregisterReceiver(MS);
-    }
+    }*/
 
     /**
      * Sends the given message to the phone with the given number
@@ -135,23 +136,23 @@ public abstract class SMSUtility {
      * @param message The message, encrypted that will be sent to the
      *            contact
      */
-    public static void sendSMS(final Context c, final String number, final String message, final long id)
+    public static void sendSMS(final Context c, QueueEntry message)
     {
         final String SENT = "SMS_SENT";
 
         final Intent intent = new Intent(SENT);
-        intent.putExtra(NUMBER, number);
-        intent.putExtra(MESSAGE, message);
-        intent.putExtra(ID, id);
+        intent.putExtra(NUMBER, message.getNumber());
+        intent.putExtra(MESSAGE, message.getMessage());
+        intent.putExtra(ID, message.getId());
         final PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(c, message.getMessage(), Toast.LENGTH_SHORT).show();
 
         c.registerReceiver(MS, new IntentFilter(SENT));
 
         //SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(number, null, message, sentPI, null);
+        sms.sendTextMessage(message.getNumber(), null, message.getMessage(), sentPI, null);
         /*if(ServiceChecker.signal){
         	sms.sendTextMessage(number, null, message, sentPI, null);
         }*/
@@ -263,41 +264,43 @@ public abstract class SMSUtility {
      * 
      * @return boolean whether the message sent or not
      */
-    public static boolean sendMessage(DBAccessor dba, final Context context, final String number, final String text) {
+    public static boolean sendMessage(DBAccessor dba, final Context context, QueueEntry message) {
+    	   	
         try
         {
-            if (dba.isTrustedContact(number) &&
+            if (dba.isTrustedContact(message.getNumber()) &&
                     ConversationView.sharedPrefs.getBoolean("enable", true))
             {
                 //Send an encrypted message
                 final String encrypted = Encryption.aes_encrypt(dba.getRow(
-                        format(number)).getNumber(format(number)).getPublicKey(), text);
+                        format(message.getNumber())).getNumber(format(message.getNumber()))
+                        .getPublicKey(), message.getMessage());
 
-                sendSMS(context, number, encrypted);
+                sendSMS(context, new QueueEntry(message.getNumber(), encrypted, message.getId()));
 
                 if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {
-                    sendToSelf(context, number, encrypted, ConversationView.SENT);
+                    sendToSelf(context, message.getNumber(), encrypted, ConversationView.SENT);
                     dba.addNewMessage(new Message
-                            (encrypted, true, true), number, false);
+                            (encrypted, true, true), message.getNumber(), false);
                 }
 
-                sendToSelf(context, number, text, ConversationView.SENT);
+                sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
 
-                //dba.addNewMessage(new Message(text, true, true), number, false);
+                //dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), false);
 
                 Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
             }
             else
             {
-            	Thread.sleep(4000);
+            	//Thread.sleep(4000);
                 //Sending a plain text message
-                sendSMS(context, number, text);
-                sendToSelf(context, number, text, ConversationView.SENT);
+                sendSMS(context, message);
+                sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
 
-                /*if(dba.inDatabase(number))
+                /*if(dba.inDatabase(message.getNumber()))
                 {
-                	dba.addNewMessage(new Message(text, true, true), number, true);
+                	dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), true);
                 }*/
 
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();

@@ -106,7 +106,7 @@ public class MessageSender implements Runnable{
 			 * Send the message 
 			 */
 			if(mes != null) {
-				SMSUtility.sendMessage(this.sender, c, mes.getNumber(), mes.getMessage());
+				SMSUtility.sendMessage(this.sender, c, mes);
 			}
 		}		
 	}
