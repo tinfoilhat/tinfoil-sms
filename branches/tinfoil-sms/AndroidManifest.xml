@@ -24,7 +24,8 @@
         
         <activity
             android:name=".sms.SendMessageActivity"
-            android:label="Send Message" />
+            android:label="Send Message"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".settings.AddContact"
             android:label="Edit Contact" />

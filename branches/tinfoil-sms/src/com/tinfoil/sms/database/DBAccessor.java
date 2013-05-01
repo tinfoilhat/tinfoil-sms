@@ -1019,7 +1019,7 @@ public class DBAccessor {
 	 * @param tc : Trusted Contact, the new values for the row
 	 * @param number : the number of the contact in the database
 	 */
-	public void updateNumberType (TrustedContact tc, String number)
+	public void updateContactInfo (TrustedContact tc, String number)
 	{
 		long id = getId(SMSUtility.format(number));
 		updateTrustedRow(tc, number, id);

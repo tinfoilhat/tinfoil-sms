@@ -233,11 +233,11 @@ public class AddContact extends Activity {
         {
             if (addContact)
             {
-            	MessageService.dba.updateNumberType(AddContact.this.contactEdit, contactEdit.getANumber());
+            	MessageService.dba.updateContactInfo(AddContact.this.contactEdit, contactEdit.getANumber());
             }
             else
             {
-                MessageService.dba.updateNumberType(AddContact.this.contactEdit, AddContact.this.originalNumber);
+                MessageService.dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
             }
             
             AddContact.this.contactEdit = null;

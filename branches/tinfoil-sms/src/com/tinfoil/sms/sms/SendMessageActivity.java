@@ -43,8 +43,10 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.AddContact;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.dataStructures.Number;
 
 /**
+ * TODO make so that once a contact has been added their messages will be added to the list of messages
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact (a
  * contact that has exchanged their key with the user) then it will be
@@ -98,26 +100,26 @@ public class SendMessageActivity extends Activity {
 
                 final String[] info = s.toString().split(", ");
 
-                if (!info[0].equals(""))
+                if (!info[0].trim().equals(""))
                 {
-                    if (!info[0].equalsIgnoreCase(s.toString()))
+                    if (!info[0].trim().equalsIgnoreCase(s.toString()))
                     {
-                        SendMessageActivity.this.newCont.setName(info[0]);
-                        SendMessageActivity.this.newCont.setNumber(0, info[1]);
+                        SendMessageActivity.this.newCont.setName(info[0].trim());
+                        SendMessageActivity.this.newCont.setNumber(0, info[1].trim());
                     }
                     else
                     {
                         //**Warning this could be a word, there is nothing protected it from them
                         //entering a name that is not in the database. (message will not send)
-                        if (SMSUtility.isANumber(info[0]))
+                        if (SMSUtility.isANumber(info[0].trim()))
                         {
                             if (SendMessageActivity.this.newCont.isNumbersEmpty())
                             {
-                                SendMessageActivity.this.newCont.addNumber(info[0]);
+                                SendMessageActivity.this.newCont.addNumber(info[0].trim());
                             }
                             else
                             {
-                                SendMessageActivity.this.newCont.setNumber(0, info[0]);
+                                SendMessageActivity.this.newCont.setNumber(0, info[0].trim());
                             }
                         }
                         else
@@ -168,7 +170,11 @@ public class SendMessageActivity extends Activity {
 
             if (number.length() > 0 && text.length() > 0)
             {
-                //Send the message
+            	
+            	//Add contact to the database
+            	MessageService.dba.addRow(new TrustedContact(new Number(number)));
+                
+            	//Send the message
                 //final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
 
                 //MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
@@ -177,7 +183,9 @@ public class SendMessageActivity extends Activity {
                 //Check if the message was successful at sending
                 //if (sent)
                 //{
-                    if (!MessageService.dba.inDatabase(number))
+                
+                //Changed, numbers will automatically be added upon sending a message to them, the user can then go and edit their information as they please
+                    /*if (!MessageService.dba.inDatabase(number))
                     {
 
                         final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
@@ -200,7 +208,7 @@ public class SendMessageActivity extends Activity {
                                 });
                         final AlertDialog alert = builder.create();
                         alert.show();
-                    }
+                    }*/
                     SendMessageActivity.this.messageBox.setText("");
                     SendMessageActivity.this.phoneBox.setText("");
                 //}
