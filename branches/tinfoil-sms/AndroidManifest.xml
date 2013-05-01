@@ -38,7 +38,8 @@
             android:label="Contacts" />
         <activity
             android:name=".sms.MessageView"
-            android:label="Messages" />
+            android:label="Messages"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".settings.ImportContacts"
             android:configChanges="orientation"
