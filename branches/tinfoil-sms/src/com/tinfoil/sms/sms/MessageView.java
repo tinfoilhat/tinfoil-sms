@@ -25,7 +25,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,7 +58,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  * messages belong to. If a message is sent or received the list of messages
  * will be updated and Prephase3Activity's messages will be updated as well.
  */
-public class MessageView extends Activity {
+public class MessageView extends Activity implements Runnable{
     //private static Button sendSMS;
     private EditText messageBox;
     private static ListView list2;
@@ -68,7 +70,9 @@ public class MessageView extends Activity {
     private ArrayList<TrustedContact> tc;
     private static AutoCompleteTextView phoneBox;
     private AlertDialog popup_alert;
+    private ProgressDialog dialog;
     private static ExchangeKey keyThread = new ExchangeKey();
+    private DBAccessor loader;
 
     /** Called when the activity is first created. */
     @Override
@@ -92,50 +96,32 @@ public class MessageView extends Activity {
         }
 
         this.setContentView(R.layout.messageviewer);
-
-        //Sets the keyboard to not pop-up until a text area is selected 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         MessageService.dba = new DBAccessor(this);
         ConversationView.messageViewActive = true;
-        final boolean isTrusted = MessageService.dba.isTrustedContact(ConversationView.selectedNumber);
-
-        messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
+        
+        //Sets the keyboard to not pop-up until a text area is selected 
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         /*
          * Create a list of messages sent between the user and the contact
          */
         list2 = (ListView) this.findViewById(R.id.message_list);
 
-        msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
-        final int unreadCount = MessageService.dba.getUnreadMessageCount(ConversationView.selectedNumber);
+        //This allows for the loading to be cancelled
+        this.dialog = ProgressDialog.show(this, "Loading Messages",
+                "Please wait...", true, true, new OnCancelListener() {
 
-        Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
-        messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
-                unreadCount);
-
-        list2.setAdapter(messages);
-        list2.setItemsCanFocus(false);
-
-        /*
-         * Reset the number of unread messages for the contact to 0
-         */
-        if (MessageService.dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
-        {
-            //All messages are now read since the user has entered the conversation.
-            MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
-            if (MessageService.mNotificationManager != null)
-            {
-                MessageService.mNotificationManager.cancel(MessageService.INDEX);
-            }
-        }
-       //list2.setOnItemLongClickListener(listener)
-
-        //Retrieve the name of the contact from the database
-        contact_name = MessageService.dba.getRow(ConversationView.selectedNumber).getName();
-
-        //Set an action for when a user clicks on a message
+					public void onCancel(DialogInterface dialog) {
+						MessageView.this.dialog.dismiss();
+						MessageView.this.onBackPressed();						
+					}
+        	
+        });
         
+        Thread loadThread = new Thread(this);
+        loadThread.start();
+
+        //Set an action for when a user clicks on a message        
         list2.setOnItemLongClickListener(new OnItemLongClickListener() {
         	public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -164,7 +150,7 @@ public class MessageView extends Activity {
                                 }
                                 else if (which == 2)
                                 {
-
+                                	//TODO fix so that if the message is forwarded to a contact that is not in db the number is auto added
                                     //option = Forward message
                                     phoneBox = new AutoCompleteTextView(MessageView.this.getBaseContext());
 
@@ -253,23 +239,21 @@ public class MessageView extends Activity {
 			}
         });
 
-        //sendSMS = (Button) this.findViewById(R.id.send);
-        this.messageBox = (EditText) this.findViewById(R.id.message);
-
-        final InputFilter[] FilterArray = new InputFilter[1];
-
-        if (isTrusted)
+        
+      
+        /*
+         * Reset the number of unread messages for the contact to 0
+         */
+        if (MessageService.dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
         {
-            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
+            //All messages are now read since the user has entered the conversation.
+            MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
+            if (MessageService.mNotificationManager != null)
+            {
+                MessageService.mNotificationManager.cancel(MessageService.INDEX);
+            }
         }
-        else
-        {
-            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
-        }
-
-        this.messageBox.setFilters(FilterArray);
-
-        this.messageBox.addTextChangedListener(messageEvent);
+        //list2.setOnItemLongClickListener(listener)        
     }
 
     
@@ -373,4 +357,53 @@ public class MessageView extends Activity {
         }
 
     }
+
+
+	public void run() {
+		
+		loader = new DBAccessor(this);
+		//TODO populate
+        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
+
+        messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
+        
+		msgList2 = loader.getSMSList(ConversationView.selectedNumber);
+		final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
+
+        //Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
+        messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
+                unreadCount);
+     
+        //Retrieve the name of the contact from the database
+        contact_name = loader.getRow(ConversationView.selectedNumber).getName();
+
+        //sendSMS = (Button) this.findViewById(R.id.send);
+        this.messageBox = (EditText) this.findViewById(R.id.message);
+
+        final InputFilter[] FilterArray = new InputFilter[1];
+
+        if (isTrusted)
+        {
+            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
+        }
+        else
+        {
+            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
+        }
+
+        this.messageBox.setFilters(FilterArray);
+
+        this.messageBox.addTextChangedListener(messageEvent);
+        this.handler.sendEmptyMessage(0);
+	}
+	
+	private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(final android.os.Message msg)
+        {
+        	list2.setAdapter(messages);
+            list2.setItemsCanFocus(false);
+        	MessageView.this.dialog.dismiss();
+        }
+    };
 }
