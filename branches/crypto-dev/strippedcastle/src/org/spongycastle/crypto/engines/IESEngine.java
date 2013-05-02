@@ -12,6 +12,8 @@ import org.spongycastle.crypto.params.IESParameters;
 import org.spongycastle.crypto.params.IESWithCipherParameters;
 import org.spongycastle.crypto.params.KDFParameters;
 import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.crypto.params.Nonce;
+import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.BigIntegers;
 
 /**
@@ -24,6 +26,7 @@ public class IESEngine
     DerivationFunction  kdf;
     Mac                 mac;
     BufferedBlockCipher cipher;
+    CipherParameters    nonce;
     byte[]              macBuf;
 
     boolean             forEncryption;
@@ -48,6 +51,7 @@ public class IESEngine
         this.mac = mac;
         this.macBuf = new byte[mac.getMacSize()];
         this.cipher = null;
+        this.nonce = null;
     }
 
     /**
@@ -70,8 +74,40 @@ public class IESEngine
         this.mac = mac;
         this.macBuf = new byte[mac.getMacSize()];
         this.cipher = cipher;
+        this.nonce = null;
     }
 
+    /**
+     * TODO PERHAPS MAKE A NONCE INTERFACE RATHER THAN USING CIPHERPARAMETERS
+     * WHICH DOES NOT ACTUALLY HAVE ANYTHING SPECIFIED IN THE INTERFACE.
+     * 
+     * set up for use in conjunction with a block cipher mode of operating using
+     * a nonce/IV to handle the message.
+     *
+     * @param agree the key agreement used as the basis for the encryption
+     * @param kdf the key derivation function used for byte generation
+     * @param mac the message authentication code generator for the message
+     * @param cipher the cipher to used for encrypting the message
+     * @param nonce the nonce/IV used by the block cipher, currently the only
+     * supported block ciphers are SIC/CTR, CBC, OFB, and CFB. The nonce 
+     * provided must be an instance of the Nonce class.
+     */
+    public IESEngine(
+        BasicAgreement      agree,
+        DerivationFunction  kdf,
+        Mac                 mac,
+        BufferedBlockCipher cipher,
+        CipherParameters    nonce)
+    {
+        this.agree = agree;
+        this.kdf = kdf;
+        this.mac = mac;
+        this.macBuf = new byte[mac.getMacSize()];
+        this.cipher = cipher;
+        this.nonce = nonce;
+
+    }
+    
     /**
      * Initialise the encryptor.
      *
@@ -124,10 +160,21 @@ public class IESEngine
         else
         {
             int    cipherKeySize = ((IESWithCipherParameters)param).getCipherKeySize();
+            
             byte[] buf = generateKdfBytes(kParam, (cipherKeySize / 8) + (macKeySize / 8));
 
-            cipher.init(false, new KeyParameter(buf, 0, (cipherKeySize / 8)));
-
+            /* If a nonce is provided get a new unique IV and initialize the cipher */
+            if (nonce != null)
+            {
+                byte[] IV = ((Nonce)nonce).nextNonce();
+                
+                cipher.init(false, new ParametersWithIV(new KeyParameter(buf, 0, (cipherKeySize / 8)), IV));
+            }
+            else
+            {
+                cipher.init(false, new KeyParameter(buf, 0, (cipherKeySize / 8)));
+            }
+            
             byte[] tmp = new byte[cipher.getOutputSize(inLen)];
 
             int len = cipher.processBytes(in_enc, inOff, inLen, tmp, 0);
@@ -193,8 +240,17 @@ public class IESEngine
             int    cipherKeySize = ((IESWithCipherParameters)param).getCipherKeySize();
             byte[] buf = generateKdfBytes(kParam, (cipherKeySize / 8) + (macKeySize / 8));
 
-            cipher.init(true, new KeyParameter(buf, 0, (cipherKeySize / 8)));
-
+            if (nonce != null)
+            {
+                byte[] IV = ((Nonce)nonce).nextNonce();
+                
+                cipher.init(true, new ParametersWithIV(new KeyParameter(buf, 0, (cipherKeySize / 8)), IV));
+            }
+            else
+            {
+                cipher.init(true, new KeyParameter(buf, 0, (cipherKeySize / 8)));
+            }
+            
             c_text_length = cipher.getOutputSize(inLen);
 
             byte[] tmp = new byte[c_text_length];
