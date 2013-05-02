@@ -226,8 +226,8 @@ public class ECGKeyExchangeTest
 		assertFalse(ECGKeyExchange.verifyPubKey(
 						new SHA256Digest(), 
 						badEncodedSignPubKey, 
-						secureSharedInfo, 	// The secure shared info alice and bob used
-						false));	// Recipient
+						secureSharedInfo,    // The secure shared info alice and bob used
+						false));	         // Recipient
 	}
 	
 	
