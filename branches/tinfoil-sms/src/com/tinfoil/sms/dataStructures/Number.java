@@ -35,12 +35,14 @@ public class Number {
 	private ArrayList<Message> messages;
 
 	private byte[] publicKey;
-	private byte[] symmetricKey;
 	private byte[] signature;
 	private String s1;
 	private String s2;
 	private String bookPath;
 	private String bookInversePath;
+	
+	private byte[] NonceEncrypt;
+	private byte[] NonceDecrypt;
 	
 	/**
 	 * A class used to store information from the numbers table
@@ -53,7 +55,8 @@ public class Number {
 	 * not been read from this number
 	 */
 	public Number (long id, String number, int type, int unreadMessageCount, 
-			byte[] publicKey, byte[] symmetricKey, byte[] signature)
+			byte[] publicKey, byte[] signature, byte[] nonceEncrypt,
+			byte[] nonceDecrypt)
 	{
 		this.id = id;
 		this.setNumber(number);
@@ -61,8 +64,9 @@ public class Number {
 		this.setUnreadMessageCount(unreadMessageCount);
 		this.messages = new ArrayList<Message>();
 		this.publicKey = publicKey;
-		this.symmetricKey = symmetricKey;
 		this.signature = signature;
+		this.NonceEncrypt = nonceEncrypt;
+		this.NonceDecrypt = nonceDecrypt;
 	}
 	
 	/**
@@ -187,11 +191,10 @@ public class Number {
 	}
 
 	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @param s1 : String, the first piece of shared information
+	 * Shared Information between the user and the contact. This information
+	 * will be used for the key exchange encrypted messages sent. The default
+	 * value will be either 'Initiator' or 'Receiver'
+	 * @param s1 The first piece of shared information
 	 */
 	public void setSharedInfo1(String s1)
 	{
@@ -199,11 +202,10 @@ public class Number {
 	}
 	
 	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @return : String, the first piece of shared information
+	 * Shared Information between the user and the contact. This information
+	 * will be used for the key exchange encrypted messages sent. The default
+	 * value will be either 'Initiator' or 'Receiver'
+	 * @return The first piece of shared information
 	 */
 	public String getSharedInfo1()
 	{
@@ -211,11 +213,10 @@ public class Number {
 	}
 	
 	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @param s2 : String, the second piece of shared information
+	 * Shared Information between the user and the contact. This information
+	 * will be used for the key exchange encrypted messages sent. The default
+	 * value will be either 'Initiator' or 'Receiver'
+	 * @param s2 The second piece of shared information
 	 */
 	public void setSharedInfo2(String s2)
 	{
@@ -223,11 +224,10 @@ public class Number {
 	}
 	
 	/**
-	 * Shared Information between the user and the contact.
-	 * This information will be used for the key exchange 
-	 * encrypted messages sent. The default value will be
-	 * either 'Initiator' or 'Receiver'
-	 * @return : String, the second piece of shared information
+	 * Shared Information between the user and the contact. This information
+	 * will be used for the key exchange encrypted messages sent. The default
+	 * value will be either 'Initiator' or 'Receiver'
+	 * @return The second piece of shared information
 	 */
 	public String getSharedInfo2()
 	{
@@ -236,22 +236,25 @@ public class Number {
 
 	/**
 	 * Get the signature of the TrustedContact
-	 * @return : byte[] the signature of the trustedContact's key
+	 * @return The signature of the trustedContact's key
 	 */
 	public byte[] getSignature() {
 		return signature;
 	}
 
+	/**
+	 * Set the signature of the TrustedContact
+	 * @param signature The new signature
+	 */
 	public void setSignature(byte[] signature) {
 		this.signature = signature;
 	}
 
 	/**
-	 * Book path is used for the Steganography the bookpath
-	 * is the folder path to the entropy source used to map
-	 * encrypted text to obfuscated words. The user will have 
-	 * very little interaction with this.
-	 * @param bookPath : String, the path on the android phone to 
+	 * Book path is used for the Steganography the bookpath is the folder path
+	 * to the entropy source used to map encrypted text to obfuscated words.
+	 * The user will have very little interaction with this.
+	 * @param bookPath The path on the android phone to 
 	 * the entropy source
 	 */
 	public void setBookPath(String bookPath)
@@ -260,12 +263,10 @@ public class Number {
 	}
 	
 	/**
-	 * Book path is used for the Steganography the bookpath
-	 * is the folder path to the entropy source used to map
-	 * encrypted text to obfuscated words. The user will have 
-	 * very little interaction with this.
-	 * @param : String, the path on the android phone to 
-	 * the entropy source
+	 * Book path is used for the Steganography the bookpath is the folder path
+	 * to the entropy source used to map encrypted text to obfuscated words.
+	 * The user will have very little interaction with this.
+	 * @param The path on the android phone to the entropy source
 	 */
 	public String getBookPath()
 	{
@@ -332,9 +333,7 @@ public class Number {
 
 	/**
 	 * Checks if the publickey is null
-	 * @return : boolean
-	 * true if the public key is null,
-	 * false if the public key is not null.
+	 * @return True if the public key is null false otherwise.
 	 */
 	public boolean isPublicKeyNull()
 	{
@@ -347,19 +346,26 @@ public class Number {
 
 	/**
 	 * Get the unique database Id for the number
-	 * @return id the long unique id for the row in the database
+	 * @return id The long unique id for the row in the database
 	 */
 	public long getId() {
 		return id;
 	}
 
-	/**
+	/** TODO remove
 	 * Get the unique database Id for the number
 	 * @param id the new long unique id for the row in the database
 	 */
 	/*public void setId(long id) {
 		this.id = id;
 	}*/
+	
+	/**
+	 * TODO comment
+	 * @param numbers
+	 * @param number
+	 * @return
+	 */
 	public static int hasNumber(ArrayList<Number> numbers, Number number)
 	{
 		for(int i = 0; i < numbers.size(); i++)
@@ -373,18 +379,34 @@ public class Number {
 	}
 
 	/**
-	 * Get the symmetric key
-	 * @return The symmetric key
+	 * Get the Nonce for the encrypt
+	 * @return The encryption Nonce
 	 */
-	public byte[] getSymmetricKey() {
-		return symmetricKey;
+	public byte[] getNonceEncrypt() {
+		return NonceEncrypt;
 	}
 
 	/**
-	 * Set the symmetric key 
-	 * @param symmetricKey
+	 * Set the Nonce for the encrypt
+	 * @param The new encryption Nonce
 	 */
-	public void setSymmetricKey(byte[] symmetricKey) {
-		this.symmetricKey = symmetricKey;
+	public void setNonceEncrypt(byte[] nonceEncrypt) {
+		NonceEncrypt = nonceEncrypt;
+	}
+
+	/**
+	 * Get the Nonce for the decrypt
+	 * @return The decryption nonce
+	 */
+	public byte[] getNonceDecrypt() {
+		return NonceDecrypt;
+	}
+
+	/**
+	 * Set the Nonce for the decrypt
+	 * @param The new decryption Nonce
+	 */
+	public void setNonceDecrypt(byte[] nonceDecrypt) {
+		NonceDecrypt = nonceDecrypt;
 	}
 }

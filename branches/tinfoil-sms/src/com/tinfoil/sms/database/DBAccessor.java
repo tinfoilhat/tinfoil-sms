@@ -63,7 +63,9 @@ public class DBAccessor {
 	
 	public static final String KEY_NUMBER_REFERENCE = "number_reference";
 	
-	public static final String KEY_SYMMETRIC_KEY = "symmetric_key";
+	public static final String KEY_NONCE_ENCRYPT = "nonce_encrypt";
+	
+	public static final String KEY_NONCE_DECRYPT = "nonce_decrypt";
 	
 	private static final String USER_NAME = "Me";
 	
@@ -806,8 +808,9 @@ public class DBAccessor {
 							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_SYMMETRIC_KEY)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
+							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
+							pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
+							pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
 
 					//Retrieve the book paths
 					String columns[] = getBookPath(num_id);
@@ -872,8 +875,9 @@ public class DBAccessor {
 								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
 								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
-								pCur.getBlob(pCur.getColumnIndex(KEY_SYMMETRIC_KEY)),
-								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE))));
+								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
+								pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
+								pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
 
 						//Retrieve the book paths
 						String columns[] = getBookPath(num_id);

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.sms.MessageView;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -71,10 +74,21 @@ public class ImportContacts extends Activity implements Runnable {
         this.clicked = false;
         //this.confirm = (Button) this.findViewById(R.id.confirm);
         this.importList = (ListView) this.findViewById(R.id.import_contact_list);
+        
+        final Thread thread = new Thread(this);
 
         this.dialog = ProgressDialog.show(this, "Searching",
-                "Locating Contacts...", true, false);
-        final Thread thread = new Thread(this);
+                "Locating Contacts...", true, false, new OnCancelListener() {
+
+					public void onCancel(DialogInterface dialog) {
+						//thread.stop(new Throwable());
+						//MessageService.dba.close();
+						ImportContacts.this.dialog.dismiss();
+						ImportContacts.this.onBackPressed();						
+					}
+        	
+        });
+        
         thread.start();
 
         /*this.confirm.setOnClickListener(new View.OnClickListener() {

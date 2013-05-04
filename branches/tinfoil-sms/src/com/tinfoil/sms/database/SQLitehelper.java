@@ -77,8 +77,9 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " type INTEGER," +
             " unread INTEGER," +
             " public_key BLOB," +
-            " symmetric_key BLOB," + 
-            " signature BLOB);";
+            " signature BLOB," +
+            " nonce_encrypt BLOB," +
+            " nonce_decrypt BLOB);";
     
     private static final String MESSAGES_TABLE_CREATE =
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 
