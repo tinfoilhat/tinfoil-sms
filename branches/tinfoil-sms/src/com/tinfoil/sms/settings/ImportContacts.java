@@ -78,11 +78,10 @@ public class ImportContacts extends Activity implements Runnable {
         this.importList = (ListView) this.findViewById(R.id.import_contact_list);
         
         final Thread thread = new Thread(this);
-
         this.dialog = ProgressDialog.show(this, "Searching",
-                "Locating Contacts...", true, true, new ImportCancelLoading() {
-    		@Override
-    		public void onCancel(DialogInterface dialog) {
+                "Locating Contacts...", true, true, new OnCancelListener() {
+    		
+        	public void onCancel(DialogInterface dialog) {
     			stop();
     			dialog.dismiss();
     			ImportContacts.this.onBackPressed();
