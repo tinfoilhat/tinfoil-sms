@@ -84,7 +84,8 @@ public class ImportContacts extends Activity implements Runnable {
         	public void onCancel(DialogInterface dialog) {
     			stop();
     			dialog.dismiss();
-    			ImportContacts.this.onBackPressed();
+    			//ImportContacts.this.onBackPressed();
+    			ImportContacts.this.finish();
     		}
         });
         
@@ -245,6 +246,11 @@ public class ImportContacts extends Activity implements Runnable {
     	 * number of contacts increases, of course this also has to do with the
     	 * users phone.
     	 */
+    	
+    	/* 
+    	 * TODO find a better way to check, it seems bad to have dozens of
+    	 * checks if a variable is true
+    	 */
     
         if (!this.clicked)
         {
@@ -262,6 +268,7 @@ public class ImportContacts extends Activity implements Runnable {
 
             if (cur != null && cur.moveToFirst()) {
                 do {
+                	
                 	//Check if the thread has been stopped
                 	if(getStop())
                 	{
@@ -283,11 +290,13 @@ public class ImportContacts extends Activity implements Runnable {
                         {
                             do
                             {
+                            
                             	//Check if the thread has been stopped
                             	if(getStop())
                             	{
                             		break;
                             	}
+                            	
                                 final String numb = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
                                 final int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
                                 final Uri uriSMSURI = Uri.parse("content://sms/");
@@ -312,14 +321,27 @@ public class ImportContacts extends Activity implements Runnable {
                                     	{
                                     		break;
                                     	}
+                                    	
                                         //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
                                         final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
                                                 mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
                                         number.get(number.size() - 1).addMessage(myM);
+                                        
+                                        //Check if the thread has been stopped
+                                    	if(getStop())
+                                    	{
+                                    		break;
+                                    	}
                                     } while (mCur.moveToNext());
                                     
                                 }
 
+                                //Check if the thread has been stopped
+                            	if(getStop())
+                            	{
+                            		break;
+                            	}
+                                
                             } while (pCur.moveToNext());
                         }
                         if(mCur != null)
@@ -329,6 +351,12 @@ public class ImportContacts extends Activity implements Runnable {
                         pCur.close();
                     }
 
+                    //Check if the thread has been stopped
+                	if(getStop())
+                	{
+                		break;
+                	}
+                	
                     /*
                      * Added a check to see if the number array is empty
                      * if a contact has no number they can not be texted
@@ -342,6 +370,7 @@ public class ImportContacts extends Activity implements Runnable {
                         this.inDb.add(false);
                     }
 
+                    
                     number = null;
                 } while (cur.moveToNext());
             }
