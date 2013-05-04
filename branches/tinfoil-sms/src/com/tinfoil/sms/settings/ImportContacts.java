@@ -67,6 +67,8 @@ public class ImportContacts extends Activity implements Runnable {
     private ProgressDialog dialog;
     private boolean clicked = false;
 
+    private boolean stop = false;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,15 +80,13 @@ public class ImportContacts extends Activity implements Runnable {
         final Thread thread = new Thread(this);
 
         this.dialog = ProgressDialog.show(this, "Searching",
-                "Locating Contacts...", true, false, new OnCancelListener() {
-
-					public void onCancel(DialogInterface dialog) {
-						//thread.stop(new Throwable());
-						//MessageService.dba.close();
-						ImportContacts.this.dialog.dismiss();
-						ImportContacts.this.onBackPressed();						
-					}
-        	
+                "Locating Contacts...", true, true, new ImportCancelLoading() {
+    		@Override
+    		public void onCancel(DialogInterface dialog) {
+    			stop();
+    			dialog.dismiss();
+    			ImportContacts.this.onBackPressed();
+    		}
         });
         
         thread.start();
@@ -108,6 +108,21 @@ public class ImportContacts extends Activity implements Runnable {
                 }
             }
         });
+    }
+    
+    public synchronized void stop() 
+    {
+    	this.stop = true;
+    }
+    
+    public synchronized boolean getStop()
+    {
+    	return this.stop;
+    }
+    
+    public synchronized void setStop(boolean stop)
+    {
+    	this.stop = stop;
     }
     
     public void importSelected(View view)
@@ -216,6 +231,22 @@ public class ImportContacts extends Activity implements Runnable {
     }
 
     public void run() {
+    	
+    	/*
+    	 * Note throughout this thread checks are made to a variable 'stop'.
+    	 * This variable identifies if the user has pressed the back button. If
+    	 * they have the thread will break each loop until it is at the end of
+    	 * run method and then will the dialog will be dismissed and the user
+    	 * will go back to the previous activity.
+    	 * This allows the user to interrupt the import contacts loading thread
+    	 * so that if the user does not actually want to wait for the all the
+    	 * contacts to be found then it will terminate the search. This is
+    	 * because the method of reading in the contacts from the native's
+    	 * database can be quite time consuming. This time increases as the
+    	 * number of contacts increases, of course this also has to do with the
+    	 * users phone.
+    	 */
+    
         if (!this.clicked)
         {
             this.tc = new ArrayList<TrustedContact>();
@@ -232,13 +263,19 @@ public class ImportContacts extends Activity implements Runnable {
 
             if (cur != null && cur.moveToFirst()) {
                 do {
-
+                	//Check if the thread has been stopped
+                	if(getStop())
+                	{
+                		break;
+                	}
+                	
                     number = new ArrayList<Number>();
                     name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
                     id = cur.getString(cur.getColumnIndex(Contacts._ID));
 
                     if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
                     {
+                    	Cursor mCur = null;
                         final Cursor pCur = this.getContentResolver().query(Phone.CONTENT_URI,
                                 new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?",
                                 new String[] { id }, null);
@@ -247,6 +284,11 @@ public class ImportContacts extends Activity implements Runnable {
                         {
                             do
                             {
+                            	//Check if the thread has been stopped
+                            	if(getStop())
+                            	{
+                            		break;
+                            	}
                                 final String numb = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
                                 final int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
                                 final Uri uriSMSURI = Uri.parse("content://sms/");
@@ -254,7 +296,7 @@ public class ImportContacts extends Activity implements Runnable {
                                 number.add(new Number(SMSUtility.format(numb), type));
 
                                 //This now takes into account the different formats of the numbers. 
-                                final Cursor mCur = this.getContentResolver().query(uriSMSURI, new String[]
+                                mCur = this.getContentResolver().query(uriSMSURI, new String[]
                                 { "body", "date", "type" }, "address = ? or address = ? or address = ?",
                                         new String[] { SMSUtility.format(numb),
                                                 "+1" + SMSUtility.format(numb),
@@ -266,15 +308,25 @@ public class ImportContacts extends Activity implements Runnable {
                                 {
                                     do
                                     {
+                                    	//Check if the thread has been stopped
+                                    	if(getStop())
+                                    	{
+                                    		break;
+                                    	}
                                         //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
                                         final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
                                                 mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
                                         number.get(number.size() - 1).addMessage(myM);
                                     } while (mCur.moveToNext());
+                                    
                                 }
 
                             } while (pCur.moveToNext());
                         }
+                        if(mCur != null)
+                        {
+                        	mCur.close();
+                        }                        
                         pCur.close();
                     }
 
@@ -294,15 +346,20 @@ public class ImportContacts extends Activity implements Runnable {
                     number = null;
                 } while (cur.moveToNext());
             }
+            cur.close();
 
             final Uri uriSMSURI = Uri.parse("content://sms/conversations/");
             final Cursor convCur = this.getContentResolver().query(uriSMSURI,
                     new String[] { "thread_id" }, null,
                     null, "date DESC");
+            
+            Cursor nCur = null;
+            Cursor sCur = null;
 
             Number newNumber = null;
 
-            while (convCur.moveToNext())
+            //Check if the thread has been stopped
+            while (convCur.moveToNext() && !getStop())
             {
                 id = convCur.getString(convCur.getColumnIndex("thread_id"));
 
@@ -311,7 +368,7 @@ public class ImportContacts extends Activity implements Runnable {
                  * has a lot of messages then limit*2 messages will be taken and then will be inserted (or attempted
                  * until there is only user specified limited amount)
                  */
-                final Cursor nCur = this.getContentResolver().query(Uri.parse("content://sms/inbox"),
+                nCur = this.getContentResolver().query(Uri.parse("content://sms/inbox"),
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
                                 Integer.valueOf(ConversationView.sharedPrefs.getString
@@ -323,14 +380,19 @@ public class ImportContacts extends Activity implements Runnable {
                             nCur.getString(nCur.getColumnIndex("address"))));
                     do
                     {
-
+                    	//Check if the thread has been stopped
+                    	if(getStop())
+                    	{
+                    		break;
+                    	}
+                        
                         newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
                                 nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
                         //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
                     } while (nCur.moveToNext());
                 }
 
-                final Cursor sCur = this.getContentResolver().query(Uri.parse("content://sms/sent"),
+                sCur = this.getContentResolver().query(Uri.parse("content://sms/sent"),
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
                                 Integer.valueOf(ConversationView.sharedPrefs.getString
@@ -346,6 +408,11 @@ public class ImportContacts extends Activity implements Runnable {
 
                     do
                     {
+                    	//Check if the thread has been stopped
+                        if(getStop())
+                    	{
+                    		break;
+                    	}
                         newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
                                 sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
                         //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
@@ -358,6 +425,15 @@ public class ImportContacts extends Activity implements Runnable {
                     this.inDb.add(false);
                 }
             }
+            if(nCur != null)
+            {
+            	nCur.close();
+            }
+            if(sCur != null)
+            {
+            	sCur.close();
+            }
+            convCur.close();
         }
         else
         {
@@ -371,7 +447,15 @@ public class ImportContacts extends Activity implements Runnable {
             this.dialog.dismiss();
             this.finish();
         }
-        this.handler.sendEmptyMessage(0);
+        
+        if(!getStop())
+        {
+        	this.handler.sendEmptyMessage(0);
+        }
+        else
+        {        	
+        	setStop(false);
+        }
     }
 
     /*
