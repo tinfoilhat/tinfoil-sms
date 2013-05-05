@@ -287,6 +287,7 @@ public abstract class SMSUtility {
 
                 sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
 
+                //TODO change to update the time the message was sent.
                 //dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), false);
 
                 Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
@@ -298,6 +299,7 @@ public abstract class SMSUtility {
                 sendSMS(context, message);
                 sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
 
+                //TODO change to update the time the message was sent.
                 /*if(dba.inDatabase(message.getNumber()))
                 {
                 	dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), true);

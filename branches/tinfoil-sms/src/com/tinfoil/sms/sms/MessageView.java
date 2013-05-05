@@ -73,6 +73,10 @@ public class MessageView extends Activity implements Runnable{
     private ProgressDialog dialog;
     private static ExchangeKey keyThread = new ExchangeKey();
     private DBAccessor loader;
+    private boolean update = false;
+    public static final int LOAD = 0;
+    public static final int UPDATE = 1;
+    
 
     /** Called when the activity is first created. */
     @Override
@@ -140,7 +144,7 @@ public class MessageView extends Activity implements Runnable{
                                 {
                                     //option = Delete
                                     MessageService.dba.deleteMessage(Long.valueOf(messageValue[3]));
-                                    updateList(MessageView.this);
+                                    updateList();
                                 }
                                 else if (which == 1)
                                 {
@@ -281,7 +285,12 @@ public class MessageView extends Activity implements Runnable{
 
             //Encrypt the text message before sending it	
             //SMSUtility.sendMessage(number, text, this.getBaseContext());
-            updateList(this.getBaseContext());
+            
+            //TODO remove update list and query to get the new message, add it to the list.
+            update = true;
+            Thread thread = new Thread(this);
+            thread.start();
+            
         }
     }
 
@@ -291,7 +300,7 @@ public class MessageView extends Activity implements Runnable{
         super.onResume();
     }
 
-    public static void updateList(final Context context)
+    public static void updateList()
     {
         if (ConversationView.selectedNumber != null)
         {
@@ -361,49 +370,68 @@ public class MessageView extends Activity implements Runnable{
 
 	public void run() {
 		
-		loader = new DBAccessor(this);
-		//TODO populate
-        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
-
-        messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
-        
-		msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-		final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
-
-        //Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
-        messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
-                unreadCount);
-     
-        //Retrieve the name of the contact from the database
-        contact_name = loader.getRow(ConversationView.selectedNumber).getName();
-
-        //sendSMS = (Button) this.findViewById(R.id.send);
-        this.messageBox = (EditText) this.findViewById(R.id.message);
-
-        final InputFilter[] FilterArray = new InputFilter[1];
-
-        if (isTrusted)
-        {
-            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
-        }
-        else
-        {
-            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
-        }
-
-        this.messageBox.setFilters(FilterArray);
-
-        this.messageBox.addTextChangedListener(messageEvent);
-        this.handler.sendEmptyMessage(0);
+		if(!update)
+		{
+			loader = new DBAccessor(this);
+			//TODO populate
+	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
+	
+	        messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
+	        
+			msgList2 = loader.getSMSList(ConversationView.selectedNumber);
+			final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
+	
+	        //Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
+	        messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
+	                unreadCount);
+	     
+	        //Retrieve the name of the contact from the database
+	        contact_name = loader.getRow(ConversationView.selectedNumber).getName();
+	
+	        //sendSMS = (Button) this.findViewById(R.id.send);
+	        this.messageBox = (EditText) this.findViewById(R.id.message);
+	
+	        final InputFilter[] FilterArray = new InputFilter[1];
+	
+	        if (isTrusted)
+	        {
+	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
+	        }
+	        else
+	        {
+	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
+	        }
+	
+	        this.messageBox.setFilters(FilterArray);
+	
+	        this.messageBox.addTextChangedListener(messageEvent);
+	        
+	        this.handler.sendEmptyMessage(LOAD);
+		}
+		else
+		{
+			msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
+			MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
+			update = false;
+			this.handler.sendEmptyMessage(1);
+		}
 	}
 	
 	private final Handler handler = new Handler() {
         @Override
         public void handleMessage(final android.os.Message msg)
         {
-        	list2.setAdapter(messages);
-            list2.setItemsCanFocus(false);
-        	MessageView.this.dialog.dismiss();
+        	switch (msg.what){
+        	case LOAD:
+	        	list2.setAdapter(messages);
+	            list2.setItemsCanFocus(false);
+	        	MessageView.this.dialog.dismiss();
+	        	break;
+        	case UPDATE:
+        		messages.clear();
+        		messages.addData(msgList2);
+        		break;
+        	}
         }
     };
 }
