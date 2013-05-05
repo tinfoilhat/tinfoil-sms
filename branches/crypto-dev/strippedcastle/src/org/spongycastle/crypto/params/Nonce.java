@@ -47,7 +47,7 @@ public class Nonce implements CipherParameters
 	 * to be re-seeded or a CSPRNG with a new seed must be used for the Nonce.
 	 */
 	private static final int MAXCYCLES = 100000;
-	private int cycle;
+	private int cycle = 0;
 	
 	
 	/**
@@ -86,13 +86,13 @@ public class Nonce implements CipherParameters
 	 * to prevent reusing nonces/IVs, which is a security vulnerability.
 	 *  
 	 * @param csprng Deterministic CSPRNG, currently only ISAAC is supported
-	 * @param lastNonce The last nonce generated during an existing state of the
-	 * Nonce object given the current CSPRNG, providing the last nonce state prevents
+	 * @param lastCycle The last cycle counter for the nonce generated during an previous
+	 * state of the Nonce object given the current CSPRNG, providing the last cycle prevents
 	 * security vulnerabilities of re-using nonce/IVs.
 	 * 
 	 * @throws IllegalArgumentException if the CSPRNG is not ISAAC
 	 */
-	public Nonce(RandomGenerator csprng, byte[] lastNonce)
+	public Nonce(RandomGenerator csprng, int lastCycle)
 		throws IllegalArgumentException
 	{
 		if (! (csprng instanceof ISAACRandomGenerator))
@@ -100,8 +100,13 @@ public class Nonce implements CipherParameters
 			throw new IllegalArgumentException("Invalid CSPRNG, at the moment ONLY ISAAC is supported!");
 		}
 		
+		if (lastCycle >= MAXCYCLES)
+		{
+		    throw new IllegalArgumentException("Invalid last cycle, value exceeds maximum number of cycles!");
+		}
+		
 		this.csprng = (ISAACRandomGenerator)csprng;
-		this.nonce = lastNonce;
+		this.cycle = lastCycle;
 	}
 	
 	
@@ -148,21 +153,19 @@ public class Nonce implements CipherParameters
 		/* Initialize CSPRNG */
 		csprng.init(seed);
 		
-		/* Construct a new empty nonce if no prior state provided */
-		if (nonce == null)
-		{
-			nonce = new byte[nonceLen];
-		}
-		/* Nonce state specified initialize nonce to last state */
-		else
+		/* Construct a new empty nonce of the size specified*/
+		nonce = new byte[nonceLen];
+		
+		/* Prior nonce state cycle specified, initialize nonce to last state */
+	    if (cycle != 0)
 		{
 			byte[] curNonce = new byte[nonce.length];
 			
-			for (cycle = 1; cycle <= MAXCYCLES; ++cycle)
+			for (int i = 1; i <= MAXCYCLES; ++i)
 			{
 				csprng.nextBytes(curNonce);
 				
-				if (Arrays.equals(nonce, curNonce))
+				if (cycle == i)
 				{
 					System.arraycopy(curNonce, 0, nonce, 0, curNonce.length);
 					break;
@@ -188,13 +191,14 @@ public class Nonce implements CipherParameters
 	{
 		nonce = new byte[nonce.length];
 		csprng.nextBytes(nonce);
+		++cycle;
 		return nonce;
 	}
 	
 	
 	/**
 	 * Accesses the current nonce, you should always execute the nextNonce()
-	 * method before accessing a nonce to ensure that a uniqe nonce has been
+	 * method before accessing a nonce to ensure that a unique nonce has been
 	 * generated.
 	 * 
 	 * @return The nonce
@@ -202,6 +206,19 @@ public class Nonce implements CipherParameters
 	public byte[] getNonce()
 	{
 		return nonce;
+	}
+	
+	
+	/**
+	 * Get the current cycle, this is the number of nonces that have been
+	 * generated. This method is used to store the state of the generator
+	 * to prevent IVs from being regenerated.
+	 * 
+	 * @return The number of cycles, or nonces generated
+	 */
+	public int getCycle()
+	{
+	    return cycle;
 	}
 	
 	
