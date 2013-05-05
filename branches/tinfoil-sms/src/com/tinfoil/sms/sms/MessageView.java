@@ -103,9 +103,6 @@ public class MessageView extends Activity implements Runnable{
         MessageService.dba = new DBAccessor(this);
         ConversationView.messageViewActive = true;
         
-        //Sets the keyboard to not pop-up until a text area is selected 
-        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         /*
          * Create a list of messages sent between the user and the contact
          */
@@ -286,11 +283,10 @@ public class MessageView extends Activity implements Runnable{
             //Encrypt the text message before sending it	
             //SMSUtility.sendMessage(number, text, this.getBaseContext());
             
-            //TODO remove update list and query to get the new message, add it to the list.
+            //Start update thread
             update = true;
             Thread thread = new Thread(this);
-            thread.start();
-            
+            thread.start();            
         }
     }
 
@@ -373,7 +369,6 @@ public class MessageView extends Activity implements Runnable{
 		if(!update)
 		{
 			loader = new DBAccessor(this);
-			//TODO populate
 	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
 	
 	        messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
@@ -413,7 +408,7 @@ public class MessageView extends Activity implements Runnable{
 			msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
 			MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
 			update = false;
-			this.handler.sendEmptyMessage(1);
+			this.handler.sendEmptyMessage(UPDATE);
 		}
 	}
 	

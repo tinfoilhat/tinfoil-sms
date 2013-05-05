@@ -83,6 +83,7 @@ public class ConversationView extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //TODO move setup to a thread to focus on a faster UI interaction
         ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, this.pSL.LISTEN_SIGNAL_STRENGTHS);
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
@@ -157,8 +158,7 @@ public class ConversationView extends Activity {
      * Updates the list of the messages in the main inbox and in the secondary
      * inbox that the user last viewed, or is viewing
      * 
-     * @param list
-     *            : ListView, the ListView for this activity to update the
+     * @param list The ListView for this activity to update the
      *            message list
      */
     public static void updateList(final Context context, final boolean messageViewUpdate)
@@ -172,7 +172,7 @@ public class ConversationView extends Activity {
 
             if (messageViewUpdate)
             {
-                MessageView.updateList(context);
+                MessageView.updateList();
             }
         }
     }
@@ -195,6 +195,8 @@ public class ConversationView extends Activity {
     protected void onDestroy()
     {	       
         this.stopService(new Intent(this, MessageService.class));
+        
+        //this.unbindService(null);
         MessageReceiver.myActivityStarted = false;
 
         super.onDestroy();
