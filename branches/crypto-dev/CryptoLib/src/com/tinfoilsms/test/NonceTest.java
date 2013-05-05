@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.engines.ISAACEngine;
+import org.spongycastle.crypto.params.Nonce;
 import org.spongycastle.util.encoders.Hex;
 
 import org.junit.Before;
@@ -17,7 +18,6 @@ import org.junit.contrib.assumes.Assumes;
 import org.junit.contrib.assumes.Corollaries;
 import org.junit.runner.RunWith;
 
-import com.tinfoilsms.crypto.Nonce;
 import com.tinfoilsms.csprng.ISAACRandomGenerator;
 import com.tinfoilsms.csprng.SDFGenerator;
 import com.tinfoilsms.csprng.SDFParameters;
@@ -139,5 +139,54 @@ public class NonceTest
 	}
 	
 	
-	
+	/**
+	 * Test that the nonce generator can be restored to a previous state and can correctly
+	 * generated the sequence avoiding the risk of repeating IVs.
+	 */
+	 @Test
+    public void restoreNonceState()
+    {
+        /* Initialize the nonce with seeds */
+        aliceNonce.init(aliceSeed, 32);
+        ISAACRandomGenerator aliceCSPRNG2 = new ISAACRandomGenerator(new ISAACEngine());
+        Nonce restoredNonce;
+        
+        /*
+         * Generate a sequence of 1000 nonces and verify that the restored
+         * Nonce is restored correctly and is able to generate the remaining
+         * 500 nonces correctly from the restored state.
+         */
+        ArrayList<byte[]> aliceNonceSequence = new ArrayList<byte[]>();
+        ArrayList<byte[]> restoredNonceSequence = new ArrayList<byte[]>();
+
+        for (int i = 0; i < 500; ++i)
+        {
+            aliceNonceSequence.add(aliceNonce.nextNonce());
+        }
+
+        /* Initialize the restored nonce which is set to aliceNonce's 500th cycle */
+        restoredNonce = new Nonce(aliceCSPRNG2, aliceNonce.getCycle());
+        restoredNonce.init(aliceSeed, 32);
+        
+        /* Generate the remaining 500 nonces */
+        for (int i = 0; i < 500; ++i)
+        {
+            aliceNonceSequence.add(aliceNonce.nextNonce());
+            restoredNonceSequence.add(restoredNonce.nextNonce());
+        }
+        
+        for (int i = 0; i < 10; ++i)
+        {
+            System.out.println("ORIGINAL NONCE: \t"
+                    + new String(Hex.encode(aliceNonceSequence.get(500 + i))));
+            System.out.println("RESTORED NONCE: \t" + new String(Hex.encode(restoredNonceSequence.get(i))));
+        }
+
+        /* Verify that the remaining 500 nonces match, the restored nonce generator is correct */
+        for (int i = 0; i < 500; ++i)
+        {
+            assertTrue(Arrays.equals(aliceNonceSequence.get(500 + i), restoredNonceSequence.get(i)));
+        }
+    }
+
 }
