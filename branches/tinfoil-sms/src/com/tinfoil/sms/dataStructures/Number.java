@@ -41,8 +41,8 @@ public class Number {
 	private String bookPath;
 	private String bookInversePath;
 	
-	private byte[] NonceEncrypt;
-	private byte[] NonceDecrypt;
+	private Integer enNonceCount;
+	private Integer deNonceCount;
 	
 	/**
 	 * A class used to store information from the numbers table
@@ -55,8 +55,8 @@ public class Number {
 	 * not been read from this number
 	 */
 	public Number (long id, String number, int type, int unreadMessageCount, 
-			byte[] publicKey, byte[] signature, byte[] nonceEncrypt,
-			byte[] nonceDecrypt)
+			byte[] publicKey, byte[] signature, Integer enNonceCount,
+			Integer deNonceCount)
 	{
 		this.id = id;
 		this.setNumber(number);
@@ -65,8 +65,8 @@ public class Number {
 		this.messages = new ArrayList<Message>();
 		this.publicKey = publicKey;
 		this.signature = signature;
-		this.NonceEncrypt = nonceEncrypt;
-		this.NonceDecrypt = nonceDecrypt;
+		this.enNonceCount = enNonceCount;
+		this.deNonceCount = deNonceCount;
 	}
 	
 	/**
@@ -382,31 +382,31 @@ public class Number {
 	 * Get the Nonce for the encrypt
 	 * @return The encryption Nonce
 	 */
-	public byte[] getNonceEncrypt() {
-		return NonceEncrypt;
+	public Integer getNonceEncrypt() {
+		return enNonceCount;
 	}
 
 	/**
 	 * Set the Nonce for the encrypt
 	 * @param The new encryption Nonce
 	 */
-	public void setNonceEncrypt(byte[] nonceEncrypt) {
-		NonceEncrypt = nonceEncrypt;
+	public void setNonceEncrypt(Integer nonceEncrypt) {
+		enNonceCount = nonceEncrypt;
 	}
 
 	/**
 	 * Get the Nonce for the decrypt
 	 * @return The decryption nonce
 	 */
-	public byte[] getNonceDecrypt() {
-		return NonceDecrypt;
+	public Integer getNonceDecrypt() {
+		return deNonceCount;
 	}
 
 	/**
 	 * Set the Nonce for the decrypt
 	 * @param The new decryption Nonce
 	 */
-	public void setNonceDecrypt(byte[] nonceDecrypt) {
-		NonceDecrypt = nonceDecrypt;
+	public void setNonceDecrypt(Integer nonceDecrypt) {
+		deNonceCount = nonceDecrypt;
 	}
 }

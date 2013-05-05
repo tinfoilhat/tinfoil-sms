@@ -93,9 +93,6 @@ public class DBAccessor {
 	public DBAccessor (Context c)
 	{
 		contactDatabase = new SQLitehelper(c);
-		
-		//TODO query the queue of messages to see if any are waiting
-		//Create a flag to signify messages in queue
 	}
 	
 	/**
@@ -634,22 +631,6 @@ public class DBAccessor {
      */
 	public void open()
 	{
-		/*db.
-		while(db.isOpen())
-		{
-			synchronized(Thread.currentThread()) {
-				try {
-					Thread.currentThread().wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}*/
-		//if(db.isOpen())
-		
-		//TODO create readable DB access
-		//TODO open db in thread
-		//db.
 		db = contactDatabase.getWritableDatabase();
 	}
 	
@@ -809,8 +790,8 @@ public class DBAccessor {
 							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
 							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
+							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
+							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
 
 					//Retrieve the book paths
 					String columns[] = getBookPath(num_id);
@@ -876,8 +857,8 @@ public class DBAccessor {
 								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
-								pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-								pCur.getBlob(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
+								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
+								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
 
 						//Retrieve the book paths
 						String columns[] = getBookPath(num_id);
