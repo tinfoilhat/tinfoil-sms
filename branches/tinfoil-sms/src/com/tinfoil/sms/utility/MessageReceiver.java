@@ -18,6 +18,7 @@
 package com.tinfoil.sms.utility;
 
 import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.sms.ConversationView;
@@ -25,11 +26,11 @@ import com.tinfoil.sms.sms.ConversationView;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
@@ -155,25 +156,43 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 					else
 					{
-						
-						/*
-						 * Since the user is not trusted, the message could be a key exchange
-						 * Assume it is check for key exchange message
-						 * Only once it fails is the message considered plain text.
-						 * 
-						 * Could add an option to never expect a key exchange to improve performance
-						 */
-						//TODO implement key exchange check
-						
-						/*
-						 * Send and store a plain text message to the contact
-						 */
-						SMSUtility.sendToSelf(context, address,
-								messages[0].getMessageBody(), ConversationView.INBOX);
+						Log.v("key", messages[0].getMessageBody());
+						Log.v("keyActual", new String("test123".getBytes()));
+						Toast.makeText(context, "HERE "+ (messages[0].getMessageBody() + "\n" + new String(Encryption.generateKey())), Toast.LENGTH_LONG).show();
 						
 						
-						Message newMessage = new Message(messages[0].getMessageBody(), true, false);
-						MessageService.dba.addNewMessage(newMessage, address, true);
+						if(messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
+						{
+							
+							//TODO set up a key exchange flag so that even if the key is set, the message will be sent in plain text
+							//This of course is for when the person receives a key exchange they need to set the key as well as put a message in the queue to send a non encrypted message
+							Toast.makeText(context, "Exchange Key", Toast.LENGTH_SHORT).show();
+							Number number = MessageService.dba.getRow(SMSUtility.format(address)).getNumber(SMSUtility.format(address));
+							number.setPublicKey();
+							//tc.getNumber(address).setPublicKey();
+							MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+						}
+						else
+						{
+							/*
+							 * Since the user is not trusted, the message could be a key exchange
+							 * Assume it is check for key exchange message
+							 * Only once it fails is the message considered plain text.
+							 * 
+							 * Could add an option to never expect a key exchange to improve performance
+							 */
+							//TODO implement key exchange check
+							
+							/*
+							 * Send and store a plain text message to the contact
+							 */
+							SMSUtility.sendToSelf(context, address,
+									messages[0].getMessageBody(), ConversationView.INBOX);
+							
+							
+							Message newMessage = new Message(messages[0].getMessageBody(), true, false);
+							MessageService.dba.addNewMessage(newMessage, address, true);
+						}
 						
 					}
 					

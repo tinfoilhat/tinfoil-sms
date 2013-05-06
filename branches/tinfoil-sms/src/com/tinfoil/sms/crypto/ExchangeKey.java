@@ -21,9 +21,11 @@ import java.util.ArrayList;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.utility.MessageService;
 
 public class ExchangeKey implements Runnable {
@@ -133,11 +135,13 @@ public class ExchangeKey implements Runnable {
             for (int i = 0; i < this.trusted.size(); i++)
             {
                 this.number = MessageService.dba.getRow(this.trusted.get(i)).getNumber(this.trusted.get(i));
-                this.number.setPublicKey();
-                MessageService.dba.updateKey(this.number);
+                //this.number.setPublicKey();
+                
+                //Log.v("key",number.getPublicKey());
+                //MessageService.dba.updateKey(this.number);
                 
                 //TODO get the actual key exchange message format
-                String keyExchangeMessage = this.number.getPublicKey();
+                String keyExchangeMessage = new String(Encryption.generateKey());//this.number.getPublicKey();
                 
                 MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage);
             }
