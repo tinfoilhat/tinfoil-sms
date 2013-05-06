@@ -21,10 +21,14 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
@@ -61,7 +65,7 @@ import com.tinfoil.sms.utility.MessageService;
  * user can also select 'settings' which will take them to the main settings
  * page.
  */
-public class ConversationView extends Activity {
+public class ConversationView extends Activity implements Runnable {
 
 	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
@@ -77,6 +81,12 @@ public class ConversationView extends Activity {
     public static boolean messageViewActive = false;
     
     public static MessageSender messageSender = new MessageSender();
+    
+    private ProgressDialog dialog;
+    private static boolean update = false;
+    public static final int LOAD = 0;
+    public static final int UPDATE = 1;
+    private static Thread thread;
 
     /** Called when the activity is first created. */
     @Override
@@ -130,14 +140,30 @@ public class ConversationView extends Activity {
          * Set the list of conversations
          */
         list = (ListView) this.findViewById(R.id.conversation_list);
+        
+        this.dialog = ProgressDialog.show(this, "Loading Messages",
+                "Please wait...", true, true, new OnCancelListener() {
 
-        msgList = MessageService.dba.getConversations();
-        conversations = new ConversationAdapter(this, R.layout.listview_item_row, msgList);
+					public void onCancel(DialogInterface dialog) {
+										
+					}
+        	
+        });
+        update = false;
+        thread = new Thread(this);
+        thread.start();
+        
+        //CL = new ConversationLoader();
+        //CL.execute(this);
+        
+        
+        //msgList = MessageService.dba.getConversations();
+        
 
         //View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
         //list.addHeaderView(header);
 
-        list.setAdapter(conversations);
+        
 
         /*
          * Load the selected conversation thread when clicked
@@ -163,12 +189,23 @@ public class ConversationView extends Activity {
      */
     public static void updateList(final Context context, final boolean messageViewUpdate)
     {
+    	//TODO remove
         Toast.makeText(context, String.valueOf(messageViewUpdate), Toast.LENGTH_SHORT).show();
         if (MessageReceiver.myActivityStarted)
         {
+        	//update = true;
+        	//thread.start();
+        	//
+        	//thread.start();
             msgList = MessageService.dba.getConversations();
             conversations.clear();
             conversations.addData(msgList);
+
+        	/*if(!CL.isCancelled())
+        	{
+        		CL.cancel(true);
+        	}
+        	CL.execute(context);*/
 
             if (messageViewUpdate)
             {
@@ -180,8 +217,14 @@ public class ConversationView extends Activity {
     @Override
     protected void onResume()
     {
-        updateList(this, false);
+    	if(conversations != null)
+    	{
+    		//conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
+    	
+    		updateList(this, false);
+    	}
         super.onResume();
+        
     }
 
     @Override
@@ -196,6 +239,7 @@ public class ConversationView extends Activity {
     {	       
         this.stopService(new Intent(this, MessageService.class));
         
+        conversations = null;
         //this.unbindService(null);
         MessageReceiver.myActivityStarted = false;
 
@@ -224,4 +268,91 @@ public class ConversationView extends Activity {
         }
 
     }
+
+	public void run() {
+		
+		DBAccessor loader = new DBAccessor(this);
+		msgList = loader.getConversations();
+		if(!update) {
+			this.handler.sendEmptyMessage(LOAD);
+		}
+		else
+		{
+			this.handler.sendEmptyMessage(UPDATE);
+		}
+	}
+	
+	private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(final android.os.Message msg)
+        {
+        	switch (msg.what){
+        	case LOAD:
+        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
+        		list.setAdapter(conversations);
+        		ConversationView.this.dialog.dismiss();
+	        	break;
+        	case UPDATE:
+        		conversations.clear();
+                conversations.addData(msgList);
+        		break;
+        	}
+        	
+        }
+    };
+    
+    /*public synchronized static void setUpdate(boolean newUpdate)
+    {
+    	update = newUpdate;
+    }
+    
+    public synchronized static boolean getUpdate()
+    {
+    	return update;
+    }
+    
+    private class ConversationLoader extends AsyncTask<Context, List<String[]>, Object>{
+
+    	@Override
+    	protected Object doInBackground(Context... params) {
+    		while(true) {
+	    		
+	    		setUpdate(false);
+	    		while(!getUpdate())
+	    		{
+	    			synchronized (this) {
+			    		try {
+							this.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    		}
+	    		}
+    		}
+    	}
+    	
+    	@Override
+    	protected void onPostExecute(Object result)
+    	{
+    		
+    		
+    	}
+    	
+    	@Override
+    	protected void onProgressUpdate(List<String[]>... values){
+    		ConversationView.popList(values[0]);
+    		ConversationView.this.dialog.dismiss();
+    	}
+
+        @Override
+        protected void onPreExecute() {
+        	if(conversations == null)
+        	{
+        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, new ArrayList<String[]>());
+            	list.setAdapter(conversations);
+        	}
+        	
+        }
+    }*/
 }

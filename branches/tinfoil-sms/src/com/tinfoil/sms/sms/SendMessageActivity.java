@@ -121,6 +121,8 @@ public class SendMessageActivity extends Activity {
                         }
                         else
                         {
+                        	
+                        	//TODO remove
                             Toast.makeText(SendMessageActivity.this.getBaseContext(), "Invaild number", Toast.LENGTH_SHORT).show();
                         }
                     }
