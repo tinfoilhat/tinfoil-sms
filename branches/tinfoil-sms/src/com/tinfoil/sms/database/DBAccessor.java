@@ -96,8 +96,8 @@ public class DBAccessor {
 	
 	/**
 	 * Add a row to the numbers table.
-	 * @param reference : int the reference id of the contact the number belongs to
-	 * @param number : Number the object containing the number, last message, type, and date of last sent
+	 * @param reference The reference id of the contact the number belongs to.
+	 * @param number The Number that contains all the information to be stored.
 	 */
 	private long addNumbersRow (long reference, Number number)
 	{
@@ -130,8 +130,8 @@ public class DBAccessor {
 	 * until it is under the limit
 	 * 
 	 * Add a message to the database, only a limited number of messages are stored in the database.
-	 * @param reference : long, the id of the number that the message came from or was sent to.
-	 * @param message : Message, a message object containing all the information for the message.
+	 * @param reference The id of the number that the message came from or was sent to.
+	 * @param message A message object containing all the information for the message.
 	 */
 	private void addMessageRow (long reference, Message message)
 	{
@@ -174,6 +174,11 @@ public class DBAccessor {
         close(cur);
 	}
 	
+	/**
+	 * TODO comment
+	 * @param id
+	 * @return
+	 */
 	public boolean deleteMessage(long id)
 	{
 		open();
@@ -186,6 +191,11 @@ public class DBAccessor {
 		return true;
 	}
 	
+	/**
+	 * TODO comment
+	 * @param number
+	 * @return
+	 */
 	public boolean deleteMessage(String number)
 	{
 		number = SMSUtility.format(number);
@@ -203,9 +213,10 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Updates the message count for the particular given number to the given new count.
-	 * @param number : String a number.
-	 * @param unreadMessageCount : int the new number of unread messages.
+	 * Updates the message count for the particular given number to the given
+	 * new count.
+	 * @param number A number from the contact.
+	 * @param unreadMessageCount The new number of unread messages.
 	 */
 	public void updateMessageCount(String number, int unreadMessageCount)
 	{
@@ -218,11 +229,12 @@ public class DBAccessor {
 	
 	/**
 	 * Add a new message to the database.
-	 * @param message : Message, the object containing all the information to be stored.
-	 * @param number : String, the number of the contact the message was sent to or received from.
-	 * @param unread : boolean, whether the message has been read or has not.
-	 * if true the message is unread
-	 * if false the message is read
+	 * @param message The Message that contains all the information to be
+	 * stored.
+	 * @param number The number of the contact the message was sent to or
+	 * received from.
+	 * @param unread Whether the message has been read or has not, true the
+	 * message is unread, false otherwise.
 	 */
 	public void addNewMessage(Message message, String number, boolean unread)
 	{
@@ -237,8 +249,8 @@ public class DBAccessor {
 	/**
 	 * Add a row to the shared_information table.
 	 * @param reference : int the id of the contact
-	 * @param s1 : String the first shared information
-	 * @param s2 : String the second shared information
+	 * @param s1 The first shared information
+	 * @param s2 The second shared information
 	 */
 	private void addSharedInfo (long reference, String s1, String s2)
 	{
@@ -268,8 +280,8 @@ public class DBAccessor {
 	/** 
 	 * Used for updating the shared information, will not delete the default row
 	 * @param reference : int the id of the contact
-	 * @param s1 : String the first shared information
-	 * @param s2 : String the second shared information
+	 * @param s1 The first shared information
+	 * @param s2 The second shared information
 	 */
 	public void updateSharedInfo(long reference, String s1, String s2)
 	{
@@ -286,7 +298,7 @@ public class DBAccessor {
 	
 	/**
 	 * Resets the shared information to the default shared information
-	 * @param reference : int the reference id for the contact
+	 * @param reference The reference id for the contact
 	 */
 	public void resetSharedInfo (long reference)
 	{
@@ -300,10 +312,8 @@ public class DBAccessor {
 	
 	/**
 	 * Check if the shared info is the default shared info
-	 * @param reference : int the id of the contact
-	 * @return : boolean
-	 * true if the shared info is the default
-	 * false if the shared info is not the default
+	 * @param reference The id of the contact
+	 * @return True if the shared info is the default, false otherwise
 	 */
 	private boolean sharedInfoIsDefault(long reference)
 	{
@@ -322,8 +332,8 @@ public class DBAccessor {
 	
 	/**
 	 * Used to retrieve the shared information
-	 * @param reference : int the reference id for the contact
-	 * @return : String[2] s1 and s2
+	 * @param reference The reference id for the contact
+	 * @return Both pieces of shared information for that contact (s1 and s2)
 	 */
 	public String[] getSharedInfo(long reference)
 	{
@@ -358,9 +368,9 @@ public class DBAccessor {
 		
 	/**
 	 * Add a row to the shared_information table.
-	 * @param reference : int the id of the contact
-	 * @param bookPath : String the path for looking up the book source
-	 * @param bookInversePath : String the path for looking up the inverse book source
+	 * @param reference The id of the contact
+	 * @param bookPath The path for looking up the book source
+	 * @param bookInversePath The path for looking up the inverse book source
 	 */
 	private void addBookPath (long reference, String bookPath, String bookInversePath)
 	{
@@ -392,7 +402,7 @@ public class DBAccessor {
 	
 	/**
 	 * Sets the book path back to the default path
-	 * @param reference : int the id of the contact
+	 * @param reference The id of the contact
 	 */
 	public void resetBookPath (long reference)
 	{
@@ -405,10 +415,10 @@ public class DBAccessor {
 	}
 	
 	/** 
-	 * Used for updating the book paths, will not delete the default row
-	 * @param reference : int the id of the contact
-	 * @param bookPath : String the path for looking up the book source
-	 * @param bookInversePath : String the path for looking up the inverse book source
+	 * Used for updating the book paths, will not delete the default row.
+	 * @param reference The id of the contact.
+	 * @param bookPath The path for looking up the book source.
+	 * @param bookInversePath The path for looking up the inverse book source.
 	 */
 	public void updateBookPaths(long reference, String bookPath, String bookInversePath)
 	{
@@ -426,10 +436,8 @@ public class DBAccessor {
 	
 	/**
 	 * Finds out whether the contact has an entry in the book path database.
-	 * @param reference : int the id of the contact
-	 * @return : boolean 
-	 * true if the book path is the default
-	 * false if the book path is not the default
+	 * @param reference The id of the contact.
+	 * @return True if the book path is the default, false otherwise.
 	 */
 	private boolean bookIsDefault(long reference)
 	{
@@ -448,8 +456,8 @@ public class DBAccessor {
 	
 	/**
 	 * Used to retrieve the book paths
-	 * @param reference : int the id of the contact
-	 * @return : String[2] the book path, and the book inverse path 
+	 * @param reference The id of the contact
+	 * @return The book path, and the book inverse path 
 	 */
 	public String[] getBookPath(long reference)
 	{
@@ -485,7 +493,8 @@ public class DBAccessor {
 	
 	/**
 	 * Adds a trusted contact to the database
-	 * @param tc : TrustedContact contains all the required information for the contact
+	 * @param tc The TrustedContact that contains all the information about the
+	 * contact.
 	 */
 	public void addRow (TrustedContact tc)
 	{
@@ -517,8 +526,8 @@ public class DBAccessor {
 	
 	/**
 	 * Returns the id of the contact with the given number
-	 * @param number : String the number of the contact
-	 * @return : int the id for the contact with the given number
+	 * @param number The number of the contact
+	 * @return :The id for the contact with the given number
 	 */
 	private long getId(String number)
 	{
@@ -537,10 +546,10 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Get the number's id to use as a reference for the message table
-	 * @param number : String, the number
-	 * @return : long the id number of the number
-	 * if there is no number in the database it will return 0
+	 * Get the number's id to use as a reference for the message table.
+	 * @param number The number.
+	 * @return The id number of the number.
+	 * If there is no number in the database it will return 0
 	 */
 	private long getNumberId(String number)
 	{
@@ -558,6 +567,11 @@ public class DBAccessor {
 		return 0;
 	}
 	
+	/**
+	 * TODO comment
+	 * @param id
+	 * @return
+	 */
 	private String getNumber(long id)
 	{
 		open();
@@ -577,14 +591,13 @@ public class DBAccessor {
 	
 	/**
 	 * Check to see if any of the given numbers is already in the database
-	 * @param number : ArrayList<String> of numbers
-	 * @return : boolean 
-	 * true if the number is in the database already 
-	 * false if the number is not found the database
+	 * @param number The list of numbers to check of numbers
+	 * @return  true if at least one of the numbers is already in the database,
+	 * false otherwise.
 	 */
 	public boolean inDatabase(ArrayList<Number> number)
 	{
-		for (int i = 0; i<number.size(); i++)
+		for (int i = 0; i < number.size(); i++)
 		{
 			if (inDatabase(number.get(i).getNumber()))
 			{
@@ -595,11 +608,9 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Checks if the contact is already in the database
-	 * @param number : String a number for the contact
-	 * @return: boolean 
-	 * true if the number is in the database already 
-	 * false if the number is not found the database
+	 * Checks if the contact is already in the database.
+	 * @param number The number that is to look for.
+	 * @return True if the number is in the database already, false otherwise.
 	 */
 	public boolean inDatabase(String number)
 	{
@@ -637,14 +648,12 @@ public class DBAccessor {
 	
 	/**
 	 * Close the database
-	 * @param cur : Cursor, the cursor to close 
+	 * @param cur The cursor to close as well.
 	 */
 	public void close(Cursor cur)
 	{
 		cur.close();
 		db.close();
-		
-		//this.notifyAll();
 	}
 	
 	/**
@@ -653,14 +662,13 @@ public class DBAccessor {
 	public void close()
 	{
 		db.close();
-		//this.notifyAll();
 	}
 	
 	/**
 	 * Get all of the messages sent and received from the given number.
-	 * @param number : String, a number
-	 * @return : List<String[]> with the name and the message stored in the
-	 * array. 
+	 * @param number The number whose messages are going to be retrieved.
+	 * @return A list of containing all the important information about the
+	 * messages.
 	 */
 	public List<String[]> getSMSList(String number)
 	{
