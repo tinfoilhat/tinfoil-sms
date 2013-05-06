@@ -42,61 +42,61 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER REFERENCES numbers (id)" +
+            " ("+ DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " shared_info_1 TEXT," +
-            " shared_info_2 TEXT);";
+            " " + DBAccessor.KEY_SHARED_INFO_1 + " TEXT," + 
+            " " + DBAccessor.KEY_SHARED_INFO_2 + " TEXT);";
     
     private static final String BOOK_PATHS_TABLE_CREATE =
             "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER REFERENCES numbers (id)" +
+            " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " book_path TEXT," +
-            " book_inverse_path TEXT);";
+            " " + DBAccessor.KEY_BOOK_PATH + " TEXT," +
+            " " + DBAccessor.KEY_BOOK_INVERSE_PATH + " TEXT);";
     
     
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + 
-            " (public_key BLOB," +
-            " private_key BLOB," +
-            " signature BLOB);";
+            " (" + DBAccessor.KEY_PUBLIC_KEY + " BLOB," +
+            " " + DBAccessor.KEY_PRIVATE_KEY + " BLOB," +
+            " " + DBAccessor.KEY_SIGNATURE + " BLOB);";
     
     private static final String TRUSTED_TABLE_CREATE =
             "CREATE TABLE " + TRUSTED_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " name TEXT );";
+            " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + DBAccessor.KEY_NAME + " TEXT );";
     
     private static final String NUMBERS_TABLE_CREATE =
             "CREATE TABLE " + NUMBERS_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER REFERENCES trusted_contact (id)" +
+            " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " number TEXT," +
-            " type INTEGER," +
-            " unread INTEGER," +
-            " public_key BLOB," +
-            " signature BLOB," +
-            " nonce_encrypt BLOB," +
-            " nonce_decrypt BLOB," +
-            " initiator INTEGER);";
+            " " + DBAccessor.KEY_NUMBER + " TEXT," +
+            " " + DBAccessor.KEY_TYPE + " INTEGER," +
+            " " + DBAccessor.KEY_UNREAD + " INTEGER," +
+            " " + DBAccessor.KEY_PUBLIC_KEY + " BLOB," +
+            " " + DBAccessor.KEY_SIGNATURE + " BLOB," +
+            " " + DBAccessor.KEY_NONCE_ENCRYPT + " BLOB," +
+            " " + DBAccessor.KEY_NONCE_DECRYPT + " BLOB," +
+            " " + DBAccessor.KEY_INITIATOR + " INTEGER);";
     
     private static final String MESSAGES_TABLE_CREATE =
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " reference INTEGER REFERENCES numbers (id)" +
+            " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE," +
-            " message TEXT," +
-            " date INTEGER," +
-            " sent INTEGER);";
+            " " + DBAccessor.KEY_MESSAGE + " TEXT," +
+            " " + DBAccessor.KEY_DATE + " INTEGER," +
+            " " + DBAccessor.KEY_SENT + " INTEGER);";
     
     private static final String QUEUE_TABLE_CREATE =
             "CREATE TABLE " + QUEUE_TABLE_NAME + 
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " number_reference INTEGER REFERENCES numbers (id)" +
+            " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + DBAccessor.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE," +
-            " message TEXT);";
+            " " + DBAccessor.KEY_MESSAGE + " TEXT);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
