@@ -1054,6 +1054,16 @@ public class DBAccessor {
 		close();
 	}
 	
+	public void updateDecryptNonce(Number numb, Integer decryptNonce)
+	{
+		
+	}
+	
+	public void updateEncryptNonce(Number numb, Integer encryptNonce)
+	{
+		
+	}
+	
 	/**
 	 * Update a row from the Numbers table
 	 * @param tc : TrustedContact the new information to be stored
