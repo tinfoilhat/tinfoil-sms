@@ -48,6 +48,7 @@ import com.tinfoil.sms.messageQueue.SignalListener;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * TODO change wrap_content to '0dp'
@@ -101,6 +102,8 @@ public class ConversationView extends Activity implements Runnable {
         MessageService.mNotificationManager.cancelAll();
 
         MessageService.dba = new DBAccessor(this);
+        
+        SMSUtility.user = MessageService.dba.getUserRow();
         
         messageSender.startThread(getApplicationContext());
 
@@ -197,6 +200,8 @@ public class ConversationView extends Activity implements Runnable {
         	//thread.start();
         	//
         	//thread.start();
+        	
+        	//TODO do this in a thread
             msgList = MessageService.dba.getConversations();
             conversations.clear();
             conversations.addData(msgList);
