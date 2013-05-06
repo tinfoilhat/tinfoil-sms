@@ -64,7 +64,6 @@ public class DBAccessor {
 	public static final String KEY_NUMBER_REFERENCE = "number_reference";
 	
 	public static final String KEY_NONCE_ENCRYPT = "nonce_encrypt";
-	
 	public static final String KEY_NONCE_DECRYPT = "nonce_decrypt";
 	
 	private static final String USER_NAME = "Me";
@@ -111,6 +110,8 @@ public class DBAccessor {
         cv.put(KEY_UNREAD, number.getUnreadMessageCount());
         cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
         cv.put(KEY_SIGNATURE, number.getSignature());
+        cv.put(KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
+        cv.put(KEY_NONCE_DECRYPT, number.getNonceDecrypt());
 
         //Insert the row into the database
         open();
@@ -1054,14 +1055,38 @@ public class DBAccessor {
 		close();
 	}
 	
+	/**
+	 * Update the Decrypt Nonce count in the database.
+	 * @param numb The Number that contains all the contact's security information.
+	 * @param decryptNonce The new count that the Decrypt Nonce is at.
+	 */
 	public void updateDecryptNonce(Number numb, Integer decryptNonce)
 	{
+		ContentValues cv = new ContentValues();
 		
+		cv.put(KEY_NONCE_DECRYPT, decryptNonce);
+		
+		open();
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ? ",
+				new String[]{SMSUtility.format(numb.getNumber())});
+		close();
 	}
 	
+	/**
+	 * Update the Encrypt Nonce count in the database.
+	 * @param numb The Number that contains all the contact's secuirty information.
+	 * @param encryptNonce The new count that the Encrpyt Nonce is at.
+	 */
 	public void updateEncryptNonce(Number numb, Integer encryptNonce)
 	{
+		ContentValues cv = new ContentValues();
 		
+		cv.put(KEY_NONCE_ENCRYPT, encryptNonce);
+		
+		open();
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ? ",
+				new String[]{SMSUtility.format(numb.getNumber())});
+		close();
 	}
 	
 	/**
@@ -1086,6 +1111,8 @@ public class DBAccessor {
         cv.put(KEY_UNREAD, numb.getUnreadMessageCount());
         cv.put(KEY_PUBLIC_KEY, numb.getPublicKey());
         cv.put(KEY_SIGNATURE, numb.getSignature());
+        cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
+        cv.put(KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
         
         open();
         db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
@@ -1138,6 +1165,9 @@ public class DBAccessor {
 	        cv.put(KEY_UNREAD, number.get(i).getUnreadMessageCount());
 	        cv.put(KEY_PUBLIC_KEY, number.get(i).getPublicKey());
 	        cv.put(KEY_SIGNATURE, number.get(i).getSignature());
+	        cv.put(KEY_NONCE_ENCRYPT, number.get(i).getNonceEncrypt());
+	        cv.put(KEY_NONCE_DECRYPT, number.get(i).getNonceDecrypt());	        
+	        
 	        open();
 	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
 	        		+ " AND " + KEY_ID + " = " + number.get(i).getId(), null);
