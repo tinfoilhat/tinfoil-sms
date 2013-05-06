@@ -85,7 +85,7 @@ public class TrustedContact {
 	
 	/**
 	 * Access the contact's name
-	 * @return : String
+	 * @return The contact's name
 	 */
 	public String getName()
 	{
@@ -94,7 +94,7 @@ public class TrustedContact {
 	
 	/**
 	 * Set the contact's name
-	 * @param name : String
+	 * @param name The contact's new name
 	 */
 	public void setName(String name)
 	{
@@ -103,11 +103,10 @@ public class TrustedContact {
 
 	/**
 	 * Get any of the numbers for the contact.
-	 * This is used for retrieving a single number
-	 * to be used. 
+	 * This is used for retrieving a single number to be used. 
 	 * *NOTE: this should not be used unless it is to just get a single number to 
 	 * delete the row.
-	 * @return : String, the first non-null number found
+	 * @return The first non-null number found
 	 */
 	public String getANumber()
 	{
@@ -123,8 +122,8 @@ public class TrustedContact {
 	
 	/**
 	 * Set a number in the contact's numbers list
-	 * @param index : int the index of the number
-	 * @param number : String the new number
+	 * @param index The index of the number
+	 * @param number The new number
 	 */
 	public void setNumber(int index, String number)
 	{
@@ -133,7 +132,7 @@ public class TrustedContact {
 	
 	/**
 	 * Add a number to the contact's numbers list
-	 * @param number : String
+	 * @param number The new number to add
 	 */
 	public void addNumber(String number)
 	{
@@ -142,7 +141,7 @@ public class TrustedContact {
 	
 	/**
 	 * Add a number to the contact's numbers list
-	 * @param number Number
+	 * @param number The new Number to add 
 	 */
 	public void addNumber(Number number)
 	{
@@ -151,7 +150,8 @@ public class TrustedContact {
 	
 	/**
 	 * Access a contact's number from their contact list
-	 * @return : String
+	 * @param index The number's index
+	 * @return The number at the given index.
 	 */
 	public String getNumber(int index)
 	{
@@ -160,7 +160,8 @@ public class TrustedContact {
 	
 	/**
 	 * Access a contact's number from their contact list
-	 * @return Number
+	 * @param number The number to look for
+	 * @return The Number that contains the given number
 	 */
 	public Number getNumber(String number)
 	{
@@ -176,7 +177,7 @@ public class TrustedContact {
 	
 	/**
 	 * Access a contact's number from their contact list
-	 * @return : ArrayList<String>
+	 * @return The list of Numbers owned by the contact.
 	 */
 	public ArrayList<Number> getNumber()
 	{
@@ -201,7 +202,7 @@ public class TrustedContact {
 	
 	/**
 	 * Whether the contact has numbers or not
-	 * @return : boolean, true if the contact has no numbers
+	 * @return True if the contact has no numbers, false otherwise
 	 */
 	public boolean isNumbersEmpty()
 	{
@@ -212,8 +213,8 @@ public class TrustedContact {
 	 * Check whether another contact has the given number
 	 * @param tc The list of the user's trusted contacts 
 	 * @param number The number to check if there is a duplicate of
-	 * @return Whether the number is already used
-	 * If it is the return will be true, otherwise it will be false
+	 * @return Whether the number is already used. If it is the return will be
+	 * true, otherwise it will be false.
 	 */
 	public static boolean isNumberUsed(ArrayList<TrustedContact> tc, String number)
 	{
