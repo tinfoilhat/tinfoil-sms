@@ -716,8 +716,7 @@ public class DBAccessor {
 	
 	/**
 	 * Get all of the last messages sent from every contact.
-	 * @return : List<String[]> the information needed to 
-	 * display the conversations.
+	 * @return The list of information needed to display the conversations.
 	 */
 	public List<String[]>  getConversations()
 	{
@@ -758,15 +757,20 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Access the information stored in the database of a contact who has a certain number
-	 * with the columns: name, number, key, verified.
-	 * @param number : String the number of the contact to retrieve 
-	 * @return TrustedContact, the row of data.
+	 * TODO either add a query to retrieve the messages or update documentation
+	 * to state that messages are not retrieved during this query.
+	 * 
+	 * Retrieve the information relating to the contact who has the given
+	 * number.
+	 * @param number The number of the contact to retrieve 
+	 * @return The TrustedContact containing all the information in the database
+	 * about that contact.
 	 */ 
 	public TrustedContact getRow(String number)
-	{		
+	{
+		// Get the id of the number to look up the contact.
 		open();
-		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + ", " + KEY_NUMBER + " FROM "
+		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + " FROM "
 				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
 
 		long id = 0;
@@ -777,14 +781,17 @@ public class DBAccessor {
 			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
 		}
 		idCur.close();
+		
+		// Find the contact from the TrustedContact table
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[]
-				{KEY_NAME /*, KEY_PUBLIC_KEY, KEY_SIGNATURE*/},
-				KEY_ID +" = " + id, null, null, null, null);
+				{KEY_NAME}, KEY_ID +" = " + id, null, null, null, null);
 		
 		if (cur.moveToFirst())
         { 	
 			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)));
 			cur.close();
+			
+			// Query the number table to access the number information.
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME,
 					null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
@@ -829,8 +836,8 @@ public class DBAccessor {
 	
 	/**
 	 * Get all of the rows in the database with the columns
-	 * @return : ArrayList<TrustedContact>, a list of all the
-	 * contacts in the database
+	 * @return The list of all the contacts in the database with all relevant
+	 * information about them.
 	 */
 	public ArrayList<TrustedContact> getAllRows()
 	{		
@@ -901,7 +908,7 @@ public class DBAccessor {
 	
 	/**
 	 * Get number of messages that are unread for all numbers
-	 * @return : int, the number of messages unread for all numbers
+	 * @return The number of messages unread for all numbers
 	 */
 	public  int getUnreadMessageCount() {
 		open();
@@ -918,8 +925,8 @@ public class DBAccessor {
 	
 	/**
 	 * Get the unread message count for a given number
-	 * @param number : String a number
-	 * @return : int the number of unread messages
+	 * @param number A number
+	 * @return The number of unread messages
 	 */
 	public int getUnreadMessageCount(String number) {
 		open();
@@ -937,7 +944,8 @@ public class DBAccessor {
 	/**
 	 * Store the user's public key, private key and signature.
 	 * ***Can only be set Once
-	 * @param user : User 
+	 * @param user The user object that contains the public and private key, and
+	 * the signature.
 	 */
 	public void setUser(User user)
 	{
@@ -959,7 +967,8 @@ public class DBAccessor {
 	
 	/**
 	 * Get the user's public key, private key and signature
-	 * @return : User
+	 * @return The user that contains the public and private key, and the
+	 * signature.
 	 */
 	public User getUserRow()
 	{
@@ -982,9 +991,7 @@ public class DBAccessor {
 	
 	/**
 	 * Used to determine if the user's key has been generated
-	 * @return : boolean
-	 * true if there is a key already in the database,
-	 * false if there is no key in the database.
+	 * @return True if there is a key already in the database, false otherwise.
 	 */
 	public boolean isKeyGen()
 	{
@@ -1001,8 +1008,8 @@ public class DBAccessor {
 
 	/**
 	 * Update all of the values in a row
-	 * @param tc : Trusted Contact, the new values for the row
-	 * @param number : the number of the contact in the database
+	 * @param tc The new values for the row
+	 * @param number The number of the contact in the database
 	 */
 	public void updateRow (TrustedContact tc, String number)
 	{
@@ -1015,8 +1022,8 @@ public class DBAccessor {
 	
 	/**
 	 * Update all of the values in a row
-	 * @param tc : Trusted Contact, the new values for the row
-	 * @param number : the number of the contact in the database
+	 * @param tc The new values for the row
+	 * @param number The number of the contact in the database
 	 */
 	public void updateContactInfo (TrustedContact tc, String number)
 	{
@@ -1029,9 +1036,9 @@ public class DBAccessor {
 	
 	/**
 	 * Update a TrustedContact row
-	 * @param tc : TrustedContact the new information to be stored
-	 * @param number : String a number owned by the contact
-	 * @param id : long the id for the contact's database row
+	 * @param tc The new information to be stored
+	 * @param number A number owned by the contact
+	 * @param id The id for the contact's database row
 	 */
 	public void updateTrustedRow (TrustedContact tc, String number, long id)
 	{
@@ -1104,9 +1111,9 @@ public class DBAccessor {
 	
 	/**
 	 * Update a row from the Numbers table
-	 * @param tc : TrustedContact the new information to be stored
-	 * @param number : String a number owned by the contact
-	 * @param id : long the id for the contact's database row
+	 * @param tc The new information to be stored
+	 * @param number A number owned by the contact
+	 * @param id The id for the contact's database row
 	 */
 	public void updateNumberRow(Number numb, String number, long id)
 	{
@@ -1139,9 +1146,9 @@ public class DBAccessor {
 	
 	/**
 	 * Update a row from the Numbers table
-	 * @param tc : TrustedContact the new information to be stored
-	 * @param number : String a number owned by the contact
-	 * @param id : long the id for the contact's database row
+	 * @param tc The new information to be stored
+	 * @param number A number owned by the contact
+	 * @param id The id for the contact's database row
 	 */
 	public void updateNumberRowType (ArrayList<Number> number, long id)
 	{
@@ -1163,9 +1170,9 @@ public class DBAccessor {
 	
 	/**
 	 * Update a row from the Numbers table
-	 * @param tc : TrustedContact the new information to be stored
-	 * @param number : String a number owned by the contact
-	 * @param id : long the id for the contact's database row
+	 * @param tc The new information to be stored
+	 * @param number A number owned by the contact
+	 * @param id The id for the contact's database row
 	 */
 	public void updateNumberRow (ArrayList<Number> number, long id)
 	{
@@ -1199,10 +1206,8 @@ public class DBAccessor {
 	
 	/**
 	 * Deletes the rows with the given number
-	 * @param number : String, the primary number of the contact to be deleted
-	 * @return : boolean
-	 * true if the contacts were deleted properly
-	 * false if the contacts were not deleted properly
+	 * @param number The primary number of the contact to be deleted
+	 * @return True if the contacts were deleted properly, false otherwise.
 	 */
 	public boolean removeRow(String number)
 	{
@@ -1223,12 +1228,10 @@ public class DBAccessor {
 
 	/**
 	 * Checks if the given number is a trusted contact's number
-	 * @param number String, the number of the potential trusted contact
-	 * @return boolean
-	 * true, if the contact is found in the database and is in the trusted state.
-	 * false, if the contact is not found in the database or is not the trusted state.
-	 * 
-	 * A contact is in the trusted state if they have a key (!= null)
+	 * @param number The number of the potential trusted contact
+	 * @return True if the contact is found in the database and is in the
+	 * trusted state, false otherwise. A contact is in the trusted state if they
+	 * have a key (!= null)
 	 */
 	public boolean isTrustedContact (String number)
 	{
@@ -1244,11 +1247,8 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * @param tc : TrustedContact the contact to check for a trusted number
-	 * @return : boolean whether the contact has a trusted number or not
-	 * true if the contact is trusted
-	 * false if the contact is not trusted.
-	 * 
+	 * @param tc The contact to check for a trusted number
+	 * @return True if the contact is trusted, false otherwise.
 	 * (NOTE: see isTrustedContact(String number) for more details)
 	 */
 	public boolean isTrustedContact (TrustedContact tc)
@@ -1265,10 +1265,8 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * @param contacts : TrustedContact the contact to check for a trusted number
-	 * @return : boolean whether the contact has a trusted number or not
-	 * true if the contact is trusted
-	 * false if the contact is not trusted.
+	 * @param contacts The contact to check for a trusted number
+	 * @return True if the contact is trusted, false otherwise.
 	 * 
 	 * (NOTE: see isTrustedContact(String number) for more details)
 	 */
@@ -1283,11 +1281,13 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Adding a message to the queue to be sent when there is service to send the message. 
-	 * Once the message has been sent it will be removed from the queue.
-	 * **Please note the message is not changed, it will be stored and sent as is.
-	 * @param number : String the number for the contact that the message will be sent to
-	 * @param message : String the message that will be sent to the contact with the given number.
+	 * Adding a message to the queue to be sent when there is service to send
+	 * the message. Once the message has been sent it will be removed from the
+	 * queue.
+	 * @param number The number for the contact that the message will be sent
+	 * to.
+	 * @param message The message that will be sent to the contact with the given
+	 * number.
 	 */
 	public synchronized void addMessageToQueue (String number, String message)
 	{
@@ -1335,7 +1335,7 @@ public class DBAccessor {
 	
 	/**
 	 * Delete a given entry from the queue
-	 * @param id : long, the private key
+	 * @param id The private key
 	 */
 	public void deleteQueueEntry (long id)
 	{
@@ -1374,19 +1374,5 @@ public class DBAccessor {
 		}
 		close(cur);
 		return 0;
-	}*/
-	
-	//TODO remove
-	/*public void placeOnTop(String number, String message, long id)
-	{
-		long numberReference = getNumberId(number);
-		ContentValues cv = new ContentValues();
-
-        cv.put(KEY_NUMBER_REFERENCE, numberReference);
-        cv.put(KEY_MESSAGE, message);
-        
-        open();
-        db.insert(SQLitehelper.QUEUE_TABLE_NAME, null, cv);
-		close();
 	}*/
 }
