@@ -300,6 +300,7 @@ public class MessageView extends Activity implements Runnable{
     {
         if (ConversationView.selectedNumber != null)
         {
+        	//TODO do this in a thread.
             msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
             messages.clear();
             messages.addData(msgList2);
@@ -340,11 +341,11 @@ public class MessageView extends Activity implements Runnable{
                     if (!MessageService.dba.isTrustedContact(SMSUtility.format
                             (ConversationView.selectedNumber)))
                     {
-                        keyThread.startThread(this, SMSUtility.format(ConversationView.selectedNumber), null);
+                        keyThread.startThread(SMSUtility.format(ConversationView.selectedNumber), null);
                     }
                     else
                     {
-                        keyThread.startThread(this, null, SMSUtility.format(ConversationView.selectedNumber));
+                        keyThread.startThread(null, SMSUtility.format(ConversationView.selectedNumber));
                     }
                 }
 

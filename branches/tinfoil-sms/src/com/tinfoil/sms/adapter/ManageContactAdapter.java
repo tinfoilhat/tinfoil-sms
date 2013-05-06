@@ -36,14 +36,12 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
 	private static class TrustContactHolder
     {
         CheckedTextView name;
-        //TextView indicator;
         ImageView image;
     }
 
     private static class ContactHolder
     {
         TextView name;
-        //TextView indicator;
         ImageView image;
     }
 

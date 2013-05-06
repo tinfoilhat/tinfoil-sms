@@ -46,7 +46,6 @@ public class ContactAdapter extends ArrayAdapter<String> {
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = tc;
-        //this.primary = primary;
     }
 
     @Override

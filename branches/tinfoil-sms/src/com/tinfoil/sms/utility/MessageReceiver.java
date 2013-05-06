@@ -25,6 +25,7 @@ import com.tinfoil.sms.sms.ConversationView;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -104,12 +105,18 @@ public class MessageReceiver extends BroadcastReceiver {
 							ConversationView.sharedPrefs.getBoolean("enable", true)) {
 						
 						/*
-						 * Now send the decrypted message to ourself, set
-						 * the source address of the message to the original
-						 * sender of the message
+						 * Since contact is trusted assume it is NOT a key exchange and that the message IS encrpyted.
+						 * If the message fails to decrypt. A warning of possible Man-In-The-Middle attack is given. 
 						 */
+						
+						
 						try {
 							
+							/*
+							 * Now send the decrypted message to ourself, set
+							 * the source address of the message to the original
+							 * sender of the message
+							 */
 							SMSUtility.sendToSelf(context, messages[0].getOriginatingAddress(), 
 									messages[0].getMessageBody(), ConversationView.INBOX);
 	
@@ -148,6 +155,16 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 					else
 					{
+						
+						/*
+						 * Since the user is not trusted, the message could be a key exchange
+						 * Assume it is check for key exchange message
+						 * Only once it fails is the message considered plain text.
+						 * 
+						 * Could add an option to never expect a key exchange to improve performance
+						 */
+						//TODO implement key exchange check
+						
 						/*
 						 * Send and store a plain text message to the contact
 						 */
@@ -178,6 +195,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						MessageService.contentText = messages[0].getMessageBody();
 					}
 					Intent serviceIntent = new Intent(context, MessageService.class);
+					//ServiceConnection conn = new ServiceConnection() {};
 					context.startService(serviceIntent);
 					
 					// Prevent other applications from seeing the message received

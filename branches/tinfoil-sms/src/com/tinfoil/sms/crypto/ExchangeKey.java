@@ -28,7 +28,7 @@ import com.tinfoil.sms.utility.MessageService;
 
 public class ExchangeKey implements Runnable {
 
-    private Context c; //Currently not used but IS needed because messages will be sent from this thread
+    //private Context c; //Currently not used but IS needed because messages will be sent from this thread
     public static ProgressDialog keyDialog;
     private ArrayList<String> untrusted;
     private ArrayList<String> trusted;
@@ -42,9 +42,9 @@ public class ExchangeKey implements Runnable {
      * @param c The context of the activity
      * @param contacts The list of contacts
      */
-    public void startThread(final Context c, final ArrayList<ContactParent> contacts)
+    public void startThread(final ArrayList<ContactParent> contacts)
     {
-        this.c = c;
+        //this.c = c;
         this.contacts = contacts;
         this.trusted = null;
         this.untrusted = null;
@@ -56,9 +56,9 @@ public class ExchangeKey implements Runnable {
         thread.start();
     }
 
-    public void startThread(final Context c, final String trusted, final String untrusted)
+    public void startThread(final String trusted, final String untrusted)
     {
-        this.c = c;
+        //this.c = c;
         this.trusted = new ArrayList<String>();
         this.untrusted = new ArrayList<String>();
         
@@ -122,7 +122,6 @@ public class ExchangeKey implements Runnable {
             }
         }
 
-        //TODO update to actually use proper key exchange (via sms)
         //Start Key exchanges 1 by 1, using the user specified time out.
         if (this.trusted != null)
         {
@@ -131,6 +130,11 @@ public class ExchangeKey implements Runnable {
                 this.number = MessageService.dba.getRow(this.trusted.get(i)).getNumber(this.trusted.get(i));
                 this.number.setPublicKey();
                 MessageService.dba.updateKey(this.number);
+                
+                //TODO get the actual key exchange message format
+                String keyExchangeMessage = this.number.getPublicKey();
+                
+                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage);
             }
         }
 
