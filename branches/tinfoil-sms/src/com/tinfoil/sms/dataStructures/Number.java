@@ -44,7 +44,11 @@ public class Number {
 	private Integer enNonceCount;
 	private Integer deNonceCount;
 	
+	private boolean initiator;
+	//TODO add initator flag
+	
 	/**
+	 * TODO document rest of params
 	 * A class used to store information from the numbers table
 	 * 
 	 * @param number A number for the contact
@@ -53,10 +57,15 @@ public class Number {
 	 * class for the 'TYPES' variable
 	 * @param unreadMessageCount The number of messages that have
 	 * not been read from this number
+	 * @param publicKey
+	 * @param signature
+	 * @param enNonceCount
+	 * @param deNonceCount
+	 * @param initiator Set to false if equal to 0 otherwise true.
 	 */
 	public Number (long id, String number, int type, int unreadMessageCount, 
 			byte[] publicKey, byte[] signature, Integer enNonceCount,
-			Integer deNonceCount)
+			Integer deNonceCount, int initiator)
 	{
 		this.id = id;
 		this.setNumber(number);
@@ -67,6 +76,15 @@ public class Number {
 		this.signature = signature;
 		this.enNonceCount = enNonceCount;
 		this.deNonceCount = deNonceCount;
+		
+		if(initiator == 0)
+		{
+			this.initiator = false;
+		}
+		else
+		{
+			this.initiator = true;
+		}
 	}
 	
 	/**
@@ -254,8 +272,7 @@ public class Number {
 	 * Book path is used for the Steganography the bookpath is the folder path
 	 * to the entropy source used to map encrypted text to obfuscated words.
 	 * The user will have very little interaction with this.
-	 * @param bookPath The path on the android phone to 
-	 * the entropy source
+	 * @param bookPath The path on the android phone to the entropy source
 	 */
 	public void setBookPath(String bookPath)
 	{
@@ -266,7 +283,7 @@ public class Number {
 	 * Book path is used for the Steganography the bookpath is the folder path
 	 * to the entropy source used to map encrypted text to obfuscated words.
 	 * The user will have very little interaction with this.
-	 * @param The path on the android phone to the entropy source
+	 * @return The path on the android phone to the entropy source
 	 */
 	public String getBookPath()
 	{
@@ -274,12 +291,10 @@ public class Number {
 	}
 	
 	/**
-	 * Book path is used for the Steganography the bookInversePath
-	 * is the folder path to the entropy source used to map
-	 * the obfuscated words to encrypted text. The user will have 
-	 * very little interaction with this.
-	 * @param bookInversePath : String, the path on the android  
-	 * phone to the entropy source
+	 * Book path is used for the Steganography the bookInversePath is the
+	 * folder path to the entropy source used to map the obfuscated words to
+	 * encrypted text. The user will have very little interaction with this.
+	 * @param The path on the android phone to the entropy source
 	 */
 	public void setBookInversePath(String bookInversePath)
 	{
@@ -287,12 +302,10 @@ public class Number {
 	}
 	
 	/**
-	 * Book path is used for the Steganography the bookInversePath
-	 * is the folder path to the entropy source used to map
-	 * the obfuscated words to encrypted text. The user will have 
-	 * very little interaction with this.
-	 * @param : String, the path on the android phone to the 
-	 * entropy source
+	 * Book path is used for the Steganography the bookInversePath is the
+	 * folder path to the entropy source used to map the obfuscated words to
+	 * encrypted text. The user will have very little interaction with this.
+	 * @return The path on the android phone to the entropy source
 	 */
 	public String getBookInversePath()
 	{
@@ -301,8 +314,7 @@ public class Number {
 
 	/**
 	 * Access the publicKey
-	 * @return : String the contact's public publicKey 
-	 * used for encrypting messages
+	 * @return The contact's public publicKey used for encrypting messages
 	 */
 	public String getPublicKey()
 	{
@@ -346,25 +358,18 @@ public class Number {
 
 	/**
 	 * Get the unique database Id for the number
-	 * @return id The long unique id for the row in the database
+	 * @return The unique id for the row in the database
 	 */
 	public long getId() {
 		return id;
 	}
-
-	/** TODO remove
-	 * Get the unique database Id for the number
-	 * @param id the new long unique id for the row in the database
-	 */
-	/*public void setId(long id) {
-		this.id = id;
-	}*/
 	
 	/**
-	 * TODO comment
-	 * @param numbers
-	 * @param number
-	 * @return
+	 * Get the index of the given number from a list of Numbers
+	 * @param numbers The list of Numbers
+	 * @param number The Number to look for.
+	 * @return The index of the Number in the list of numbers, if the number is
+	 * not found then the index returned will be -1.
 	 */
 	public static int hasNumber(ArrayList<Number> numbers, Number number)
 	{
@@ -379,34 +384,59 @@ public class Number {
 	}
 
 	/**
-	 * Get the Nonce for the encrypt
-	 * @return The encryption Nonce
+	 * Get the Nonce for the encrypt.
+	 * @return The encryption Nonce.
 	 */
 	public Integer getNonceEncrypt() {
 		return enNonceCount;
 	}
 
 	/**
-	 * Set the Nonce for the encrypt
-	 * @param The new encryption Nonce
+	 * Set the Nonce for the encrypt.
+	 * @param The new encryption Nonce.
 	 */
 	public void setNonceEncrypt(Integer nonceEncrypt) {
 		enNonceCount = nonceEncrypt;
 	}
 
 	/**
-	 * Get the Nonce for the decrypt
-	 * @return The decryption nonce
+	 * Get the Nonce for the decrypt.
+	 * @return The decryption nonce.
 	 */
 	public Integer getNonceDecrypt() {
 		return deNonceCount;
 	}
 
 	/**
-	 * Set the Nonce for the decrypt
-	 * @param The new decryption Nonce
+	 * Set the Nonce for the decrypt.
+	 * @param The new decryption Nonce.
 	 */
 	public void setNonceDecrypt(Integer nonceDecrypt) {
 		deNonceCount = nonceDecrypt;
+	}
+
+	/**
+	 * Whether the contact is the initiator or not.
+	 * @return The initiator.
+	 */
+	public boolean isInitiator() {
+		return initiator;
+	}
+
+	/**
+	 * Set the initiator flag.
+	 * @param Initiator the initiator to set.
+	 */
+	public void setInitiator(boolean initiator) {
+		this.initiator = initiator;
+	}
+	
+	public int getInitiatorInt()
+	{
+		if(initiator)
+		{
+			return 1;
+		}
+		return 0;
 	}
 }

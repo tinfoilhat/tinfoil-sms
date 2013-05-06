@@ -66,6 +66,8 @@ public class DBAccessor {
 	public static final String KEY_NONCE_ENCRYPT = "nonce_encrypt";
 	public static final String KEY_NONCE_DECRYPT = "nonce_decrypt";
 	
+	public static final String KEY_INITIATOR = "initiator";
+	
 	private static final String USER_NAME = "Me";
 	
 	public static final int LENGTH = 21;
@@ -112,6 +114,7 @@ public class DBAccessor {
         cv.put(KEY_SIGNATURE, number.getSignature());
         cv.put(KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
         cv.put(KEY_NONCE_DECRYPT, number.getNonceDecrypt());
+        cv.put(KEY_INITIATOR, number.getInitiatorInt());
 
         //Insert the row into the database
         open();
@@ -800,7 +803,8 @@ public class DBAccessor {
 							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
 							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
 							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
+							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT)),
+							pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR))));
 
 					//Retrieve the book paths
 					String columns[] = getBookPath(num_id);
@@ -867,7 +871,8 @@ public class DBAccessor {
 								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
 								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
 								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT))));
+								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT)),
+								pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR))));
 
 						//Retrieve the book paths
 						String columns[] = getBookPath(num_id);
@@ -1121,6 +1126,7 @@ public class DBAccessor {
         cv.put(KEY_SIGNATURE, numb.getSignature());
         cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
         cv.put(KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
+        cv.put(KEY_INITIATOR, numb.getInitiatorInt());
         
         open();
         db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
@@ -1174,7 +1180,8 @@ public class DBAccessor {
 	        cv.put(KEY_PUBLIC_KEY, number.get(i).getPublicKey());
 	        cv.put(KEY_SIGNATURE, number.get(i).getSignature());
 	        cv.put(KEY_NONCE_ENCRYPT, number.get(i).getNonceEncrypt());
-	        cv.put(KEY_NONCE_DECRYPT, number.get(i).getNonceDecrypt());	        
+	        cv.put(KEY_NONCE_DECRYPT, number.get(i).getNonceDecrypt());
+	        cv.put(KEY_INITIATOR, number.get(i).getInitiatorInt());
 	        
 	        open();
 	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 

@@ -79,7 +79,8 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " public_key BLOB," +
             " signature BLOB," +
             " nonce_encrypt BLOB," +
-            " nonce_decrypt BLOB);";
+            " nonce_decrypt BLOB," +
+            " initiator INTEGER);";
     
     private static final String MESSAGES_TABLE_CREATE =
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 
