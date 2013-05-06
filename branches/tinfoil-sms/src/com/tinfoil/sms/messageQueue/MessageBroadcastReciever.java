@@ -17,7 +17,6 @@
 
 package com.tinfoil.sms.messageQueue;
 
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 import android.app.Activity;

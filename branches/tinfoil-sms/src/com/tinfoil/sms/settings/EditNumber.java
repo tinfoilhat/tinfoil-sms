@@ -55,7 +55,6 @@ public class EditNumber extends Activity{
 	private EditText sharedInfo2;
 	private EditText bookPath;
 	private EditText bookInverse;
-	//private Button save;
 	private TrustedContact tc;
 	private String originalNumber;
 	private static int position;
@@ -72,7 +71,6 @@ public class EditNumber extends Activity{
         sharedInfo2 = (EditText)findViewById(R.id.shared_secret_2);
         bookPath = (EditText)findViewById(R.id.book_path);
         bookInverse = (EditText)findViewById(R.id.book_inverse);
-        //save = (Button)findViewById(R.id.save);
         
         Intent intent = this.getIntent();
         
@@ -125,19 +123,11 @@ public class EditNumber extends Activity{
 	        
 	        bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
         }
-        
-        /*save.setOnClickListener(new OnClickListener(){
-
-			public void onClick(View v) {
-				
-				
-			}
-        });*/
     }
 	
 	/**
      * The onClick action for when the user clicks on save information
-     * @param view
+     * @param view The view that is involved
      */
 	public void saveNumberInfo(View view)
 	{

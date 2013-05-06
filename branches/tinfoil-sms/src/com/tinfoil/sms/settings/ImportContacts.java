@@ -59,7 +59,6 @@ import com.tinfoil.sms.utility.SMSUtility;
  * ManageContactsActivity.
  */
 public class ImportContacts extends Activity implements Runnable {
-    //private Button confirm;
     private ListView importList;
     private ArrayList<TrustedContact> tc;
     private boolean disable;
@@ -74,7 +73,6 @@ public class ImportContacts extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.importcontacts);
         this.clicked = false;
-        //this.confirm = (Button) this.findViewById(R.id.confirm);
         this.importList = (ListView) this.findViewById(R.id.import_contact_list);
         
         final Thread thread = new Thread(this);
@@ -84,20 +82,12 @@ public class ImportContacts extends Activity implements Runnable {
         	public void onCancel(DialogInterface dialog) {
     			stop();
     			dialog.dismiss();
-    			//ImportContacts.this.onBackPressed();
     			ImportContacts.this.finish();
     		}
         });
         
         thread.start();
-
-        /*this.confirm.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(final View v) {
-               
-            }
-        });*/
-
+        
         this.importList.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
@@ -110,21 +100,36 @@ public class ImportContacts extends Activity implements Runnable {
         });
     }
     
+    /**
+     * Set the stop flag to to true
+     */
     public synchronized void stop() 
     {
     	this.stop = true;
     }
     
+    /**
+     * Get the stop flag
+     * @return The stop flag
+     */
     public synchronized boolean getStop()
     {
     	return this.stop;
     }
     
+    /**
+     * Set the stop flag.
+     * @param stop Whether the thread should be stopped or not.
+     */
     public synchronized void setStop(boolean stop)
     {
     	this.stop = stop;
     }
     
+    /**
+     * The onClick action for when the user clicks on the import contact
+     * @param view The view that is involved
+     */
     public void importSelected(View view)
     {
     	//Add Contacts to the tinfoil-sms database from android's database
@@ -139,16 +144,28 @@ public class ImportContacts extends Activity implements Runnable {
         }
     }
 
+    /**
+     * Unselect the contact from being added to the database
+     * @param position The index of the contact
+     */
     public void remove(final int position)
     {
         this.inDb.set(position, false);
     }
 
+    /**
+     * Select the contact from being added to the database
+     * @param position The index of the contact
+     */
     public void add(final int position)
     {
         this.inDb.set(position, true);
     }
 
+    /**
+     * Toggle the contact from being added or removed from the addition list
+     * @param position The index of the contact
+     */
     public void change(final int position)
     {
         if (this.tc != null)
@@ -168,7 +185,7 @@ public class ImportContacts extends Activity implements Runnable {
      * Produces an ArrayList of contact names from the ArrayList of
      * TrustedContacts
      * 
-     * @return : ArrayList, a list of the names of each person on the list.
+     * @return A list of the names of each person on the list.
      */
     public ArrayList<String> getNames()
     {
@@ -487,8 +504,8 @@ public class ImportContacts extends Activity implements Runnable {
     }
 
     /*
-     * Please note android.os.Message is needed because tinfoil-sms has another class
-     * called Message.
+     * Please note android.os.Message is needed because tinfoil-sms has another
+     * class called Message.
      */
     private final Handler handler = new Handler() {
         @Override

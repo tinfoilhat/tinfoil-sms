@@ -58,22 +58,14 @@ public class SignalListener extends PhoneStateListener{
 				/*
 				 * Could use wait() and notify() rather then busy waiting
 				 */
-				//MessageSender.sc.notify();
 				ConversationView.messageSender.threadNotify(false);
-				
 			}
-			else{
+			else
+			{
 				/*
 				 * Once enough service is found the flag is updated.
 				 */
-				ConversationView.messageSender.setSignal(true);
-				/*try {
-					MessageSender.sc.wait();
-				} 
-				catch (InterruptedException e) {
-					e.printStackTrace();
-				}*/
-				
+				ConversationView.messageSender.setSignal(true);				
 			}
 			
 		}

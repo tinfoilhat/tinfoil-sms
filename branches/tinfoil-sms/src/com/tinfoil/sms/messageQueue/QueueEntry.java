@@ -26,6 +26,12 @@ public class QueueEntry {
 	private String message;
 	private long id;
 	
+	/**
+	 * Create a entry in the queue.
+	 * @param number The number the message will be sent to
+	 * @param message The message that will be sent
+	 * @param id The queue's unique ID
+	 */
 	public QueueEntry (String number, String message, long id)
 	{
 		this.setNumber(number);

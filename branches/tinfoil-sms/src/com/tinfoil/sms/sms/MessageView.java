@@ -23,7 +23,6 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
@@ -33,7 +32,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
@@ -59,7 +57,6 @@ import com.tinfoil.sms.utility.SMSUtility;
  * will be updated and Prephase3Activity's messages will be updated as well.
  */
 public class MessageView extends Activity implements Runnable{
-    //private static Button sendSMS;
     private EditText messageBox;
     private static ListView list2;
     private static List<String[]> msgList2;
@@ -115,8 +112,7 @@ public class MessageView extends Activity implements Runnable{
 					public void onCancel(DialogInterface dialog) {
 						MessageView.this.dialog.dismiss();
 						MessageView.this.onBackPressed();						
-					}
-        	
+					}        	
         });
         
         Thread loadThread = new Thread(this);
@@ -253,11 +249,13 @@ public class MessageView extends Activity implements Runnable{
             {
                 MessageService.mNotificationManager.cancel(MessageService.INDEX);
             }
-        }
-        //list2.setOnItemLongClickListener(listener)        
+        }       
     }
 
-    
+    /**
+     * The onClick action for when the user clicks on the send message button
+     * @param view The relavent view
+     */
     public void sendMessage(View view)
     {
     	String text = MessageView.this.messageBox.getText().toString();
@@ -270,6 +268,11 @@ public class MessageView extends Activity implements Runnable{
         }
     }
     
+    /**
+     * Take the message information and put the message in the queue.
+     * @param number The number the message will be sent to
+     * @param text The message content for the message
+     */
     public void sendMessage(final String number, final String text)
     {
         if (number.length() > 0 && text.length() > 0)
@@ -296,6 +299,9 @@ public class MessageView extends Activity implements Runnable{
         super.onResume();
     }
 
+    /**
+     * Update the list of messages shown when a new message is received or sent.
+     */
     public static void updateList()
     {
         if (ConversationView.selectedNumber != null)
@@ -305,7 +311,6 @@ public class MessageView extends Activity implements Runnable{
             messages.clear();
             messages.addData(msgList2);
 
-            //TODO fix so when entering MessageView from any state the new messages will show in bold. (until exited message view or user sends out a message)
             MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
         }
     }
@@ -413,6 +418,10 @@ public class MessageView extends Activity implements Runnable{
 		}
 	}
 	
+	/**
+	 * The handler class for cleaning up after the loading thread and the update
+	 * thread.
+	 */
 	private final Handler handler = new Handler() {
         @Override
         public void handleMessage(final android.os.Message msg)

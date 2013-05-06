@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +52,7 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
+ * TODO add keyexchange activity (create notification and that will launch the activity) also link to it from some where)
  * TODO change wrap_content to '0dp'
  * see https://developer.android.com/training/basics/firstapp/building-ui.html
  * <ul>
@@ -95,7 +97,7 @@ public class ConversationView extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
 
         //TODO move setup to a thread to focus on a faster UI interaction
-        ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, this.pSL.LISTEN_SIGNAL_STRENGTHS);
+        ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
         //Cancel all notifications from tinfoil-sms upon starting the main activity
@@ -129,6 +131,7 @@ public class ConversationView extends Activity implements Runnable {
             this.getIntent().removeExtra(MessageService.notificationIntent);
             this.startActivity(intent);
         }
+        
         ConversationView.messageViewActive = false;
         this.setContentView(R.layout.main);
 
@@ -150,24 +153,18 @@ public class ConversationView extends Activity implements Runnable {
 					public void onCancel(DialogInterface dialog) {
 										
 					}
-        	
         });
+        
         update = false;
         thread = new Thread(this);
         thread.start();
-        
-        //CL = new ConversationLoader();
-        //CL.execute(this);
-        
         
         //msgList = MessageService.dba.getConversations();
         
 
         //View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
         //list.addHeaderView(header);
-
         
-
         /*
          * Load the selected conversation thread when clicked
          */
@@ -187,8 +184,7 @@ public class ConversationView extends Activity implements Runnable {
      * Updates the list of the messages in the main inbox and in the secondary
      * inbox that the user last viewed, or is viewing
      * 
-     * @param list The ListView for this activity to update the
-     *            message list
+     * @param list The ListView for this activity to update the message list
      */
     public static void updateList(final Context context, final boolean messageViewUpdate)
     {
@@ -206,12 +202,6 @@ public class ConversationView extends Activity implements Runnable {
             conversations.clear();
             conversations.addData(msgList);
 
-        	/*if(!CL.isCancelled())
-        	{
-        		CL.cancel(true);
-        	}
-        	CL.execute(context);*/
-
             if (messageViewUpdate)
             {
                 MessageView.updateList();
@@ -224,8 +214,6 @@ public class ConversationView extends Activity implements Runnable {
     {
     	if(conversations != null)
     	{
-    		//conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
-    	
     		updateList(this, false);
     	}
         super.onResume();
@@ -287,6 +275,10 @@ public class ConversationView extends Activity implements Runnable {
 		}
 	}
 	
+	/**
+	 * The handler class for cleaning up after the loading thread as well as the
+	 * update thread.
+	 */
 	private final Handler handler = new Handler() {
         @Override
         public void handleMessage(final android.os.Message msg)
@@ -305,59 +297,4 @@ public class ConversationView extends Activity implements Runnable {
         	
         }
     };
-    
-    /*public synchronized static void setUpdate(boolean newUpdate)
-    {
-    	update = newUpdate;
-    }
-    
-    public synchronized static boolean getUpdate()
-    {
-    	return update;
-    }
-    
-    private class ConversationLoader extends AsyncTask<Context, List<String[]>, Object>{
-
-    	@Override
-    	protected Object doInBackground(Context... params) {
-    		while(true) {
-	    		
-	    		setUpdate(false);
-	    		while(!getUpdate())
-	    		{
-	    			synchronized (this) {
-			    		try {
-							this.wait();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		    		}
-	    		}
-    		}
-    	}
-    	
-    	@Override
-    	protected void onPostExecute(Object result)
-    	{
-    		
-    		
-    	}
-    	
-    	@Override
-    	protected void onProgressUpdate(List<String[]>... values){
-    		ConversationView.popList(values[0]);
-    		ConversationView.this.dialog.dismiss();
-    	}
-
-        @Override
-        protected void onPreExecute() {
-        	if(conversations == null)
-        	{
-        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, new ArrayList<String[]>());
-            	list.setAdapter(conversations);
-        	}
-        	
-        }
-    }*/
 }

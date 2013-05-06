@@ -46,7 +46,6 @@ public class RemoveContactsActivity extends Activity implements Runnable {
     private ListView listView;
     private boolean[] contact;
     private ArrayList<TrustedContact> tc;
-    //private Button delete;
     private ProgressDialog dialog;
     private boolean clicked = false;
     private ArrayAdapter<String> appAdapt;
@@ -58,8 +57,6 @@ public class RemoveContactsActivity extends Activity implements Runnable {
         
         this.setContentView(R.layout.remove_contacts);
         this.clicked = false;
-
-        //this.delete = (Button) this.findViewById(R.id.delete_cont);
 
         this.listView = (ListView) this.findViewById(R.id.removeable_contact_list);
 
@@ -80,15 +77,12 @@ public class RemoveContactsActivity extends Activity implements Runnable {
 
             }
         });
-
-        /*this.delete.setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View v) {
-                
-
-            }
-        });*/
     }
     
+    /**
+     * The onClick action for when the user clicks the delete selected
+     * @param view The view that is involved
+     */
     public void deleteSelected(View view)
     {
     	if (RemoveContactsActivity.this.tc != null)
@@ -107,8 +101,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
      * Toggle the contact's status from to be deleted to not be deleted or from
      * not be deleted to be deleted
      * 
-     * @param i
-     *            : the contact that is selected
+     * @param i The contact that is selected
      */
     public void toggle(final int i)
     {
@@ -210,6 +203,9 @@ public class RemoveContactsActivity extends Activity implements Runnable {
         this.handler.sendEmptyMessage(0);
     }
 
+    /**
+     * The handler class for cleaning up the loading thread
+     */
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msg)

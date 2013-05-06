@@ -67,8 +67,8 @@ public abstract class SMSUtility {
      * Create an array of Strings to display for the auto-complete
      * 
      * @param tc All the TrustedContacts
-     * @return A list of all the contacts and their numbers for
-     *         the auto complete list.
+     * @return A list of all the contacts and their numbers for the auto
+     * complete list.
      */
     public static List<String> contactDisplayMaker(final List<TrustedContact> tc)
     {
@@ -136,8 +136,7 @@ public abstract class SMSUtility {
      * Sends the given message to the phone with the given number
      * 
      * @param number The number of the phone that the message is sent to
-     * @param message The message, encrypted that will be sent to the
-     *            contact
+     * @param message The message, encrypted that will be sent to the contact
      */
     public static void sendSMS(final Context c, QueueEntry message)
     {

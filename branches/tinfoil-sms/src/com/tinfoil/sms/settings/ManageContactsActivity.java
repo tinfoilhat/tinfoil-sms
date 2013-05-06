@@ -139,6 +139,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
             }
         });
 
+        /*
+         * When a contact's number is clicked
+         */
         this.extendableList.setOnChildClickListener(new OnChildClickListener() {
 
             public boolean onChildClick(final ExpandableListView parent, final View v,
@@ -159,8 +162,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
     }
 
     /**
-     * TODO comment
-     * @param view
+     * The onClick action for when the user clicks on keyExchange
+     * @param view The view that is involved
      */
     public void keyExchange(View view)
     {
@@ -319,7 +322,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
     }
 
     /**
-     * TODO comment
+     * The handler class for clean up after the loader thread has finished.
      */
     private final Handler handler = new Handler() {
         @Override

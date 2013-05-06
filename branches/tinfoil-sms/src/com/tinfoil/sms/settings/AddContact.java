@@ -64,9 +64,7 @@ public class AddContact extends Activity {
     private String originalNumber;
     private TrustedContact contactEdit;
     private ListView listView;
-    //private Button add;
     private EditText contactName;
-    //private Button addNumber;
     private static AlertDialog alert;
 
     @Override
@@ -77,7 +75,6 @@ public class AddContact extends Activity {
         //Sets the keyboard to not pop-up until a text area is selected 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        //contactNumber = new EditText(this);
 
         this.listView = (ListView) this.findViewById(R.id.contact_numbers);
         //this.addNumber = (Button) this.findViewById(R.id.add_new_number);
@@ -99,25 +96,7 @@ public class AddContact extends Activity {
          * Populates the list of numbers
          */
         this.update(null);
-
-        /* 
-         * starts EditNumber with the default shared info and book paths
-         */
-        /*this.addNumber.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-
-            	Intent intent = new Intent(AddContact.this, EditNumber.class);
-            	
-            	if(!contactEdit.isNumbersEmpty())
-            	{
-            		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
-            		intent.putExtra(AddContact.POSITION, -1);
-            	}
-            	AddContact.this.startActivityForResult(intent, REQUEST_CODE);
-            }
-        });*/
-
+        
         /*
          * When a user clicks on a number for a longer period of time a dialog is started
          * to determine what type of number the number is (mobile, home, ...)
@@ -176,21 +155,11 @@ public class AddContact extends Activity {
         {
             this.contactName.setText(this.contactEdit.getName());
         }
-
-        /*
-         * Add/Save the user to the database and exit the activity.
-         */
-        /*this.add.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                
-            }
-        });*/
     }
     
     /**
      * The onClick action for when the add new number button is clicked.
-     * @param view
+     * @param view The view that is involved
      */
     public void addNewNumber(View view)
     {
@@ -206,7 +175,7 @@ public class AddContact extends Activity {
     
     /**
      * The onClick action for when the user clicks on save information
-     * @param view
+     * @param view The view that is involved
      */
     public void saveInformation(View view)
     {
@@ -243,7 +212,6 @@ public class AddContact extends Activity {
             AddContact.this.contactEdit = null;
             editTc = null;
             AddContact.this.finish();
-            
         }
         else
         {

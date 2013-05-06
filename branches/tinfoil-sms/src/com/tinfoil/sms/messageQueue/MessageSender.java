@@ -28,12 +28,14 @@ public class MessageSender implements Runnable{
 
 	private Context c;
 	private boolean empty = true;
-	//private String number;
-	//private ConcurrentLinkedQueue<QueueEntry> message = new ConcurrentLinkedQueue<QueueEntry>();
 	private Thread thread;
 	private DBAccessor sender;
 	private boolean signal = false;
 	
+	/**
+	 * Start the thread to send messages.
+	 * @param c The context the messages are sent from.
+	 */
 	public void startThread(Context c) {
 		this.c = c;
 		this.sender = new DBAccessor(c);
