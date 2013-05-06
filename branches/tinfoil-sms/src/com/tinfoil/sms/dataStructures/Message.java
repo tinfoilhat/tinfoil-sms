@@ -34,8 +34,8 @@ public class Message {
 	 * 
 	 * @param message The body of the message
 	 * @param date The date the message was sent or received 
-	 * @param type Whether the message is send or received, 
-	 * 1 means received, 2 means sent. 
+	 * @param type Whether the message is send or received, 1 means received,
+	 * 2 means sent. 
 	 * *Please Note These values are based of the native application's send and
 	 * received flags.
 	 */
@@ -59,9 +59,8 @@ public class Message {
 	 * @param message The body of the message
 	 * @param currentTime Whether the date is set to the current time or not. 
 	 * If true date is set to current time, otherwise date is set to 0
-	 * @param sent Whether the message was sent or received
-	 * If sent = true then the message was sent
-	 * otherwise the message was received
+	 * @param sent Whether the message was sent or received. If sent = true then
+	 * the message was sent otherwise the message was received
 	 */
 	public Message (String message, boolean currentTime, boolean sent)
 	{
@@ -162,20 +161,17 @@ public class Message {
 	
 	/**
 	 * Check whether the message was sent or received
-	 * @return If the message was sent it will return true,
-	 * otherwise false.
+	 * @return If the message was sent it will return true, otherwise false.
 	 */
 	public boolean isSent() {
 		return sent;
 	}
 	
 	/**
-	 * Get the send flag in terms of the native android messaging
-	 * application this is more used to save messages back to the
-	 * native application
-	 * @return The flag of whether the message was sent or
-	 * received. If the message was sent the return will be 2,
-	 * otherwise the return will be 1.
+	 * Get the send flag in terms of the native android messaging application
+	 * this is more used to save messages back to the native application
+	 * @return The flag of whether the message was sent or received. If the
+	 * message was sent the return will be 2, otherwise the return will be 1.
 	 */
 	public int getSent() {
 		if (sent)

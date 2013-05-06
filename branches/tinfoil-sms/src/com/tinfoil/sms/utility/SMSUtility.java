@@ -105,7 +105,7 @@ public abstract class SMSUtility {
         return number;
     }
     
-    /**
+    /**TODO remove
      * Sends the given message to the phone with the given number
      * 
      * @param number The number of the phone that the message is sent to
@@ -204,7 +204,7 @@ public abstract class SMSUtility {
         }
     }
 
-    /**
+    /** TODO remove
      * Sends a message as encrypted or plain text based on the contact's state.
      * @param context The context of the class
      * @param number The number the text message is being sent to

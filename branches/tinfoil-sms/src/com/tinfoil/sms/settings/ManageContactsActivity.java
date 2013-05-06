@@ -65,8 +65,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
 	
     private ExpandableListView extendableList;
     private ListView listView;
-    //private TextView addAContact;
-    //private Button exchangeKeys;
     private ArrayList<TrustedContact> tc;
     private ProgressDialog loadingDialog;
     private ArrayAdapter<String> arrayAp;
@@ -86,27 +84,35 @@ public class ManageContactsActivity extends Activity implements Runnable {
         this.setContentView(R.layout.contact);
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
-        //this.addAContact = (TextView) this.findViewById(R.id.add_a_contact);
-        //this.exchangeKeys = (Button) this.findViewById(R.id.exchange_keys);
 
+        
         this.extendableList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
-            	if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+            	/*
+            	 * Starts the AddContact activity to edit the contact that was
+            	 * selected.
+            	 */
+            	if (ExpandableListView.getPackedPositionType(id) ==
+            			ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                    
                 	
                     AddContact.addContact = false;
                     AddContact.editTc = ManageContactsActivity.this.tc.get(
                     		ExpandableListView.getPackedPositionGroup(id));
 
-                    Intent intent = new Intent(ManageContactsActivity.this, AddContact.class);
+                    Intent intent = new Intent(ManageContactsActivity.this,
+                    		AddContact.class);
                     
+                    ManageContactsActivity.this.startActivityForResult(intent,
+                    		UPDATE);
                     
-                    ManageContactsActivity.this.startActivityForResult(intent, UPDATE);
-                    
-                    //This stops other on click effects from happening after this one.
+                    /*
+                     * This stops other on click effects from happening after
+                     * this one.
+                     */
                     return true;
                 }
 
@@ -115,6 +121,10 @@ public class ManageContactsActivity extends Activity implements Runnable {
             }
         });
 
+        /*
+         * If no contacts are in the database the user can click the menu item
+         * to start adding a new contact
+         */
         this.listView.setOnItemClickListener(new OnItemClickListener() {
 
             public void onItemClick(final AdapterView<?> parent, final View view,
@@ -123,53 +133,42 @@ public class ManageContactsActivity extends Activity implements Runnable {
                 //Go to add contact
                 AddContact.addContact = true;
                 AddContact.editTc = null;
-                ManageContactsActivity.this.startActivity(new Intent(ManageContactsActivity.this.getBaseContext(), AddContact.class));
+                ManageContactsActivity.this.startActivity(new Intent(
+                		ManageContactsActivity.this.getBaseContext(), 
+                		AddContact.class));
             }
         });
-        
-        /*this.addAContact.setOnClickListener(new OnClickListener() {
-
-        	public void onClick(View v) {
-        		//Go to add contact
-                AddContact.addContact = true;
-                AddContact.editTc = null;
-                
-                ManageContactsActivity.this.startActivity(
-                		new Intent(ManageContactsActivity.this.getBaseContext(), AddContact.class));
-			}
-        });*/
-        
 
         this.extendableList.setOnChildClickListener(new OnChildClickListener() {
 
             public boolean onChildClick(final ExpandableListView parent, final View v,
                     final int groupPosition, final int childPosition, final long id) {
 
-                final CheckedTextView checked_text = (CheckedTextView) v.findViewById(R.id.trust_name);
+                final CheckedTextView checked_text = (CheckedTextView) 
+                		v.findViewById(R.id.trust_name);
 
-                adapter.getContacts().get(groupPosition).getNumber(childPosition).toggle();
+                adapter.getContacts().get(groupPosition)
+                	.getNumber(childPosition).toggle();
 
-                checked_text.setChecked(adapter.getContacts().get(groupPosition).getNumber(childPosition).isSelected());
+                checked_text.setChecked(adapter.getContacts().get(groupPosition)
+                		.getNumber(childPosition).isSelected());
 
                 return true;
             }
         });
-
-        /*this.exchangeKeys.setOnClickListener(new OnClickListener() {
-
-            public void onClick(final View v) {
-                
-            }
-        });*/
     }
 
+    /**
+     * TODO comment
+     * @param view
+     */
     public void keyExchange(View view)
     {
     	/*
          * Launch Exchange Keys thread.
          */
-        ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this, "Exchanging Keys",
-                "Exchanging. Please wait...", true, false);
+        ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this,
+        		"Exchanging Keys", "Exchanging. Please wait...", true, false);
 
         keyThread.startThread(adapter.getContacts());
 
@@ -180,6 +179,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
             }
         });
     }
+    
     /**
      * Updates the list of contacts
      */
@@ -189,7 +189,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
         {
             this.extendableList.setAdapter(adapter);
             this.listView.setVisibility(ListView.INVISIBLE);
-            //this.addAContact.setVisibility(ListView.INVISIBLE);
             this.extendableList.setVisibility(ListView.VISIBLE);
         }
         else
@@ -197,9 +196,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
             this.listView.setAdapter(this.arrayAp);
             this.extendableList.setVisibility(ListView.INVISIBLE);
             this.listView.setVisibility(ListView.VISIBLE);
-            //this.addAContact.setVisibility(ListView.VISIBLE);
         }
-        //listView.setItemsCanFocus(false);
 
         if (this.tc != null)
         {
@@ -207,7 +204,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
         }
     }
     
-    /*protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    
+    /*TODO remove
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
     	super.onActivityResult(requestCode, resultCode, data);
     	
@@ -226,6 +225,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
     	this.startThread();
     }
 
+    /**
+     * Start the thread for loading the contacts.
+     */
     private void startThread()
     {
         //TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
@@ -316,6 +318,9 @@ public class ManageContactsActivity extends Activity implements Runnable {
         this.handler.sendEmptyMessage(0);
     }
 
+    /**
+     * TODO comment
+     */
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msg)
