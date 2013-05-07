@@ -26,6 +26,13 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.utility.MessageService;
 
+/**
+ * A class that creates a thread to manage a user's exchange of keys with
+ * contacts. It will go through each contact that the user wishes to exchange
+ * keys with and queue a key exchange message. This thread only handles the
+ * first phase of the key exchange. The second phase is handled in the
+ * MessagerReceiver.
+ */
 public class ExchangeKey implements Runnable {
 
     public static ProgressDialog keyDialog;
@@ -121,6 +128,9 @@ public class ExchangeKey implements Runnable {
                 //untrusted.get(i).clearPublicKey();
                 this.number = MessageService.dba.getRow(this.untrusted.get(i)).getNumber(this.untrusted.get(i));
                 this.number.clearPublicKey();
+                
+                //set the initiator flag to false
+                this.number.setInitiator(false);
                 MessageService.dba.updateKey(this.number);
             }
         }
@@ -134,11 +144,12 @@ public class ExchangeKey implements Runnable {
             for (int i = 0; i < this.trusted.size(); i++)
             {
                 this.number = MessageService.dba.getRow(this.trusted.get(i)).getNumber(this.trusted.get(i));
-                number.setInitiator(true);
-                
+                 
                 /*
                  * Set the initiator flag since this user is starting the key exchange.
                  */
+                number.setInitiator(true);
+                                
                 MessageService.dba.updateInitiator(number);
              
                 /*

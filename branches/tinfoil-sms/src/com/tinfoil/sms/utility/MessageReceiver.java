@@ -168,11 +168,13 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * Could add an option to never expect a key exchange to improve performance
 						 */
 						//TODO implement actual key exchange check
+						//TODO change the notification for a key exchange
 						if(messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
 						{
 							Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
 							Number number = MessageService.dba.getRow(SMSUtility.format(address)).getNumber(SMSUtility.format(address));
 							number.setPublicKey();
+							
 							MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
 							
 							if(!number.isInitiator())

@@ -424,7 +424,8 @@ public class Number {
 	}
 
 	/**
-	 * Set the initiator flag.
+	 * Set the initiator flag. Set to true if the user initiated the key
+	 * exchange. NOT the number the key exchange is taking place with
 	 * @param Initiator the initiator to set.
 	 */
 	public void setInitiator(boolean initiator) {
