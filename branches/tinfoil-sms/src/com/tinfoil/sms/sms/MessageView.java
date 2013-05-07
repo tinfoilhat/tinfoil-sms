@@ -328,6 +328,7 @@ public class MessageView extends Activity implements Runnable{
         final MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.message_view_menu, menu);
         return true;
+        //TODO make so that the Exchange Key button is actually selectable 
 
     }
 
