@@ -281,7 +281,7 @@ public class MessageView extends Activity implements Runnable{
             messages.setCount(0);
             this.messageBox.setText("");
             messageEvent.resetCount();
-            MessageService.dba.addMessageToQueue(number, text);
+            MessageService.dba.addMessageToQueue(number, text, false);
 
             //Encrypt the text message before sending it	
             //SMSUtility.sendMessage(number, text, this.getBaseContext());

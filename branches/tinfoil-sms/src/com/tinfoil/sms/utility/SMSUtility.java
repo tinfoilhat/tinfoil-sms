@@ -271,14 +271,15 @@ public abstract class SMSUtility {
         try
         {
             if (dba.isTrustedContact(message.getNumber()) &&
-                    ConversationView.sharedPrefs.getBoolean("enable", true))
+                    ConversationView.sharedPrefs.getBoolean("enable", true) &&
+                    !message.isExchange())
             {
                 //Send an encrypted message
                 final String encrypted = Encryption.aes_encrypt(dba.getRow(
                         format(message.getNumber())).getNumber(format(message.getNumber()))
                         .getPublicKey(), message.getMessage());
 
-                sendSMS(context, new QueueEntry(message.getNumber(), encrypted, message.getId()));
+                sendSMS(context, new QueueEntry(message.getNumber(), encrypted, message.getId(), message.getExchange()));
 
                 if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {

@@ -158,31 +158,30 @@ public class MessageReceiver extends BroadcastReceiver {
 					{
 						Log.v("key", messages[0].getMessageBody());
 						Log.v("keyActual", new String("test123".getBytes()));
-						Toast.makeText(context, "HERE "+ (messages[0].getMessageBody() + "\n" + new String(Encryption.generateKey())), Toast.LENGTH_LONG).show();
+						//Toast.makeText(context, "HERE "+ (messages[0].getMessageBody() + "\n" + new String(Encryption.generateKey())), Toast.LENGTH_LONG).show();
 						
-						
+						/*
+						 * Since the user is not trusted, the message could be a key exchange
+						 * Assume it is check for key exchange message
+						 * Only once it fails is the message considered plain text.
+						 * 
+						 * Could add an option to never expect a key exchange to improve performance
+						 */
+						//TODO implement actual key exchange check
 						if(messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
 						{
-							
-							//TODO set up a key exchange flag so that even if the key is set, the message will be sent in plain text
-							//This of course is for when the person receives a key exchange they need to set the key as well as put a message in the queue to send a non encrypted message
-							Toast.makeText(context, "Exchange Key", Toast.LENGTH_SHORT).show();
+							Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
 							Number number = MessageService.dba.getRow(SMSUtility.format(address)).getNumber(SMSUtility.format(address));
 							number.setPublicKey();
-							//tc.getNumber(address).setPublicKey();
 							MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+							
+							if(!number.isInitiator())
+							{
+								MessageService.dba.addMessageToQueue(number.getNumber(), new String(Encryption.generateKey()), true);
+							}
 						}
 						else
 						{
-							/*
-							 * Since the user is not trusted, the message could be a key exchange
-							 * Assume it is check for key exchange message
-							 * Only once it fails is the message considered plain text.
-							 * 
-							 * Could add an option to never expect a key exchange to improve performance
-							 */
-							//TODO implement key exchange check
-							
 							/*
 							 * Send and store a plain text message to the contact
 							 */

@@ -96,7 +96,8 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE," +
-            " " + DBAccessor.KEY_MESSAGE + " TEXT);";
+            " " + DBAccessor.KEY_MESSAGE + " TEXT," +
+            " " + DBAccessor.KEY_EXCHANGE + " INTEGER);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

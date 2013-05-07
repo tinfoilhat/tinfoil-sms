@@ -20,8 +20,6 @@ package com.tinfoil.sms.crypto;
 import java.util.ArrayList;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.util.Log;
 
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
@@ -30,7 +28,6 @@ import com.tinfoil.sms.utility.MessageService;
 
 public class ExchangeKey implements Runnable {
 
-    //private Context c; //Currently not used but IS needed because messages will be sent from this thread
     public static ProgressDialog keyDialog;
     private ArrayList<String> untrusted;
     private ArrayList<String> trusted;
@@ -41,7 +38,6 @@ public class ExchangeKey implements Runnable {
      * A constructor used by the ManageContactsActivity to set up the key
      * exchange thread
      * 
-     * @param c The context of the activity
      * @param contacts The list of contacts
      */
     public void startThread(final ArrayList<ContactParent> contacts)
@@ -129,21 +125,29 @@ public class ExchangeKey implements Runnable {
             }
         }
 
-        //Start Key exchanges 1 by 1, using the user specified time out.
+        /*
+         * Start Key exchanges 1 by 1, messages are prepared and then placed in
+         * the messaging queue.
+         */        
         if (this.trusted != null)
         {
             for (int i = 0; i < this.trusted.size(); i++)
             {
                 this.number = MessageService.dba.getRow(this.trusted.get(i)).getNumber(this.trusted.get(i));
-                //this.number.setPublicKey();
+                number.setInitiator(true);
                 
-                //Log.v("key",number.getPublicKey());
-                //MessageService.dba.updateKey(this.number);
+                /*
+                 * Set the initiator flag since this user is starting the key exchange.
+                 */
+                MessageService.dba.updateInitiator(number);
+             
+                /*
+                 * Will use MessageService.dba.getUserRow(); to get access to
+                 * the user's key. After the user's key has been generated.
+                 */
+                String keyExchangeMessage = new String(Encryption.generateKey());
                 
-                //TODO get the actual key exchange message format
-                String keyExchangeMessage = new String(Encryption.generateKey());//this.number.getPublicKey();
-                
-                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage);
+                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
             }
         }
 

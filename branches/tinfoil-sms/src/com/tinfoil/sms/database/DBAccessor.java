@@ -67,6 +67,10 @@ public class DBAccessor {
 	public static final String KEY_NONCE_DECRYPT = "nonce_decrypt";
 	
 	public static final String KEY_INITIATOR = "initiator";
+
+	public static final String KEY_EXCHANGE = "exchange";
+	public static final int TRUE = 1;
+	public static final int FALSE = 0;
 	
 	private static final String USER_NAME = "Me";
 	
@@ -1076,6 +1080,24 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Update a row from the Numbers table initiator
+	 * @param Number the number object with the new initiator value
+	 */
+	public void updateInitiator (Number number)
+	{
+		ContentValues cv = new ContentValues();
+		
+		long id = getId(number.getNumber());
+		
+        cv.put(KEY_INITIATOR, number.getInitiatorInt());
+        
+        open();
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
+				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
+		close();
+	}
+	
+	/**
 	 * Update the Decrypt Nonce count in the database.
 	 * @param numb The Number that contains all the contact's security information.
 	 * @param decryptNonce The new count that the Decrypt Nonce is at.
@@ -1286,16 +1308,25 @@ public class DBAccessor {
 	 * queue.
 	 * @param number The number for the contact that the message will be sent
 	 * to.
-	 * @param message The message that will be sent to the contact with the given
-	 * number.
+	 * @param message The message that will be sent to the contact with the
+	 * given number.
 	 */
-	public synchronized void addMessageToQueue (String number, String message)
+	public synchronized void addMessageToQueue (String number, String message, boolean keyExchange)
 	{
 		long numberReference = getNumberId(number);
 		ContentValues cv = new ContentValues();
 
         cv.put(KEY_NUMBER_REFERENCE, numberReference);
         cv.put(KEY_MESSAGE, message);
+        
+        if(keyExchange)
+        {
+        	cv.put(KEY_EXCHANGE, TRUE);
+        }
+        else
+        {
+        	cv.put(KEY_EXCHANGE, FALSE);
+        }
         
         open();
         db.insert(SQLitehelper.QUEUE_TABLE_NAME, null, cv);
@@ -1315,7 +1346,7 @@ public class DBAccessor {
 		open();
 	
 		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, 
-				KEY_NUMBER_REFERENCE, KEY_MESSAGE}, KEY_ID + 
+				KEY_NUMBER_REFERENCE, KEY_MESSAGE, KEY_EXCHANGE}, KEY_ID + 
 				" = (SELECT MIN(" + KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
 				null, null, null, null);
 		
@@ -1323,7 +1354,7 @@ public class DBAccessor {
 		{
 			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
 			QueueEntry entry = new QueueEntry(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
-					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id);
+					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id, cur.getInt(cur.getColumnIndex(KEY_EXCHANGE)));
 			close(cur);
 			
 			deleteQueueEntry(id);

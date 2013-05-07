@@ -177,7 +177,7 @@ public class SendMessageActivity extends Activity {
                 //final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
 
                 //MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
-                MessageService.dba.addMessageToQueue(number, text);
+                MessageService.dba.addMessageToQueue(number, text, false);
                 
                 //Check if the message was successful at sending
                 //if (sent)
