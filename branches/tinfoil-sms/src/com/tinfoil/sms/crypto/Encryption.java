@@ -86,13 +86,13 @@ public class Encryption
     
     
     /**
-     * Encrypts the message provided using the public key belonging to the number
+     * Decrypts the message provided using the public key belonging to the number
      * and adds a 32 byte verification signature (HMAC) to the message.
      * 
-     * @param number The number that the message is to be encrypted for
-     * @param message The plaintext message to encrypt
+     * @param number The number that the message is to be decrypted for
+     * @param message The ciphertext message to decrypt
      * 
-     * @return The ciphertext of the encrypted message
+     * @return The plaintext of the decrypted message
      * 
      * @throws InvalidCipherTextException If an error occurs attempting to encrypt the message.
      */
