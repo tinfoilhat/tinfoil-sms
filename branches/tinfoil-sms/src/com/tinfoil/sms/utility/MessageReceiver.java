@@ -134,8 +134,8 @@ public class MessageReceiver extends BroadcastReceiver {
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}
 							
-							secretMessage = Encryption.aes_decrypt(MessageService.dba.getRow(
-									SMSUtility.format(address)).getNumber(SMSUtility.format(address)).getPublicKey(), 
+							secretMessage = Encryption.aes_decrypt(new String(MessageService.dba.getRow(
+									SMSUtility.format(address)).getNumber(SMSUtility.format(address)).getPublicKey()), 
 									messages[0].getMessageBody());
 							SMSUtility.sendToSelf(context, address,	
 									secretMessage , ConversationView.INBOX);
