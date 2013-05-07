@@ -36,6 +36,7 @@ import com.tinfoilsms.csprng.SDFGenerator;
 import com.tinfoilsms.csprng.SDFParameters;
 
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -80,7 +81,9 @@ public class Encryption
             initECEngine(number, true);
         }
         
+        /* Encrypt the message, increment and save the nonce cycle */
         encMessage = encryptMap.get(number.getId()).processBlock(message.getBytes());
+        number.setNonceEncrypt(number.getNonceEncrypt() + 1);
         return new String(Hex.encode(encMessage));
     }
     
@@ -98,13 +101,18 @@ public class Encryption
      */
     public String decrypt(Number number, String message) throws InvalidCipherTextException
     {
+        byte[] decMessage;
+        
         /* Initialize the encryption engine if the number is not in hash map */
         if (! decryptMap.containsKey(number.getId()))
         {
             initECEngine(number, false);
         }
         
-        return new String(decryptMap.get(number.getId()).processBlock(message.getBytes()));
+        /* decrypt the message, increment and save the nonce cycle */
+        decMessage = decryptMap.get(number.getId()).processBlock(message.getBytes());
+        number.setNonceDecrypt(number.getNonceDecrypt() + 1);
+        return new String(decMessage);
     }
     
     
