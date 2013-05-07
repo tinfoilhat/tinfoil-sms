@@ -274,9 +274,9 @@ public abstract class SMSUtility {
                     ConversationView.sharedPrefs.getBoolean("enable", true))
             {
                 //Send an encrypted message
-                final String encrypted = Encryption.aes_encrypt(dba.getRow(
+                final String encrypted = Encryption.aes_encrypt(new String(dba.getRow(
                         format(message.getNumber())).getNumber(format(message.getNumber()))
-                        .getPublicKey(), message.getMessage());
+                        .getPublicKey()), message.getMessage());
 
                 sendSMS(context, new QueueEntry(message.getNumber(), encrypted, message.getId()));
 

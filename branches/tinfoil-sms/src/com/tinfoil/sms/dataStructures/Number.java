@@ -316,13 +316,13 @@ public class Number {
 	 * Access the publicKey
 	 * @return The contact's public publicKey used for encrypting messages
 	 */
-	public String getPublicKey()
+	public byte[] getPublicKey()
 	{
 		if (isPublicKeyNull())
 		{
 			return null;
 		}
-		return new String(publicKey);
+		return publicKey;
 	}
 	
 	/**
