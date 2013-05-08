@@ -28,6 +28,10 @@ import com.tinfoil.sms.encryption.Encryption;
  */
 public class Number {
 	
+	public static final int AUTO = 0;
+	public static final int MANUAL = 1;
+	public static final int IGNORE = 2;
+	
 	private long id;
 	private String number;
 	private int type;
@@ -45,7 +49,8 @@ public class Number {
 	private Integer deNonceCount;
 	
 	private boolean initiator;
-	//TODO add initator flag
+
+	private int keyExchangeFlag;
 	
 	/**
 	 * TODO document rest of params
@@ -65,7 +70,7 @@ public class Number {
 	 */
 	public Number (long id, String number, int type, int unreadMessageCount, 
 			byte[] publicKey, byte[] signature, Integer enNonceCount,
-			Integer deNonceCount, int initiator)
+			Integer deNonceCount, int initiator, int keyExchangeFlag)
 	{
 		this.id = id;
 		this.setNumber(number);
@@ -85,6 +90,7 @@ public class Number {
 		{
 			this.initiator = true;
 		}
+		this.keyExchangeFlag = keyExchangeFlag;
 	}
 	
 	/**
@@ -100,6 +106,7 @@ public class Number {
 		this.setNumber(number);
 		this.setType(type);
 		this.messages = new ArrayList<Message>();
+		this.keyExchangeFlag = AUTO;
 	}
 	
 	/**
@@ -112,6 +119,7 @@ public class Number {
 		this.setNumber(number);
 		this.setType(DBAccessor.OTHER_INDEX);
 		this.messages = new ArrayList<Message>();
+		this.keyExchangeFlag = AUTO;
 	}
 	
 	/**
@@ -454,6 +462,10 @@ public class Number {
 		this.initiator = initiator;
 	}
 	
+	/**
+	 * TODO comment
+	 * @return
+	 */
 	public int getInitiatorInt()
 	{
 		if(initiator)
@@ -461,5 +473,19 @@ public class Number {
 			return 1;
 		}
 		return 0;
+	}
+
+	/**TODO comment
+	 * @return the keyExchangeFlag
+	 */
+	public int getKeyExchangeFlag() {
+		return keyExchangeFlag;
+	}
+
+	/**TODO comment
+	 * @param keyExchangeFlag the keyExchangeFlag to set
+	 */
+	public void setKeyExchangeFlag(int keyExchangeFlag) {
+		this.keyExchangeFlag = keyExchangeFlag;
 	}
 }

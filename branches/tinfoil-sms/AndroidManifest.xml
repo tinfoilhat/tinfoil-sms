@@ -48,6 +48,7 @@
         <activity
             android:name=".settings.EditNumber"
             android:configChanges="orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="Edit Number" />
         <activity
             android:name=".settings.RemoveContactsActivity"

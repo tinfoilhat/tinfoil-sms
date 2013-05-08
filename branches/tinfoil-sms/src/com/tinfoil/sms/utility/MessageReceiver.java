@@ -17,12 +17,6 @@
 
 package com.tinfoil.sms.utility;
 
-import com.tinfoil.sms.dataStructures.Message;
-import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.encryption.Encryption;
-import com.tinfoil.sms.sms.ConversationView;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +26,13 @@ import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.encryption.Encryption;
+import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
@@ -109,8 +110,6 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * Since contact is trusted assume it is NOT a key exchange and that the message IS encrpyted.
 						 * If the message fails to decrypt. A warning of possible Man-In-The-Middle attack is given. 
 						 */
-						
-						
 						try {
 							
 							/*
@@ -158,28 +157,41 @@ public class MessageReceiver extends BroadcastReceiver {
 					{
 						Log.v("key", messages[0].getMessageBody());
 						Log.v("keyActual", new String("test123".getBytes()));
-						//Toast.makeText(context, "HERE "+ (messages[0].getMessageBody() + "\n" + new String(Encryption.generateKey())), Toast.LENGTH_LONG).show();
-						
+												
 						/*
 						 * Since the user is not trusted, the message could be a key exchange
 						 * Assume it is check for key exchange message
 						 * Only once it fails is the message considered plain text.
 						 * 
-						 * Could add an option to never expect a key exchange to improve performance
+						 * TODO add an option to never expect a key exchange from a contact's number to improve performance
 						 */
 						//TODO implement actual key exchange check
 						//TODO change the notification for a key exchange
-						if(messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
+						Number number = MessageService.dba.getNumber(SMSUtility.format(address));
+						
+						if(number.getKeyExchangeFlag() != Number.IGNORE &&
+								messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
 						{
 							Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
-							Number number = MessageService.dba.getNumber(SMSUtility.format(address));
-							number.setPublicKey();
 							
-							MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
-							
-							if(!number.isInitiator())
+							///Number number = MessageService.dba.getNumber(SMSUtility.format(address));
+							//if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange", true))
+							if(number.getKeyExchangeFlag() == Number.AUTO)
 							{
-								MessageService.dba.addMessageToQueue(number.getNumber(), new String(Encryption.generateKey()), true);
+								number.setPublicKey();
+								
+								MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+								
+								if(!number.isInitiator())
+								{
+									MessageService.dba.addMessageToQueue(number.getNumber(),
+											new String(Encryption.generateKey()), true);
+								}
+							}
+							else
+							{
+								MessageService.dba.addKeyExchangeMessage(
+										new Entry(address, messages[0].getMessageBody()));
 							}
 						}
 						else

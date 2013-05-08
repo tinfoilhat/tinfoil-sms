@@ -85,10 +85,6 @@
 		    android:key="showEncrypt" 
 		    android:summary="Display the original encrypted message"
 		    android:defaultValue="true" />
-	    <CheckBoxPreference 
-	        android:title="Exchange Keys" 
-	        android:key="auto_key_exchange"
-	        android:summary="Automatically exchange keys with Contacts"/>
 	    <EditTextPreference 
 	        android:key="key_exchange_timeout" 
 	        android:title="Key Exchange Timeout" 

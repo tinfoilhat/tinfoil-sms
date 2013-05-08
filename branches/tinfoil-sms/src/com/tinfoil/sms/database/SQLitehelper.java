@@ -81,7 +81,8 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_SIGNATURE + " BLOB," +
             " " + DBAccessor.KEY_NONCE_ENCRYPT + " BLOB," +
             " " + DBAccessor.KEY_NONCE_DECRYPT + " BLOB," +
-            " " + DBAccessor.KEY_INITIATOR + " INTEGER);";
+            " " + DBAccessor.KEY_INITIATOR + " INTEGER," +
+            " " + DBAccessor.KEY_EXCHANGE_SETTING + " INTEGER);";
     
     private static final String MESSAGES_TABLE_CREATE =
             "CREATE TABLE " + MESSAGES_TABLE_NAME + 

@@ -1,5 +1,7 @@
 package com.tinfoil.sms.sms;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -12,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.utility.MessageService;
 
 @SuppressLint("all")
 public class KeyExchangeManager extends Activity {
@@ -23,8 +27,23 @@ public class KeyExchangeManager extends Activity {
 		// Show the Up button in the action bar.
 		//setupActionBar();
 		
-		ListView list = (ListView)this.findViewById(R.layout.activity_key_exchange_manager);
-		list.setAdapter(new ArrayAdapter<String>(this, 0, 0, new String[]{}));
+		ArrayList<Entry> entries = MessageService.dba.getAllKeyExchangeMessages();
+		
+		if(entries != null)
+		{
+			String[] numbers = new String[entries.size()];
+			
+			for(int i = 0; i < entries.size(); i++)
+			{
+				numbers[i] = entries.get(i).getNumber();
+			}
+			
+			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+			
+			ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
+			list.setAdapter(a);
+			list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		}
 	}
 
 	/**

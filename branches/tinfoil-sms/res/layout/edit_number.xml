@@ -10,115 +10,143 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/save" >
-	    
+
         <RelativeLayout
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="horizontal"
-		    android:padding="10dp" >
-		    
-		    <TextView
-		        android:id="@+id/phone_text"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_alignParentTop="true"
-		        android:text="@string/phone_text" />
-		
-		    <EditText
-		        android:id="@+id/phone_number"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignLeft="@+id/phone_text"
-		        android:layout_below="@+id/phone_text"
-		        android:ems="10"
-		        android:inputType="phone" >
-		
-		        <requestFocus />
-		    </EditText>
-		
-		    <TextView
-		        android:id="@+id/s1_text"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignLeft="@+id/phone_number"
-		        android:layout_below="@+id/phone_number"
-		        android:text="@string/s1_text" />
-		
-		    <EditText
-		        android:id="@+id/shared_secret_1"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignLeft="@+id/s1_text"
-		        android:layout_below="@+id/s1_text"
-		        android:ems="10"
-		        android:inputType="text"
-		        android:hint="@string/shared_secret_1" />
-		
-		    <TextView
-		        android:id="@+id/s2_text"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/shared_secret_1"
-		        android:text="@string/s2_text" />
-		
-		    <EditText
-		        android:id="@+id/shared_secret_2"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/s2_text"
-		        android:ems="10"
-		        android:inputType="text"
-		        android:hint="@string/shared_secret_2" />
-		    
-		    <TextView
-		        android:id="@+id/book_path_text"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/shared_secret_2"
-		        android:text="@string/book_path_text" />
-		
-		    <EditText
-		        android:id="@+id/book_path"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/book_path_text"
-		        android:ems="10"
-		        android:inputType="text"
-		        android:hint="@string/book_path" />
-		    
-		    <TextView
-		        android:id="@+id/book_inverse_text"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/book_path"
-		        android:text="@string/book_inverse_text" />
-		
-		    <EditText
-		        android:id="@+id/book_inverse"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/book_inverse_text"
-		        android:ems="10"
-		        android:inputType="text"
-		        android:hint="@string/book_inverse" />
-		</RelativeLayout>
-	</ScrollView>
-    
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/phone_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/phone_text" />
+
+            <EditText
+                android:id="@+id/phone_number"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/phone_text"
+                android:layout_below="@+id/phone_text"
+                android:ems="10"
+                android:inputType="phone" >
+
+                <requestFocus />
+            </EditText>
+
+            <TextView
+                android:id="@+id/s1_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/phone_number"
+                android:layout_below="@+id/phone_number"
+                android:text="@string/s1_text" />
+
+            <EditText
+                android:id="@+id/shared_secret_1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/s1_text"
+                android:layout_below="@+id/s1_text"
+                android:ems="10"
+                android:hint="@string/shared_secret_1"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/s2_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/shared_secret_1"
+                android:text="@string/s2_text" />
+
+            <EditText
+                android:id="@+id/shared_secret_2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/s2_text"
+                android:ems="10"
+                android:hint="@string/shared_secret_2"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/book_path_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/shared_secret_2"
+                android:text="@string/book_path_text" />
+
+            <EditText
+                android:id="@+id/book_path"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/book_path_text"
+                android:ems="10"
+                android:hint="@string/book_path"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/book_inverse_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/book_path"
+                android:text="@string/book_inverse_text" />
+
+            <EditText
+                android:id="@+id/book_inverse"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/book_inverse_text"
+                android:ems="10"
+                android:hint="@string/book_inverse"
+                android:inputType="text" />
+
+            <RadioGroup
+			    android:id="@+id/radioGroup1"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical"			    android:layout_below="@+id/book_inverse"
+			    android:layout_alignParentLeft="true" >
+                
+	            <RadioButton
+	                android:id="@+id/auto_exchange"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:checked="true"
+	                android:text="Automatically Exchange" />
+	            
+	            <RadioButton
+	                android:id="@+id/manual_exchange"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Manual Exchange" />
+	            
+	            <RadioButton
+	                android:id="@+id/ignore_exchange"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Ignore All Exchange" />
+	        </RadioGroup>
+	        
+        </RelativeLayout>
+    </ScrollView>
+
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/save"
-        android:onClick="saveNumberInfo" />
-    
+        android:onClick="saveNumberInfo"
+        android:text="@string/save" />
+
 </RelativeLayout>

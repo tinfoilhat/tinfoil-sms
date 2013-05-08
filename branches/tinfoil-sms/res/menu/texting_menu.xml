@@ -1,7 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	
     <item android:id="@+id/compose" android:title="Compose" />
-    <item android:id="@+id/settings" android:title="Settings" />	
+    <item android:id="@+id/settings" android:title="Settings" />
+    <item android:id="@+id/exchange" android:titleCondensed="Exchange" android:title="Pending Key Exchanges"></item>	
 	
 </menu>
 

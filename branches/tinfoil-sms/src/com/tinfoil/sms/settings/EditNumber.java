@@ -17,6 +17,8 @@
 
 package com.tinfoil.sms.settings;
 
+import java.util.ArrayList;
+
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.Number;
@@ -30,6 +32,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 /**
  * An activity used to edit a single number from a given contact. 
@@ -60,13 +63,21 @@ public class EditNumber extends Activity{
 	private String originalNumber;
 	private static int position;
 	
+	private ArrayList<RadioButton> keyExchangeSetting;
+	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
         
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        
+        keyExchangeSetting = new ArrayList<RadioButton>();
+        
+        keyExchangeSetting.add((RadioButton)this.findViewById(R.id.auto_exchange));
+        keyExchangeSetting.add((RadioButton)this.findViewById(R.id.manual_exchange));
+        keyExchangeSetting.add((RadioButton)this.findViewById(R.id.ignore_exchange));
+        
         phoneNumber = (EditText)findViewById(R.id.phone_number);
         sharedInfo1 = (EditText)findViewById(R.id.shared_secret_1);
         sharedInfo2 = (EditText)findViewById(R.id.shared_secret_2);
@@ -110,6 +121,8 @@ public class EditNumber extends Activity{
 	        bookPath.setText(number.getBookPath());
 	        
 	        bookInverse.setText(number.getBookInversePath());
+
+	        keyExchangeSetting.get(number.getKeyExchangeFlag()).setChecked(true);
         }
         else
         {
@@ -170,6 +183,21 @@ public class EditNumber extends Activity{
 			number.setSharedInfo2(sharedInfo2.getText().toString());
 			number.setBookPath(bookPath.getText().toString());
 			number.setBookInversePath(bookInverse.getText().toString());
+			
+			int index = 0;
+			if(keyExchangeSetting.get(Number.AUTO).isChecked())
+			{
+				index = Number.AUTO;
+			}
+			else if(keyExchangeSetting.get(Number.MANUAL).isChecked())
+			{
+				index = Number.MANUAL;
+			}
+			else
+			{
+				index = Number.IGNORE;
+			}
+			number.setKeyExchangeFlag(index);
 			
 			/*
 			 * Update/Add the number to the database

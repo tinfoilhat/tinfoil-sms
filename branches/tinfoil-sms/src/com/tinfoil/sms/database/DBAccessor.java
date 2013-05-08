@@ -67,6 +67,7 @@ public class DBAccessor {
 	public static final String KEY_NONCE_DECRYPT = "nonce_decrypt";
 	
 	public static final String KEY_INITIATOR = "initiator";
+	public static final String KEY_EXCHANGE_SETTING = "exchange_setting";
 
 	public static final String KEY_EXCHANGE = "exchange";
 	
@@ -118,13 +119,13 @@ public class DBAccessor {
 		open();
 		
 		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				KEY_ID, KEY_MESSAGE}, KEY_NUMBER_REFERENCE + " = " + id,
+				KEY_ID, KEY_EXCHANGE_MESSAGE}, KEY_NUMBER_REFERENCE + " = " + id,
 				null, null, null, null);
 		
 		if(cur.moveToFirst())
 		{
 			Entry exchangeMessage = new Entry(number,
-					cur.getString(cur.getColumnIndex(KEY_MESSAGE)),
+					cur.getString(cur.getColumnIndex(KEY_EXCHANGE_MESSAGE)),
 					cur.getLong(cur.getColumnIndex(KEY_ID)), TRUE);
 			
 			close(cur);
@@ -138,8 +139,9 @@ public class DBAccessor {
 	 */
 	public ArrayList<Entry> getAllKeyExchangeMessages()
 	{
+		open();
 		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				KEY_ID, KEY_REFERENCE, KEY_MESSAGE}, null,
+				KEY_ID, KEY_NUMBER_REFERENCE, KEY_EXCHANGE_MESSAGE}, null,
 				null, null, null, null);
 		
 		if(cur.moveToFirst())
@@ -147,8 +149,8 @@ public class DBAccessor {
 			ArrayList<Entry> exchangeMessage = new ArrayList<Entry>();
 			do
 			exchangeMessage.add(new Entry(
-					getNumber(cur.getLong(cur.getColumnIndex(KEY_REFERENCE))),
-					cur.getString(cur.getColumnIndex(KEY_MESSAGE)),
+					getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
+					cur.getString(cur.getColumnIndex(KEY_EXCHANGE_MESSAGE)),
 					cur.getLong(cur.getColumnIndex(KEY_ID)), TRUE));
 			
 			
@@ -156,6 +158,7 @@ public class DBAccessor {
 			close(cur);
 			return exchangeMessage;
 		}
+		close(cur);
 		return null;
 	}
 	
@@ -165,9 +168,19 @@ public class DBAccessor {
 	 */
 	public void addKeyExchangeMessage(Entry keyExchange)
 	{
+		/*
+		 * TODO handle duplication of keys:
+		 * 	- handle by checking if the first message matches any new key exchange messages
+		 * 	if it does
+		 * 		- Discard message
+		 * 		- maybe update the user that another attempt by a contact to exchange keys was made
+		 *  else it doesnt mate
+		 *  	- Discard
+		 *  	- Warn user that it is a possible man in the middle attack, or that the contact may have changed their keys.
+		 */	
 		ContentValues cv = new ContentValues();
 		
-		cv.put(KEY_REFERENCE, getNumberId(keyExchange.getNumber()));
+		cv.put(KEY_NUMBER_REFERENCE, getNumberId(SMSUtility.format(keyExchange.getNumber())));
 		cv.put(KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
 		
 		open();
@@ -208,6 +221,7 @@ public class DBAccessor {
         cv.put(KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
         cv.put(KEY_NONCE_DECRYPT, number.getNonceDecrypt());
         cv.put(KEY_INITIATOR, number.getInitiatorInt());
+        cv.put(KEY_EXCHANGE_SETTING, number.getKeyExchangeFlag());
 
         //Insert the row into the database
         open();
@@ -863,8 +877,8 @@ public class DBAccessor {
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME,
 				new String[]{KEY_ID, KEY_NUMBER, KEY_TYPE, KEY_UNREAD,
 				KEY_PUBLIC_KEY, KEY_SIGNATURE, KEY_NONCE_ENCRYPT,
-				KEY_NONCE_DECRYPT, KEY_INITIATOR}, KEY_NUMBER + " = ?",
-				new String[]{number}, null, null, null);
+				KEY_NONCE_DECRYPT, KEY_INITIATOR, KEY_EXCHANGE_SETTING},
+				KEY_NUMBER + " = ?", new String[]{number}, null, null, null);
 		
 		if(cur.moveToFirst())
 		{
@@ -876,7 +890,8 @@ public class DBAccessor {
 					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)),
 					cur.getInt(cur.getColumnIndex(KEY_NONCE_ENCRYPT)),
 					cur.getInt(cur.getColumnIndex(KEY_NONCE_DECRYPT)),
-					cur.getInt(cur.getColumnIndex(KEY_INITIATOR)));
+					cur.getInt(cur.getColumnIndex(KEY_INITIATOR)),
+					cur.getInt(cur.getColumnIndex(KEY_EXCHANGE_SETTING)));
 			
 			//Retrieve the book paths
 			returnNumber.setBookPaths(getBookPath(returnNumber.getId()));
@@ -927,7 +942,8 @@ public class DBAccessor {
 			cur.close();
 			
 			// Query the number table to access the number information.
-			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME,
+			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", "
+					+ SQLitehelper.NUMBERS_TABLE_NAME,
 					null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
 					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
 					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
@@ -946,7 +962,8 @@ public class DBAccessor {
 							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
 							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
 							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT)),
-							pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR))));
+							pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR)),
+							pCur.getInt(pCur.getColumnIndex(KEY_EXCHANGE_SETTING))));
 
 					//Retrieve the book paths
 					tc.getNumber().get(i).setBookPaths(getBookPath(num_id));
@@ -1011,7 +1028,8 @@ public class DBAccessor {
 								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
 								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
 								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT)),
-								pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR))));
+								pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR)),
+								pCur.getInt(pCur.getColumnIndex(KEY_EXCHANGE_SETTING))));
 
 						//Retrieve the book paths
 						String columns[] = getBookPath(num_id);
@@ -1285,6 +1303,7 @@ public class DBAccessor {
         cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
         cv.put(KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
         cv.put(KEY_INITIATOR, numb.getInitiatorInt());
+        cv.put(KEY_EXCHANGE_SETTING, numb.getKeyExchangeFlag());
         
         open();
         db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
@@ -1340,6 +1359,7 @@ public class DBAccessor {
 	        cv.put(KEY_NONCE_ENCRYPT, number.get(i).getNonceEncrypt());
 	        cv.put(KEY_NONCE_DECRYPT, number.get(i).getNonceDecrypt());
 	        cv.put(KEY_INITIATOR, number.get(i).getInitiatorInt());
+	        cv.put(KEY_EXCHANGE_SETTING, number.get(i).getKeyExchangeFlag());
 	        
 	        open();
 	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 

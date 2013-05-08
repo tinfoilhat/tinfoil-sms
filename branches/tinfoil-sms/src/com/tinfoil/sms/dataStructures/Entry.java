@@ -67,6 +67,17 @@ public class Entry {
 		}
 		
 	}
+	
+	/**
+	 * Create a entry in the queue.
+	 * @param number The number the message will be sent to
+	 * @param message The message that will be sent
+	 */
+	public Entry(String number, String message)
+	{
+		this.number = number;
+		this.message = message;
+	}
 
 	/**
 	 * Get the number.

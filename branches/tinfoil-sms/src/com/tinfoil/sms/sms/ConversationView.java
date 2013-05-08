@@ -256,6 +256,9 @@ public class ConversationView extends Activity implements Runnable {
             case R.id.settings:
                 this.startActivity(new Intent(this, QuickPrefsActivity.class));
                 return true;
+            case R.id.exchange:
+            	this.startActivity(new Intent(this, KeyExchangeManager.class));
+            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
