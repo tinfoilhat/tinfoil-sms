@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
@@ -23,6 +24,7 @@ public class KeyExchangeManager extends Activity {
 		//setupActionBar();
 		
 		ListView list = (ListView)this.findViewById(R.layout.activity_key_exchange_manager);
+		list.setAdapter(new ArrayAdapter<String>(this, 0, 0, new String[]{}));
 	}
 
 	/**

@@ -39,7 +39,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
@@ -52,6 +51,7 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
+ * TODO attempt to move all DB queries to queues
  * TODO add keyexchange activity (create notification and that will launch the activity) also link to it from some where)
  * TODO change wrap_content to '0dp'
  * see https://developer.android.com/training/basics/firstapp/building-ui.html
@@ -189,7 +189,7 @@ public class ConversationView extends Activity implements Runnable {
     public static void updateList(final Context context, final boolean messageViewUpdate)
     {
     	//TODO remove
-        Toast.makeText(context, String.valueOf(messageViewUpdate), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, String.valueOf(messageViewUpdate), Toast.LENGTH_SHORT).show();
         if (MessageReceiver.myActivityStarted)
         {
         	//update = true;

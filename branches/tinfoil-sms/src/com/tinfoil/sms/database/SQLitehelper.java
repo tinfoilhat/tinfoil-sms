@@ -39,6 +39,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String BOOK_PATHS_TABLE_NAME = "book_paths";
     public static final String MESSAGES_TABLE_NAME = "messages";
     public static final String QUEUE_TABLE_NAME = "queue";
+    public static final String EXCHANGE_TABLE_NAME = "exchange_messages";
     
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
@@ -98,6 +99,13 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE ON UPDATE CASCADE," +
             " " + DBAccessor.KEY_MESSAGE + " TEXT," +
             " " + DBAccessor.KEY_EXCHANGE + " INTEGER);";
+    
+    private static final String EXCHANGE_TABLE_CREATE =
+    		"CREATE TABLE " + EXCHANGE_TABLE_NAME + 
+    		" (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+    		" " + DBAccessor.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
+    		" ON DELETE CASCADE ON UPDATE CASCADE," +
+    		" " + DBAccessor.KEY_EXCHANGE_MESSAGE + " TEXT);";
 
     public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -112,24 +120,25 @@ public class SQLitehelper extends SQLiteOpenHelper {
         db.execSQL(BOOK_PATHS_TABLE_CREATE);
         db.execSQL(MESSAGES_TABLE_CREATE);
         db.execSQL(QUEUE_TABLE_CREATE);
+        db.execSQL(EXCHANGE_TABLE_CREATE);
     }
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("DROP TABLE IF EXISTS "+ USER_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS "+ TRUSTED_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS "+ NUMBERS_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS "+ SHARED_INFO_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS "+ BOOK_PATHS_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS "+ MESSAGES_TABLE_CREATE);
-		db.execSQL("DROP TABLE IF EXISTS "+ QUEUE_TABLE_CREATE);
-		onCreate(db);
-		
+		db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + TRUSTED_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + NUMBERS_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + SHARED_INFO_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + BOOK_PATHS_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + MESSAGES_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + QUEUE_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + EXCHANGE_TABLE_NAME);
+		onCreate(db);		
 	}
 	
 	@Override
 	public void onOpen(SQLiteDatabase db) {
-		super.onOpen(db);
+		super.onOpen(db);		
 		if (!db.isReadOnly())
 		{
 			db.execSQL("PRAGMA foreign_keys=ON;");

@@ -22,9 +22,9 @@ import java.util.List;
 
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
-import com.tinfoil.sms.messageQueue.QueueEntry;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -69,6 +69,9 @@ public class DBAccessor {
 	public static final String KEY_INITIATOR = "initiator";
 
 	public static final String KEY_EXCHANGE = "exchange";
+	
+	public static final String KEY_EXCHANGE_MESSAGE = "key_message";
+	
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;
 	
@@ -98,6 +101,92 @@ public class DBAccessor {
 	public DBAccessor (Context c)
 	{
 		contactDatabase = new SQLitehelper(c);
+	}
+	
+	/**
+	 * Get the pending key exchange message for the contact with the given
+	 * number.
+	 * @param number The number of the contact whose key exchange message is
+	 * needed.
+	 * @return The Entry in the key exchange db that contains the number and the
+	 * key exchange message.
+	 */
+	public Entry getKeyExchangeMessage(String number)
+	{
+		long id = this.getNumberId(SMSUtility.format(number));
+		
+		open();
+		
+		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
+				KEY_ID, KEY_MESSAGE}, KEY_NUMBER_REFERENCE + " = " + id,
+				null, null, null, null);
+		
+		if(cur.moveToFirst())
+		{
+			Entry exchangeMessage = new Entry(number,
+					cur.getString(cur.getColumnIndex(KEY_MESSAGE)),
+					cur.getLong(cur.getColumnIndex(KEY_ID)), TRUE);
+			
+			close(cur);
+			return exchangeMessage;
+		}
+		return null;
+	}
+	
+	/**
+	 * Get all of the pending key exchange messages.
+	 */
+	public ArrayList<Entry> getAllKeyExchangeMessages()
+	{
+		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
+				KEY_ID, KEY_REFERENCE, KEY_MESSAGE}, null,
+				null, null, null, null);
+		
+		if(cur.moveToFirst())
+		{
+			ArrayList<Entry> exchangeMessage = new ArrayList<Entry>();
+			do
+			exchangeMessage.add(new Entry(
+					getNumber(cur.getLong(cur.getColumnIndex(KEY_REFERENCE))),
+					cur.getString(cur.getColumnIndex(KEY_MESSAGE)),
+					cur.getLong(cur.getColumnIndex(KEY_ID)), TRUE));
+			
+			
+			while(cur.moveToNext());
+			close(cur);
+			return exchangeMessage;
+		}
+		return null;
+	}
+	
+	/**
+	 * Add a pending key exchange message.
+	 * @param keyExchange The pending key exchange message
+	 */
+	public void addKeyExchangeMessage(Entry keyExchange)
+	{
+		ContentValues cv = new ContentValues();
+		
+		cv.put(KEY_REFERENCE, getNumberId(keyExchange.getNumber()));
+		cv.put(KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
+		
+		open();
+		db.insert(SQLitehelper.EXCHANGE_TABLE_NAME, null, cv);
+		close();
+	}
+	
+	/**
+	 * Delete the pending key exchange message. Calling this method means the
+	 * user has either rejected the key exchange or accepted.
+	 * @param number The number of the contact who had a pending key exchange
+	 * that has now been dealt with.
+	 */
+	public void deleteKeyExchangeMessage(String number)
+	{
+		open();
+		db.delete(SQLitehelper.EXCHANGE_TABLE_NAME, KEY_NUMBER_REFERENCE + " = "
+				+ getNumberId(number), null);
+		close();
 	}
 	
 	/**
@@ -1381,7 +1470,7 @@ public class DBAccessor {
 	 * @return The first element in the queue stored in the database. If the
 	 * queue is empty then the return is null.
 	 */
-	public synchronized QueueEntry getFirstInQueue ()
+	public synchronized Entry getFirstInQueue ()
 	{
 		open();
 	
@@ -1393,7 +1482,7 @@ public class DBAccessor {
 		if (cur.moveToFirst())
 		{
 			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
-			QueueEntry entry = new QueueEntry(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
+			Entry entry = new Entry(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
 					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id, cur.getInt(cur.getColumnIndex(KEY_EXCHANGE)));
 			close(cur);
 			

@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.tinfoil.sms.messageQueue;
+package com.tinfoil.sms.dataStructures;
 
 /**
  * The data structure for storing entries retrieved or sent to the database's
  * messaging queue.
  */
-public class QueueEntry {
+public class Entry {
 	private String number;
 	private String message;
 	private long id;
@@ -51,7 +51,7 @@ public class QueueEntry {
 	 * @param id The queue's unique ID
 	 * @param exchange Whether the message is a key exchange or not
 	 */
-	public QueueEntry (String number, String message, long id, int exchange)
+	public Entry (String number, String message, long id, int exchange)
 	{
 		this.number = number;
 		this.message = message;

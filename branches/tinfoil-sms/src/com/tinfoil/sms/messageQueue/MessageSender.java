@@ -17,6 +17,7 @@
 
 package com.tinfoil.sms.messageQueue;
 
+import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -53,7 +54,7 @@ public class MessageSender implements Runnable{
 		 */
 		while(true)
 		{
-			QueueEntry mes = null;
+			Entry mes = null;
 			
 			/*
 			 * TODO change the queue to wait until the broadcast receiver

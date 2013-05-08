@@ -31,12 +31,12 @@ import android.telephony.SmsManager;
 import android.widget.Toast;
 
 import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
-import com.tinfoil.sms.messageQueue.QueueEntry;
 import com.tinfoil.sms.sms.ConversationView;
 
 /**
@@ -138,7 +138,7 @@ public abstract class SMSUtility {
      * @param number The number of the phone that the message is sent to
      * @param message The message, encrypted that will be sent to the contact
      */
-    public static void sendSMS(final Context c, QueueEntry message)
+    public static void sendSMS(final Context c, Entry message)
     {
         final String SENT = "SMS_SENT";
 
@@ -266,7 +266,7 @@ public abstract class SMSUtility {
      * 
      * @return boolean whether the message sent or not
      */
-    public static boolean sendMessage(DBAccessor dba, final Context context, QueueEntry message) {
+    public static boolean sendMessage(DBAccessor dba, final Context context, Entry message) {
     	   	
         try
         {
@@ -279,7 +279,8 @@ public abstract class SMSUtility {
                 		dba.getNumber(format(message.getNumber()))
                         .getPublicKey()), message.getMessage());
 
-                sendSMS(context, new QueueEntry(message.getNumber(), encrypted, message.getId(), message.getExchange()));
+                sendSMS(context, new Entry(message.getNumber(), encrypted,
+                		message.getId(), message.getExchange()));
 
                 if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {
