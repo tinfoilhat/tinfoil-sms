@@ -126,7 +126,7 @@ public class ExchangeKey implements Runnable {
             for (int i = 0; i < this.untrusted.size(); i++)
             {
                 //untrusted.get(i).clearPublicKey();
-                this.number = MessageService.dba.getRow(this.untrusted.get(i)).getNumber(this.untrusted.get(i));
+                this.number = MessageService.dba.getNumber(this.untrusted.get(i));
                 this.number.clearPublicKey();
                 
                 //set the initiator flag to false
@@ -143,7 +143,7 @@ public class ExchangeKey implements Runnable {
         {
             for (int i = 0; i < this.trusted.size(); i++)
             {
-                this.number = MessageService.dba.getRow(this.trusted.get(i)).getNumber(this.trusted.get(i));
+                this.number = MessageService.dba.getNumber(this.trusted.get(i));
                  
                 /*
                  * Set the initiator flag since this user is starting the key exchange.

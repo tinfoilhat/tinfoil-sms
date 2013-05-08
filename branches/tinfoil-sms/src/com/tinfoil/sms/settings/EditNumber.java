@@ -55,7 +55,8 @@ public class EditNumber extends Activity{
 	private EditText sharedInfo2;
 	private EditText bookPath;
 	private EditText bookInverse;
-	private TrustedContact tc;
+	private Number number;
+	//private TrustedContact tc;
 	private String originalNumber;
 	private static int position;
 	
@@ -98,17 +99,18 @@ public class EditNumber extends Activity{
         	/*
         	 * Initialize the values to be adjusted
         	 */
-        	tc = MessageService.dba.getRow(originalNumber);
+        	//tc = MessageService.dba.getRow(originalNumber);
+        	number = MessageService.dba.getNumber(originalNumber);
         
 	        phoneNumber.setText(originalNumber);        
 	        
-	        sharedInfo1.setText(tc.getNumber(originalNumber).getSharedInfo1());
+	        sharedInfo1.setText(number.getSharedInfo1());
 	        
-	        sharedInfo2.setText(tc.getNumber(originalNumber).getSharedInfo2());
+	        sharedInfo2.setText(number.getSharedInfo2());
 	        
-	        bookPath.setText(tc.getNumber(originalNumber).getBookPath());
+	        bookPath.setText(number.getBookPath());
 	        
-	        bookInverse.setText(tc.getNumber(originalNumber).getBookInversePath());
+	        bookInverse.setText(number.getBookInversePath());
         }
         else
         {
@@ -135,9 +137,10 @@ public class EditNumber extends Activity{
 		if(phoneNumber.getText().toString() != null &&
 				phoneNumber.getText().toString().length() > 0)
 		{
-			Number tempNumber;
+			//Number tempNumber;
+			TrustedContact tc = null;
 			
-			if(tc == null)
+			if(number == null)
 			{
 				/* Number is a new number */						
 				if(originalNumber != null)
@@ -146,9 +149,10 @@ public class EditNumber extends Activity{
 					 * The contact is not new and has another number.
 					 * Get the contact from the database
 					 */
-					tc = MessageService.dba.getRow(originalNumber);
+					
+					//number = MessageService.dba.getNumber(originalNumber);
 				}
-				tempNumber = new Number(phoneNumber.getText().toString());
+				number = new Number(phoneNumber.getText().toString());
 			}
 			else
 			{
@@ -156,17 +160,17 @@ public class EditNumber extends Activity{
 				 * Editing the current number. Get the Number row
 				 * for the previous number.
 				 */
-				tempNumber = tc.getNumber(originalNumber);
-				tempNumber.setNumber(phoneNumber.getText().toString());
+				
+				number.setNumber(phoneNumber.getText().toString());
 			}
 			
 			/*
 			 * Set the updated information
 			 */
-			tempNumber.setSharedInfo1(sharedInfo1.getText().toString());
-			tempNumber.setSharedInfo2(sharedInfo2.getText().toString());
-			tempNumber.setBookPath(bookPath.getText().toString());
-			tempNumber.setBookInversePath(bookInverse.getText().toString());
+			number.setSharedInfo1(sharedInfo1.getText().toString());
+			number.setSharedInfo2(sharedInfo2.getText().toString());
+			number.setBookPath(bookPath.getText().toString());
+			number.setBookInversePath(bookInverse.getText().toString());
 			
 			/*
 			 * Update/Add the number to the database
@@ -175,18 +179,19 @@ public class EditNumber extends Activity{
 			{
 				if(position == AddContact.NEW_NUMBER_CODE)
 				{
-					tc.addNumber(tempNumber);
+					tc = MessageService.dba.getRow(originalNumber);
+					tc.addNumber(number);
 					MessageService.dba.updateRow(tc, originalNumber);
 				}
 				else
 				{
-					MessageService.dba.updateNumberRow(tempNumber, originalNumber, 0);
+					MessageService.dba.updateNumberRow(number, originalNumber, 0);
 				}
 			}
 			else
 			{
-				TrustedContact tc = new TrustedContact();
-				tc.addNumber(tempNumber);
+				tc = new TrustedContact();
+				tc.addNumber(number);
 				MessageService.dba.addRow(tc);
 			}
 			
@@ -196,7 +201,7 @@ public class EditNumber extends Activity{
 			/*
 			 * Return intent with given parameters 
 			 */
-			if(originalNumber != null && tempNumber.getNumber().equalsIgnoreCase(originalNumber))
+			if(originalNumber != null && number.getNumber().equalsIgnoreCase(originalNumber))
 			{					
 				data.putExtra(EditNumber.UPDATE, false);					
 			}
@@ -205,7 +210,7 @@ public class EditNumber extends Activity{
 				data.putExtra(EditNumber.UPDATE, true);
 			}
 			
-			data.putExtra(EditNumber.NUMBER, tempNumber.getNumber());
+			data.putExtra(EditNumber.NUMBER, number.getNumber());
 			data.putExtra(AddContact.POSITION, position);
 			data.putExtra(EditNumber.ADD, true);
 			

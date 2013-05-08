@@ -761,11 +761,53 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO either add a query to retrieve the messages or update documentation
-	 * to state that messages are not retrieved during this query.
-	 * 
+	 * Get a Number from the database given the number. This method is met to
+	 * simplify transactions that require only the contact's Number and no other
+	 * information. It is a less expensive query
+	 * @param number
+	 * @return
+	 */
+	public Number getNumber(String number)
+	{
+		open();
+		
+		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME,
+				new String[]{KEY_ID, KEY_NUMBER, KEY_TYPE, KEY_UNREAD,
+				KEY_PUBLIC_KEY, KEY_SIGNATURE, KEY_NONCE_ENCRYPT,
+				KEY_NONCE_DECRYPT, KEY_INITIATOR}, KEY_NUMBER + " = ?",
+				new String[]{number}, null, null, null);
+		
+		if(cur.moveToFirst())
+		{
+			Number returnNumber = new Number(cur.getLong(cur.getColumnIndex(KEY_ID)),
+					cur.getString(cur.getColumnIndex(KEY_NUMBER)),
+					cur.getInt(cur.getColumnIndex(KEY_TYPE)),
+					cur.getInt(cur.getColumnIndex(KEY_UNREAD)),
+					cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
+					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)),
+					cur.getInt(cur.getColumnIndex(KEY_NONCE_ENCRYPT)),
+					cur.getInt(cur.getColumnIndex(KEY_NONCE_DECRYPT)),
+					cur.getInt(cur.getColumnIndex(KEY_INITIATOR)));
+			
+			//Retrieve the book paths
+			returnNumber.setBookPaths(getBookPath(returnNumber.getId()));
+			
+			//Retrieve the shared information
+			returnNumber.setSharedInfo(getSharedInfo(returnNumber.getId()));
+			
+			close(cur);
+			
+			return returnNumber;
+		}
+		close(cur);
+		return null;
+		
+	}
+	
+	/**
 	 * Retrieve the information relating to the contact who has the given
-	 * number.
+	 * number. This does not however retrieve the messages of each particular
+	 * contact's number.  
 	 * @param number The number of the contact to retrieve 
 	 * @return The TrustedContact containing all the information in the database
 	 * about that contact.
@@ -818,14 +860,11 @@ public class DBAccessor {
 							pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR))));
 
 					//Retrieve the book paths
-					String columns[] = getBookPath(num_id);
-					tc.getNumber().get(i).setBookPath(columns[0]);
-					tc.getNumber().get(i).setBookInversePath(columns[1]);
+					tc.getNumber().get(i).setBookPaths(getBookPath(num_id));
 					
 					//Retrieve the shared information
-					columns = getSharedInfo(num_id);
-					tc.getNumber().get(i).setSharedInfo1(columns[0]);
-					tc.getNumber().get(i).setSharedInfo2(columns[1]);
+					tc.getNumber().get(i).setSharedInfo(getSharedInfo(num_id));
+
 					i++;
 				}while(pCur.moveToNext());
 			}
@@ -1258,10 +1297,10 @@ public class DBAccessor {
 	 */
 	public boolean isTrustedContact (String number)
 	{
-		TrustedContact tc = getRow(SMSUtility.format(number));
-		if (tc != null)
+		Number trustedNumber = this.getNumber(SMSUtility.format(number));
+		if (trustedNumber != null)
 		{
-			if (!tc.getNumber(number).isPublicKeyNull())
+			if (!trustedNumber.isPublicKeyNull())
 			{
 				return true;
 			}

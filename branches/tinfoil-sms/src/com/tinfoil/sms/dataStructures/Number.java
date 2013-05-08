@@ -209,6 +209,17 @@ public class Number {
 	}
 
 	/**
+	 * Set both the shared secrets.
+	 * @param sharedSecrets Contains both shared secrets. At index 0 is the
+	 * first and at index 1 is the second secret.
+	 */
+	public void setSharedInfo(String[] sharedSecrets)
+	{
+		this.s1 = sharedSecrets[0];
+		this.s2 = sharedSecrets[1];
+	}
+	
+	/**
 	 * Shared Information between the user and the contact. This information
 	 * will be used for the key exchange encrypted messages sent. The default
 	 * value will be either 'Initiator' or 'Receiver'
@@ -266,6 +277,17 @@ public class Number {
 	 */
 	public void setSignature(byte[] signature) {
 		this.signature = signature;
+	}
+	
+	/**
+	 * Set the book paths
+	 * @param bookPaths Contains both book paths. The bookPath is at index 0 and
+	 * the bookInversePath is at index 1. 
+	 */
+	public void setBookPaths(String[] bookPaths)
+	{
+		this.bookPath = bookPaths[0];
+		this.bookInversePath = bookPaths[1];
 	}
 
 	/**
