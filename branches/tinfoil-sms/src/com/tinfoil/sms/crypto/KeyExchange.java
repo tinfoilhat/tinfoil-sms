@@ -35,6 +35,7 @@ import com.tinfoil.sms.dataStructures.Number;
  * required to sign and verify keys needed to execute the public key exchange operations.
  * 
  * TODO Add support to get the signature for the keys so it can be added to the DB
+ * TODO CLEAN THIS CLASS UP!
  */
 public abstract class KeyExchange
 {
@@ -85,6 +86,26 @@ public abstract class KeyExchange
                                                                 signedPubKey.getBytes());
         
        return ECGKeyUtil.encodeBase64PubKey(param, pubKey);
+    }
+    
+    
+    /**
+     * Gets the signature from the BASE64 encoded key exchange, which contains
+     * the key and signature, and returns the signature encoded as BASE64, for 
+     * proper storage and transmission in textual form.
+     * 
+     * @param signedPubKey The signed public key the user received from the number
+     * 
+     * @return The public key received, encoded as BASE64 for storage
+     */
+    public static String encodedSignature(String signedPubKey)
+    {   
+        SHA256Digest digest = new SHA256Digest();
+        byte[] signature = new byte[digest.getDigestSize()];
+        
+        System.arraycopy(signedPubKey, digest.getDigestSize(), signature, 0, signedPubKey.length());
+        
+        return Base64.encodeToString(signature, Base64.DEFAULT);
     }
     
     
