@@ -36,7 +36,6 @@ import com.tinfoilsms.csprng.SDFGenerator;
 import com.tinfoilsms.csprng.SDFParameters;
 
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -84,7 +83,7 @@ public class Encryption
         /* Encrypt the message, increment and save the nonce cycle */
         encMessage = encryptMap.get(number.getId()).processBlock(message.getBytes());
         number.setNonceEncrypt(number.getNonceEncrypt() + 1);
-        return new String(Hex.encode(encMessage));
+        return new String(encMessage);
     }
     
     
