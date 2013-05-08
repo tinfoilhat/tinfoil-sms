@@ -68,6 +68,27 @@ public abstract class KeyExchange
     
     
     /**
+     * Gets the public key from the BASE64 encoded key exchange, which contains
+     * the key and signature, and returns the public key encoded as BASE64, for 
+     * proper storage and transmission in textual form.
+     * 
+     * @param signedPubKey The signed public key the user received from the number
+     * 
+     * @return The public key received, encoded as BASE64 for storage
+     */
+    public static String encodedPubKey(String signedPubKey)
+    {
+        ECKeyParam param = new ECKeyParam();
+        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64SignedPubKey(
+                                                                param, 
+                                                                new SHA256Digest(), 
+                                                                signedPubKey.getBytes());
+        
+       return ECGKeyUtil.encodeBase64PubKey(param, pubKey);
+    }
+    
+    
+    /**
      * Signs the current user's public key using the apriori information shared
      * between the current user and the number provided. 
      * 
