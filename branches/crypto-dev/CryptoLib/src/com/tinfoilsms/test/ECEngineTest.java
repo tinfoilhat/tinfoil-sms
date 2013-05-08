@@ -3,8 +3,7 @@ package com.tinfoilsms.test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -234,8 +233,8 @@ public class ECEngineTest
 	@Assumes({"asciiCharset", "blockSizes"})
 	public void uniqueEncryptedMsg()
 	{
-		/* A hash table containing the encrypted message and the resulting decrypted message */
-		Hashtable<String, String> encryptedMsgs = new Hashtable<String, String>(100);
+		/* A hash map containing the encrypted message and the resulting decrypted message */
+		HashMap<String, String> encryptedMsgs = new HashMap<String, String>(100);
 	    
 		/* Re-init new encrypt/decrypt engines for the test */
 		ECEngine encEngine = new ECEngine(encNonce, priorInfo);
