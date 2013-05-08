@@ -100,10 +100,16 @@ public abstract class KeyExchange
      */
     public static String encodedSignature(String signedPubKey)
     {   
+        byte[] decodedSignedPubKey = Base64.decode(signedPubKey, Base64.DEFAULT);
         SHA256Digest digest = new SHA256Digest();
         byte[] signature = new byte[digest.getDigestSize()];
         
-        System.arraycopy(signedPubKey, digest.getDigestSize(), signature, 0, signedPubKey.length());
+        System.arraycopy(
+                decodedSignedPubKey, 
+                decodedSignedPubKey.length() - digest.getDigestSize(), 
+                signature, 
+                0, 
+                decodedSignedPubKey.length());
         
         return Base64.encodeToString(signature, Base64.DEFAULT);
     }
@@ -129,14 +135,14 @@ public abstract class KeyExchange
          * current user is the initiator of the key exchange with the number
          */
         byte[] encodedPubKey = ECGKeyUtil.encodePubKey(param, pubKey);
-        byte[] encodedSignPubKey = ECGKeyExchange.signPubKey(
+        byte[] encodedSignedPubKey = ECGKeyExchange.signPubKey(
                                                         new SHA256Digest(), 
                                                         encodedPubKey, 
                                                         sharedInfo, 
                                                         number.isInitiator());
         
         /* Return the signed public key in a BASE64 encoded, transmissible form */
-        return Base64.encodeToString(encodedSignPubKey, Base64.DEFAULT);
+        return Base64.encodeToString(encodedSignedPubKey, Base64.DEFAULT);
     }
     
     
