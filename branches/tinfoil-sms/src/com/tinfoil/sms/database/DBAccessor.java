@@ -1072,6 +1072,7 @@ public class DBAccessor {
 		
         cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
         cv.put(KEY_SIGNATURE, number.getSignature());
+        cv.put(KEY_INITIATOR, number.getInitiatorInt());
         
         open();
 		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 

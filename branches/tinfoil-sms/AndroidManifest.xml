@@ -4,7 +4,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -17,11 +19,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:icon="@drawable/ic_launcher"
-        android:label="Tinfoil-SMS"
+        android:allowBackup="false"
         android:allowClearUserData="true"
-        android:allowBackup="false">
-        
+        android:icon="@drawable/ic_launcher"
+        android:label="Tinfoil-SMS" >
         <activity
             android:name=".sms.SendMessageActivity"
             android:label="Send Message"
@@ -70,6 +71,14 @@
         </receiver>
 
         <service android:name=".utility.MessageService" />
+
+        <activity
+            android:name="com.tinfoil.sms.sms.KeyExchangeManager"
+            android:label="@string/title_activity_key_exchange_manager" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".sms.ConversationView" />
+        </activity>
     </application>
 
 </manifest>

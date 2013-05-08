@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <ListView
+        android:id="@+id/key_exchange_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_layout"
+        android:layout_centerHorizontal="true" >
+
+    </ListView>
+    
+    <LinearLayout 
+        android:id="@+id/button_layout"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:layout_alignParentBottom="true">
+	    
+	  <Button
+	    android:id="@+id/accept"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:onClick="exchangeKey"
+	    android:layout_weight="1"
+	    android:text="Exchange"/>
+	  
+	  <Button
+	    android:id="@+id/reject"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:onClick="reject"
+	    android:layout_weight="1"
+	    android:text="Reject"/>
+	</LinearLayout>
+
+</RelativeLayout>
