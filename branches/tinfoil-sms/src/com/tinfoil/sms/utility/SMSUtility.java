@@ -275,8 +275,8 @@ public abstract class SMSUtility {
                     !message.isExchange())
             {
                 //Send an encrypted message
-                final String encrypted = Encryption.aes_encrypt(new String(dba.getRow(
-                        format(message.getNumber())).getNumber(format(message.getNumber()))
+                final String encrypted = Encryption.aes_encrypt(new String(
+                		dba.getNumber(format(message.getNumber()))
                         .getPublicKey()), message.getMessage());
 
                 sendSMS(context, new QueueEntry(message.getNumber(), encrypted, message.getId(), message.getExchange()));

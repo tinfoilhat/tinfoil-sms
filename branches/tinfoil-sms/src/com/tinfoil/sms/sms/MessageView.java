@@ -154,6 +154,7 @@ public class MessageView extends Activity implements Runnable{
                                     List<String> contact = null;
                                     if (MessageView.this.tc == null)
                                     {
+                                    	//Do in thread.
                                         MessageView.this.tc = MessageService.dba.getAllRows();
                                     }
 
@@ -336,23 +337,18 @@ public class MessageView extends Activity implements Runnable{
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.exchange:
-                TrustedContact tc = MessageService.dba.getRow(SMSUtility.format
-                        (ConversationView.selectedNumber));
 
-                ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
+            	ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
                         "Exchanging. Please wait...", true, false);
 
-                if (tc != null)
+                if (!MessageService.dba.isTrustedContact(SMSUtility.format
+                        (ConversationView.selectedNumber)))
                 {
-                    if (!MessageService.dba.isTrustedContact(SMSUtility.format
-                            (ConversationView.selectedNumber)))
-                    {
-                        keyThread.startThread(SMSUtility.format(ConversationView.selectedNumber), null);
-                    }
-                    else
-                    {
-                        keyThread.startThread(null, SMSUtility.format(ConversationView.selectedNumber));
-                    }
+                    keyThread.startThread(SMSUtility.format(ConversationView.selectedNumber), null);
+                }
+                else
+                {
+                    keyThread.startThread(null, SMSUtility.format(ConversationView.selectedNumber));
                 }
 
                 return true;

@@ -99,7 +99,6 @@ public class EditNumber extends Activity{
         	/*
         	 * Initialize the values to be adjusted
         	 */
-        	//tc = MessageService.dba.getRow(originalNumber);
         	number = MessageService.dba.getNumber(originalNumber);
         
 	        phoneNumber.setText(originalNumber);        

@@ -134,9 +134,9 @@ public class MessageReceiver extends BroadcastReceiver {
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}
 							
-							secretMessage = Encryption.aes_decrypt(new String(MessageService.dba.getRow(
-									SMSUtility.format(address)).getNumber(SMSUtility.format(address)).getPublicKey()), 
-									messages[0].getMessageBody());
+							secretMessage = Encryption.aes_decrypt(new String (MessageService.dba.getNumber
+									(SMSUtility.format(address)).getPublicKey()), messages[0].getMessageBody());
+							
 							SMSUtility.sendToSelf(context, address,	
 									secretMessage , ConversationView.INBOX);
 							
@@ -172,7 +172,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						if(messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
 						{
 							Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
-							Number number = MessageService.dba.getRow(SMSUtility.format(address)).getNumber(SMSUtility.format(address));
+							Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 							number.setPublicKey();
 							
 							MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
