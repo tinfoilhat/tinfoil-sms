@@ -19,6 +19,8 @@ package com.tinfoil.sms.crypto;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 
+import android.util.Base64;
+
 import com.tinfoil.sms.utility.SMSUtility;
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECGKeyExchange;
@@ -33,9 +35,80 @@ import com.tinfoil.sms.dataStructures.Number;
  * required to sign and verify keys needed to execute the public key exchange operations.
  * 
  * TODO Add support to get the signature for the keys so it can be added to the DB
+ * TODO CLEAN THIS CLASS UP!
  */
 public abstract class KeyExchange
 {
+    /**
+     * Attempts to identify if the message received is a key exchange by checking
+     * if the message is encoded as BASE64, which is the encoding used for 
+     * key exchanges.
+     * 
+     * TODO This is a TEMPORARY solution to the key exchange problem, and should
+     * be replaced with a better method of identifying key exchanges. For example
+     * adding a small, but very fast, 8 byte checksum of the entire message and
+     * simplifying the process by checking if the message matches a certain length.
+     * 
+     *      -------------------------------------
+     *      | public key | signature | checksum |
+     *      -------------------------------------
+     */
+    public static boolean isKeyExchange(String message)
+    {
+        try
+        {
+            Base64.decode(message, Base64.DEFAULT);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
+    /**
+     * Gets the public key from the BASE64 encoded key exchange, which contains
+     * the key and signature, and returns the public key encoded as BASE64, for 
+     * proper storage and transmission in textual form.
+     * 
+     * @param signedPubKey The signed public key the user received from the number
+     * 
+     * @return The public key received, encoded as BASE64 for storage
+     */
+    public static String encodedPubKey(String signedPubKey)
+    {
+        ECKeyParam param = new ECKeyParam();
+        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64SignedPubKey(
+                                                                param, 
+                                                                new SHA256Digest(), 
+                                                                signedPubKey.getBytes());
+        
+       return ECGKeyUtil.encodeBase64PubKey(param, pubKey);
+    }
+    
+    
+    /**
+     * Gets the signature from the BASE64 encoded key exchange, which contains
+     * the key and signature, and returns the signature encoded as BASE64, for 
+     * proper storage and transmission in textual form.
+     * 
+     * @param signedPubKey The signed public key the user received from the number
+     * 
+     * @return The public key received, encoded as BASE64 for storage
+     */
+    public static String encodedSignature(String signedPubKey)
+    {   
+        SHA256Digest digest = new SHA256Digest();
+        byte[] signature = new byte[digest.getDigestSize()];
+        
+        System.arraycopy(signedPubKey, digest.getDigestSize(), signature, 0, signedPubKey.length());
+        
+        return Base64.encodeToString(signature, Base64.DEFAULT);
+    }
+    
+    
     /**
      * Signs the current user's public key using the apriori information shared
      * between the current user and the number provided. 
@@ -52,17 +125,18 @@ public abstract class KeyExchange
         ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, SMSUtility.user.getPublicKey());
         APrioriInfo sharedInfo = new APrioriInfo(number.getSharedInfo1(), number.getSharedInfo2());
         
-        /* Sign the public key using the shared information and based on who is
-         * the initiator of the key exchange
+        /* Sign the public key using the shared information based on whether the
+         * current user is the initiator of the key exchange with the number
          */
-        byte[] encodedPubKey = ECGKeyUtil.encodeBase64PubKey(param, pubKey);
+        byte[] encodedPubKey = ECGKeyUtil.encodePubKey(param, pubKey);
         byte[] encodedSignPubKey = ECGKeyExchange.signPubKey(
                                                         new SHA256Digest(), 
                                                         encodedPubKey, 
                                                         sharedInfo, 
                                                         number.isInitiator());
         
-        return new String(encodedSignPubKey);
+        /* Return the signed public key in a BASE64 encoded, transmissible form */
+        return Base64.encodeToString(encodedSignPubKey, Base64.DEFAULT);
     }
     
     
@@ -83,7 +157,7 @@ public abstract class KeyExchange
         APrioriInfo sharedInfo = new APrioriInfo(number.getSharedInfo1(), number.getSharedInfo2());
         return ECGKeyExchange.verifyPubKey(
                                     new SHA256Digest(), 
-                                    signedPubKey.getBytes(), 
+                                    Base64.decode(signedPubKey, Base64.DEFAULT), 
                                     sharedInfo, 
                                     number.isInitiator());
     }

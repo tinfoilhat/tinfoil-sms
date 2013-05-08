@@ -80,12 +80,12 @@ public abstract class ECGKeyUtil
      * @param keyParam The Elliptic Curve key parameter which contains the curve
      * specifications and domain parameters
      * @param pubKey an ECC public key parameter which implements CipherParameters
-     * @return A byte array of the ASN.1 encoded public key Q
+     * @return The ASN.1 encoded public key Q as a BASE64 encoded string
      */
-    static public byte[] encodeBase64PubKey(ECKeyParam keyParam, CipherParameters pubKey)
+    static public String encodeBase64PubKey(ECKeyParam keyParam, CipherParameters pubKey)
     		throws InvalidParameterException
     {
-    	return Base64.encode(encodePubKey(keyParam, pubKey), Base64.DEFAULT);
+    	return Base64.encodeToString(encodePubKey(keyParam, pubKey), Base64.DEFAULT);
     }
     
     
@@ -122,14 +122,14 @@ public abstract class ECGKeyUtil
      * @param keyParam The Elliptic Curve key parameter which contains the curve
      * specifications and domain parameters
      * @param priKey an ECC private key parameter object which implements CipherParameters
-     * @return A byte array of the base64 encoded private key D BigInteger value
+     * @return The base64 encoded private key D BigInteger value
      * @throws InvalidParameterException
      */
-    static public byte[] encodeBase64PriKey(ECKeyParam keyParam, CipherParameters priKey)
+    static public String encodeBase64PriKey(ECKeyParam keyParam, CipherParameters priKey)
     		throws InvalidParameterException
 	{
     		/* Return the private key D BigInteger value encoded as base64 */
-    		return Base64.encode(
+    		return Base64.encodeToString(
     				encodePriKey(keyParam, priKey), 
     				Base64.DEFAULT);
 	}
@@ -227,7 +227,7 @@ public abstract class ECGKeyUtil
     	return decodeSignedPubKey(keyParam, digest, Base64.decode(signedPubKey, Base64.DEFAULT));
     	
     }
-    
+   
     
     /**
      * decodePriKey A function which takes an ECC private key parameter object and 
