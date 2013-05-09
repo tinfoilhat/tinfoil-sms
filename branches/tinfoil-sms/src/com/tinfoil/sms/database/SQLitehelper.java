@@ -21,6 +21,7 @@ package com.tinfoil.sms.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * SQLitehelper is used to create the database to store all needed
@@ -29,9 +30,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
-	private static final int DATABASE_VERSION = 1;
 	
-	//Table Names
+	/*
+	 * Upgraded the version of the database since signature was removed from the
+	 * user database.
+	 */
+	private static final int DATABASE_VERSION = 2;
+	
+	/* Table Names */
 	public static final String USER_TABLE_NAME = "user";
     public static final String TRUSTED_TABLE_NAME = "trusted_contact";
     public static final String NUMBERS_TABLE_NAME = "numbers";
@@ -41,6 +47,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String QUEUE_TABLE_NAME = "queue";
     public static final String EXCHANGE_TABLE_NAME = "exchange_messages";
     
+    /* Create statements */
     private static final String SHARED_INFO_TABLE_CREATE =
             "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
             " ("+ DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
@@ -125,6 +132,8 @@ public class SQLitehelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		Log.v("Database Update", "tables are being deleted to update from version "
+				+ oldVersion + " to version " + newVersion); 
 		db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + TRUSTED_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + NUMBERS_TABLE_NAME);
