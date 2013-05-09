@@ -178,6 +178,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							//if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange", true))
 							if(number.getKeyExchangeFlag() == Number.AUTO)
 							{
+								//Might be good to condense this into a method.
 								number.setPublicKey();
 								
 								MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
@@ -190,6 +191,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							}
 							else
 							{
+								//TODO Add handling for multiple key exchange messages from a single contact
 								MessageService.dba.addKeyExchangeMessage(
 										new Entry(address, messages[0].getMessageBody()));
 							}

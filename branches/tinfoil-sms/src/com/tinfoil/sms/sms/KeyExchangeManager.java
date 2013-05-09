@@ -8,18 +8,29 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.utility.SMSUtility;
 
 @SuppressLint("all")
 public class KeyExchangeManager extends Activity {
 
+	private ArrayList<Entry> entries;
+	private ArrayList<Integer> checked;
+	//private  numbers;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,7 +38,9 @@ public class KeyExchangeManager extends Activity {
 		// Show the Up button in the action bar.
 		//setupActionBar();
 		
-		ArrayList<Entry> entries = MessageService.dba.getAllKeyExchangeMessages();
+		
+		entries = MessageService.dba.getAllKeyExchangeMessages();
+		checked = new ArrayList<Integer>(entries.size());
 		
 		if(entries != null)
 		{
@@ -43,9 +56,64 @@ public class KeyExchangeManager extends Activity {
 			ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
 			list.setAdapter(a);
 			list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			
+			list.setOnItemClickListener(new OnItemClickListener(){
+
+				public void onItemClick(final AdapterView<?> parent, final View view,
+                final int position, final long id) {
+					
+					//ListView list = (ListView)KeyExchangeManager.this.findViewById(R.id.key_exchange_list);
+					
+					
+					//checked.add(position);
+				}
+			});
 		}
+		
 	}
 
+	public void exchangeKey(View view)
+	{
+		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+		SparseBooleanArray sba = list.getCheckedItemPositions();
+		
+		for (int i = 0; i < entries.size(); i++)
+		{
+			if(sba.get(i))
+			{
+				Number number = MessageService.dba.getNumber(SMSUtility.format(entries.get(0).getNumber()));
+				
+				// Will do it off of entries.get(position).getMessage() once keys are implemented
+				number.setPublicKey();
+				
+				MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+				
+				if(!number.isInitiator())
+				{
+					MessageService.dba.addMessageToQueue(number.getNumber(),
+							new String(Encryption.generateKey()), true);
+				}
+				//Remove element from list
+			}
+			//else
+				// Item has not be touched leave it alone.
+		}
+	}
+	
+	public void reject(View view)
+	{
+		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+		SparseBooleanArray sba = list.getCheckedItemPositions();
+		
+		for (int i = 0; i < entries.size(); i++)
+		{
+			if(sba.get(i))
+			{
+				MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
+			}
+		}
+	}
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */

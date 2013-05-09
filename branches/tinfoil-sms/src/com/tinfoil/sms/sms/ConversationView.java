@@ -32,11 +32,13 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -108,15 +110,27 @@ public class ConversationView extends Activity implements Runnable {
         MessageService.dba = new DBAccessor(this);
 
         SMSUtility.user = MessageService.dba.getUserRow();
+        
+        // Commented out for now since there is a library reference problem.
+         
         if(SMSUtility.user == null)
         {
+        	Toast.makeText(this, "New key pair is generating...", Toast.LENGTH_SHORT).show();
+        	Log.v("First Launch", "keys are generating...");
         	//Create the keyGenerator
 	        KeyGenerator keyGen = new KeyGenerator();
 	        
 	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
 	        //Set the user's 
 	        MessageService.dba.setUser(SMSUtility.user);
-        }       
+        }
+        
+        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
+        Toast.makeText(this, "Public Key " + new String(SMSUtility.user.getPublicKey()), Toast.LENGTH_LONG);
+        
+        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
+        Toast.makeText(this, "Private Key " + new String(SMSUtility.user.getPrivateKey()), Toast.LENGTH_LONG);
+        
         
         messageSender.startThread(getApplicationContext());
 
