@@ -109,7 +109,7 @@ public abstract class KeyExchange
                 decodedSignedPubKey.length - digest.getDigestSize(), 
                 signature, 
                 0, 
-                decodedSignedPubKey.length);
+                digest.getDigestSize());
         
         return Base64.encode(signature, Base64.DEFAULT);
     }

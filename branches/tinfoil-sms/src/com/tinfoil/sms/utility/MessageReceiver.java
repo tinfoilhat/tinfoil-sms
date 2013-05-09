@@ -27,6 +27,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
@@ -155,7 +156,8 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 					else
 					{
-						Log.v("key", messages[0].getMessageBody());
+						String message = messages[0].getMessageBody();
+						Log.v("key", message);
 						Log.v("keyActual", new String("test123".getBytes()));
 												
 						/*
@@ -170,30 +172,36 @@ public class MessageReceiver extends BroadcastReceiver {
 						Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 						
 						if(number.getKeyExchangeFlag() != Number.IGNORE &&
-								messages[0].getMessageBody().equals(new String(Encryption.generateKey())))
+								KeyExchange.isKeyExchange(message))
 						{
-							Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
-							
 							///Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 							//if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange", true))
 							if(number.getKeyExchangeFlag() == Number.AUTO)
 							{
 								//Might be good to condense this into a method.
-								number.setPublicKey();
-								
-								MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
-								
-								if(!number.isInitiator())
+								if(KeyExchange.verify(number, message))
 								{
-									MessageService.dba.addMessageToQueue(number.getNumber(),
-											new String(Encryption.generateKey()), true);
+									Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
+									Log.v("Key Exchange", "Exchange Key Message Received");
+									
+									number.setPublicKey(KeyExchange.encodedPubKey(message));
+									number.setSignature(KeyExchange.encodedSignature(message));
+									
+									MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+									
+									if(!number.isInitiator())
+									{
+										Log.v("Key Exchange", "Not Initiator");
+										MessageService.dba.addMessageToQueue(number.getNumber(),
+												KeyExchange.sign(number), true);
+									}
 								}
 							}
 							else
 							{
 								//TODO Add handling for multiple key exchange messages from a single contact
 								MessageService.dba.addKeyExchangeMessage(
-										new Entry(address, messages[0].getMessageBody()));
+										new Entry(address, message));
 							}
 						}
 						else
@@ -202,10 +210,10 @@ public class MessageReceiver extends BroadcastReceiver {
 							 * Send and store a plain text message to the contact
 							 */
 							SMSUtility.sendToSelf(context, address,
-									messages[0].getMessageBody(), ConversationView.INBOX);
+									message, ConversationView.INBOX);
 							
 							
-							Message newMessage = new Message(messages[0].getMessageBody(), true, false);
+							Message newMessage = new Message(message, true, false);
 							MessageService.dba.addNewMessage(newMessage, address, true);
 						}
 						

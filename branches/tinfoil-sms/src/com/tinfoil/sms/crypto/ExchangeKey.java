@@ -152,11 +152,13 @@ public class ExchangeKey implements Runnable {
                                 
                 MessageService.dba.updateInitiator(number);
              
-                /*
+                /*TODO remove
                  * Will use MessageService.dba.getUserRow(); to get access to
                  * the user's key. After the user's key has been generated.
                  */
-                String keyExchangeMessage = new String(Encryption.generateKey());
+                //String keyExchangeMessage = new String(Encryption.generateKey());
+                
+                String keyExchangeMessage = KeyExchange.sign(number);
                 
                 MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
             }

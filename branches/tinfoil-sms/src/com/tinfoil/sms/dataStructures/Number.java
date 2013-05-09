@@ -363,6 +363,14 @@ public class Number {
 		this.publicKey =  Encryption.generateKey();
 		//TODO update signature as well
 	}
+
+	/**
+	 * Set the contact's public publicKey
+	 */
+	public void setPublicKey(byte[] publicKey)
+	{
+		this.publicKey =  publicKey;
+	}
 	
 	/**
 	 * Erases the public key
@@ -370,7 +378,6 @@ public class Number {
 	public void clearPublicKey()
 	{
 		this.publicKey = null;
-		//TODO update signature as well
 	}
 
 	/**

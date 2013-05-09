@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,10 +41,11 @@ public class KeyExchangeManager extends Activity {
 		
 		
 		entries = MessageService.dba.getAllKeyExchangeMessages();
-		checked = new ArrayList<Integer>(entries.size());
+		
 		
 		if(entries != null)
 		{
+			checked = new ArrayList<Integer>(entries.size());
 			String[] numbers = new String[entries.size()];
 			
 			for(int i = 0; i < entries.size(); i++)
@@ -57,7 +59,7 @@ public class KeyExchangeManager extends Activity {
 			list.setAdapter(a);
 			list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 			
-			list.setOnItemClickListener(new OnItemClickListener(){
+			/*list.setOnItemClickListener(new OnItemClickListener(){
 
 				public void onItemClick(final AdapterView<?> parent, final View view,
                 final int position, final long id) {
@@ -67,49 +69,55 @@ public class KeyExchangeManager extends Activity {
 					
 					//checked.add(position);
 				}
-			});
+			});*/
 		}
 		
 	}
 
 	public void exchangeKey(View view)
 	{
-		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
-		SparseBooleanArray sba = list.getCheckedItemPositions();
-		
-		for (int i = 0; i < entries.size(); i++)
+		if(entries != null)
 		{
-			if(sba.get(i))
+			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+			SparseBooleanArray sba = list.getCheckedItemPositions();
+			
+			for (int i = 0; i < entries.size(); i++)
 			{
-				Number number = MessageService.dba.getNumber(SMSUtility.format(entries.get(0).getNumber()));
-				
-				// Will do it off of entries.get(position).getMessage() once keys are implemented
-				number.setPublicKey();
-				
-				MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
-				
-				if(!number.isInitiator())
+				if(sba.get(i))
 				{
-					MessageService.dba.addMessageToQueue(number.getNumber(),
-							new String(Encryption.generateKey()), true);
+					Number number = MessageService.dba.getNumber(SMSUtility.format(entries.get(0).getNumber()));
+					
+					// Will do it off of entries.get(position).getMessage() once keys are implemented
+					number.setPublicKey();
+					
+					MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+					
+					if(!number.isInitiator())
+					{
+						MessageService.dba.addMessageToQueue(number.getNumber(),
+								new String(Encryption.generateKey()), true);
+					}
+					//Remove element from list
 				}
-				//Remove element from list
+				//else
+					// Item has not be touched leave it alone.
 			}
-			//else
-				// Item has not be touched leave it alone.
 		}
 	}
 	
 	public void reject(View view)
 	{
-		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
-		SparseBooleanArray sba = list.getCheckedItemPositions();
-		
-		for (int i = 0; i < entries.size(); i++)
+		if(entries != null)
 		{
-			if(sba.get(i))
+			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+			SparseBooleanArray sba = list.getCheckedItemPositions();
+			
+			for (int i = 0; i < entries.size(); i++)
 			{
-				MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
+				if(sba.get(i))
+				{
+					MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
+				}
 			}
 		}
 	}
