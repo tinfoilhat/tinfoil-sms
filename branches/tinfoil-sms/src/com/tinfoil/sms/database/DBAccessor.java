@@ -1093,26 +1093,24 @@ public class DBAccessor {
 	
 	/**
 	 * Store the user's public key, private key and signature.
-	 * ***Can only be set Once
 	 * @param user The user object that contains the public and private key, and
 	 * the signature.
 	 */
 	public void setUser(User user)
 	{
-		if (!isKeyGen())
-		{
+		//if (!isKeyGen())
+		//{
 			ContentValues cv = new ContentValues();
 			
 			//add given values to a row
 	        cv.put(KEY_PUBLIC_KEY, user.getPublicKey());
-	        cv.put(KEY_PRIVATE_KEY, user.getPrivateKey());
-	        cv.put(KEY_SIGNATURE, user.getSignature());
+	        cv.put(KEY_PRIVATE_KEY, user.getPrivateKey());       
 	        
 	        //Insert the row into the database
 	        open();
 	        db.insert(SQLitehelper.USER_TABLE_NAME, null, cv);
 	        close();
-		}
+		//}
 	}
 	
 	/**
@@ -1124,13 +1122,12 @@ public class DBAccessor {
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, 
-				new String[] {KEY_PUBLIC_KEY, KEY_PRIVATE_KEY, KEY_SIGNATURE},
+				new String[] {KEY_PUBLIC_KEY, KEY_PRIVATE_KEY},
 				null, null, null, null, null);
 		if (cur.moveToFirst())
 		{
 			User user = new User(cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
-					cur.getBlob(cur.getColumnIndex(KEY_PRIVATE_KEY)), 
-					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)));
+					cur.getBlob(cur.getColumnIndex(KEY_PRIVATE_KEY)));
 			close(cur);
 			return user;
 		}
@@ -1140,13 +1137,15 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * TODO remove since just attempting to get the row and checking for null
+	 * does pretty much the same thing in less queries in the majority of cases.
 	 * Used to determine if the user's key has been generated
 	 * @return True if there is a key already in the database, false otherwise.
 	 */
-	public boolean isKeyGen()
+	/*public boolean isKeyGen()
 	{
 		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, new String[]
-				{KEY_PUBLIC_KEY, KEY_PUBLIC_KEY, KEY_SIGNATURE}, null, null, null, null, null);
+				{KEY_PUBLIC_KEY, KEY_PUBLIC_KEY}, null, null, null, null, null);
 		if (cur.moveToFirst())
 		{
 			close(cur);
@@ -1154,7 +1153,7 @@ public class DBAccessor {
 		}
 		close(cur);
 		return false;
-	}
+	}*/
 
 	/**
 	 * Update all of the values in a row
