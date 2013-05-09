@@ -25,7 +25,6 @@ import org.spongycastle.crypto.engines.ISAACEngine;
 import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 import org.spongycastle.crypto.params.Nonce;
-import org.spongycastle.util.encoders.Hex;
 
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECEngine;
