@@ -106,10 +106,10 @@ public abstract class KeyExchange
         
         System.arraycopy(
                 decodedSignedPubKey, 
-                decodedSignedPubKey.length() - digest.getDigestSize(), 
+                decodedSignedPubKey.length - digest.getDigestSize(), 
                 signature, 
                 0, 
-                decodedSignedPubKey.length());
+                decodedSignedPubKey.length);
         
         return Base64.encodeToString(signature, Base64.DEFAULT);
     }
