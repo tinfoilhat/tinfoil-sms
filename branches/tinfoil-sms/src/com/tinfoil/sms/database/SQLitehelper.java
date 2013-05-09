@@ -61,8 +61,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + 
             " (" + DBAccessor.KEY_PUBLIC_KEY + " BLOB," +
-            " " + DBAccessor.KEY_PRIVATE_KEY + " BLOB," +
-            " " + DBAccessor.KEY_SIGNATURE + " BLOB);";
+            " " + DBAccessor.KEY_PRIVATE_KEY + " BLOB);";
     
     private static final String TRUSTED_TABLE_CREATE =
             "CREATE TABLE " + TRUSTED_TABLE_NAME + 

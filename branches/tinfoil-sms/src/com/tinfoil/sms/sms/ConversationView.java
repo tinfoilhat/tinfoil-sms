@@ -42,6 +42,8 @@ import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
+import com.tinfoil.sms.crypto.KeyGenerator;
+import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.MessageSender;
 import com.tinfoil.sms.messageQueue.SignalListener;
@@ -104,8 +106,17 @@ public class ConversationView extends Activity implements Runnable {
         MessageService.mNotificationManager.cancelAll();
 
         MessageService.dba = new DBAccessor(this);
-        
+
         SMSUtility.user = MessageService.dba.getUserRow();
+        if(SMSUtility.user == null)
+        {
+        	//Create the keyGenerator
+	        KeyGenerator keyGen = new KeyGenerator();
+	        
+	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
+	        //Set the user's 
+	        MessageService.dba.setUser(SMSUtility.user);
+        }       
         
         messageSender.startThread(getApplicationContext());
 
