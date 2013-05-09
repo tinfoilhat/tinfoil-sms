@@ -80,12 +80,12 @@ public abstract class ECGKeyUtil
      * @param keyParam The Elliptic Curve key parameter which contains the curve
      * specifications and domain parameters
      * @param pubKey an ECC public key parameter which implements CipherParameters
-     * @return The ASN.1 encoded public key Q as a BASE64 encoded string
+     * @return The ASN.1 encoded public key Q as a BASE64 encoded byte array
      */
-    static public String encodeBase64PubKey(ECKeyParam keyParam, CipherParameters pubKey)
+    static public byte[] encodeBase64PubKey(ECKeyParam keyParam, CipherParameters pubKey)
     		throws InvalidParameterException
     {
-    	return Base64.encodeToString(encodePubKey(keyParam, pubKey), Base64.DEFAULT);
+    	return Base64.encode(encodePubKey(keyParam, pubKey), Base64.DEFAULT);
     }
     
     
@@ -125,11 +125,11 @@ public abstract class ECGKeyUtil
      * @return The base64 encoded private key D BigInteger value
      * @throws InvalidParameterException
      */
-    static public String encodeBase64PriKey(ECKeyParam keyParam, CipherParameters priKey)
+    static public byte[] encodeBase64PriKey(ECKeyParam keyParam, CipherParameters priKey)
     		throws InvalidParameterException
 	{
     		/* Return the private key D BigInteger value encoded as base64 */
-    		return Base64.encodeToString(
+    		return Base64.encode(
     				encodePriKey(keyParam, priKey), 
     				Base64.DEFAULT);
 	}
@@ -217,7 +217,8 @@ public abstract class ECGKeyUtil
      * @param keyParam The Elliptic Curve key parameter which contains the curve
      * specifications and domain parameters
      * @param digest The digest function used to originally sign the key such as SHA256
-     * @param signedPubkey A byte array of the ASN.1 encoded public key Q that is signed
+     * @param signedPubkey A byte array of the ASN.1 encoded public key Q, encoded as
+     * BASE64, that is signed
      * @return An ECC public key parameter for Q, ECPublicKeyParametersimplements
      */
     static public ECPublicKeyParameters decodeBase64SignedPubKey(ECKeyParam keyParam, 

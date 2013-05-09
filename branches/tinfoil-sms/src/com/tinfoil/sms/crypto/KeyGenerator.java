@@ -60,7 +60,7 @@ public class KeyGenerator
      * 
      * @return The public key encoded as BASE64 for storage/transmission
      */
-    public String generatePubKey()
+    public byte[] generatePubKey()
     {
         /* Generate the public key and return it encoded as BASE64 */
         ECPublicKeyParameters pubKey = (ECPublicKeyParameters) key.getPublic();
@@ -76,7 +76,7 @@ public class KeyGenerator
      * 
      * @return The private key encoded as BASE64 for storage/transmission
      */
-    public String generatePriKey()
+    public byte[] generatePriKey()
     {
         /* Generate the private key and return it encoded as BASE64 */
         ECPrivateKeyParameters priKey = (ECPrivateKeyParameters) key.getPrivate();

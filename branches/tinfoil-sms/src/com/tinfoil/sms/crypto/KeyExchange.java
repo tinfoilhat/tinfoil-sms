@@ -77,7 +77,7 @@ public abstract class KeyExchange
      * 
      * @return The public key received, encoded as BASE64 for storage
      */
-    public static String encodedPubKey(String signedPubKey)
+    public static byte[] encodedPubKey(String signedPubKey)
     {
         ECKeyParam param = new ECKeyParam();
         ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64SignedPubKey(
@@ -98,7 +98,7 @@ public abstract class KeyExchange
      * 
      * @return The public key received, encoded as BASE64 for storage
      */
-    public static String encodedSignature(String signedPubKey)
+    public static byte[] encodedSignature(String signedPubKey)
     {   
         byte[] decodedSignedPubKey = Base64.decode(signedPubKey, Base64.DEFAULT);
         SHA256Digest digest = new SHA256Digest();
@@ -111,7 +111,7 @@ public abstract class KeyExchange
                 0, 
                 decodedSignedPubKey.length);
         
-        return Base64.encodeToString(signature, Base64.DEFAULT);
+        return Base64.encode(signature, Base64.DEFAULT);
     }
     
     
