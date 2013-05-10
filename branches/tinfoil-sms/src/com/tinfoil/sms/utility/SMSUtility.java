@@ -34,8 +34,9 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.encryption.Encryption;
+import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.sms.ConversationView;
 
@@ -274,13 +275,23 @@ public abstract class SMSUtility {
                     ConversationView.sharedPrefs.getBoolean("enable", true) &&
                     !message.isExchange())
             {
-                //Send an encrypted message
+            	Encryption CrpytoEngine = new Encryption();
+            	
+            	Number number = dba.getNumber(format(message.getNumber()));
+            	
+                //Create the an encrypted message
+            	final String encrypted = CrpytoEngine.encrypt(number, message.getMessage());
+
+                /*
                 final String encrypted = Encryption.aes_encrypt(new String(
                 		dba.getNumber(format(message.getNumber()))
                         .getPublicKey()), message.getMessage());
+				*/
 
                 sendSMS(context, new Entry(message.getNumber(), encrypted,
                 		message.getId(), message.getExchange()));
+                
+                MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
 
                 if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {

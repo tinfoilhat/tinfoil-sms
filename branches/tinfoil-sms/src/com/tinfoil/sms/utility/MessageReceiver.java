@@ -32,7 +32,7 @@ import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.encryption.Encryption;
+import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageReceiver extends BroadcastReceiver {
@@ -134,8 +134,17 @@ public class MessageReceiver extends BroadcastReceiver {
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}
 							
-							secretMessage = Encryption.aes_decrypt(new String (MessageService.dba.getNumber
+							Encryption CryptoEngine = new Encryption();
+							
+							Number contactNumber = MessageService.dba.getNumber(SMSUtility.format(address));
+							
+							secretMessage = CryptoEngine.decrypt(contactNumber, messages[0].getMessageBody());
+							
+							MessageService.dba.updateNumberRow(contactNumber, contactNumber.getNumber(), contactNumber.getId());
+							
+							/*secretMessage = Encryption.aes_decrypt(new String (MessageService.dba.getNumber
 									(SMSUtility.format(address)).getPublicKey()), messages[0].getMessageBody());
+							 */
 							
 							SMSUtility.sendToSelf(context, address,	
 									secretMessage , ConversationView.INBOX);
