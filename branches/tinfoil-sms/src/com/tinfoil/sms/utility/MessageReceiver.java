@@ -124,6 +124,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							//Updates the last message received
 							Message newMessage = null;
 							
+							Log.v("Before Decryption", messages[0].getMessageBody());
 							/*
 							 * Checks if the user has set encrypted messages to be shown in
 							 * messageView
@@ -140,7 +141,9 @@ public class MessageReceiver extends BroadcastReceiver {
 							
 							secretMessage = CryptoEngine.decrypt(contactNumber, messages[0].getMessageBody());
 							
-							MessageService.dba.updateNumberRow(contactNumber, contactNumber.getNumber(), contactNumber.getId());
+							Log.v("After Decryption", secretMessage);
+							
+							MessageService.dba.updateDecryptNonce(contactNumber);
 							
 							/*secretMessage = Encryption.aes_decrypt(new String (MessageService.dba.getNumber
 									(SMSUtility.format(address)).getPublicKey()), messages[0].getMessageBody());
@@ -180,6 +183,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						//TODO change the notification for a key exchange
 						Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 						
+						// TODO fix error, isKeyExchange returns true for plain text inputs.
 						if(number.getKeyExchangeFlag() != Number.IGNORE &&
 								KeyExchange.isKeyExchange(message))
 						{
@@ -188,6 +192,8 @@ public class MessageReceiver extends BroadcastReceiver {
 							if(number.getKeyExchangeFlag() == Number.AUTO)
 							{
 								//Might be good to condense this into a method.
+								
+								//TODO fix error crashes given plain text information. (ArrayIndexOutOfBounds
 								if(KeyExchange.verify(number, message))
 								{
 									Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();

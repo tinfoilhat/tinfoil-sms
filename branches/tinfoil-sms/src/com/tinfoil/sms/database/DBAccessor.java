@@ -1245,14 +1245,14 @@ public class DBAccessor {
 	
 	/**
 	 * Update the Decrypt Nonce count in the database.
-	 * @param numb The Number that contains all the contact's security information.
-	 * @param decryptNonce The new count that the Decrypt Nonce is at.
+	 * @param numb The Number that contains all the contact's security
+	 * information with the new decryption nonce to add to the database.
 	 */
-	public void updateDecryptNonce(Number numb, Integer decryptNonce)
+	public void updateDecryptNonce(Number numb)
 	{
 		ContentValues cv = new ContentValues();
 		
-		cv.put(KEY_NONCE_DECRYPT, decryptNonce);
+		cv.put(KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
 		
 		open();
 		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ? ",
@@ -1262,14 +1262,14 @@ public class DBAccessor {
 	
 	/**
 	 * Update the Encrypt Nonce count in the database.
-	 * @param numb The Number that contains all the contact's secuirty information.
-	 * @param encryptNonce The new count that the Encrpyt Nonce is at.
+	 * @param numb The Number that contains all the contact's security
+	 * information with the new encryption nonce to add to the database.
 	 */
-	public void updateEncryptNonce(Number numb, Integer encryptNonce)
+	public void updateEncryptNonce(Number numb)
 	{
 		ContentValues cv = new ContentValues();
 		
-		cv.put(KEY_NONCE_ENCRYPT, encryptNonce);
+		cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
 		
 		open();
 		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ? ",

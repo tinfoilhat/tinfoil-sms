@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tinfoil.sms.dataStructures.Message;
@@ -279,9 +280,11 @@ public abstract class SMSUtility {
             	
             	Number number = dba.getNumber(format(message.getNumber()));
             	
+            	Log.v("Before Encryption", message.getMessage());
                 //Create the an encrypted message
             	final String encrypted = CrpytoEngine.encrypt(number, message.getMessage());
-
+            	
+            	Log.v("After Encrypted", encrypted);
                 /*
                 final String encrypted = Encryption.aes_encrypt(new String(
                 		dba.getNumber(format(message.getNumber()))
@@ -291,7 +294,7 @@ public abstract class SMSUtility {
                 sendSMS(context, new Entry(message.getNumber(), encrypted,
                 		message.getId(), message.getExchange()));
                 
-                MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+                MessageService.dba.updateEncryptNonce(number);
 
                 if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {

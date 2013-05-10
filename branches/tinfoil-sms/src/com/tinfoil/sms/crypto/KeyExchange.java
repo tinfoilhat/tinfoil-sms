@@ -161,6 +161,8 @@ public abstract class KeyExchange
     public static boolean verify(Number number, String signedPubKey)
     {
         APrioriInfo sharedInfo = new APrioriInfo(number.getSharedInfo1(), number.getSharedInfo2());
+        
+        //This line fails given a plain text message instead of signedPubKey
         return ECGKeyExchange.verifyPubKey(
                                     new SHA256Digest(), 
                                     Base64.decode(signedPubKey, Base64.DEFAULT), 
