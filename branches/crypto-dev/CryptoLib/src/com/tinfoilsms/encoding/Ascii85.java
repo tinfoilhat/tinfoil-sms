@@ -22,45 +22,68 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import org.spongycastle.crypto.digests.SHA256Digest;
+import org.spongycastle.util.encoders.Hex;
+
+import com.tinfoilsms.csprng.SDFGenerator;
+import com.tinfoilsms.csprng.SDFParameters;
+
 
 /**
  * Provides support for encoding and decoding using the ASCII85 (Base85) encoding
  * scheme, which encodes date using radix-85 to encode data as 85 of the possible
  * ASCII printable characters. The main advantages of Base85 to Base64 is that it
- * results in less overhead encoding by every 4 bytes into 5 bytes (4/5) in
- * comparison to Base64 which encodes every 3 bytes into 4 bytes (3/4).
+ * results in less overhead by encoding every 4 bytes into 5 bytes in comparison 
+ * to Base64 which encodes every 3 bytes into 4 bytes.
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Binary-to-text_encoding"></a>
  * @see <a href="http://en.wikipedia.org/wiki/Ascii85"></a>
  */
 public abstract class Ascii85
 {
-    private static final String CHARSET = "ascii";
-    
+    public static final String CHARSET = "ascii";
     
     public static void main(String[] args)
     {
+        
         String message = "Man is distinguished, not only by his reason, but by this singular passion from " 
                 + "other animals, which is a lust of the mind, that by a perseverance of delight in the "
                 + "continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.";
         
         byte[] encodedBytes = encode(message.getBytes());
-        String encodedStr = encodeToString(message.getBytes());
 
         System.out.println("Encoded message (bytes): ");
         System.out.println(new String(encodedBytes));
         
-        System.out.println("\nEncoded message (String): ");
-        System.out.println(encodedStr);
-        
         System.out.println("\nDecoded message (bytes): ");
         System.out.println(new String(decode(encodedBytes)));
         
+        
+        String encodedStr = encodeToString(message.getBytes());
+        
+        System.out.println("\nEncoded message (String): ");
+        System.out.println(encodedStr);
+        
         System.out.println("\nDecoded message (String): ");
         System.out.println(new String(decode(encodedStr)));
+        
+        
+        // Start the real tests
+        //SDFGenerator generator = new SDFGenerator(new SHA256Digest());
+        //generator.init(new SDFParameters("herpityyy", "derpittty"));
+        //byte[] encrypted = new byte[generator.getDigest().getDigestSize()];
+        //generator.generateBytes(encrypted, 0, 0);
+
+        byte[] encrypted = Hex.decode("bdf866d92817d30746a1ed5a39c0d6fe63f65fa89b9a251f6fd66205b4e23e8924f4a6");
+        
+        // Test encoding and decoding a seed of random bytes
+        System.out.println("\nEncrypted: "+ new String(Hex.encode(encrypted)));
+        
+        byte[] encodedEncBytes = encode(encrypted);
+        
+        System.out.println("\nEncoded Encrypted: " + new String(encodedEncBytes));
+        System.out.println("\nDecdoded Encrypted: " + new String(Hex.encode(decode(encodedEncBytes))));
     }
-    
-    
     
     /**
      * Encodes input data in bytes into Ascii85 encoded data, and
@@ -80,13 +103,15 @@ public abstract class Ascii85
         {
             ascii85.write(input);
             ascii85.flush();
-            ascii85.close();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
         
+        System.out.println("BEFORE:");
+        System.out.println(new String(buffer.toByteArray()));
+
         return removeIdentifiers(buffer.toByteArray());
     }
     
@@ -102,7 +127,32 @@ public abstract class Ascii85
      */
     public static String encodeToString(byte[] input)
     {
-        return new String(encode(input));
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        Ascii85OutputStream ascii85 = new Ascii85OutputStream(buffer);
+        String output = new String();
+        
+        try
+        {
+            ascii85.write(input);
+            ascii85.flush();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            System.out.println("BEFORE:");
+            System.out.println(buffer.toString(CHARSET));
+            
+            output = removeIdentifiers(buffer.toString(CHARSET));
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        
+        return output;
     }
     
     
@@ -128,7 +178,6 @@ public abstract class Ascii85
                 bytes.add(new Byte((byte)b));
                 b = ascii85.read();
             }
-            ascii85.close();
         }
         catch (IOException e)
         {
@@ -162,13 +211,13 @@ public abstract class Ascii85
         /* Initialize the streams used */
         try
         {
-            inputStream = new ByteArrayInputStream(addIdentifiers(input).getBytes(CHARSET));
+            inputStream = new ByteArrayInputStream(addIdentifiers(input.getBytes(CHARSET)));
         }
         catch (UnsupportedEncodingException e)
         {
             e.printStackTrace();
         }
-  
+        
         ascii85 = new Ascii85InputStream(inputStream);
         
         try
@@ -180,7 +229,6 @@ public abstract class Ascii85
                 bytes.add(new Byte((byte)b));
                 b = ascii85.read();
             }
-            ascii85.close();
         }
         catch (IOException e)
         {
@@ -210,12 +258,10 @@ public abstract class Ascii85
         byte[] output = new byte[input.length + 4];
         output[0] = (byte) '<';
         output[1] = (byte) '~';
+        output[output.length - 2] = (byte) '~';
+        output[output.length - 1] = (byte) '>';
         
         System.arraycopy(input, 0, output, 2, input.length);
-        
-        /* Add the ending encoding, arraycopy appears to null terminate remaining length */
-        output[input.length] = (byte) '~';
-        output[input.length + 1] = (byte) '>';
 
         System.out.println("\nDEBUG: ");
         System.out.println(new String(output));
@@ -229,11 +275,12 @@ public abstract class Ascii85
      * 
      * @param input The Ascii85 input to add the redundant encoding to
      * @return The input with the redundant encoding added back
-     */
-    private static String addIdentifiers(String input)
+     * @throws UnsupportedEncodingException 
+     *
+    private static String addIdentifiers(String input) throws UnsupportedEncodingException
     {
-        return new String(addIdentifiers(input.getBytes()));        
-    }
+        return new String(addIdentifiers(input.getBytes(CHARSET)));  
+    }*/
     
     
     /**
@@ -248,7 +295,20 @@ public abstract class Ascii85
     {
         byte[] output = new byte[input.length - 4];
         
-        System.arraycopy(input, 2, output, 0, input.length - 6);
+        System.arraycopy(input, 2, output, 0, input.length - 4);
         return output;
+    }
+    
+    /**
+     * Removes the redundant <~ and ~>, which are part of the Ascii85
+     * encoding scheme, I know this breaks the standard, but to hell with
+     * standards!
+     * 
+     * @param input The Ascii85 input to remove the redundant encoding from
+     * @return The input with the redundant encoding removed
+     */
+    private static String removeIdentifiers(String input)
+    {
+        return input.replaceAll("(^<~|~>$)", "");
     }
 }
