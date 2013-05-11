@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
         APrioriInfoTest.class, 
+        Ascii85Test.class, 
         ECEngineTest.class, 
         ECGKeyExchangeTest.class,
         ECGKeyUtilTest.class, 

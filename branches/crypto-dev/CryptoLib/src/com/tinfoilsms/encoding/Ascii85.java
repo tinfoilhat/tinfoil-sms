@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import org.spongycastle.util.encoders.Hex;
-
 
 /**
  * Provides support for encoding and decoding using the ASCII85 (Base85) encoding
@@ -39,47 +37,6 @@ public abstract class Ascii85
 {
     public static final String CHARSET = "ascii";
     
-    public static void main(String[] args)
-    {
-        
-        String message = "Man is distinguished, not only by his reason, but by this singular passion from " 
-                + "other animals, which is a lust of the mind, that by a perseverance of delight in the "
-                + "continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.";
-        
-        byte[] encodedBytes = encode(message.getBytes());
-
-        System.out.println("Encoded message (bytes): ");
-        System.out.println(new String(encodedBytes));
-        
-        System.out.println("\nDecoded message (bytes): ");
-        System.out.println(new String(decode(encodedBytes)));
-        
-        
-        String encodedStr = encodeToString(message.getBytes());
-        
-        System.out.println("\nEncoded message (String): ");
-        System.out.println(encodedStr);
-        
-        System.out.println("\nDecoded message (String): ");
-        System.out.println(new String(decode(encodedStr)));
-        
-        
-        // Start the real tests
-        //SDFGenerator generator = new SDFGenerator(new SHA256Digest());
-        //generator.init(new SDFParameters("herpityyy", "derpittty"));
-        //byte[] encrypted = new byte[generator.getDigest().getDigestSize()];
-        //generator.generateBytes(encrypted, 0, 0);
-
-        byte[] encrypted = Hex.decode("bdf866d92817d30746a1ed5a39c0d6fe63f65fa89b9a251f6fd66205b4e23e8924f4a6");
-        
-        // Test encoding and decoding a seed of random bytes
-        System.out.println("\nEncrypted: "+ new String(Hex.encode(encrypted)));
-        
-        byte[] encodedEncBytes = encode(encrypted);
-        
-        System.out.println("\nEncoded Encrypted: " + new String(encodedEncBytes));
-        System.out.println("\nDecdoded Encrypted: " + new String(Hex.encode(decode(encodedEncBytes))));
-    }
     
     /**
      * Encodes input data in bytes into Ascii85 encoded data, and
@@ -133,6 +90,7 @@ public abstract class Ascii85
         {
             e.printStackTrace();
         }
+        
         try
         {   
             output = removeIdentifiers(buffer.toString(CHARSET));
