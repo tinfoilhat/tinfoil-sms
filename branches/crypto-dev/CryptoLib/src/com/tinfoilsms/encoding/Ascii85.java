@@ -22,11 +22,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.util.encoders.Hex;
-
-import com.tinfoilsms.csprng.SDFGenerator;
-import com.tinfoilsms.csprng.SDFParameters;
 
 
 /**
@@ -108,9 +104,6 @@ public abstract class Ascii85
         {
             e.printStackTrace();
         }
-        
-        System.out.println("BEFORE:");
-        System.out.println(new String(buffer.toByteArray()));
 
         return removeIdentifiers(buffer.toByteArray());
     }
@@ -141,10 +134,7 @@ public abstract class Ascii85
             e.printStackTrace();
         }
         try
-        {
-            System.out.println("BEFORE:");
-            System.out.println(buffer.toString(CHARSET));
-            
+        {   
             output = removeIdentifiers(buffer.toString(CHARSET));
         }
         catch (UnsupportedEncodingException e)
@@ -263,8 +253,6 @@ public abstract class Ascii85
         
         System.arraycopy(input, 0, output, 2, input.length);
 
-        System.out.println("\nDEBUG: ");
-        System.out.println(new String(output));
         return output;
     }
     
@@ -298,6 +286,7 @@ public abstract class Ascii85
         System.arraycopy(input, 2, output, 0, input.length - 4);
         return output;
     }
+    
     
     /**
      * Removes the redundant <~ and ~>, which are part of the Ascii85
