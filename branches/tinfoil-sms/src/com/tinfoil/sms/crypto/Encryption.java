@@ -26,6 +26,9 @@ import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 import org.spongycastle.crypto.params.Nonce;
 
+import android.util.Base64;
+import android.util.Log;
+
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECEngine;
 import com.tinfoilsms.crypto.ECGKeyUtil;
@@ -73,6 +76,8 @@ public class Encryption
     {
         byte[] encMessage;
         
+        Log.v("Original Message", message);
+        
         /* Initialize the encryption engine if the number is not in hash map */
         if (! encryptMap.containsKey(number.getId()))
         {
@@ -82,7 +87,10 @@ public class Encryption
         /* Encrypt the message, increment and save the nonce cycle */
         encMessage = encryptMap.get(number.getId()).processBlock(message.getBytes());
         number.setNonceEncrypt(number.getNonceEncrypt() + 1);
-        return new String(encMessage);
+        
+        Log.v("Encrypted Message", Base64.encodeToString(encMessage, Base64.DEFAULT));
+        
+        return Base64.encodeToString(encMessage, Base64.DEFAULT);
     }
     
     
@@ -101,6 +109,8 @@ public class Encryption
     {
         byte[] decMessage;
         
+        Log.v("Encypted Message Received", message);
+        
         /* Initialize the encryption engine if the number is not in hash map */
         if (! decryptMap.containsKey(number.getId()))
         {
@@ -108,8 +118,11 @@ public class Encryption
         }
         
         /* decrypt the message, increment and save the nonce cycle */
-        decMessage = decryptMap.get(number.getId()).processBlock(message.getBytes());
+        decMessage = decryptMap.get(number.getId()).processBlock(Base64.decode(message, Base64.DEFAULT));
         number.setNonceDecrypt(number.getNonceDecrypt() + 1);
+        
+        Log.v("Decrypted Message", new String(decMessage));
+        
         return new String(decMessage);
     }
     
@@ -136,18 +149,24 @@ public class Encryption
          */
         String sharedInfo1, sharedInfo2;
         APrioriInfo sharedInfo;
-        if (number.isInitiator())
+        /*if (number.isInitiator())
         {  
             sharedInfo1 = number.getSharedInfo1();
             sharedInfo2 = number.getSharedInfo2();
         }
-        /* Number was key exchange recipient, use the inverse */
+        /* Number was key exchange recipient, use the inverse *
         else
         {
             sharedInfo1 = number.getSharedInfo2();
             sharedInfo2 = number.getSharedInfo1();
         }
-      
+        */
+        
+        sharedInfo1 = number.getSharedInfo1();
+        sharedInfo2 = number.getSharedInfo2();
+        
+        Log.v("SharedInfo 1", sharedInfo1);
+        Log.v("SharedInfo 2", sharedInfo2);
         
         /* Setup apriori info, generator, and nonce used by the block cipher to generate IVs */
         CipherParameters nonce;
@@ -158,13 +177,15 @@ public class Encryption
             sharedInfo = new APrioriInfo(sharedInfo1, sharedInfo2);
             generator.init(new SDFParameters(sharedInfo1, sharedInfo2));
             nonce = new Nonce(CSPRNG, number.getNonceEncrypt());
+            Log.v("Nonce encrypt", String.valueOf(number.getNonceEncrypt()));
         }
         else
         {
             /* decryption mode */
             sharedInfo = new APrioriInfo(sharedInfo1, sharedInfo2);
-            generator.init(new SDFParameters(sharedInfo2, sharedInfo1));
+            generator.init(new SDFParameters(sharedInfo1, sharedInfo2));
             nonce = new Nonce(CSPRNG, number.getNonceDecrypt());
+            Log.v("Nonce decrypt", String.valueOf(number.getNonceDecrypt()));
         }
         
         /* Generate the seed, initialize the nonce */
@@ -177,6 +198,9 @@ public class Encryption
         ECKeyParam param = new ECKeyParam();
         ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, SMSUtility.user.getPrivateKey());
         ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, number.getPublicKey());
+        
+        Log.v("My private key", new String(SMSUtility.user.getPrivateKey()));
+        Log.v("Number's public key", new String(number.getPublicKey()));
         
         /* Finally initialize the encryption engine */
         ECEngine engine = new ECEngine(nonce, sharedInfo);
