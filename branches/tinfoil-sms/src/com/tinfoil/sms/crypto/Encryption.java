@@ -149,21 +149,17 @@ public class Encryption
          */
         String sharedInfo1, sharedInfo2;
         APrioriInfo sharedInfo;
-        /*if (number.isInitiator())
+        if (number.isInitiator())
         {  
             sharedInfo1 = number.getSharedInfo1();
             sharedInfo2 = number.getSharedInfo2();
         }
-        /* Number was key exchange recipient, use the inverse *
+        /* Number was key exchange recipient, use the inverse */
         else
         {
             sharedInfo1 = number.getSharedInfo2();
             sharedInfo2 = number.getSharedInfo1();
         }
-        */
-        
-        sharedInfo1 = number.getSharedInfo1();
-        sharedInfo2 = number.getSharedInfo2();
         
         Log.v("SharedInfo 1", sharedInfo1);
         Log.v("SharedInfo 2", sharedInfo2);
@@ -182,8 +178,8 @@ public class Encryption
         else
         {
             /* decryption mode */
-            sharedInfo = new APrioriInfo(sharedInfo1, sharedInfo2);
-            generator.init(new SDFParameters(sharedInfo1, sharedInfo2));
+            sharedInfo = new APrioriInfo(sharedInfo2, sharedInfo1);
+            generator.init(new SDFParameters(sharedInfo2, sharedInfo1));
             nonce = new Nonce(CSPRNG, number.getNonceDecrypt());
             Log.v("Nonce decrypt", String.valueOf(number.getNonceDecrypt()));
         }
