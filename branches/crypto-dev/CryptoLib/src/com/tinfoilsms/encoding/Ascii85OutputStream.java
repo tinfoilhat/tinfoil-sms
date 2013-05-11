@@ -136,16 +136,12 @@ public class Ascii85OutputStream extends FilterOutputStream {
                     out.write('z');
                     if (pos++ >= width) {
                         pos = 0;
-                        out.write('\r');
-                        out.write('\n');
                     }
                 } else if (useSpaceCompression && (tuple == 0x20202020)) {
                     // Use space compression
                     out.write('y');
                     if (pos++ >= width) {
                         pos = 0;
-                        out.write('\r');
-                        out.write('\n');
                     }
                 } else
                     encode(tuple, count);
@@ -224,8 +220,6 @@ public class Ascii85OutputStream extends FilterOutputStream {
             out.write(buf[--bufPos] + '!');
             if (pos++ >= width) {
                 pos = 0;
-                out.write('\r');
-                out.write('\n');
             }
         } while (i-- > 0);
     }
@@ -240,15 +234,9 @@ public class Ascii85OutputStream extends FilterOutputStream {
         if (encoding) {
             if (count > 0)
                 encode(tuple, count);
-            if (pos + 2 > width) {
-                out.write('\r');
-                out.write('\n');
-            }
 
             out.write('~');
             out.write('>');
-            out.write('\r');
-            out.write('\n');
 
             encoding = false;
             tuple = count = 0;
