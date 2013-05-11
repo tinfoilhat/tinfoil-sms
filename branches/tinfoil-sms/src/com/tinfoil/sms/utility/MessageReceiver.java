@@ -170,7 +170,6 @@ public class MessageReceiver extends BroadcastReceiver {
 					{
 						String message = messages[0].getMessageBody();
 						Log.v("key", message);
-						Log.v("keyActual", new String("test123".getBytes()));
 												
 						/*
 						 * Since the user is not trusted, the message could be a key exchange
