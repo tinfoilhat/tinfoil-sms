@@ -26,7 +26,7 @@ import org.junit.contrib.assumes.Corollaries;
 import org.junit.runner.RunWith;
 import org.spongycastle.util.encoders.Hex;
 
-import com.tinfoilsms.encoding.Ascii85;
+import com.tinfoilsms.util.Ascii85;
 
 
 @RunWith(Corollaries.class)
@@ -48,7 +48,7 @@ public class Ascii85Test
     
 
     /**
-     * Test method for {@link com.tinfoilsms.encoding.Ascii85#encode(byte[])}.
+     * Test method for {@link com.tinfoilsms.util.Ascii85#encode(byte[])}.
      */
     @Test
     public void testEncode()
@@ -61,7 +61,7 @@ public class Ascii85Test
 
     
     /**
-     * Test method for {@link com.tinfoilsms.encoding.Ascii85#encodeToString(byte[])}.
+     * Test method for {@link com.tinfoilsms.util.Ascii85#encodeToString(byte[])}.
      */
     @Test
     public void testEncodeToString()
@@ -74,7 +74,7 @@ public class Ascii85Test
 
     
     /**
-     * Test method for {@link com.tinfoilsms.encoding.Ascii85#decode(byte[])}.
+     * Test method for {@link com.tinfoilsms.util.Ascii85#decode(byte[])}.
      */
     @Test
     @Assumes("testEncode")
@@ -90,7 +90,7 @@ public class Ascii85Test
 
     
     /**
-     * Test method for {@link com.tinfoilsms.encoding.Ascii85#decode(java.lang.String)}.
+     * Test method for {@link com.tinfoilsms.util.Ascii85#decode(java.lang.String)}.
      */
     @Test
     @Assumes("testEncodeToString")

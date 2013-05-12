@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.tinfoilsms.encoding;
+package com.tinfoilsms.util;
 
 import java.io.FilterInputStream;
 import java.io.IOException;

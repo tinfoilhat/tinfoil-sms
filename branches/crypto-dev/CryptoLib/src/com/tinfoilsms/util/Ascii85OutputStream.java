@@ -29,7 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.tinfoilsms.encoding;
+package com.tinfoilsms.util;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
