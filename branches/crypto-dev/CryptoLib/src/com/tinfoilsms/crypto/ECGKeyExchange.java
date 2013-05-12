@@ -136,6 +136,12 @@ public abstract class ECGKeyExchange
     		throw new DataLengthException("The shared information S1 and S2 cannot be null/empty!");
     	}
     	
+    	/* Check that the signed public key is large enough to contain the signature */
+    	if (signedPubKey.length <= digest.getDigestSize())
+    	{
+    	    throw new DataLengthException("Invalid signed public key, it's smaller than signature!");
+	    }
+    	
     	/*
     	 * The shared information to use for verifying the public key
     	 * The digest input which is the public key concatenated with S1 + S2
