@@ -16,6 +16,9 @@
  */
 package com.tinfoil.sms.crypto;
 
+import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
+
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 
@@ -59,7 +62,7 @@ public abstract class KeyExchange
         {
             Base64.decode(message, Base64.DEFAULT);
         }
-        catch (IllegalArgumentException e)
+        catch (Exception e)
         {
             return false;
         }
@@ -117,7 +120,13 @@ public abstract class KeyExchange
     
     /**
      * Signs the current user's public key using the apriori information shared
-     * between the current user and the number provided. 
+     * between the current user and the number provided. After signing the
+     * public key the CRC32 checksum is calculated and appended to the signed
+     * public key.
+     * 
+     *      -------------------------------------
+     *      | public key | signature | checksum |
+     *      -------------------------------------
      * 
      * @param number The number that the key will be exchanged with
      * 
@@ -141,8 +150,15 @@ public abstract class KeyExchange
                                                         sharedInfo, 
                                                         number.isInitiator());
         
+        /* Calculate the checksum of the signed public key */
+        byte[] checksum = checksum(encodedSignedPubKey);
+        byte[] signedPubKeySum = new byte[encodedSignedPubKey.length + checksum.length];
+        
+        System.arraycopy(signedPubKeySum, 0, signedPubKeySum, 0, signedPubKeySum.length);
+        System.arraycopy(checksum, 0, signedPubKeySum, signedPubKeySum.length, checksum.length);
+        
         /* Return the signed public key in a BASE64 encoded, transmissible form */
-        return Base64.encodeToString(encodedSignedPubKey, Base64.DEFAULT);
+        return Base64.encodeToString(signedPubKeySum, Base64.DEFAULT);
     }
     
     
@@ -168,5 +184,23 @@ public abstract class KeyExchange
                                     Base64.decode(signedPubKey, Base64.DEFAULT), 
                                     sharedInfo, 
                                     number.isInitiator());
+    }
+    
+    
+    /**
+     * Calculates the CRC32 checksum of the input provided.
+     * 
+     * @param input The input to calculate the CRC32 checksum for
+     * @return The CRC32 checksum
+     */
+    private static byte[] checksum(byte[] input)
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        CRC32 checksum = new CRC32();
+        
+        checksum.update(input);
+        buffer.putLong(checksum.getValue());
+        
+        return buffer.array();
     }
 }
