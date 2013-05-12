@@ -17,12 +17,15 @@
 package com.tinfoil.sms.crypto;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
+import org.spongycastle.util.encoders.Hex;
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.tinfoil.sms.utility.SMSUtility;
 import com.tinfoilsms.crypto.APrioriInfo;
@@ -42,32 +45,39 @@ import com.tinfoil.sms.dataStructures.Number;
  */
 public abstract class KeyExchange
 {
+    /* The size in bytes, of the checksum used, CRC32 is 4 bytes (32 bits) */
+    private static final int CHECKSUM_SIZE = 4;
+    
+    
     /**
      * Attempts to identify if the message received is a key exchange by checking
-     * if the message is encoded as BASE64, which is the encoding used for 
-     * key exchanges.
-     * 
-     * TODO This is a TEMPORARY solution to the key exchange problem, and should
-     * be replaced with a better method of identifying key exchanges. For example
-     * adding a small, but very fast, 8 byte checksum of the entire message and
-     * simplifying the process by checking if the message matches a certain length.
-     * 
-     *      -------------------------------------
-     *      | public key | signature | checksum |
-     *      -------------------------------------
+     * if the message is encoded as Base64, matches the expected length of a
+     * key exchange message, and has a valid CRC32 checksum.
      */
     public static boolean isKeyExchange(String message)
     {
+        byte[] decodedMsg = null;
+        
         try
         {
-            Base64.decode(message, Base64.DEFAULT);
+            /* Test if message is a key exchange, based on length and checksum */
+            decodedMsg = Base64.decode(message, Base64.DEFAULT);
+            
+            Log.v("decoded message", new String(decodedMsg));
+            Log.v("decoded message length", Integer.toString(decodedMsg.length));
+            
+            if (decodedMsg.length > 32 && validChecksum(decodedMsg))
+            {
+                Log.v("Message is key exchange", new String(Hex.encode(decodedMsg)));
+                return true;
+            }
         }
-        catch (Exception e)
+        catch (IllegalArgumentException e)
         {
             return false;
         }
         
-        return true;
+        return false;
     }
     
     
@@ -83,10 +93,14 @@ public abstract class KeyExchange
     public static byte[] encodedPubKey(String signedPubKey)
     {
         ECKeyParam param = new ECKeyParam();
+        
+        /* Decode the message in order to remove the checksum, then get the pubkey */
+        byte[] decodedSignedPubKey = stripChecksum(Base64.decode(signedPubKey, Base64.DEFAULT));
+        
         ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64SignedPubKey(
                                                                 param, 
                                                                 new SHA256Digest(), 
-                                                                signedPubKey.getBytes());
+                                                                Base64.encode(decodedSignedPubKey, Base64.DEFAULT));
         
        return ECGKeyUtil.encodeBase64PubKey(param, pubKey);
     }
@@ -103,7 +117,7 @@ public abstract class KeyExchange
      */
     public static byte[] encodedSignature(String signedPubKey)
     {   
-        byte[] decodedSignedPubKey = Base64.decode(signedPubKey, Base64.DEFAULT);
+        byte[] decodedSignedPubKey = stripChecksum(Base64.decode(signedPubKey, Base64.DEFAULT));
         SHA256Digest digest = new SHA256Digest();
         byte[] signature = new byte[digest.getDigestSize()];
         
@@ -154,10 +168,16 @@ public abstract class KeyExchange
         byte[] checksum = checksum(encodedSignedPubKey);
         byte[] signedPubKeySum = new byte[encodedSignedPubKey.length + checksum.length];
         
-        System.arraycopy(signedPubKeySum, 0, signedPubKeySum, 0, signedPubKeySum.length);
-        System.arraycopy(checksum, 0, signedPubKeySum, signedPubKeySum.length, checksum.length);
+        Log.v("checksum", new String(checksum));
+        Log.v("checksum length", Integer.toString(checksum.length));
+        Log.v("signedpubkeysum", new String(signedPubKeySum));
+        
+        System.arraycopy(encodedSignedPubKey, 0, signedPubKeySum, 0, encodedSignedPubKey.length);
+        System.arraycopy(checksum, 0, signedPubKeySum, encodedSignedPubKey.length, checksum.length);
         
         /* Return the signed public key in a BASE64 encoded, transmissible form */
+        Log.v("encoded signedpubkey", Base64.encodeToString(signedPubKeySum, Base64.DEFAULT));
+        
         return Base64.encodeToString(signedPubKeySum, Base64.DEFAULT);
     }
     
@@ -178,12 +198,21 @@ public abstract class KeyExchange
     {
         APrioriInfo sharedInfo = new APrioriInfo(number.getSharedInfo1(), number.getSharedInfo2());
         
-        //This line fails given a plain text message instead of signedPubKey
-        return ECGKeyExchange.verifyPubKey(
+        Log.v("signedpubkey received", signedPubKey);
+        
+        /* Decode the key exchange, and strip the checksum */
+        byte[] decodedSignedPubKey = stripChecksum(Base64.decode(signedPubKey, Base64.DEFAULT));
+
+        Log.v("decoded signedpubkey received", new String(Hex.encode(decodedSignedPubKey)));
+        
+        boolean result = ECGKeyExchange.verifyPubKey(
                                     new SHA256Digest(), 
-                                    Base64.decode(signedPubKey, Base64.DEFAULT), 
+                                    decodedSignedPubKey, 
                                     sharedInfo, 
                                     number.isInitiator());
+        
+        Log.v("valid key?", Boolean.toString(result));
+        return result;
     }
     
     
@@ -201,6 +230,55 @@ public abstract class KeyExchange
         checksum.update(input);
         buffer.putLong(checksum.getValue());
         
-        return buffer.array();
+        Log.v("checksum as hex",  Long.toHexString(checksum.getValue()));
+        
+        /* Since CRC32 is 4 bytes , truncate the value to only be 4 bytes */
+        byte[] checksum32 = new byte[CHECKSUM_SIZE];
+        System.arraycopy(buffer.array(), 4, checksum32, 0, CHECKSUM_SIZE);
+        Log.v("checksum converted to 4 bytes",  new String(Hex.encode(checksum32)));
+        
+        return checksum32;
+    }
+    
+    
+    /**
+     * Strips the checksum from the byte data for the signed public key
+     * used in the key exchange, which includes the additional checksum.
+     */
+    private static byte[] stripChecksum(byte[] input)
+    {
+        byte[] data = new byte[input.length - CHECKSUM_SIZE];
+        
+        /* Remove the checksum from the input data */
+        System.arraycopy(input, 0, data, 0, data.length);
+        
+        return data;
+    }
+    
+    
+    /**
+     * Calculates if the checksum the input has matches the calculated
+     * checksum, returns true if the checksum is valid.
+     * 
+     * @param input Which includes the checksum to validate
+     * @return True if the input has a valid checksum
+     */
+    private static boolean validChecksum(byte[] input)
+    {
+        /* Get the data and the checksum of the data */
+        byte[] data = new byte[input.length - CHECKSUM_SIZE];
+        byte[] checksum = new byte[CHECKSUM_SIZE];
+        
+        System.arraycopy(input, 0, data, 0, data.length);
+        System.arraycopy(input, data.length, checksum, 0, checksum.length);
+        
+        /* Calculate the checksum of the data */
+        byte[] calcChecksum = checksum(data);
+        
+        Log.v("original checksum", new String(checksum));
+        Log.v("calculated checksum", new String(calcChecksum));
+        
+        /* Check if the checksum of the data matches the calculated checksum */
+        return Arrays.equals(checksum, calcChecksum);
     }
 }
