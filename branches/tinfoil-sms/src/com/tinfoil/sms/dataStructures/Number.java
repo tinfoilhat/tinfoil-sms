@@ -20,7 +20,6 @@ package com.tinfoil.sms.dataStructures;
 import java.util.ArrayList;
 
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.encryption.Encryption;
 
 /**
  * A class used to store information from the numbers table
@@ -358,11 +357,11 @@ public class Number {
 	/**
 	 * Set the contact's public publicKey
 	 */
-	public void setPublicKey()
+	/*public void setPublicKey()
 	{
 		this.publicKey =  Encryption.generateKey();
 		//TODO update signature as well
-	}
+	}*/
 
 	/**
 	 * Set the contact's public publicKey

@@ -13,15 +13,13 @@ import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -88,14 +86,14 @@ public class KeyExchangeManager extends Activity {
 					Number number = MessageService.dba.getNumber(SMSUtility.format(entries.get(0).getNumber()));
 					
 					// Will do it off of entries.get(position).getMessage() once keys are implemented
-					number.setPublicKey();
+					//number.setPublicKey();
 					
 					MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
 					
 					if(!number.isInitiator())
 					{
-						MessageService.dba.addMessageToQueue(number.getNumber(),
-								new String(Encryption.generateKey()), true);
+						/*MessageService.dba.addMessageToQueue(number.getNumber(),
+								new String(Encryption.generateKey()), true);*/
 					}
 					//Remove element from list
 				}

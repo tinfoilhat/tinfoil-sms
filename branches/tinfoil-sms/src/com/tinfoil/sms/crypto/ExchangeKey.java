@@ -23,7 +23,6 @@ import android.app.ProgressDialog;
 
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.encryption.Encryption;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
