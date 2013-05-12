@@ -12,6 +12,9 @@
          android:layout_alignParentRight="true"
          android:layout_alignParentTop="true"
          android:layout_marginTop="5dp"
+         android:textColorHint="#000000"
+         android:textColor="#000000"
+         android:cursorVisible="true"
          android:hint="To" >
 
          <requestFocus />
@@ -24,7 +27,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="#FFFFFF" >
+        android:background="#000000" >
 
         <EditText
             android:id="@+id/new_message_message"
@@ -49,7 +52,7 @@
         android:layout_above="@+id/new_message_field"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="#FFFFFF" >
+        android:background="#000000" >
 
         <TextView
             android:id="@+id/send_word_count"
@@ -57,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:textSize="12sp"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:text="122" />
 
 	</RelativeLayout>
