@@ -44,12 +44,10 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.sms.ConversationView;
-import com.tinfoil.sms.sms.MessageView;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO implement on Dialog finish to check if the user exited the load (to then finish the task)
  * ImportContact activity allows for contacts to be imported from the native
  * database to the tinfoil-sms database. When a contact is imported, a contacts'
  * numbers, last message, date of last message, and type is stored. Once a

@@ -19,20 +19,19 @@ package com.tinfoil.sms.settings;
 
 import java.util.ArrayList;
 
-import com.tinfoil.sms.R;
-import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.utility.MessageService;
 
 /**
  * An activity used to edit a single number from a given contact. 
