@@ -70,6 +70,8 @@ public class SendMessageActivity extends Activity {
 
         ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.newCont = new TrustedContact();
+        
+        //Do in thread.
         this.tc = MessageService.dba.getAllRows();
 
         //Since the number is being entered cant really set a limit on the size...
@@ -99,7 +101,7 @@ public class SendMessageActivity extends Activity {
 
                 if (!info[0].trim().equals(""))
                 {
-                    if (!info[0].trim().equalsIgnoreCase(s.toString()))
+                    if (info.length > 1 && !info[0].trim().equalsIgnoreCase(s.toString()))
                     {
                         SendMessageActivity.this.newCont.setName(info[0].trim());
                         SendMessageActivity.this.newCont.setNumber(0, info[1].trim());
