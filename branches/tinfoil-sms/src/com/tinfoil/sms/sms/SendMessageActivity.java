@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
@@ -43,7 +44,6 @@ import com.tinfoil.sms.utility.SMSUtility;
 import com.tinfoil.sms.dataStructures.Number;
 
 /**
- * TODO make so that once a contact has been added their messages will be added to the list of messages
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact (a
  * contact that has exchanged their key with the user) then it will be
@@ -171,48 +171,26 @@ public class SendMessageActivity extends Activity {
 
             if (number.length() > 0 && text.length() > 0)
             {
+            	/*
+                 * Numbers are now automatically added upon sending a message to
+                 * them (if they are not already in the database). The user can
+                 * then go and edit their information as they please.
+                 */
             	
             	//Add contact to the database
             	MessageService.dba.addRow(new TrustedContact(new Number(number)));
                 
-            	//Send the message
+            	
                 //final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
 
-                //MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
-                MessageService.dba.addMessageToQueue(number, text, false);
+            	//Add the message to the database
+                MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
                 
-                //Check if the message was successful at sending
-                //if (sent)
-                //{
+                //Add the message to the queue to send it
+                MessageService.dba.addMessageToQueue(number, text, false);         
                 
-                //Changed, numbers will automatically be added upon sending a message to them, the user can then go and edit their information as they please
-                    /*if (!MessageService.dba.inDatabase(number))
-                    {
-
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
-                        builder.setMessage("Would you like to add " + number + " to your contacts list?")
-                                .setCancelable(false)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(final DialogInterface dialog, final int id) {
-                                        AddContact.editTc = new TrustedContact("");
-                                        AddContact.editTc.addNumber(number);
-                                        AddContact.addContact = true;
-                                        SendMessageActivity.this.startActivity(new Intent(
-                                                SendMessageActivity.this, AddContact.class));
-                                        SendMessageActivity.this.finish();
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    public void onClick(final DialogInterface dialog, final int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        final AlertDialog alert = builder.create();
-                        alert.show();
-                    }*/
-                    SendMessageActivity.this.messageBox.setText("");
-                    SendMessageActivity.this.phoneBox.setText("");
-                //}
+                SendMessageActivity.this.messageBox.setText("");
+                SendMessageActivity.this.phoneBox.setText("");
             }
             else
             {

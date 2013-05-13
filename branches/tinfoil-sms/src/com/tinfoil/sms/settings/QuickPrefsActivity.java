@@ -55,8 +55,7 @@ public class QuickPrefsActivity extends PreferenceActivity {
 					return true;
 				}
 				return false;
-			}
-        
+			}        
         });
     }
     
