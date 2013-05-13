@@ -58,7 +58,9 @@ public class ECEngineTest
     
 	/* Sample text input for encryption/decryption tests */								
 	private static final String expASCIICharset = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+	private static final String exp129ByteMsg = "This message is exactly 129 bytes in length, please let me know if you receive this message correctly or say if it is corrupted!!";
 	private static final String exp128ByteMsg = "This message is exactly 128 bytes in length, please let me know if you receive this message correctly or say if it is corrupted.";
+	private static final String exp65ByteMsg = "This message is exactly sixty five bytes in length see yourself!!";
 	private static final String exp64ByteMsg = "This message is exactly sixty four bytes in length see yourself!";
 	private static final String exp63ByteMsg = "This message is exactly sixty three bytes in length see urself!";
 	private static final String exp33ByteMsg = "This msg does not fit in 1 block.";
@@ -133,7 +135,9 @@ public class ECEngineTest
 		
 		
 		/* Add block sizes to block sizes test array */
+		expBlockSizes.add(exp129ByteMsg);
 		expBlockSizes.add(exp128ByteMsg);
+		expBlockSizes.add(exp65ByteMsg);
 		expBlockSizes.add(exp64ByteMsg);
 		expBlockSizes.add(exp63ByteMsg);
 		expBlockSizes.add(exp33ByteMsg);
@@ -253,7 +257,7 @@ public class ECEngineTest
 		/* Encrypt the same sample message thousands of times and verify that the encrypted 
 		 * message is unique each time and that it is also properly decrypted
 		 */
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < 1000; ++i)
 		{
 			try
 			{
@@ -275,11 +279,23 @@ public class ECEngineTest
 		}
 		
 		/* Verify that each decrypted msg matches the original message */
-		System.out.println("\nEncrypted and decrypted messages.");
 		for (String key : encryptedMsgs.keySet())
 		{
 			assertTrue(expASCIICharset.equals(encryptedMsgs.get(key)));
-			System.out.println(key + " <==> " + encryptedMsgs.get(key));
 		}
+		
+		/* Display 10 of the encrypted and decrypted messages */
+		System.out.println("\nEncrypted and decrypted messages.");
+		int i = 0;
+        for (String key : encryptedMsgs.keySet())
+        {
+            if (i >= 10)
+            {
+                break;
+            }
+            
+            System.out.println(key + " <==> " + encryptedMsgs.get(key));
+            ++i;
+        }
 	}		
 }
