@@ -124,7 +124,7 @@ public class SendMessageActivity extends Activity {
                         else
                         {
                         	
-                        	//TODO remove
+                        	//TODO make this reminder part of the onClick action rather then in the text box listener onChange.
                             Toast.makeText(SendMessageActivity.this.getBaseContext(), "Invaild number", Toast.LENGTH_SHORT).show();
                         }
                     }

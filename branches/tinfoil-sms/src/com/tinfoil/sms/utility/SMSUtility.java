@@ -204,61 +204,6 @@ public abstract class SMSUtility {
             c.getContentResolver().insert(Uri.parse(dest), values);
         }
     }
-
-    /** TODO remove
-     * Sends a message as encrypted or plain text based on the contact's state.
-     * @param context The context of the class
-     * @param number The number the text message is being sent to
-     * @param text The text message
-     * 
-     * @return boolean whether the message sent or not
-     */
-    /*public static boolean sendMessage(final Context context, final String number, final String text) {
-        try
-        {
-            if (MessageService.dba.isTrustedContact(number) &&
-                    ConversationView.sharedPrefs.getBoolean("enable", true))
-            {
-                //Send an encrypted message
-                final String encrypted = Encryption.aes_encrypt(MessageService.dba.getRow(
-                        format(number)).getNumber(format(number)).getPublicKey(), text);
-
-                sendSMS(context, number, encrypted);
-
-                if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
-                {
-                    sendToSelf(context, number, encrypted, ConversationView.SENT);
-                    MessageService.dba.addNewMessage(new Message
-                            (encrypted, true, true), number, false);
-                }
-
-                sendToSelf(context, number, text, ConversationView.SENT);
-
-                //MessageService.dba.addNewMessage(new Message(text, true, true), number, false);
-
-                Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                //Sending a plain text message
-                sendSMS(context, number, text);
-                sendToSelf(context, number, text, ConversationView.SENT);
-
-                /*if(MessageService.dba.inDatabase(number))
-                {
-                	MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
-                }/
-
-                Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        } catch (final Exception e)
-        {
-            Toast.makeText(context, "FAILED TO SEND", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-            return false;
-        }
-    }*/
     
     /**
      * Sends a message as encrypted or plain text based on the contact's state.

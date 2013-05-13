@@ -40,6 +40,7 @@
         <activity
             android:name=".sms.MessageView"
             android:label="Messages"
+            android:configChanges="orientation"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".settings.ImportContacts"
@@ -56,6 +57,7 @@
             android:label="Delete Contacts" />
         <activity
             android:name=".sms.ConversationView"
+            android:configChanges="orientation"
             android:label="Tinfoil-SMS" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -59,20 +59,12 @@ public class QuickPrefsActivity extends PreferenceActivity {
         });
     }
     
-    /**
-     * Stuff you want done when the items on the preference menu are created upon run.
-     * Left as default
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 0, 0, "Show current settings");
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Add something for a item on the preference list to do when it is selected.
-
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return true;

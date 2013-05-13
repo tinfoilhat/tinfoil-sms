@@ -1135,25 +1135,6 @@ public class DBAccessor {
 		close(cur);
 		return null;
 	}
-	
-	/**
-	 * TODO remove since just attempting to get the row and checking for null
-	 * does pretty much the same thing in less queries in the majority of cases.
-	 * Used to determine if the user's key has been generated
-	 * @return True if there is a key already in the database, false otherwise.
-	 */
-	/*public boolean isKeyGen()
-	{
-		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, new String[]
-				{KEY_PUBLIC_KEY, KEY_PUBLIC_KEY}, null, null, null, null, null);
-		if (cur.moveToFirst())
-		{
-			close(cur);
-			return true;
-		}
-		close(cur);
-		return false;
-	}*/
 
 	/**
 	 * Update all of the values in a row
