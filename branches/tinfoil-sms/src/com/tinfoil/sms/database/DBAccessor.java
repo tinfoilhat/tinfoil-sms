@@ -196,9 +196,10 @@ public class DBAccessor {
 	 */
 	public void deleteKeyExchangeMessage(String number)
 	{
+		long id = getNumberId(number);
 		open();
 		db.delete(SQLitehelper.EXCHANGE_TABLE_NAME, KEY_NUMBER_REFERENCE + " = "
-				+ getNumberId(number), null);
+				+ id, null);
 		close();
 	}
 	

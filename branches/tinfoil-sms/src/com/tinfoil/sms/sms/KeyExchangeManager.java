@@ -15,9 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.Encryption;
+import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.MessageService;
@@ -27,7 +29,8 @@ import com.tinfoil.sms.utility.SMSUtility;
 public class KeyExchangeManager extends Activity {
 
 	private ArrayList<Entry> entries;
-	private ArrayList<Integer> checked;
+	private ArrayAdapter<String> a;
+	//private ArrayList<Integer> checked;
 	//private  numbers;
 	
 	@Override
@@ -43,19 +46,8 @@ public class KeyExchangeManager extends Activity {
 		
 		if(entries != null)
 		{
-			checked = new ArrayList<Integer>(entries.size());
-			String[] numbers = new String[entries.size()];
-			
-			for(int i = 0; i < entries.size(); i++)
-			{
-				numbers[i] = entries.get(i).getNumber();
-			}
-			
-			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
-			
-			ArrayAdapter<String> a = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
-			list.setAdapter(a);
-			list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			//checked = new ArrayList<Integer>(entries.size());
+			updateList();
 			
 			/*list.setOnItemClickListener(new OnItemClickListener(){
 
@@ -83,26 +75,53 @@ public class KeyExchangeManager extends Activity {
 			{
 				if(sba.get(i))
 				{
+					
 					Number number = MessageService.dba.getNumber(SMSUtility.format(entries.get(0).getNumber()));
 					
-					// Will do it off of entries.get(position).getMessage() once keys are implemented
-					//number.setPublicKey();
-					
-					MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
-					
-					if(!number.isInitiator())
+					if(KeyExchange.verify(number, entries.get(i).getMessage()))
 					{
-						/*MessageService.dba.addMessageToQueue(number.getNumber(),
-								new String(Encryption.generateKey()), true);*/
+						Toast.makeText(this, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
+						Log.v("Key Exchange", "Exchange Key Message Received");
+						
+						number.setPublicKey(KeyExchange.encodedPubKey(entries.get(i).getMessage()));
+						number.setSignature(KeyExchange.encodedSignature(entries.get(i).getMessage()));
+						
+						MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
+						
+						MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
+						
+						if(!number.isInitiator())
+						{
+							Log.v("Key Exchange", "Not Initiator");
+							MessageService.dba.addMessageToQueue(number.getNumber(),
+									KeyExchange.sign(number), true);
+						}
+						//a.remove(entries.get(i).getNumber());
+						entries.remove(entries.get(i));
+						updateList();
 					}
-					//Remove element from list
 				}
-				//else
-					// Item has not be touched leave it alone.
+				//else Item has not be touched leave it alone.
 			}
 		}
 	}
 	
+	private void updateList()
+	{
+		String[] numbers = new String[entries.size()];
+		
+		for(int i = 0; i < entries.size(); i++)
+		{
+			numbers[i] = entries.get(i).getNumber();
+		}
+		
+		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+		a = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
+		//a.setNotifyOnChange(true);
+		
+		list.setAdapter(a);
+		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+	}
 	public void reject(View view)
 	{
 		if(entries != null)
@@ -115,8 +134,13 @@ public class KeyExchangeManager extends Activity {
 				if(sba.get(i))
 				{
 					MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
-				}
+				
+					entries.remove(entries.get(i));
+					updateList();
+				}				
 			}
+			//finish();
+			
 		}
 	}
 	

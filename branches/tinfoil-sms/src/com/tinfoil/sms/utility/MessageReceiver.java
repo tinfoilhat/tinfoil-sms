@@ -184,14 +184,10 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * Since the user is not trusted, the message could be a key exchange
 						 * Assume it is check for key exchange message
 						 * Only once it fails is the message considered plain text.
-						 * 
-						 * TODO add an option to never expect a key exchange from a contact's number to improve performance
 						 */
-						//TODO implement actual key exchange check
 						//TODO change the notification for a key exchange
 						Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 						
-						// TODO fix error, isKeyExchange returns true for plain text inputs.
 						if(number.getKeyExchangeFlag() != Number.IGNORE &&
 								KeyExchange.isKeyExchange(message))
 						{
@@ -200,8 +196,6 @@ public class MessageReceiver extends BroadcastReceiver {
 							if(number.getKeyExchangeFlag() == Number.AUTO)
 							{
 								//Might be good to condense this into a method.
-								
-								//TODO fix error crashes given plain text information. (ArrayIndexOutOfBounds
 								if(KeyExchange.verify(number, message))
 								{
 									Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
