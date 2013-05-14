@@ -109,12 +109,19 @@
                 android:hint="@string/book_inverse"
                 android:inputType="text" />
 
+            
             <RadioGroup
 			    android:id="@+id/radioGroup1"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:orientation="vertical"			    android:layout_below="@+id/book_inverse"
 			    android:layout_alignParentLeft="true" >
+
+                <TextView
+                    android:id="@+id/key_exchange_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Key Exchange Settings" />
                 
 	            <RadioButton
 	                android:id="@+id/auto_exchange"

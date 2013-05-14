@@ -89,7 +89,13 @@
 		
 		<PreferenceScreen 
             android:title="My Public Key" 
-            android:key="public_key">
+            android:key="public_key"
+            android:summary="Manage your public key">
+			
+			<intent
+             		android:action="android.intent.action.VIEW"
+             		android:targetPackage="com.tinfoil.sms"
+             		android:targetClass="com.tinfoil.sms.settings.UserKeySettings" />
         </PreferenceScreen>
 	</PreferenceCategory>
     

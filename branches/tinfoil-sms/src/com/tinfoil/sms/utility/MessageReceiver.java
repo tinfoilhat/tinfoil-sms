@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
@@ -49,12 +50,20 @@ public class MessageReceiver extends BroadcastReceiver {
 			// SmsMessages. The message is received as a pdu,
 			// and needs to be converted to a SmsMessage, if you want to
 			// get information about the message.
+			
+			//TODO extend this so that messages will be looped through.
+			
 			Object[] pdus = (Object[]) bundle.get("pdus");
-			final SmsMessage[] messages = new SmsMessage[pdus.length];
+			
+			SmsMessage[] messages = new SmsMessage[pdus.length];
+			StringBuilder mes = new StringBuilder();
 			for (int i = 0; i < pdus.length; i++) {
 				messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+				mes.append(messages[i].getMessageBody());
 			}
-
+			Log.v("Message",mes.toString());
+			
+			//Log.v("message", messages[0].getMessageBody() + messages[1].getMessageBody());
 			/*
 			 * TODO account for multiple messages
 			 * Might have to update this so that it accounts for multiple messages received
@@ -169,7 +178,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					else
 					{
 						String message = messages[0].getMessageBody();
-						Log.v("key", message);
+						Log.v("message", message);
 												
 						/*
 						 * Since the user is not trusted, the message could be a key exchange

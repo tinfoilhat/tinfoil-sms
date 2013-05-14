@@ -76,11 +76,15 @@
         <service android:name=".utility.MessageService" />
 
         <activity
-            android:name="com.tinfoil.sms.sms.KeyExchangeManager"
+            android:name=".sms.KeyExchangeManager"
             android:label="@string/title_activity_key_exchange_manager" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".sms.ConversationView" />
+        </activity>
+        <activity
+            android:name=".settings.UserKeySettings"
+            android:label="@string/title_activity_user_key_settings" >
         </activity>
     </application>
 
