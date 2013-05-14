@@ -24,8 +24,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Number;
@@ -57,6 +60,7 @@ public class EditNumber extends Activity{
 	private EditText sharedInfo2;
 	private EditText bookPath;
 	private EditText bookInverse;
+	private EditText pubKey;
 	private Number number;
 	//private TrustedContact tc;
 	private String originalNumber;
@@ -82,6 +86,10 @@ public class EditNumber extends Activity{
         sharedInfo2 = (EditText)findViewById(R.id.shared_secret_2);
         bookPath = (EditText)findViewById(R.id.book_path);
         bookInverse = (EditText)findViewById(R.id.book_inverse);
+        
+        
+        pubKey = (EditText)findViewById(R.id.contact_pub_key);
+        boolean trusted = false;
         
         Intent intent = this.getIntent();
         
@@ -122,6 +130,11 @@ public class EditNumber extends Activity{
 	        bookInverse.setText(number.getBookInversePath());
 
 	        keyExchangeSetting.get(number.getKeyExchangeFlag()).setChecked(true);
+	        
+	        if(MessageService.dba.isTrustedContact(originalNumber))
+	        {
+	        	trusted = true;
+	        }
         }
         else
         {
@@ -136,7 +149,26 @@ public class EditNumber extends Activity{
 	        
 	        bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
         }
-    }
+        
+        if(trusted)
+        {
+        	TextView pubKeyTitle = (TextView)findViewById(R.id.contact_pub_key_text);
+        	pubKeyTitle.setVisibility(TextView.INVISIBLE);
+        	pubKey.setVisibility(EditText.INVISIBLE);
+        	
+        	// Find the radio button group view
+        	View rg = (View)findViewById(R.id.radioGroup1);
+        	
+        	/*
+        	 * Set it so now it is below book_inverse since the other two
+        	 * elements are invisible.
+        	 */
+        	RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        	        ViewGroup.LayoutParams.WRAP_CONTENT);
+        	p.addRule(RelativeLayout.BELOW,R.id.book_inverse);
+        	rg.setLayoutParams(p);
+        }
+	}
 	
 	/**
      * The onClick action for when the user clicks on save information
@@ -182,6 +214,15 @@ public class EditNumber extends Activity{
 			number.setSharedInfo2(sharedInfo2.getText().toString());
 			number.setBookPath(bookPath.getText().toString());
 			number.setBookInversePath(bookInverse.getText().toString());
+			
+			if(pubKey.getVisibility() == EditText.VISIBLE)
+			{
+				String key = pubKey.getText().toString().trim();
+				if(key != "" && key.length() > 0)
+				{
+					number.setPublicKey(key.getBytes());
+				}
+			}
 			
 			int index = 0;
 			if(keyExchangeSetting.get(Number.AUTO).isChecked())
@@ -253,7 +294,8 @@ public class EditNumber extends Activity{
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         return super.onCreateOptionsMenu(menu);
+        
+        //TODO add import public key to the menu if the contact does not have a key.
     }
     
-    //TODO add delete number menu option 
 }

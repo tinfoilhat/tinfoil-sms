@@ -210,7 +210,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									number.setPublicKey(KeyExchange.encodedPubKey(message));
 									number.setSignature(KeyExchange.encodedSignature(message));
 									
-									MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+									MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
 									
 									if(!number.isInitiator())
 									{
