@@ -391,8 +391,9 @@ public class MessageView extends Activity implements Runnable{
 	
 	        final InputFilter[] FilterArray = new InputFilter[1];
 	
-	        if (isTrusted)
+	        /*if (isTrusted)
 	        {
+	        	
 	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
 	        }
 	        else
@@ -400,7 +401,7 @@ public class MessageView extends Activity implements Runnable{
 	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
 	        }
 	
-	        this.messageBox.setFilters(FilterArray);
+	        this.messageBox.setFilters(FilterArray);*/
 	
 	        this.messageBox.addTextChangedListener(messageEvent);
 	        

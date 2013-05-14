@@ -144,19 +144,36 @@ public abstract class SMSUtility {
     {
         final String SENT = "SMS_SENT";
 
-        final Intent intent = new Intent(SENT);
+        /*Intent intent = new Intent(SENT);
         intent.putExtra(NUMBER, message.getNumber());
         intent.putExtra(MESSAGE, message.getMessage());
         intent.putExtra(ID, message.getId());
-        final PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);*/
 
         //Toast.makeText(c, message.getMessage(), Toast.LENGTH_SHORT).show();
 
         c.registerReceiver(MS, new IntentFilter(SENT));
 
+        ArrayList<String> messageList = sms.divideMessage(message.getMessage());
+        
+        ArrayList<PendingIntent> sentPIList = new ArrayList<PendingIntent>();
+        
+        for (int i = 0; i < messageList.size(); i++)
+        {
+            Intent intent = new Intent(SENT);
+            intent.putExtra(NUMBER, message.getNumber());
+            intent.putExtra(MESSAGE, messageList.get(i));
+            intent.putExtra(ID, message.getId());
+            sentPIList.add(PendingIntent.getBroadcast(c, 0,
+                    intent, PendingIntent.FLAG_CANCEL_CURRENT));
+        }
+        
         //SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(message.getNumber(), null, message.getMessage(), sentPI, null);
+        
+        sms.sendMultipartTextMessage(message.getNumber(), null, messageList, sentPIList, null);
+        
+        //sms.sendTextMessage(message.getNumber(), null, message.getMessage(), sentPI, null);
         /*if(ServiceChecker.signal){
         	sms.sendTextMessage(number, null, message, sentPI, null);
         }*/
