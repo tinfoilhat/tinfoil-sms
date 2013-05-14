@@ -23,6 +23,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -34,6 +36,8 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.sms.KeyExchangeManager;
+import com.tinfoil.sms.sms.SendMessageActivity;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
@@ -293,9 +297,21 @@ public class EditNumber extends Activity{
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-        
-        //TODO add import public key to the menu if the contact does not have a key.
+    	final MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.edit_text_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.import_key:
+            	//TODO implement
+            	return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
     
 }

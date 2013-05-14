@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Number;
@@ -29,9 +28,7 @@ import com.tinfoil.sms.utility.SMSUtility;
 public class KeyExchangeManager extends Activity {
 
 	private ArrayList<Entry> entries;
-	private ArrayAdapter<String> a;
-	//private ArrayList<Integer> checked;
-	//private  numbers;
+	private ArrayAdapter<String> adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,30 +37,20 @@ public class KeyExchangeManager extends Activity {
 		// Show the Up button in the action bar.
 		//setupActionBar();
 		
-		
 		entries = MessageService.dba.getAllKeyExchangeMessages();
-		
 		
 		if(entries != null)
 		{
-			//checked = new ArrayList<Integer>(entries.size());
 			updateList();
-			
-			/*list.setOnItemClickListener(new OnItemClickListener(){
-
-				public void onItemClick(final AdapterView<?> parent, final View view,
-                final int position, final long id) {
-					
-					//ListView list = (ListView)KeyExchangeManager.this.findViewById(R.id.key_exchange_list);
-					
-					
-					//checked.add(position);
-				}
-			});*/
 		}
 		
 	}
 
+	/**
+	 * The onClick action for when the exchange key message is pressed. Sends a
+	 * key exchange message for each contact that is selected.
+	 * @param view The View 
+	 */
 	public void exchangeKey(View view)
 	{
 		if(entries != null)
@@ -76,19 +63,25 @@ public class KeyExchangeManager extends Activity {
 				if(sba.get(i))
 				{
 					
-					Number number = MessageService.dba.getNumber(SMSUtility.format(entries.get(0).getNumber()));
+					Number number = MessageService.dba.getNumber(SMSUtility.
+							format(entries.get(0).getNumber()));
 					
 					if(KeyExchange.verify(number, entries.get(i).getMessage()))
 					{
-						Toast.makeText(this, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
+						Toast.makeText(this, "Exchange Key Message Received",
+								Toast.LENGTH_SHORT).show();
 						Log.v("Key Exchange", "Exchange Key Message Received");
 						
-						number.setPublicKey(KeyExchange.encodedPubKey(entries.get(i).getMessage()));
-						number.setSignature(KeyExchange.encodedSignature(entries.get(i).getMessage()));
+						number.setPublicKey(KeyExchange.encodedPubKey(entries.
+								get(i).getMessage()));
+						number.setSignature(KeyExchange.encodedSignature(entries.
+								get(i).getMessage()));
 						
-						MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
+						MessageService.dba.deleteKeyExchangeMessage(entries.
+								get(i).getNumber());
 						
-						MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
+						MessageService.dba.updateNumberRow(number,
+								number.getNumber(), 0);
 						
 						if(!number.isInitiator())
 						{
@@ -106,22 +99,11 @@ public class KeyExchangeManager extends Activity {
 		}
 	}
 	
-	private void updateList()
-	{
-		String[] numbers = new String[entries.size()];
-		
-		for(int i = 0; i < entries.size(); i++)
-		{
-			numbers[i] = entries.get(i).getNumber();
-		}
-		
-		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
-		a = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
-		//a.setNotifyOnChange(true);
-		
-		list.setAdapter(a);
-		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	}
+	/**
+	 * The onClick action for when a for when the reject button has been
+	 * clicked. Deletes every key exchange message selected.
+	 * @param view The View
+	 */
 	public void reject(View view)
 	{
 		if(entries != null)
@@ -140,8 +122,28 @@ public class KeyExchangeManager extends Activity {
 				}				
 			}
 			//finish();
-			
 		}
+	}
+	
+	/**
+	 * TODO change the view adapter to better represent the key exchange.
+	 * Update the list key exchange messages 
+	 */
+	private void updateList()
+	{
+		String[] numbers = new String[entries.size()];
+		
+		for(int i = 0; i < entries.size(); i++)
+		{
+			numbers[i] = entries.get(i).getNumber();
+		}
+		
+		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
+		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
+		//a.setNotifyOnChange(true);
+		
+		list.setAdapter(adapter);
+		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	}
 	
 	/**

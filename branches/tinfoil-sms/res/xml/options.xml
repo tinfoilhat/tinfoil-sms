@@ -54,12 +54,6 @@
 				android:targetPackage="com.tinfoil.sms"
 				android:targetClass="com.tinfoil.sms.settings.ManageContactsActivity" />
     	</PreferenceScreen>
-    
-    	<PreferenceScreen 
-        	android:title="Import Trusted Contact's Key"
-        	android:key="import_trusted_key">
-        
-    	</PreferenceScreen>
 	</PreferenceCategory>
 	
 	<PreferenceCategory 

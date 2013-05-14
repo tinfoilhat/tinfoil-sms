@@ -166,10 +166,10 @@ public class DBAccessor {
 	 * Add a pending key exchange message.
 	 * @param keyExchange The pending key exchange message
 	 */
-	public void addKeyExchangeMessage(Entry keyExchange)
+	public String addKeyExchangeMessage(Entry keyExchange)
 	{
 		/*
-		 * TODO handle duplication of keys:
+		 * TODO handle the error messages better.
 		 * 	- handle by checking if the first message matches any new key exchange messages
 		 * 	if it does
 		 * 		- Discard message
@@ -177,15 +177,36 @@ public class DBAccessor {
 		 *  else it doesnt mate
 		 *  	- Discard
 		 *  	- Warn user that it is a possible man in the middle attack, or that the contact may have changed their keys.
-		 */	
-		ContentValues cv = new ContentValues();
-		
-		cv.put(KEY_NUMBER_REFERENCE, getNumberId(SMSUtility.format(keyExchange.getNumber())));
-		cv.put(KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
-		
-		open();
-		db.insert(SQLitehelper.EXCHANGE_TABLE_NAME, null, cv);
-		close();
+		 */
+		Entry prev = getKeyExchangeMessage(keyExchange.getNumber());
+		if(prev == null)
+		{
+			ContentValues cv = new ContentValues();
+			
+			cv.put(KEY_NUMBER_REFERENCE, getNumberId(SMSUtility.format(keyExchange.getNumber())));
+			cv.put(KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
+			
+			open();
+			db.insert(SQLitehelper.EXCHANGE_TABLE_NAME, null, cv);
+			close();
+			
+			return null;
+		}
+		else
+		{
+			if(prev.getMessage().compareTo(keyExchange.getMessage()) == 0)
+			{
+				//Contact sent another message
+				return keyExchange.getNumber() + " has sent another key exchange message";
+			}
+			else
+			{
+				return "Warning: a message identify as a key exchange is " +
+					    "different from previously recieved key exchange " +
+					    "messages from " + keyExchange.getNumber() + " " +
+					    "possible man in the middle attack.";
+			}
+		}		
 	}
 	
 	/**
@@ -286,9 +307,9 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO comment
-	 * @param id
-	 * @return
+	 * Delete messages that are stored in the database
+	 * @param id The id of the message in the database.
+	 * @return Whether the message was deleted or not.
 	 */
 	public boolean deleteMessage(long id)
 	{
@@ -303,9 +324,9 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO comment
-	 * @param number
-	 * @return
+	 * Delete the messages that this number has stored in the database.
+	 * @param number The number of the contact that is in the database.
+	 * @return Whether the messages are deleted or not.
 	 */
 	public boolean deleteMessage(String number)
 	{
@@ -679,9 +700,9 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * TODO comment
-	 * @param id
-	 * @return
+	 * Get the number give the id for the that number in the database. 
+	 * @param id The id of the number in the database.
+	 * @return The number that is stored at the given id.
 	 */
 	private String getNumber(long id)
 	{

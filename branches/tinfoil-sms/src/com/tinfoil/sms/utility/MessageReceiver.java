@@ -23,17 +23,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageReceiver extends BroadcastReceiver {
@@ -51,8 +50,6 @@ public class MessageReceiver extends BroadcastReceiver {
 			// and needs to be converted to a SmsMessage, if you want to
 			// get information about the message.
 			
-			//TODO extend this so that messages will be looped through.
-			
 			Object[] pdus = (Object[]) bundle.get("pdus");
 			
 			SmsMessage[] messages = new SmsMessage[pdus.length];
@@ -65,7 +62,6 @@ public class MessageReceiver extends BroadcastReceiver {
 			
 			//Log.v("message", messages[0].getMessageBody() + messages[1].getMessageBody());
 			/*
-			 * TODO account for multiple messages
 			 * Might have to update this so that it accounts for multiple messages received
 			 */
 			if (messages.length > -1) {
@@ -216,9 +212,13 @@ public class MessageReceiver extends BroadcastReceiver {
 							}
 							else
 							{
-								//TODO Add handling for multiple key exchange messages from a single contact
-								MessageService.dba.addKeyExchangeMessage(
+								String result = MessageService.dba.addKeyExchangeMessage(
 										new Entry(address, message));
+								
+								if(result != null)
+								{
+									Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+												}
 							}
 						}
 						else

@@ -61,11 +61,13 @@ public class Number {
 	 * class for the 'TYPES' variable
 	 * @param unreadMessageCount The number of messages that have
 	 * not been read from this number
-	 * @param publicKey
-	 * @param signature
-	 * @param enNonceCount
-	 * @param deNonceCount
+	 * @param publicKey The contact's public key.
+	 * @param signature The contact's signature.
+	 * @param enNonceCount The encryption nonce count
+	 * @param deNonceCount The decryption nonce count
 	 * @param initiator Set to false if equal to 0 otherwise true.
+	 * @param keyExchangeFlag for how key exchange messages from the contact
+	 * will be handled
 	 */
 	public Number (long id, String number, int type, int unreadMessageCount, 
 			byte[] publicKey, byte[] signature, Integer enNonceCount,
@@ -357,15 +359,6 @@ public class Number {
 	/**
 	 * Set the contact's public publicKey
 	 */
-	/*public void setPublicKey()
-	{
-		this.publicKey =  Encryption.generateKey();
-		//TODO update signature as well
-	}*/
-
-	/**
-	 * Set the contact's public publicKey
-	 */
 	public void setPublicKey(byte[] publicKey)
 	{
 		this.publicKey =  publicKey;
@@ -469,8 +462,10 @@ public class Number {
 	}
 	
 	/**
-	 * TODO comment
-	 * @return
+	 * Get the initiator flag that identifies whether the user is the initiator
+	 * of the key exchange or not. This is the value that will be stored in the
+	 * database.
+	 * @return The value to be stored in the database.
 	 */
 	public int getInitiatorInt()
 	{
@@ -481,14 +476,18 @@ public class Number {
 		return 0;
 	}
 
-	/**TODO comment
+	/**
+	 * Get the key exchange flag, how the user is going to handle key exchanges
+	 * upon receiving a message.
 	 * @return the keyExchangeFlag
 	 */
 	public int getKeyExchangeFlag() {
 		return keyExchangeFlag;
 	}
 
-	/**TODO comment
+	/**
+	 * Set the key exchange flag to either Number.AUTO, Number.MANUAL,
+	 * Number.IGNORE
 	 * @param keyExchangeFlag the keyExchangeFlag to set
 	 */
 	public void setKeyExchangeFlag(int keyExchangeFlag) {
