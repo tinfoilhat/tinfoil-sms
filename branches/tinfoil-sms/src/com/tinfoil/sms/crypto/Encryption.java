@@ -16,6 +16,8 @@
  */
 package com.tinfoil.sms.crypto;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 
 import org.spongycastle.crypto.CipherParameters;
@@ -50,6 +52,8 @@ public class Encryption
     private HashMap<Long, ECEngine> encryptMap;
     private HashMap<Long, ECEngine> decryptMap;
     
+    /* Size of the nonce in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
+    private static final int NONCE_SIZE = 2;
     
     /**
      * The basic constructor, initializes the encrypt/decrypt hash maps.
@@ -59,7 +63,7 @@ public class Encryption
         this.encryptMap = new HashMap<Long, ECEngine>();
         this.decryptMap = new HashMap<Long, ECEngine>();
     }
-
+    
     
     /**
      * Encrypts the message provided using the public key belonging to the number
@@ -211,5 +215,46 @@ public class Encryption
         {
             decryptMap.put(number.getId(), engine);
         }
+    }
+    
+    
+    /**
+     * Prefixes the nonce to the beginning of the message that is to be encrypted
+     * 
+     * @param message The message to prefix the nonce to
+     * @return The message with the nonce value prefixed
+     */
+    private byte[] addNonce(byte[] message, Integer nonce)
+    {
+        byte[] output = new byte[message.length + NONCE_SIZE];
+        
+        ByteBuffer buffer = ByteBuffer.allocate(4);
+        buffer.putInt(nonce);
+        
+        /* Truncate the integer to NONCE_SIZE and prefix it to output */
+        System.arraycopy(buffer.array(), 2, output, 0, NONCE_SIZE);
+        System.arraycopy(message, 0, output, NONCE_SIZE, message.length);
+        
+        return output;
+    }
+    
+    
+    /**
+     * Gets the prefixed nonce from the message that has been decrypted
+     * @param message The decrypted message to get the prefixed nonce from
+     * @return The nonce value
+     */
+    private Integer getNonce(byte[] message)
+    {
+        byte[] nonce = new byte[NONCE_SIZE];
+        
+        System.arraycopy(message, 0, nonce, 0, NONCE_SIZE);
+        
+        /* Convert the nonce back to int */
+        ByteBuffer buffer = ByteBuffer.wrap(nonce);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        
+        /* Convert the nonce value to an unsigned short */
+        return buffer.getShort() & 0xFFFF;
     }
 }
