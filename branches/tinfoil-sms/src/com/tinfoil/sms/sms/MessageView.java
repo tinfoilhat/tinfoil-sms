@@ -27,7 +27,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -319,7 +318,9 @@ public class MessageView extends Activity implements Runnable{
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.exchange).setChecked(true);
+        
+        menu.findItem(R.id.exchange).setChecked(MessageService.dba
+        		.isTrustedContact(ConversationView.selectedNumber));
         return true;
     }
 
@@ -328,10 +329,9 @@ public class MessageView extends Activity implements Runnable{
 
         final MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.message_view_menu, menu);
+        
         return true;
-        //TODO make so that the Exchange Key button is actually selectable 
-
-    }
+	}
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -389,9 +389,9 @@ public class MessageView extends Activity implements Runnable{
 	        //sendSMS = (Button) this.findViewById(R.id.send);
 	        this.messageBox = (EditText) this.findViewById(R.id.message);
 	
-	        final InputFilter[] FilterArray = new InputFilter[1];
+	        /*final InputFilter[] FilterArray = new InputFilter[1];
 	
-	        /*if (isTrusted)
+	        if (isTrusted)
 	        {
 	        	
 	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);

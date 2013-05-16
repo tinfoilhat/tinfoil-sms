@@ -5,8 +5,7 @@
 CREATE TABLE user
 (
     public_key BLOB,
-    private_key BLOB,
-    signature BLOB
+    private_key BLOB
 )
 
 /*
@@ -54,8 +53,11 @@ CREATE TABLE numbers
     type INTEGER,
     unread INTEGER,
     public_key BLOB,
-    symmetric_key BLOB,
-    signature BLOB
+    signature BLOB,
+    nonce_encrypt BLOB,
+    nonce_decrypt BLOB,
+    initiator INTEGER,
+    exchange_setting INTEGER
 )
 
 CREATE TABLE messages
@@ -73,5 +75,14 @@ CREATE TABLE queue
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
     number_reference INTEGER REFERENCES numbers (id)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    message TEXT
+    message TEXT,
+    exchange INTEGER
+)
+
+CREATE TABLE exchange_messages
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+    number_reference INTEGER REFERENCES numbers (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    key_message TEXT
 )

@@ -64,7 +64,6 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_BOOK_PATH + " TEXT," +
             " " + DBAccessor.KEY_BOOK_INVERSE_PATH + " TEXT);";
     
-    
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + 
             " (" + DBAccessor.KEY_PUBLIC_KEY + " BLOB," +

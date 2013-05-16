@@ -55,9 +55,8 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO add import, export and view (and any other key options) to the setting menu, key exchange
+ * TODO add import, export (and any other key options) to the setting menu, key exchange
  * TODO attempt to move all DB queries to queues
- * TODO add keyexchange activity (create notification and that will launch the activity) also link to it from some where)
  * TODO change wrap_content to '0dp'
  * see https://developer.android.com/training/basics/firstapp/building-ui.html
  * <ul>
