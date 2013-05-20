@@ -22,20 +22,34 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.sms.MessageView;
+import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 public class UserKeySettings extends Activity {
 
+	private ArrayList<TrustedContact> tc;
+	private AlertDialog popup_alert;
+	private AutoCompleteTextView phoneBook;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,39 +71,83 @@ public class UserKeySettings extends Activity {
 	{
 		if(SMSUtility.isMediaWritable())
 		{
+			phoneBook = new AutoCompleteTextView(this);
+			List<String> contact = null;
+            if (tc == null)
+            {
+            	//Do in thread.
+                tc = MessageService.dba.getAllRows();
+            }
+
+            if (tc != null)
+            {
+                if (contact == null)
+                {
+                    contact = SMSUtility.contactDisplayMaker(tc);
+                }
+            }
+            else
+            {
+                contact = null;
+            }
+            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getBaseContext(), R.layout.auto_complete_list_item, contact);
+
+            phoneBook.setAdapter(adapter);
+			
+			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
+			popup_builder.setTitle("Input contact's number")
+				.setCancelable(true)
+                .setView(phoneBook)
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+
+                	public void onClick(final DialogInterface dialog, final int which) { 
+                		
+                		//TODO use this to properly sign the key exchange file.
+                		String[] contactInfo = SMSUtility.parseAutoComplete(phoneBook.getText().toString());
+                		//String number = null;
+                		if(contactInfo != null)
+                		{
+                			//number = contactInfo[1];
+	                		               		
+	                		File root = Environment.getExternalStorageDirectory();
+	            			
+	            			File keys = new File(root.getAbsolutePath() + "/keys");
+	            			keys.mkdirs();
+	            			
+	            			File pubKey = new File(keys, "public_key.txt");
+	            			
+	            			try {
+	            				FileOutputStream f  = new FileOutputStream(pubKey);
+	            				PrintWriter pw = new PrintWriter(f);
+	            				pw.println(SMSUtility.user.getPublicKey());
+	            				pw.flush();
+	            				pw.close();
+	            				f.close();
+	            			}
+	            			catch (FileNotFoundException e)
+	            			{
+	            				e.printStackTrace();
+	            			}
+	            			catch (IOException e)
+	            			{
+	            				e.printStackTrace();
+	            			}
+	            			Toast.makeText(UserKeySettings.this, "Written to your sd card under /keys/public_key.txt", Toast.LENGTH_SHORT).show();
+                		}
+                	}
+                });/*.setNegativeButton("Cancel", new OnClickListener(){
+
+					public void onClick(DialogInterface arg0, int arg1) {
+						popup_alert.cancel();
+					}
+                	
+                });*/
+			popup_alert = popup_builder.create();
+			popup_alert.show();
 			
 			//getExternalFilesDir(null);
 			
-			File root = Environment.getExternalStorageDirectory();
 			
-			File keys = new File(root.getAbsolutePath() + "/keys");
-			keys.mkdirs();
-			
-			File pubKey = new File(keys, "public_key.txt");
-			
-			try {
-				FileOutputStream f  = new FileOutputStream(pubKey);
-				PrintWriter pw = new PrintWriter(f);
-				
-				/* 
-				 * TODO create dialog to get the desired user's number.
-				 * Could always get the user to select which contact they are
-				 * giving their key to and then actually generate a key exchange
-				 */
-				pw.println(SMSUtility.user.getPublicKey());
-				pw.flush();
-				pw.close();
-				f.close();
-			}
-			catch (FileNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-			Toast.makeText(this, "Written to your sd card under /keys/public_key.txt", Toast.LENGTH_SHORT).show();
 		}
 		
 	}

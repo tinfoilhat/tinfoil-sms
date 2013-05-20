@@ -344,4 +344,35 @@ public abstract class SMSUtility {
 		return false;
 	}
 
+	/**
+	 * TODO comment
+	 * @param entry
+	 * @return A string array with the first element being the contact's name
+	 * and the second element being the contact's number. If the given string
+	 * only contains the contact's number the first element will be null.
+	 */
+	public static String[] parseAutoComplete(String entry)
+	{
+		String[] info = entry.split(", ");
+		
+		if(info != null)
+		{
+			if(info.length == 2 && info[1] != null)
+			{
+				if(isANumber(info[1]))
+				{
+					return info;
+				}
+			}
+			else
+			{
+				if(isANumber(entry))
+				{
+					return new String[]{null, entry};
+				}
+			}
+		}
+		return null;		
+	}
+	
 }

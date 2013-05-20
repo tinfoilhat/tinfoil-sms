@@ -45,7 +45,7 @@ public class SignalListener extends PhoneStateListener{
 		//signalStrength.
 		if (strength >= 0 && strength <= 31 || strength == 99 )
 		{
-			Log.v("Strength", ""+strength);
+			Log.v("Strength", "" + strength);
 			
 			/*
 			 * If the phone has 0 or 99 signal strength then they do not have
@@ -58,14 +58,16 @@ public class SignalListener extends PhoneStateListener{
 				/*
 				 * Could use wait() and notify() rather then busy waiting
 				 */
-				ConversationView.messageSender.threadNotify(false);
+				//ConversationView.messageSender.threadNotify(false);
 			}
 			else
 			{
 				/*
 				 * Once enough service is found the flag is updated.
 				 */
-				ConversationView.messageSender.setSignal(true);				
+				ConversationView.messageSender.setSignal(true);
+				
+				ConversationView.messageSender.threadNotify(false);
 			}
 			
 		}
