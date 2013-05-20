@@ -20,6 +20,7 @@ package com.tinfoil.sms.crypto;
 import java.util.ArrayList;
 
 import android.app.ProgressDialog;
+import android.util.Log;
 
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
@@ -143,7 +144,9 @@ public class ExchangeKey implements Runnable {
             for (int i = 0; i < this.trusted.size(); i++)
             {
                 this.number = MessageService.dba.getNumber(this.trusted.get(i));
-                 
+                
+                Log.v("S1", number.getSharedInfo1());
+                Log.v("S2", number.getSharedInfo2());
                 /*
                  * Set the initiator flag since this user is starting the key exchange.
                  */

@@ -197,6 +197,9 @@ public class MessageReceiver extends BroadcastReceiver {
 									Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
 									Log.v("Key Exchange", "Exchange Key Message Received");
 									
+									Log.v("S1", number.getSharedInfo1());
+					                Log.v("S2", number.getSharedInfo2());
+					                
 									number.setPublicKey(KeyExchange.encodedPubKey(message));
 									number.setSignature(KeyExchange.encodedSignature(message));
 									
@@ -218,7 +221,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								if(result != null)
 								{
 									Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-												}
+								}
 							}
 						}
 						else
