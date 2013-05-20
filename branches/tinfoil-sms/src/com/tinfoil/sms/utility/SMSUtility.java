@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Environment;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -310,5 +311,37 @@ public abstract class SMSUtility {
     	}
     	return false;
     }
+    
+    /**
+     * Check if the sd card is writable able.
+     * @return Whether the sd card is writable or not.
+     */
+    public static boolean isMediaWritable()
+	{
+		String state = Environment.getExternalStorageState();
+		
+		if(Environment.MEDIA_MOUNTED.equals(state))
+		{
+			//Read and Writeable
+			return true;
+		}
+		return false;	
+	}
+
+    /**
+     * Check if the sd card is available.
+     * @return Whether the sd card is available or not
+     */
+	public static boolean isMediaAvailable()
+	{
+		String state = Environment.getExternalStorageState();
+		
+		if(Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))
+		{
+			// Media is able to be read from.
+			return true;
+		}
+		return false;
+	}
 
 }

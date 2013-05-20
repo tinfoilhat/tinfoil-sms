@@ -17,11 +17,18 @@
 
 package com.tinfoil.sms.settings;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,14 +38,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.sms.KeyExchangeManager;
-import com.tinfoil.sms.sms.SendMessageActivity;
 import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * An activity used to edit a single number from a given contact. 
@@ -306,7 +313,34 @@ public class EditNumber extends Activity{
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.import_key:
-            	//TODO implement
+            	
+            	//TODO make a dialog to allow them to set the folder and the file to look for.
+            	if(SMSUtility.isMediaAvailable())
+            	{
+            		StringBuilder sb = new StringBuilder();
+            		File root = Environment.getExternalStorageDirectory();
+            		File pubKey = new File(root.getAbsolutePath() + "/keys/contact_public_key.txt");
+            		
+            		try {
+						FileInputStream f = new FileInputStream(pubKey);
+						
+						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(f));
+					    String line;
+					    while ((line = bufferedReader.readLine()) != null) {
+					        sb.append(line);
+					    }
+					    bufferedReader.close();
+					    f.close();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            		Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
+            	}
+            	
             	return true;
             default:
                 return super.onOptionsItemSelected(item);

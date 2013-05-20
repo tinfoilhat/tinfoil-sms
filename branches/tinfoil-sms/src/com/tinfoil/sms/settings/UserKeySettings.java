@@ -17,11 +17,19 @@
 
 package com.tinfoil.sms.settings;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -47,7 +55,46 @@ public class UserKeySettings extends Activity {
 	
 	public void exportKey(View view)
 	{
-		//TODO create export action
+		if(SMSUtility.isMediaWritable())
+		{
+			
+			//getExternalFilesDir(null);
+			
+			File root = Environment.getExternalStorageDirectory();
+			
+			File keys = new File(root.getAbsolutePath() + "/keys");
+			keys.mkdirs();
+			
+			File pubKey = new File(keys, "public_key.txt");
+			
+			try {
+				FileOutputStream f  = new FileOutputStream(pubKey);
+				PrintWriter pw = new PrintWriter(f);
+				
+				/* 
+				 * TODO create dialog to get the desired user's number.
+				 * Could always get the user to select which contact they are
+				 * giving their key to and then actually generate a key exchange
+				 */
+				pw.println(SMSUtility.user.getPublicKey());
+				pw.flush();
+				pw.close();
+				f.close();
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			Toast.makeText(this, "Written to your sd card under /keys/public_key.txt", Toast.LENGTH_SHORT).show();
+		}
+		
 	}
-
+	
+	
+	
+	
 }
