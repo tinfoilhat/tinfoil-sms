@@ -170,7 +170,13 @@ public abstract class KeyExchange
         
         Log.v("checksum", new String(checksum));
         Log.v("checksum length", Integer.toString(checksum.length));
-        Log.v("signedpubkeysum", new String(signedPubKeySum));
+        Log.v("publickey", Base64.encodeToString(encodedPubKey, Base64.DEFAULT));
+        
+        Log.v("Shared Info1:", number.getSharedInfo1());
+        Log.v("Shared Info2:", number.getSharedInfo2());
+        
+        Log.v("decoded signedpubkey", new String(Hex.encode(encodedSignedPubKey)));
+        
         
         System.arraycopy(encodedSignedPubKey, 0, signedPubKeySum, 0, encodedSignedPubKey.length);
         System.arraycopy(checksum, 0, signedPubKeySum, encodedSignedPubKey.length, checksum.length);
@@ -199,6 +205,8 @@ public abstract class KeyExchange
         APrioriInfo sharedInfo = new APrioriInfo(number.getSharedInfo1(), number.getSharedInfo2());
         
         Log.v("signedpubkey received", signedPubKey);
+        Log.v("Shared Info1:", number.getSharedInfo1());
+        Log.v("Shared Info2:", number.getSharedInfo2());
         
         /* Decode the key exchange, and strip the checksum */
         byte[] decodedSignedPubKey = stripChecksum(Base64.decode(signedPubKey, Base64.DEFAULT));
