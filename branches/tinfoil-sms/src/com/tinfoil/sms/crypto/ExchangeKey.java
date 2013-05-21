@@ -143,10 +143,11 @@ public class ExchangeKey implements Runnable {
         {
             for (int i = 0; i < this.trusted.size(); i++)
             {
-                this.number = MessageService.dba.getNumber(this.trusted.get(i));
+                number = MessageService.dba.getNumber(trusted.get(i));
                 
                 Log.v("S1", number.getSharedInfo1());
                 Log.v("S2", number.getSharedInfo2());
+                
                 /*
                  * Set the initiator flag since this user is starting the key exchange.
                  */
@@ -154,7 +155,8 @@ public class ExchangeKey implements Runnable {
                                 
                 MessageService.dba.updateInitiator(number);
              
-                /*TODO remove
+                /*
+                 * TODO remove
                  * Will use MessageService.dba.getUserRow(); to get access to
                  * the user's key. After the user's key has been generated.
                  */

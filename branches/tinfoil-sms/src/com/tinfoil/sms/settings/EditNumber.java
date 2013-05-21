@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
@@ -319,7 +321,7 @@ public class EditNumber extends Activity{
             	{
             		StringBuilder sb = new StringBuilder();
             		File root = Environment.getExternalStorageDirectory();
-            		File pubKey = new File(root.getAbsolutePath() + "/keys/contact_public_key.txt");
+            		File pubKey = new File(root.getAbsolutePath() + UserKeySettings.path + "/" + originalNumber + "_" + UserKeySettings.file);
             		
             		try {
 						FileInputStream f = new FileInputStream(pubKey);
@@ -339,6 +341,21 @@ public class EditNumber extends Activity{
 						e.printStackTrace();
 					}
             		Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
+            		
+            		String keyExchangeMessage = sb.toString();
+            		
+            		if(KeyExchange.isKeyExchange(keyExchangeMessage))
+            		{
+            			if(KeyExchange.verify(number, keyExchangeMessage))
+						{
+            				Log.v("Key Exchange", "Exchange Key Message Received");
+			                
+							number.setPublicKey(KeyExchange.encodedPubKey(keyExchangeMessage));
+							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
+							
+							MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
+						}
+            		}
             	}
             	
             	return true;

@@ -28,7 +28,6 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -39,8 +38,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.crypto.KeyExchange;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.sms.MessageView;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -49,6 +49,10 @@ public class UserKeySettings extends Activity {
 	private ArrayList<TrustedContact> tc;
 	private AlertDialog popup_alert;
 	private AutoCompleteTextView phoneBook;
+	
+	public static final String path = "/keys";
+	public static final String file = "public_key.txt";
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,19 +111,28 @@ public class UserKeySettings extends Activity {
                 		//String number = null;
                 		if(contactInfo != null)
                 		{
-                			//number = contactInfo[1];
-	                		               		
+                			if(contactInfo[0] == null)
+                			{
+                				contactInfo[0] = contactInfo[1];
+                			}
+                			
+                			Number number = MessageService.dba.getNumber(contactInfo[1]);
+                			
+                			number.setInitiator(true);
+                			MessageService.dba.updateInitiator(number);
+                			String keyExchangeMessage = KeyExchange.sign(number);
+                			
 	                		File root = Environment.getExternalStorageDirectory();
 	            			
-	            			File keys = new File(root.getAbsolutePath() + "/keys");
+	            			File keys = new File(root.getAbsolutePath() + path);
 	            			keys.mkdirs();
 	            			
-	            			File pubKey = new File(keys, "public_key.txt");
+	            			File pubKey = new File(keys, contactInfo[1] + "_" + file);
 	            			
 	            			try {
 	            				FileOutputStream f  = new FileOutputStream(pubKey);
 	            				PrintWriter pw = new PrintWriter(f);
-	            				pw.println(SMSUtility.user.getPublicKey());
+	            				pw.println(keyExchangeMessage);
 	            				pw.flush();
 	            				pw.close();
 	            				f.close();
@@ -132,7 +145,7 @@ public class UserKeySettings extends Activity {
 	            			{
 	            				e.printStackTrace();
 	            			}
-	            			Toast.makeText(UserKeySettings.this, "Written to your sd card under /keys/public_key.txt", Toast.LENGTH_SHORT).show();
+	            			Toast.makeText(UserKeySettings.this, "Written to your sd card under " + path + "/" + contactInfo[1] + "_" + file, Toast.LENGTH_SHORT).show();
                 		}
                 	}
                 });/*.setNegativeButton("Cancel", new OnClickListener(){
