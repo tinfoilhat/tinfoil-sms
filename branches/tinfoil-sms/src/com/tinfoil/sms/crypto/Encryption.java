@@ -52,8 +52,8 @@ public class Encryption
     private HashMap<Long, ECEngine> encryptMap;
     private HashMap<Long, ECEngine> decryptMap;
     
-    /* Size of the nonce in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
-    private static final int NONCE_SIZE = 2;
+    /* Size of the message counter in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
+    private static final int COUNT_SIZE = 2;
     
     /**
      * The basic constructor, initializes the encrypt/decrypt hash maps.
@@ -79,6 +79,7 @@ public class Encryption
     public String encrypt(Number number, String message) throws InvalidCipherTextException
     {
         byte[] encMessage;
+        byte[] finalMessage;
         
         Log.v("Original Message", message);
         
@@ -88,13 +89,18 @@ public class Encryption
             initECEngine(number, true);
         }
         
-        /* Encrypt the message, increment and save the nonce cycle */
+        /* Encrypt the message, add the counter to the message, which is used by the nonce */
         encMessage = encryptMap.get(number.getId()).processBlock(message.getBytes());
+        finalMessage = addCounter(encMessage, number.getNonceEncrypt());
+        
+        Log.v("Nonce counter:", Integer.toString(number.getNonceEncrypt()));
+        
+        /* Increment and save the counter used by the nonce for encryption */
         number.setNonceEncrypt(number.getNonceEncrypt() + 1);
+       
+        Log.v("Encrypted Message", Base64.encodeToString(finalMessage, Base64.DEFAULT));
         
-        Log.v("Encrypted Message", Base64.encodeToString(encMessage, Base64.DEFAULT));
-        
-        return Base64.encodeToString(encMessage, Base64.DEFAULT);
+        return Base64.encodeToString(finalMessage, Base64.DEFAULT);
     }
     
     
@@ -111,18 +117,42 @@ public class Encryption
      */
     public String decrypt(Number number, String message) throws InvalidCipherTextException
     {
+        byte[] decodedMessage = Base64.decode(message, Base64.DEFAULT);
+        byte[] encMessage = new byte[decodedMessage.length - COUNT_SIZE];
         byte[] decMessage;
         
         Log.v("Encypted Message Received", message);
         
-        /* Initialize the encryption engine if the number is not in hash map */
-        if (! decryptMap.containsKey(number.getId()))
+        /* Get the nonce counter from the message */
+        Integer counter = getCounter(decodedMessage);
+        
+        Log.v("Nonce counter received:", Integer.toString(counter));
+        
+        /* Re-initialize the encryption engine if the nonce counter is incorrect
+         * due to message not being received in the correct order (benefit of the doubt)
+         * 
+         * NOTE: In the event of a malicious attack (trying to exhaust the nonce counter)
+         * the engine will not be re-initialized, it will only be reinitialized if the counter 
+         * is greater than the current counter (to avoid an attack of re-using IVs) and
+         * if it is greater by at most 10.
+         */
+        if ((counter > number.getNonceDecrypt()) && (counter - number.getNonceDecrypt()) <= 10)
+        {
+            Log.v("Re-initializing nonce counter to:", Integer.toString(counter));
+            number.setNonceDecrypt(counter);
+            initECEngine(number, false);
+        }
+        /* Otherwise, initialize the encryption engine if the number is not in hash map */
+        else if (! decryptMap.containsKey(number.getId()))
         {
             initECEngine(number, false);
         }
         
-        /* decrypt the message, increment and save the nonce cycle */
-        decMessage = decryptMap.get(number.getId()).processBlock(Base64.decode(message, Base64.DEFAULT));
+        /* Remove the nonce counter from the message received */
+        System.arraycopy(decodedMessage, COUNT_SIZE, encMessage, 0, encMessage.length);
+        
+        /* decrypt the message, increment and save the nonce counter */
+        decMessage = decryptMap.get(number.getId()).processBlock(encMessage);
         number.setNonceDecrypt(number.getNonceDecrypt() + 1);
         
         Log.v("Decrypted Message", new String(decMessage));
@@ -219,39 +249,39 @@ public class Encryption
     
     
     /**
-     * Prefixes the nonce to the beginning of the message that is to be encrypted
+     * Prefixes the message count to the beginning of the message that is to be encrypted
      * 
-     * @param message The message to prefix the nonce to
-     * @return The message with the nonce value prefixed
+     * @param message The message to prefix the counter to
+     * @return The message with the counter value prefixed
      */
-    private byte[] addNonce(byte[] message, Integer nonce)
+    private byte[] addCounter(byte[] message, Integer counter)
     {
-        byte[] output = new byte[message.length + NONCE_SIZE];
+        byte[] output = new byte[message.length + COUNT_SIZE];
         
         ByteBuffer buffer = ByteBuffer.allocate(4);
-        buffer.putInt(nonce);
+        buffer.putInt(counter);
         
-        /* Truncate the integer to NONCE_SIZE and prefix it to output */
-        System.arraycopy(buffer.array(), 2, output, 0, NONCE_SIZE);
-        System.arraycopy(message, 0, output, NONCE_SIZE, message.length);
+        /* Truncate the integer to COUNTER_SIZE and prefix it to output */
+        System.arraycopy(buffer.array(), 2, output, 0, COUNT_SIZE);
+        System.arraycopy(message, 0, output, COUNT_SIZE, message.length);
         
         return output;
     }
     
     
     /**
-     * Gets the prefixed nonce from the message that has been decrypted
-     * @param message The decrypted message to get the prefixed nonce from
-     * @return The nonce value
+     * Gets the prefixed message count from the message received
+     * @param message The message received to get the prefixed counter from
+     * @return The counter value
      */
-    private Integer getNonce(byte[] message)
+    private Integer getCounter(byte[] message)
     {
-        byte[] nonce = new byte[NONCE_SIZE];
+        byte[] counter = new byte[COUNT_SIZE];
         
-        System.arraycopy(message, 0, nonce, 0, NONCE_SIZE);
+        System.arraycopy(message, 0, counter, 0, COUNT_SIZE);
         
         /* Convert the nonce back to int */
-        ByteBuffer buffer = ByteBuffer.wrap(nonce);
+        ByteBuffer buffer = ByteBuffer.wrap(counter);
         buffer.order(ByteOrder.BIG_ENDIAN);
         
         /* Convert the nonce value to an unsigned short */
