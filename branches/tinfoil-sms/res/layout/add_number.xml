@@ -9,7 +9,7 @@
          android:id="@+id/stored_number"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:textSize="16dp" />
+         android:textSize="16sp" />
 
      <TextView
          android:id="@+id/primary_number"
@@ -17,6 +17,6 @@
          android:layout_height="wrap_content"
          android:layout_alignBottom="@+id/stored_number"
          android:layout_alignParentRight="true"
-         android:textSize="12dp" />
+         android:textSize="12sp" />
 
 </RelativeLayout>

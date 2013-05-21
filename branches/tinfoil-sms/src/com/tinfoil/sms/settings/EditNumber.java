@@ -334,14 +334,11 @@ public class EditNumber extends Activity{
 					    bufferedReader.close();
 					    f.close();
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-            		Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
-            		
+           		
             		String keyExchangeMessage = sb.toString();
             		
             		if(KeyExchange.isKeyExchange(keyExchangeMessage))

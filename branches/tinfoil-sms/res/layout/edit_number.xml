@@ -32,6 +32,7 @@
                 android:layout_alignLeft="@+id/phone_text"
                 android:layout_below="@+id/phone_text"
                 android:ems="10"
+                android:hint="@string/phone_text"
                 android:inputType="phone" >
 
                 <requestFocus />
@@ -115,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/book_inverse"
-                android:text="Contact's Public Key" />
+                android:text="@string/contact_public_key" />
             
             <EditText
                 android:id="@+id/contact_pub_key"
@@ -124,7 +125,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/contact_pub_key_text"
                 android:ems="10"
-                android:hint="Public Key"
+                android:hint="@string/public_key"
                 android:inputType="text" />
             
             <RadioGroup
@@ -139,26 +140,26 @@
                     android:id="@+id/key_exchange_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Key Exchange Settings" />
+                    android:text="@string/key_exchange_settings" />
                 
 	            <RadioButton
 	                android:id="@+id/auto_exchange"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:checked="true"
-	                android:text="Automatically Exchange" />
+	                android:text="@string/auto_key_exchange" />
 	            
 	            <RadioButton
 	                android:id="@+id/manual_exchange"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="Manual Exchange" />
+	                android:text="@string/manual_key_exchange" />
 	            
 	            <RadioButton
 	                android:id="@+id/ignore_exchange"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="Ignore All Exchange" />
+	                android:text="@string/ignore_key_exchange" />
 	        </RadioGroup>
 	        
         </RelativeLayout>

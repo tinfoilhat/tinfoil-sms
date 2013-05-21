@@ -20,7 +20,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:clickable="true"
-        android:text="Import Contacts"
+        android:text="@string/import_contacts"
         android:onClick="importSelected" />
 
 </RelativeLayout>

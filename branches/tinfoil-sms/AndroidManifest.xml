@@ -31,7 +31,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".settings.AddContact"
-            android:label="Edit Contact" />
+            android:label="@string/add_contact_activity" />
         <activity
             android:name=".settings.QuickPrefsActivity"
             android:label="Settings" />
@@ -52,7 +52,7 @@
             android:name=".settings.EditNumber"
             android:configChanges="orientation"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="Edit Number" />
+            android:label="@string/edit_number" />
         <activity
             android:name=".settings.RemoveContactsActivity"
             android:configChanges="orientation"

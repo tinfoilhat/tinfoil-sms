@@ -180,6 +180,8 @@ public class MessageView extends Activity implements Runnable{
                                             .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
 
                                                 public void onClick(final DialogInterface dialog, final int which) {
+                                                	
+                                                	// TODO user SMSUtility.parseAutoComplete(...)
                                                     final String[] info = phoneBox.getText().toString().split(", ");
 
                                                     boolean invalid = false;
@@ -319,8 +321,19 @@ public class MessageView extends Activity implements Runnable{
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
         
-        menu.findItem(R.id.exchange).setChecked(MessageService.dba
-        		.isTrustedContact(ConversationView.selectedNumber));
+        //menu.findItem(R.id.exchange).setChecked(MessageService.dba
+        	//	.isTrustedContact(ConversationView.selectedNumber));
+        
+        if(MessageService.dba.isTrustedContact(ConversationView.selectedNumber))
+        {
+        	menu.findItem(R.id.exchange).setTitle("Untrust Contact")
+        		.setTitleCondensed("Untrust");
+        }
+        else
+        {
+        	menu.findItem(R.id.exchange).setTitle("Exchange Keys")
+        		.setTitleCondensed("Exchange");
+        }
         return true;
     }
 

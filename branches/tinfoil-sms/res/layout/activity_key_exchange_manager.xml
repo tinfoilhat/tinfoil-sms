@@ -19,20 +19,21 @@
 		android:layout_alignParentBottom="true">
 	    
 	  <Button
-	    android:id="@+id/accept"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:onClick="exchangeKey"
-	    android:layout_weight="1"
-	    android:text="Exchange"/>
+	      android:id="@+id/accept"
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_weight="1"
+	      android:onClick="exchangeKey"
+	      android:text="@string/exchange_button" />
 	  
 	  <Button
-	    android:id="@+id/reject"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:onClick="reject"
-	    android:layout_weight="1"
-	    android:text="Reject"/>
+	      android:id="@+id/reject"
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_weight="1"
+	      android:onClick="reject"
+	      android:text="@string/reject_button" />
+
 	</LinearLayout>
 
 </RelativeLayout>

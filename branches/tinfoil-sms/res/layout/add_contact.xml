@@ -42,20 +42,20 @@
 		android:layout_alignParentBottom="true">
 	    
 	  <Button
-	    android:id="@+id/add_new_number"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:onClick="addNewNumber"
-	    android:layout_weight="1"
-	    android:text="Add Number"/>
+	      android:id="@+id/add_new_number"
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_weight="1"
+	      android:onClick="addNewNumber"
+	      android:text="@string/add_number" />
 	  
 	  <Button
-	    android:id="@+id/add"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:onClick="saveInformation"
-	    android:layout_weight="1"
-	    android:text="Save"/>
+	      android:id="@+id/add"
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_weight="1"
+	      android:onClick="saveInformation"
+	      android:text="@string/save" />
 	</LinearLayout>
     
 </RelativeLayout>

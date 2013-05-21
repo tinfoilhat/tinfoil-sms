@@ -3,7 +3,32 @@
 
     <string name="app_name">prephase1</string>
     <string name="vibration_default_length">500</string>
-    <string name="phone_text">Phone Number</string>
+    
+    
+    
+    <string name="contact_name">name</string>
+    
+    <string name="title_activity_key_exchange_manager">KeyExchangeManager</string>
+    <string name="action_settings">Settings</string>   
+    
+
+    <!-- activity_key_exchange_manager strings -->    
+    <string name="reject_button">Reject</string>
+    <string name="title_activity_user_key_settings">User Key Settings</string>
+    <string name="exchange_button">Exchange</string>
+    
+    <!-- AddContact strings -->
+    <string name="add_contact_activity">Edit Contact</string>
+    <string name="number">Number</string>
+    <string name="add_number">Add Number</string>
+    
+    <!-- Shared between AddContact and EditNumber -->
+    <string name="save">Save</string>
+    
+    <!-- ManageContactsActivity strings -->
+    <string name="exchange_keys">Exchange Keys</string>
+    
+    <!-- EditNumber strings -->
     <string name="s1_text">Shared Secret 1</string>
     <string name="shared_secret_1">default</string>
     <string name="s2_text">Shared Secret 2</string>
@@ -12,12 +37,19 @@
     <string name="book_path">default</string>
     <string name="book_inverse_text">Book Inverse Path</string>
     <string name="book_inverse">default</string>
-    <string name="save">Save</string>
-    <string name="contact_name">name</string>
-    <string name="number">Number</string>
-    <string name="title_activity_key_exchange_manager">KeyExchangeManager</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_user_key_settings">User Key Settings</string>
+    <string name="contact_public_key">Contact\'s Public Key</string>
+    <string name="public_key">Public Key</string>
+    <string name="key_exchange_settings">Key Exchange Settings</string>
+    <string name="auto_key_exchange">Automatically Exchange</string>
+    <string name="manual_key_exchange">Manual Exchange</string>
+    <string name="ignore_key_exchange">Ignore All Exchange</string>
+    <string name="edit_number">Edit Number</string>
+    
+    <!-- Shared between EditNumber and -->    
+    <string name="phone_text">Phone Number</string>
+    
+    <!-- ImportContacts strings -->
+    <string name="import_contacts">Import Contacts</string>
+    
 
 </resources>
