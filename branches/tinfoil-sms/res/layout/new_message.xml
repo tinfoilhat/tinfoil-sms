@@ -15,7 +15,7 @@
          android:textColorHint="#000000"
          android:textColor="#000000"
          android:cursorVisible="true"
-         android:hint="To" >
+         android:hint="@string/to" >
 
          <requestFocus />
      </AutoCompleteTextView>
@@ -41,7 +41,7 @@
             android:id="@+id/new_message_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"
+            android:text="@string/send"
             android:onClick="sendMessage"/>
     </LinearLayout>
     
@@ -60,8 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:textSize="12sp"
-            android:textColor="#FFFFFF"
-            android:text="122" />
+            android:textColor="#FFFFFF" />
+            <!-- android:text="122" --> 
 
 	</RelativeLayout>
 

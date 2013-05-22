@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">prephase1</string>
+    <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
-    
-    
     
     <string name="contact_name">name</string>
     
-    <string name="title_activity_key_exchange_manager">KeyExchangeManager</string>
+    <!-- KeyExchangeManager Activity strings -->
+    <string name="key_exchange_manager">Key Exchange Manager</string>
+    
+    
     <string name="action_settings">Settings</string>   
     
+    <!-- Settings strings -->
+    <string name="settings">Settings</string>
 
     <!-- activity_key_exchange_manager strings -->    
     <string name="reject_button">Reject</string>
-    <string name="title_activity_user_key_settings">User Key Settings</string>
+    <string name="user_key_settings">User Key Settings</string>
     <string name="exchange_button">Exchange</string>
     
     <!-- AddContact strings -->
@@ -27,6 +30,7 @@
     
     <!-- ManageContactsActivity strings -->
     <string name="exchange_keys">Exchange Keys</string>
+    <string name="manage_contacts">Manage Contacts</string>
     
     <!-- EditNumber strings -->
     <string name="s1_text">Shared Secret 1</string>
@@ -51,5 +55,20 @@
     <!-- ImportContacts strings -->
     <string name="import_contacts">Import Contacts</string>
     
+    <!--MessageView strings -->
+    <string name="message">Messages</string>
+    
+    <!-- Shared between MessageView and SendMessageActivity strings -->
+    <string name="send">Send</string>
 
+    <!-- SendMessageActivity strings -->
+    <string name="to">To</string>
+    <string name="send_message">Send Message</string>
+    
+    <!-- DeleteContacts strings -->
+    <string name="delete_contacts">Delete Contacts</string>
+    
+    <!-- UserKeySettings strings -->
+    <string name="user_public_key">User\'s Public Key:</string>
+    <string name="export_public_key">Export Public key</string>
 </resources>

@@ -12,7 +12,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User's Public Key:" />
+        android:text="@string/user_public_key" />
     
     <TextView
         android:id="@+id/public_key"
@@ -34,6 +34,6 @@
         android:layout_height="wrap_content"
 		android:layout_weight="1"
         android:onClick="exportKey"
-        android:text="Export Public key" />
+        android:text="@string/export_public_key" />
     </LinearLayout>
 </RelativeLayout>
