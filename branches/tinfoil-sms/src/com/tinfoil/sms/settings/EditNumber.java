@@ -39,7 +39,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;

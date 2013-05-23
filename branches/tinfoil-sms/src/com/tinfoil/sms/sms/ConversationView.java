@@ -98,6 +98,9 @@ public class ConversationView extends Activity implements Runnable {
     public static final int UPDATE = 1;
     private static Thread thread;
     private static ListView emptyList; 
+    
+    public static final int ADD_CONTACT = 0;
+    public static final int IMPORT_CONTACT = 1;
 
     /** Called when the activity is first created. */
     @Override
@@ -206,6 +209,24 @@ public class ConversationView extends Activity implements Runnable {
                 ConversationView.this.startActivity(intent);
             }
         });
+        
+        emptyList.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				switch (position)
+				{
+					case ADD_CONTACT:
+						Toast.makeText(ConversationView.this, "add contact", Toast.LENGTH_LONG).show();
+						//TODO start add contacts
+					break;
+					case IMPORT_CONTACT:
+						Toast.makeText(ConversationView.this, "import contact", Toast.LENGTH_LONG).show();
+						//TODO start import contacts activity
+					break;
+				}
+			}
+		});
 
     }
 
@@ -317,13 +338,6 @@ public class ConversationView extends Activity implements Runnable {
         {
         	if(msgList.isEmpty())
         	{
-        		/*ArrayList<String[]> emptyItems = new ArrayList<String[]>();
-                //emptyItems.add(new String[]{null, "Compose", null, null});
-                emptyItems.add(new String[]{"", "Add Contact", "", "0"});
-                emptyItems.add(new String[]{"", "Import Contact", "", "0"});
-                Log.v("Items", emptyItems.get(0)[1]);
-                Log.v("Items", emptyItems.get(1)[1]);
-                conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, emptyItems);*/
         		List<String> emptyItems = new ArrayList<String>();
         		emptyItems.add("Add Contact");
         		emptyItems.add("Import Contact");

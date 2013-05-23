@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFFFF" >
+    android:background="@color/White" >
             
 	 <AutoCompleteTextView
          android:id="@+id/new_message_number"
@@ -12,8 +12,8 @@
          android:layout_alignParentRight="true"
          android:layout_alignParentTop="true"
          android:layout_marginTop="5dp"
-         android:textColorHint="#000000"
-         android:textColor="#000000"
+         android:textColorHint="@color/Black"
+         android:textColor="@color/Black"
          android:cursorVisible="true"
          android:hint="@string/to" >
 
@@ -27,7 +27,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="#000000" >
+        android:background="@color/Black" >
 
         <EditText
             android:id="@+id/new_message_message"
@@ -52,7 +52,7 @@
         android:layout_above="@+id/new_message_field"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="#000000" >
+        android:background="@color/Black" >
 
         <TextView
             android:id="@+id/send_word_count"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:textSize="12sp"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/White" />
             <!-- android:text="122" --> 
 
 	</RelativeLayout>
