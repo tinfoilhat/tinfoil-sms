@@ -17,6 +17,7 @@
 
 package com.tinfoil.sms.sms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -38,12 +39,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
+import com.tinfoil.sms.adapter.DefaultListAdapter;
 import com.tinfoil.sms.crypto.KeyGenerator;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
@@ -94,6 +97,7 @@ public class ConversationView extends Activity implements Runnable {
     public static final int LOAD = 0;
     public static final int UPDATE = 1;
     private static Thread thread;
+    private static ListView emptyList; 
 
     /** Called when the activity is first created. */
     @Override
@@ -130,7 +134,6 @@ public class ConversationView extends Activity implements Runnable {
         
         Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
         Toast.makeText(this, "Private Key " + new String(SMSUtility.user.getPrivateKey()), Toast.LENGTH_LONG);
-        
         
         messageSender.startThread(getApplicationContext());
 
@@ -171,6 +174,7 @@ public class ConversationView extends Activity implements Runnable {
          * Set the list of conversations
          */
         list = (ListView) this.findViewById(R.id.conversation_list);
+        emptyList = (ListView) this.findViewById(R.id.empty);
         
         this.dialog = ProgressDialog.show(this, "Loading Messages",
                 "Please wait...", true, true, new OnCancelListener() {
@@ -311,18 +315,41 @@ public class ConversationView extends Activity implements Runnable {
         @Override
         public void handleMessage(final android.os.Message msg)
         {
-        	switch (msg.what){
-        	case LOAD:
-        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
-        		list.setAdapter(conversations);
+        	if(msgList.isEmpty())
+        	{
+        		/*ArrayList<String[]> emptyItems = new ArrayList<String[]>();
+                //emptyItems.add(new String[]{null, "Compose", null, null});
+                emptyItems.add(new String[]{"", "Add Contact", "", "0"});
+                emptyItems.add(new String[]{"", "Import Contact", "", "0"});
+                Log.v("Items", emptyItems.get(0)[1]);
+                Log.v("Items", emptyItems.get(1)[1]);
+                conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, emptyItems);*/
+        		List<String> emptyItems = new ArrayList<String>();
+        		emptyItems.add("Add Contact");
+        		emptyItems.add("Import Contact");
+        		
+        		DefaultListAdapter ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
+                emptyList.setAdapter(ap);
+        		emptyList.setVisibility(ListView.VISIBLE);
+        		list.setVisibility(ListView.INVISIBLE);
         		ConversationView.this.dialog.dismiss();
-	        	break;
-        	case UPDATE:
-        		conversations.clear();
-                conversations.addData(msgList);
-        		break;
         	}
-        	
+        	else
+        	{
+        		emptyList.setVisibility(ListView.INVISIBLE);
+        		list.setVisibility(ListView.VISIBLE);
+	        	switch (msg.what){
+	        	case LOAD:
+	        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
+	        		list.setAdapter(conversations);
+	        		ConversationView.this.dialog.dismiss();
+		        	break;
+	        	case UPDATE:
+	        		conversations.clear();
+	                conversations.addData(msgList);
+	        		break;
+	        	}
+        	}
         }
     };
 }

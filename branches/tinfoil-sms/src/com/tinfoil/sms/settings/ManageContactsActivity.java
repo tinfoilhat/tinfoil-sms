@@ -50,6 +50,15 @@ import com.tinfoil.sms.utility.MessageService;
 
 /**
  * TODO update when received key exchange.
+ * TODO fix layout
+ * Currently the onClick action is very confusing for people new to the app.
+ * Even though items are selected depending on the state of the contact the
+ * onClick action will be different. If a contact's number is trusted (has the
+ * Tinfoil-sms icon next to their number) then the contact clicking the button
+ * will delete the contact's key and set the to untrusted. Where as if the
+ * contact's number is not trusted (there is no tinfoil-sms icon next to the
+ * number) then clicking the button will initiate a key exchange with that
+ * contact.
  * ManageContactActivity is an activity that allows the user to exchange keys,
  * edit and delete contacts. A list of contacts will be shown with an check box,
  * if check then the user is either exchanging or have exchanged keys with the
