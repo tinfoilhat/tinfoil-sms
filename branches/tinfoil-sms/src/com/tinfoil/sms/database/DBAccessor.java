@@ -165,6 +165,7 @@ public class DBAccessor {
 	/**
 	 * Add a pending key exchange message.
 	 * @param keyExchange The pending key exchange message
+	 * @return The error message, if null the addition was successful.
 	 */
 	public String addKeyExchangeMessage(Entry keyExchange)
 	{
