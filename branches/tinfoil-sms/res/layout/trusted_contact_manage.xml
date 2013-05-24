@@ -10,6 +10,10 @@
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentRight="true"
 	    android:layout_alignParentTop="true"
+	    android:paddingLeft="@dimen/message_list_horizontal_margin"
+	    android:paddingRight="@dimen/message_list_horizontal_margin"
+	    android:paddingTop="@dimen/message_list_vertical_margin"	    
+	    android:paddingBottom="@dimen/message_list_vertical_margin"
 	    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 	    android:singleLine="true"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />

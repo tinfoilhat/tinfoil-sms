@@ -4,14 +4,17 @@
     android:orientation="horizontal" 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dp"
+	android:paddingLeft="@dimen/message_list_horizontal_margin"
+    android:paddingRight="@dimen/message_list_horizontal_margin"
+    android:paddingTop="@dimen/message_list_vertical_margin"	    
+    android:paddingBottom="@dimen/message_list_vertical_margin"
     android:background="@color/White">    
     
     <TextView android:id="@+id/c_name"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
-        android:textSize="22dp"
+        android:textSize="22sp"
         android:textColor="@color/Black"/>
     
     <TextView android:id="@+id/c_count"
@@ -19,7 +22,7 @@
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/c_name"
-        android:textSize="22dp"
+        android:textSize="22sp"
         android:textColor="@color/Black"
         android:textStyle="bold"/>
     
@@ -27,7 +30,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/c_name"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:singleLine="true"
         android:textColor="@color/Black" />
      
@@ -36,8 +39,8 @@
 	    android:src="@drawable/ic_launcher"
 	    android:layout_alignParentRight="true"
 	    android:layout_centerInParent="true"
-	    android:layout_width="20dp"
-	    android:layout_height="20dp"
+	    android:layout_width="20sp"
+	    android:layout_height="20sp"
 	    />
         
 </RelativeLayout>

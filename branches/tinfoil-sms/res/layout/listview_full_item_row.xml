@@ -4,7 +4,10 @@
     android:orientation="horizontal" 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dp"
+    android:paddingLeft="@dimen/message_list_horizontal_margin"
+    android:paddingRight="@dimen/message_list_horizontal_margin"
+    android:paddingTop="@dimen/message_list_vertical_margin"	    
+    android:paddingBottom="@dimen/message_list_vertical_margin"
     android:background="@color/White">    
     
     <TextView
