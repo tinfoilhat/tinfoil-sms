@@ -39,10 +39,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
@@ -61,6 +60,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  * TODO add import, export (and any other key options) to the setting menu, key exchange
  * TODO attempt to move all DB queries to queues
  * TODO change wrap_content to '0dp'
+ * TODO list is updated check if the list is now empty and should display the alt list
  * see https://developer.android.com/training/basics/firstapp/building-ui.html
  * <ul>
  * <li>TODO add the proper version number and name to the manifest</li>

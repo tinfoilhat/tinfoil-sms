@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -264,8 +265,10 @@ public class MessageView extends Activity implements Runnable{
     	
     	if(text != null && text.length() > 0)
         {
-    		MessageService.dba.addNewMessage(new Message(text, true,
-    				true), ConversationView.selectedNumber, true);
+    		Message newMessage = new Message(text, true, true);
+    		Log.v("Message Time", ""+newMessage.getDate());
+    		Log.v("Message Time", ""+Message.millisToDate(newMessage.getDate()));
+    		MessageService.dba.addNewMessage(newMessage, ConversationView.selectedNumber, true);
             sendMessage(ConversationView.selectedNumber, text);
         }
     }

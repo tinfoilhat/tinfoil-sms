@@ -83,6 +83,26 @@ public class MessageSender implements Runnable{
 			}
 			
 			/*
+			 * TODO look into
+			 * 
+			 * (least complex (but still complex) could help just like the second one
+			 * The wait for sending messages could be put after all the
+			 * preparations are made for that messages such as encryption
+			 * 
+			 * OR
+			 * (Complex and could help depending on how long the encrpytion is taking)
+			 * Another thread could be made to go through and start preparing
+			 * messages to be send, while this wouldn't be particularly
+			 * beneficial unless lots of messages were queued up without service
+			 * it could help
+			 * 
+			 * OR 
+			 * (Complex and not that helpful)
+			 * When ever the phone does not have service a new thread will be
+			 * created to go ahead and start preparing the messages
+			 */
+			
+			/*
 			 * Check that the signal has not changed to have no signal to send
 			 * messages. If there is no service, wait till the service state
 			 * changes to signal.
@@ -98,7 +118,6 @@ public class MessageSender implements Runnable{
 					}
 				}
 			}
-			
 			Log.v("Signal", "some");
 			
 			synchronized(this){

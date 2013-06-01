@@ -179,6 +179,7 @@ public class AddContact extends Activity {
      */
     public void saveInformation(View view)
     {
+    	//Could add to Thread
     	String name = AddContact.this.contactName.getText().toString();
         boolean empty = false;
         
