@@ -74,4 +74,6 @@
     
     <!-- Application crash report message -->
     <string name="crash_toast_text">Tinfoil-SMS has crashed! A report is being sent to the developers!</string>
+    
+    
 </resources>

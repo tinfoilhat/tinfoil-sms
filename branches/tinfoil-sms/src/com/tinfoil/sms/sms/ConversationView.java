@@ -165,7 +165,7 @@ public class ConversationView extends Activity implements Runnable {
         
         ConversationView.messageViewActive = false;
         this.setContentView(R.layout.main);
-
+        
         /*
          * Load the shared preferences
          */
