@@ -71,4 +71,7 @@
     <!-- UserKeySettings strings -->
     <string name="user_public_key">User\'s Public Key:</string>
     <string name="export_public_key">Export Public key</string>
+    
+    <!-- Application crash report message -->
+    <string name="crash_toast_text">Tinfoil-SMS has crashed! A report is being sent to the developers!</string>
 </resources>
