@@ -23,6 +23,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -66,6 +67,8 @@ public class SendMessageActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.new_message);
 
+        //String a = null;
+        //Toast.makeText(this, a.length(), Toast.LENGTH_LONG).show();
         MessageService.dba = new DBAccessor(this);
 
         ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -79,7 +82,7 @@ public class SendMessageActivity extends Activity {
         final boolean isTrusted = true;//MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
 
         messageEvent = new MessageBoxWatcher(this, R.id.send_word_count, isTrusted);
-
+        
         this.phoneBox = (AutoCompleteTextView) this.findViewById(R.id.new_message_number);
         List<String> contact;
         if (this.tc != null)
@@ -92,6 +95,14 @@ public class SendMessageActivity extends Activity {
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.auto_complete_list_item, contact);
 
+        Uri uri = this.getIntent().getData();
+        if (uri != null)
+        {
+        	//Toast.makeText(this, uri.toString().split(":")[1], Toast.LENGTH_LONG).show();
+        	this.phoneBox.setText(uri.toString().split(":")[1]);
+        	//Toast.makeText(this, , Toast.LENGTH_LONG).show();
+        }
+        
         this.phoneBox.setAdapter(adapter);
 
         this.phoneBox.addTextChangedListener(new TextWatcher() {

@@ -16,13 +16,11 @@
  */
 package com.tinfoil.sms;
 
-import org.acra.*;
-import org.acra.annotation.*;
-
-import com.tinfoil.sms.R;
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
-import android.widget.Toast;
 
 @ReportsCrashes(
         formKey = "",
@@ -62,16 +60,5 @@ public class TinfoilSMS extends Application
     {
       super.onCreate();
       ACRA.init(this);
-      Toast.makeText(this, "error", Toast.LENGTH_LONG).show();
-      //Double derp = null;
-      //Toast.makeText(this, derp.toString(), Toast.LENGTH_LONG).show();
-      /*try{
-    	 
-    	  
-      }
-      catch (Exception e)
-      {
-    	  
-      }*/
     }
 }

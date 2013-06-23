@@ -41,7 +41,15 @@
         <activity
             android:name=".sms.SendMessageActivity"
             android:label="@string/send_message"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+            
+            <intent-filter>
+	            <action android:name="android.intent.action.SENDTO" />
+	            <category android:name="android.intent.category.DEFAULT" />
+	            <data android:scheme="sms" />
+	            <data android:scheme="smsto" />
+        	</intent-filter>
+        </activity>
         <activity
             android:name=".settings.AddContact"
             android:label="@string/add_contact_activity" />
