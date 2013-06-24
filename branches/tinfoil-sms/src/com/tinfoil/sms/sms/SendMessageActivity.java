@@ -115,7 +115,7 @@ public class SendMessageActivity extends Activity {
                     if (info.length > 1 && !info[0].trim().equalsIgnoreCase(s.toString()))
                     {
                         SendMessageActivity.this.newCont.setName(info[0].trim());
-                        SendMessageActivity.this.newCont.setNumber(0, info[1].trim());
+                        SendMessageActivity.this.newCont.setNumber(info[1].trim());
                     }
                     else
                     {
@@ -129,7 +129,7 @@ public class SendMessageActivity extends Activity {
                             }
                             else
                             {
-                                SendMessageActivity.this.newCont.setNumber(0, info[0].trim());
+                                SendMessageActivity.this.newCont.setNumber(info[0].trim());
                             }
                         }
                         else

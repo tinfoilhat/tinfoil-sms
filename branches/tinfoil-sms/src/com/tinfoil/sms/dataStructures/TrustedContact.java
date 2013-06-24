@@ -131,6 +131,22 @@ public class TrustedContact {
 	}
 	
 	/**
+	 * Set a number in the contact's numbers list
+	 * @param number The new number
+	 */
+	public void setNumber(String number)
+	{
+		if(this.numbers.size() < 1)
+		{
+			this.addNumber(number);
+		}
+		else
+		{
+			this.numbers.get(0).setNumber(number);
+		}
+	}
+	
+	/**
 	 * Add a number to the contact's numbers list
 	 * @param number The new number to add
 	 */
