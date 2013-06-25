@@ -370,6 +370,8 @@ public class Number {
 	public void clearPublicKey()
 	{
 		this.publicKey = null;
+		this.enNonceCount = 0;
+		this.deNonceCount = 0;
 	}
 
 	/**

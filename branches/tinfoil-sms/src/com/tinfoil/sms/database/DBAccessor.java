@@ -91,6 +91,7 @@ public class DBAccessor {
 	
 	public static final String DEFAULT_S1 = "Initiator";
 	public static final String DEFAULT_S2 = "Receiver";
+	private static final String KEY_NONCE_DENCRYPT = null;
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -1222,6 +1223,8 @@ public class DBAccessor {
         cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
         cv.put(KEY_SIGNATURE, number.getSignature());
         cv.put(KEY_INITIATOR, number.getInitiatorInt());
+        cv.put(KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
+        cv.put(KEY_NONCE_DECRYPT, number.getNonceDecrypt());
         
         open();
 		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
