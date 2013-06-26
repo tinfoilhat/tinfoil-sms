@@ -249,9 +249,19 @@ public class ConversationView extends Activity implements Runnable {
         	
         	//TODO do this in a thread
             msgList = MessageService.dba.getConversations();
-            conversations.clear();
-            conversations.addData(msgList);
-
+            if(conversations == null)
+            {
+            	update = true;
+            	
+            	//thread = new Thread(this);
+                thread.start();
+            }
+            else
+            {
+            	conversations.clear();
+            	conversations.addData(msgList);
+            }
+            
             if (messageViewUpdate)
             {
                 MessageView.updateList();
