@@ -35,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -95,8 +96,13 @@ public class ManageContactsActivity extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         
         exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
-
+        
         this.setContentView(R.layout.contact);
+        
+        if (!exchange)
+        {
+        	((Button)this.findViewById(R.id.exchange_keys)).setText("Untrust");
+        }
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
 
