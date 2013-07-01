@@ -75,7 +75,7 @@ public class SendMessageActivity extends Activity {
         this.newCont = new TrustedContact();
         
         //Do in thread.
-        this.tc = MessageService.dba.getAllRows();
+        this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
 
         //Since the number is being entered cant really set a limit on the size...
         //Defaults to a trusted contact just to be safe

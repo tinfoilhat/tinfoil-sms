@@ -52,7 +52,7 @@
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:targetPackage="com.tinfoil.sms"
-				android:targetClass="com.tinfoil.sms.settings.ManageContactsActivity" />
+				android:targetClass="com.tinfoil.sms.settings.TabSelection" />
     	</PreferenceScreen>
 	</PreferenceCategory>
 	

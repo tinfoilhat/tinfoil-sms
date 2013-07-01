@@ -3,35 +3,32 @@
 
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
-    
     <string name="contact_name">name</string>
-    
+
     <!-- KeyExchangeManager Activity strings -->
     <string name="key_exchange_manager">Key Exchange Manager</string>
-    
-    
-    <string name="action_settings">Settings</string>   
-    
+    <string name="action_settings">Settings</string>
+
     <!-- Settings strings -->
     <string name="settings">Settings</string>
 
-    <!-- activity_key_exchange_manager strings -->    
+    <!-- activity_key_exchange_manager strings -->
     <string name="reject_button">Reject</string>
     <string name="user_key_settings">User Key Settings</string>
     <string name="exchange_button">Exchange</string>
-    
+
     <!-- AddContact strings -->
     <string name="add_contact_activity">Edit Contact</string>
     <string name="number">Number</string>
     <string name="add_number">Add Number</string>
-    
+
     <!-- Shared between AddContact and EditNumber -->
     <string name="save">Save</string>
-    
+
     <!-- ManageContactsActivity strings -->
     <string name="exchange_keys">Exchange Keys</string>
     <string name="manage_contacts">Manage Contacts</string>
-    
+
     <!-- EditNumber strings -->
     <string name="s1_text">Shared Secret 1</string>
     <string name="shared_secret_1">default</string>
@@ -48,34 +45,36 @@
     <string name="manual_key_exchange">Manual Exchange</string>
     <string name="ignore_key_exchange">Ignore All Exchange</string>
     <string name="edit_number">Edit Number</string>
-    
-    <!-- Shared between EditNumber and -->    
+
+    <!-- Shared between EditNumber and -->
     <string name="phone_text">Phone Number</string>
-    
+
     <!-- ImportContacts strings -->
     <string name="import_contacts">Import Contacts</string>
-    
-    <!--MessageView strings -->
+
+    <!-- MessageView strings -->
     <string name="message">Messages</string>
-    
+
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Send</string>
 
     <!-- SendMessageActivity strings -->
     <string name="to">To</string>
     <string name="send_message">Send Message</string>
-    
+
     <!-- DeleteContacts strings -->
     <string name="delete_contacts">Delete Contacts</string>
-    
+
     <!-- UserKeySettings strings -->
     <string name="user_public_key">User\'s Public Key:</string>
     <string name="export_public_key">Export Public key</string>
-    
+
     <!-- Application crash report message -->
     <string name="crash_toast_text">Tinfoil-SMS has crashed! A report is being sent to the developers!</string>
-    
     <string name="pref_enable_acra">Enable ACRA</string>
     <string name="pref_acra_enabled">Disable Bug reporting</string>
     <string name="pref_acra_disabled">Enable Bug reporting</string>
+    <string name="title_activity_tab_selection">TabSelection</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

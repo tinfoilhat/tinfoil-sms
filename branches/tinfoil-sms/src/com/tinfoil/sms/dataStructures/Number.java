@@ -94,6 +94,12 @@ public class Number {
 		this.keyExchangeFlag = keyExchangeFlag;
 	}
 	
+	public Number (String number, byte[] publicKey)
+	{
+		this.setNumber(number);
+		this.publicKey = publicKey;
+	}
+	
 	/**
 	 * A class used to store information from the numbers table
 	 * 

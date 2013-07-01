@@ -91,7 +91,10 @@ public class DBAccessor {
 	
 	public static final String DEFAULT_S1 = "Initiator";
 	public static final String DEFAULT_S2 = "Receiver";
-	private static final String KEY_NONCE_DENCRYPT = null;
+	
+	public static final int ALL = 0;
+	public static final int TRUSTED = 1;
+	public static final int UNTRUSTED = 2;
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
@@ -1009,68 +1012,57 @@ public class DBAccessor {
 	
 	/**
 	 * Get all of the rows in the database with the columns
+	 * @param select TODO
 	 * @return The list of all the contacts in the database with all relevant
 	 * information about them.
 	 */
-	public ArrayList<TrustedContact> getAllRows()
+	public ArrayList<TrustedContact> getAllRows(int select)
 	{		
 		open();
-		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, null,
-				null, null, null, null, KEY_ID);
+		String selectString = "";
+		if (select == TRUSTED)
+		{
+			selectString = " AND " + SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY + " NOT NULL";
+		}
+		else if (select == UNTRUSTED)
+		{
+			selectString = " AND " + SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY + " IS NULL";
+		}
+		
+		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " +
+				SQLitehelper.NUMBERS_TABLE_NAME, new String[]{ 
+				SQLitehelper.TRUSTED_TABLE_NAME + ".*",
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER,
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY},
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE +
+				selectString, null, null, null,
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID);
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
-				
+		
 		if (cur.moveToFirst())
         {
-			int i = 0;
-			int j = 0;
-			long id = 0;
-			long num_id = 0;
+			// Set to 0 so that the first contact's id will be unqiue.
+			long prevContId = 0;
+			// Since the prevContId is setting to increment i by 1 the index
+			// must be set to -1 to all for the index to properly be used
+			int i = -1;
 			do
 			{
-				tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME))));
+				long curContId = cur.getLong(cur.getColumnIndex(KEY_ID));
 				
-				id = cur.getInt(cur.getColumnIndex(KEY_ID));
-				Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
-						SQLitehelper.NUMBERS_TABLE_NAME, null,
-						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-						SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-						SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
-						null, null, null, null);
-
-				if (pCur.moveToFirst())
+				// Only add the contact as a new trusted contact if they are not already in the database.
+				if (prevContId != curContId)
 				{
-					j = 0;
-					do
-					{
-						num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
-						
-						tc.get(i).addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
-								pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
-								pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
-								pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
-								pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
-								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-								pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT)),
-								pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR)),
-								pCur.getInt(pCur.getColumnIndex(KEY_EXCHANGE_SETTING))));
-
-						//Retrieve the book paths
-						String columns[] = getBookPath(num_id);
-						tc.get(i).getNumber().get(j).setBookPath(columns[0]);
-						tc.get(i).getNumber().get(j).setBookInversePath(columns[1]);
-						
-						//Retrieve the shared information
-						columns = getSharedInfo(num_id);
-						tc.get(i).getNumber().get(j).setSharedInfo1(columns[0]);
-						tc.get(i).getNumber().get(j).setSharedInfo2(columns[1]);
-						j++;
-						
-					}while(pCur.moveToNext());
+					tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME))));
+					prevContId = curContId;
+					i++;
 				}
-				pCur.close();
 				
-				i++;
+				tc.get(i).addNumber(new Number (cur.getString(cur.getColumnIndex(KEY_NUMBER)),
+						cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY))));
+
 			}while (cur.moveToNext());
 			
 			close(cur);
@@ -1084,7 +1076,7 @@ public class DBAccessor {
 	 * Get number of messages that are unread for all numbers
 	 * @return The number of messages unread for all numbers
 	 */
-	public  int getUnreadMessageCount() {
+	public int getUnreadMessageCount() {
 		open();
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{"SUM("+KEY_UNREAD+")"},
 				null, null, null, null, KEY_ID);

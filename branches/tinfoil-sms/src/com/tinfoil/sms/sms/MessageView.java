@@ -155,7 +155,7 @@ public class MessageView extends Activity implements Runnable{
                                     if (MessageView.this.tc == null)
                                     {
                                     	//Do in thread.
-                                        MessageView.this.tc = MessageService.dba.getAllRows();
+                                        MessageView.this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
                                     }
 
                                     if (MessageView.this.tc != null)

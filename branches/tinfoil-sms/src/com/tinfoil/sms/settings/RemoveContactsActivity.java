@@ -35,6 +35,7 @@ import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
@@ -121,7 +122,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
     private void update()
     {
         String[] names;
-        this.tc = MessageService.dba.getAllRows();
+        this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
 
         if (this.tc != null)
         {

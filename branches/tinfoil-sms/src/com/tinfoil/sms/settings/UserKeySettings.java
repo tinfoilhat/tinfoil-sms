@@ -41,6 +41,7 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -80,7 +81,7 @@ public class UserKeySettings extends Activity {
             if (tc == null)
             {
             	//Do in thread.
-                tc = MessageService.dba.getAllRows();
+                tc = MessageService.dba.getAllRows(DBAccessor.ALL);
             }
 
             if (tc != null)

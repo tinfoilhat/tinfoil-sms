@@ -46,6 +46,7 @@ import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.ContactChild;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
@@ -83,6 +84,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
     private ArrayList<ContactParent> contacts;
     private ArrayList<ContactChild> contactNumbers;
     private static ManageContactAdapter adapter;
+    
+    public boolean exchange = true;
 
     private static ExchangeKey keyThread = new ExchangeKey();
 
@@ -90,6 +93,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
 
         this.setContentView(R.layout.contact);
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
@@ -110,8 +115,8 @@ public class ManageContactsActivity extends Activity implements Runnable {
                    
                 	
                     AddContact.addContact = false;
-                    AddContact.editTc = ManageContactsActivity.this.tc.get(
-                    		ExpandableListView.getPackedPositionGroup(id));
+                    AddContact.editTc = MessageService.dba.getRow(ManageContactsActivity.this.tc.get(
+                    		ExpandableListView.getPackedPositionGroup(id)).getANumber());
 
                     Intent intent = new Intent(ManageContactsActivity.this,
                     		AddContact.class);
@@ -296,7 +301,15 @@ public class ManageContactsActivity extends Activity implements Runnable {
     }
 
     public void run() {
-        this.tc = MessageService.dba.getAllRows();
+    	if(exchange)
+    	{
+    		this.tc = MessageService.dba.getAllRows(DBAccessor.UNTRUSTED);
+    	}
+    	else
+    	{
+    		this.tc = MessageService.dba.getAllRows(DBAccessor.TRUSTED);
+    	}
+    	
 
         if (this.tc != null)
         {
