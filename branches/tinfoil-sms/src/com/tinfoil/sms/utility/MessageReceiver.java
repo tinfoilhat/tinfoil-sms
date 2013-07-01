@@ -114,6 +114,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						if (MessageService.dba.isTrustedContact((address)) && 
 								ConversationView.sharedPrefs.getBoolean("enable", true)) {
 							
+							Message encryMessage = null; 
 							/*
 							 * Since contact is trusted assume it is NOT a key exchange and that the message IS encrpyted.
 							 * If the message fails to decrypt. A warning of possible Man-In-The-Middle attack is given. 
@@ -130,17 +131,8 @@ public class MessageReceiver extends BroadcastReceiver {
 		
 								//Updates the last message received
 								Message newMessage = null;
-								
+
 								Log.v("Before Decryption", messages[0].getMessageBody());
-								/*
-								 * Checks if the user has set encrypted messages to be shown in
-								 * messageView
-								 */
-								if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
-								{
-									newMessage = new Message(messages[0].getMessageBody(), true, false);
-									MessageService.dba.addNewMessage(newMessage, address, true);
-								}
 								
 								Encryption CryptoEngine = new Encryption();
 								
@@ -156,17 +148,28 @@ public class MessageReceiver extends BroadcastReceiver {
 										(SMSUtility.format(address)).getPublicKey()), messages[0].getMessageBody());
 								 */
 								
-								SMSUtility.sendToSelf(context, address,	
-										secretMessage , ConversationView.INBOX);
+								/*
+								 * Checks if the user has set encrypted messages to be shown in
+								 * messageView
+								 */
+								if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
+								{
+									encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPTED);
+									MessageService.dba.addNewMessage(encryMessage, address, true);
+								}
+								
+								SMSUtility.sendToSelf(context, address,	secretMessage , ConversationView.INBOX);
 								
 								/*
 								 * Store the message in the database
 								 */
-								newMessage = new Message(secretMessage, true, false);
+								newMessage = new Message(secretMessage, true, Message.RECEIVED_ENCRYPTED);
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							} 
 							catch (Exception e) 
 							{
+								encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPT_FAIL);
+								MessageService.dba.addNewMessage(encryMessage, address, true);
 								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 								Toast.makeText(context, "Possible Man In The Middle Attack", Toast.LENGTH_LONG).show();
 								e.printStackTrace();
@@ -234,8 +237,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								SMSUtility.sendToSelf(context, address,
 										message, ConversationView.INBOX);
 								
-								
-								Message newMessage = new Message(message, true, false);
+								Message newMessage = new Message(message, true, Message.RECEIVED_DEFAULT);
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}
 							

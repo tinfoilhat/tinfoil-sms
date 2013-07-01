@@ -27,7 +27,29 @@ public class Message {
 	private static final boolean clockStyle = true;
 	private String message;
 	private long date;
-	private boolean sent;
+	private int sent;
+	
+	/**
+	 * Possible states:
+	 * 0. Sent (no encryption)
+	 * 1. Sent (encrypted)
+	 * 2. Sent (encrypted and obfuscated)
+	 * 3. Received (not encrypted, not expecting encryption)
+	 * 4. Received (encrypted (implies that they were expecting it to be encrypted and it was successfully able to decrypt it))
+	 * 5. Received (HashMac failed, expecting encrypted but failed to decrypt)
+	 * 6. Received (encrypted and obfuscated (implying again that they were expecting it such and succeeded in transforming it back to plain text))
+	 * 7. Received (de-obfuscation failed (not sure if this is possible))
+	 * 8. Received (de-obfuscated and failed to decrypt, Hash-Mac failed after de-obfuscation (not sure about this one either))
+	 */
+	public static final int SENT_DEFAULT = 0; 
+	public static final int SENT_ENCRYPTED = 1;
+	public static final int SENT_ENC_OBF = 2;
+	public static final int RECEIVED_DEFAULT = 3;
+	public static final int RECEIVED_ENCRYPTED = 4;
+	public static final int RECEIVED_ENCRYPT_FAIL = 5;
+	public static final int RECEIVED_ENC_OBF = 6; 
+	public static final int RECEIVED_OBF_FAIL = 7;
+	public static final int RECEIVED_ENC_OBF_FAIL = 8;
 	
 	/**
 	 * A class for storing messages retrieved or to be stored in the database. 
@@ -43,13 +65,15 @@ public class Message {
 	{
 		this.setMessage(message);
 		this.setDate(date);
+		
+		// Set the messages to default sent or received
 		if (type == 2)
 		{
-			this.setSent(true);
+			this.setSent(SENT_DEFAULT);
 		}
 		else if (type == 1)
 		{
-			this.setSent(false);
+			this.setSent(RECEIVED_DEFAULT);
 		}
 	}
 	
@@ -62,7 +86,7 @@ public class Message {
 	 * @param sent Whether the message was sent or received. If sent = true then
 	 * the message was sent otherwise the message was received
 	 */
-	public Message (String message, boolean currentTime, boolean sent)
+	public Message (String message, boolean currentTime, int sent)
 	{
 		this.setMessage(message);
 		if (currentTime)
@@ -164,8 +188,19 @@ public class Message {
 	 * @return If the message was sent it will return true, otherwise false.
 	 */
 	public boolean isSent() {
-		return sent;
+		if (sent == SENT_DEFAULT || sent == SENT_ENCRYPTED || sent == SENT_ENC_OBF)  
+		{
+			return true;
+		}
+		return false;
 	}
+	
+	/** 
+	 * If the 'sent' flag that is already in use was used then all flags that relate to sending messages are mapped to the native sent flag
+	 * 1, 2, 3 -> send = 2
+	 * Otherwise map to a message being received
+	 * 4, 5, 6, 7, 8, 9 -> sent = 1
+	 */
 	
 	/**
 	 * Get the send flag in terms of the native android messaging application
@@ -174,21 +209,23 @@ public class Message {
 	 * message was sent the return will be 2, otherwise the return will be 1.
 	 */
 	public int getSent() {
-		if (sent)
+		return sent;
+	}
+	
+	public int getNativeSent()
+	{
+		if (sent == SENT_DEFAULT || sent == SENT_ENCRYPTED || sent == SENT_ENC_OBF)
 		{
 			return 2;
 		}
-		else
-		{
-			return 1;
-		}
+		return 1;
 	}
 
 	/**
 	 * Set whether the message is sent or received
 	 * @param sent Whether the message is now sent or received.
 	 */
-	private void setSent(boolean sent) {
+	private void setSent(int sent) {
 		this.sent = sent;
 	}
 }

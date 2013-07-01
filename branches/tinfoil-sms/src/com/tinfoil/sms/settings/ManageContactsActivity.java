@@ -32,7 +32,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -52,7 +51,6 @@ import com.tinfoil.sms.utility.MessageService;
 
 /**
  * TODO update when received key exchange.
- * TODO fix layout
  * Currently the onClick action is very confusing for people new to the app.
  * Even though items are selected depending on the state of the contact the
  * onClick action will be different. If a contact's number is trusted (has the
@@ -143,24 +141,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
         });
 
         /*
-         * If no contacts are in the database the user can click the menu item
-         * to start adding a new contact
-         */
-        this.listView.setOnItemClickListener(new OnItemClickListener() {
-
-            public void onItemClick(final AdapterView<?> parent, final View view,
-                    final int position, final long id) {
-
-                //Go to add contact
-                AddContact.addContact = true;
-                AddContact.editTc = null;
-                ManageContactsActivity.this.startActivity(new Intent(
-                		ManageContactsActivity.this.getBaseContext(), 
-                		AddContact.class));
-            }
-        });
-
-        /*
          * When a contact's number is clicked
          */
         this.extendableList.setOnChildClickListener(new OnChildClickListener() {
@@ -228,21 +208,6 @@ public class ManageContactsActivity extends Activity implements Runnable {
         }
     }
     
-    
-    /*TODO remove
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-    	super.onActivityResult(requestCode, resultCode, data);
-    	
-    	if(requestCode == resultCode)
-    	{
-    		if(resultCode == ManageContactsActivity.UPDATE)
-    		{
-    			this.startThread();
-    		}
-    	}
-    }*/
-    
     protected void onResume()
     {
     	super.onResume();
@@ -307,13 +272,17 @@ public class ManageContactsActivity extends Activity implements Runnable {
     }
 
     public void run() {
+    	
+    	String emptyListValue = "";
     	if(exchange)
     	{
     		this.tc = MessageService.dba.getAllRows(DBAccessor.UNTRUSTED);
+    		emptyListValue = "No contacts";
     	}
     	else
     	{
     		this.tc = MessageService.dba.getAllRows(DBAccessor.TRUSTED);
+    		emptyListValue = "No Trusted Contacts";
     	}
     	
 
@@ -344,7 +313,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         else
         {
             this.arrayAp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                    new String[] { "Add a Contact" });
+                    new String[] { emptyListValue });
         }
 
         this.handler.sendEmptyMessage(0);

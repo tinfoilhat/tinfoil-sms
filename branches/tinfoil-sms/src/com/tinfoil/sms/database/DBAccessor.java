@@ -278,7 +278,7 @@ public class DBAccessor {
         cv.put(KEY_REFERENCE, reference);
         cv.put(KEY_MESSAGE, message.getMessage());
         cv.put(KEY_DATE, message.getDate());
-        cv.put(KEY_SENT, message.getSent());
+        cv.put(KEY_SENT, message.getNativeSent());
 
         //Insert the row into the database
         open();

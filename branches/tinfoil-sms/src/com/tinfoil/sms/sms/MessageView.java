@@ -27,7 +27,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,7 +43,6 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
 import com.tinfoil.sms.crypto.ExchangeKey;
-import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
@@ -265,10 +263,10 @@ public class MessageView extends Activity implements Runnable{
     	
     	if(text != null && text.length() > 0)
         {
-    		Message newMessage = new Message(text, true, true);
-    		Log.v("Message Time", ""+newMessage.getDate());
-    		Log.v("Message Time", ""+Message.millisToDate(newMessage.getDate()));
-    		MessageService.dba.addNewMessage(newMessage, ConversationView.selectedNumber, true);
+    		
+    		//Log.v("Message Time", ""+newMessage.getDate());
+    		//Log.v("Message Time", ""+Message.millisToDate(newMessage.getDate()));
+    		
             sendMessage(ConversationView.selectedNumber, text);
         }
     }

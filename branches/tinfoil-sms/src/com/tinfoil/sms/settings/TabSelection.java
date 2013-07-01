@@ -18,17 +18,18 @@ public class TabSelection extends TabActivity {
 		setContentView(R.layout.activity_tab_selection);
 		
 		TabHost tabHost=getTabHost();
-        // no need to call TabHost.Setup()        
+        // no need to call TabHost.Setup()  
         
         //First Tab
         TabSpec spec1=tabHost.newTabSpec("Tab 1");
-        spec1.setIndicator("Tab 1");
+        spec1.setIndicator("Contacts");
         Intent in1=new Intent(this, ManageContactsActivity.class);
         in1.putExtra(EXCHANGE, true);
         spec1.setContent(in1);
         
         TabSpec spec2=tabHost.newTabSpec("Tab 2");
-        spec2.setIndicator("Tab 2");
+        spec2.setIndicator("Trusted Contacts");
+        
         Intent in2=new Intent(this, ManageContactsActivity.class);
         in2.putExtra(EXCHANGE, false);
         spec2.setContent(in2);

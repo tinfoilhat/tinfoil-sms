@@ -262,14 +262,14 @@ public abstract class SMSUtility {
                 if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
                 {
                     sendToSelf(context, message.getNumber(), encrypted, ConversationView.SENT);
-                    dba.addNewMessage(new Message
-                            (encrypted, true, true), message.getNumber(), false);
+                    dba.addNewMessage(new Message (encrypted, true, Message.SENT_ENCRYPTED),
+                    		message.getNumber(), false);
                 }
 
                 sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
 
                 //TODO change to update the time the message was sent.
-                //dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), false);
+                dba.addNewMessage(new Message(message.getMessage(), true, Message.SENT_ENCRYPTED), message.getNumber(), false);
 
                 Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
             }
@@ -286,6 +286,11 @@ public abstract class SMSUtility {
                 	dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), true);
                 }*/
 
+                if(!message.isExchange())
+                {
+                	dba.addNewMessage(new Message(message.getMessage(), true, Message.SENT_DEFAULT), message.getNumber(), true);	
+                }                
+                
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
             }
             return true;
