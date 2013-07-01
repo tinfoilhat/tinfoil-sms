@@ -51,6 +51,9 @@ import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.MessageSender;
 import com.tinfoil.sms.messageQueue.SignalListener;
+import com.tinfoil.sms.settings.AddContact;
+import com.tinfoil.sms.settings.ImportContacts;
+import com.tinfoil.sms.settings.ManageContactsActivity;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
@@ -217,11 +220,20 @@ public class ConversationView extends Activity implements Runnable {
 				switch (position)
 				{
 					case ADD_CONTACT:
-						Toast.makeText(ConversationView.this, "add contact", Toast.LENGTH_LONG).show();
+						
+						AddContact.addContact = true;
+		                AddContact.editTc = null;
+						ConversationView.this.startActivity(new Intent(
+		                		ConversationView.this.getBaseContext(), 
+		                		AddContact.class));
+						//Toast.makeText(ConversationView.this, "add contact", Toast.LENGTH_LONG).show();
 						//TODO start add contacts
 					break;
 					case IMPORT_CONTACT:
-						Toast.makeText(ConversationView.this, "import contact", Toast.LENGTH_LONG).show();
+						ConversationView.this.startActivity(new Intent(
+		                		ConversationView.this.getBaseContext(), 
+		                		ImportContacts.class));
+						//Toast.makeText(ConversationView.this, "import contact", Toast.LENGTH_LONG).show();
 						//TODO start import contacts activity
 					break;
 				}
@@ -254,7 +266,10 @@ public class ConversationView extends Activity implements Runnable {
             	update = true;
             	
             	//thread = new Thread(this);
-                thread.start();
+            	if(!thread.isAlive())
+            	{
+            		thread.start();
+            	}
             }
             else
             {
