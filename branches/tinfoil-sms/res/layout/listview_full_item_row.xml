@@ -35,5 +35,14 @@
         android:layout_below="@+id/c_name"
         android:textSize="16sp"
         android:textColor="@color/Black" />
+     
+	<ImageView
+	    android:id="@+id/message_icon"
+	    android:src="@drawable/ic_launcher"
+	    android:layout_alignParentRight="true"
+	    android:layout_centerInParent="true"
+	    android:layout_width="20sp"
+	    android:layout_height="20sp"
+	    />
         
 </RelativeLayout>

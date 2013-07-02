@@ -278,7 +278,7 @@ public class DBAccessor {
         cv.put(KEY_REFERENCE, reference);
         cv.put(KEY_MESSAGE, message.getMessage());
         cv.put(KEY_DATE, message.getDate());
-        cv.put(KEY_SENT, message.getNativeSent());
+        cv.put(KEY_SENT, message.getSent());
 
         //Insert the row into the database
         open();
@@ -840,8 +840,9 @@ public class DBAccessor {
 				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
 				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(KEY_DATE)));
 				String id = String.valueOf(cur.getLong(cur.getColumnIndex(KEY_ID)));
+				String sent = String.valueOf(cur.getInt(cur.getColumnIndex(KEY_SENT)));
 				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
-				smsList.add(new String[]{name, message, date, id});
+				smsList.add(new String[]{name, message, date, id, sent});
 			}while(cur.moveToNext());
 		}
 		close(cur);

@@ -59,15 +59,11 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO add import, export (and any other key options) to the setting menu, key exchange
- * TODO attempt to move all DB queries to queues
- * TODO change wrap_content to '0dp'
- * TODO list is updated check if the list is now empty and should display the alt list
- * see https://developer.android.com/training/basics/firstapp/building-ui.html
  * <ul>
  * <li>TODO add the proper version number and name to the manifest</li>
- * <li>TODO adjust the list view to default (if empty) to suggest importing
- * contact or composing a message or adding a contact, it can really be either.</li>
+ * <li>TODO attempt to move all DB queries to queues</li>
+ * <li>TODO change wrap_content to '0dp'</li>
+ * <li>TODO list is updated check if the list is now empty and should display the alt list</li>
  * </ul>
  * This activity shows all of the conversations the user has with contacts. The
  * list Will be updated every time a message is received. Upon clicking any of
