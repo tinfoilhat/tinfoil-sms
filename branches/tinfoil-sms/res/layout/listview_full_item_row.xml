@@ -39,8 +39,7 @@
 	<ImageView
 	    android:id="@+id/message_icon"
 	    android:src="@drawable/ic_launcher"
-	    android:layout_alignParentRight="true"
-	    android:layout_centerInParent="true"
+	    android:layout_toLeftOf="@id/c_date"
 	    android:layout_width="20sp"
 	    android:layout_height="20sp"
 	    />
