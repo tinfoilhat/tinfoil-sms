@@ -89,6 +89,8 @@ public class EditNumber extends Activity{
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
         
+        
+        
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         
         keyExchangeSetting = new ArrayList<RadioButton>();
