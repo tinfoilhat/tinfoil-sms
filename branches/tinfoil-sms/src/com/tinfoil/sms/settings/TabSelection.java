@@ -4,6 +4,8 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
@@ -38,11 +40,45 @@ public class TabSelection extends TabActivity {
         tabHost.addTab(spec2);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.tab_selection, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.manage_contacts_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add: {
+                AddContact.addContact = true;
+                AddContact.editTc = null;
+                this.startActivity(new Intent(this, AddContact.class));
+
+                return true;
+            }
+            /*case R.id.all:
+                if (this.tc != null)
+                {
+                	adapter.setAllSelected(true);
+                	update();
+                }
+                return true;
+            case R.id.remove:
+                if (this.tc != null)
+                {
+                	adapter.setAllSelected(false);
+                	update();
+                }
+                return true;*/
+            case R.id.delete: {
+                this.startActivity(new Intent(this.getApplicationContext(), RemoveContactsActivity.class));
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

@@ -37,12 +37,11 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
-import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
-import com.tinfoil.sms.dataStructures.Number;
 
 /**
  * SendMessageActivity is an activity that allows a user to create a new or

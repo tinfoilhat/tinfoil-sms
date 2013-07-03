@@ -27,9 +27,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -227,7 +224,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         super.onResume();
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(final Menu menu) {
 
         final MenuInflater inflater = this.getMenuInflater();
@@ -269,7 +266,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
 
     public void run() {
     	

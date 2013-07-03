@@ -20,11 +20,8 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
