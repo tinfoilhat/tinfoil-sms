@@ -31,9 +31,9 @@
 
     <!-- EditNumber strings -->
     <string name="s1_text">Shared Secret 1</string>
-    <string name="shared_secret_1">default</string>
+    <string name="shared_secret_1">Secret message</string>
     <string name="s2_text">Shared Secret 2</string>
-    <string name="shared_secret_2">default</string>
+    <string name="shared_secret_2">Secret message</string>
     <string name="book_path_text">Book Path</string>
     <string name="book_path">default</string>
     <string name="book_inverse_text">Book Inverse Path</string>
