@@ -174,7 +174,7 @@ public class ManageContactsActivity extends Activity implements Runnable {
         ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this,
         		"Exchanging Keys", "Exchanging. Please wait...", true, false);
 
-        keyThread.startThread(adapter.getContacts());
+        keyThread.startThread(this, adapter.getContacts());
 
         ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
 

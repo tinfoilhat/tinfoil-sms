@@ -40,6 +40,7 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
+import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.sms.ConversationView;
 
 /**
@@ -378,6 +379,16 @@ public abstract class SMSUtility {
 			}
 		}
 		return null;		
+	}
+	
+	public static boolean checksharedSecret(String secret)
+	{
+		if (secret.length() >= EditNumber.SHARED_INFO_MIN &&
+				secret.length() <= EditNumber.SHARED_INFO_MAX)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 }

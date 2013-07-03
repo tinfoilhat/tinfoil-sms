@@ -256,7 +256,7 @@ public class DBAccessor {
         close();
         
         updateBookPaths(id, number.getBookPath(), number.getBookInversePath());
-        updateSharedInfo(id, number.getSharedInfo1(), number.getSharedInfo2());
+        addSharedInfo(id, number.getSharedInfo1(), number.getSharedInfo2());
         
         return id;
 	}
@@ -395,17 +395,7 @@ public class DBAccessor {
 			
 		//add given values to a row
         cv.put(KEY_REFERENCE, reference);
-        
-        if(s1.equalsIgnoreCase("") || s1.equalsIgnoreCase(DEFAULT_S1))
-        {
-        	s1 = DBAccessor.DEFAULT_S1;
-        }
         cv.put(KEY_SHARED_INFO_1, s1);
-        
-        if(s2.equalsIgnoreCase("") || s2.equalsIgnoreCase(DEFAULT_S2))
-        {
-        	s2 = DBAccessor.DEFAULT_S2;
-        }
         cv.put(KEY_SHARED_INFO_2, s2);
         
         //Insert the row into the database
@@ -422,22 +412,24 @@ public class DBAccessor {
 	 */
 	public void updateSharedInfo(long reference, String s1, String s2)
 	{
-		resetSharedInfo(reference);
-		if(s1 != null && s2 != null)
-		{
-			if((!s1.equalsIgnoreCase("") || !s2.equalsIgnoreCase("")) &&
-					(!s1.equalsIgnoreCase(DEFAULT_S1) || !s2.equalsIgnoreCase(DEFAULT_S2)))
-	        {
-				addSharedInfo(reference, s1, s2);
-	        }
-		}
+		ContentValues cv = new ContentValues();
+		
+		//add given values to a row
+        cv.put(KEY_REFERENCE, reference);
+        cv.put(KEY_SHARED_INFO_1, s1);
+        cv.put(KEY_SHARED_INFO_2, s2);
+        
+        //Insert the row into the database
+        open();
+        db.update(SQLitehelper.SHARED_INFO_TABLE_NAME, cv, KEY_REFERENCE + " = " + reference, null);
+        close();
 	}
 	
 	/**
 	 * Resets the shared information to the default shared information
 	 * @param reference The reference id for the contact
 	 */
-	public void resetSharedInfo (long reference)
+	/*public void resetSharedInfo (long reference)
 	{
 		if (reference != 0 && !sharedInfoIsDefault(reference) )
 		{
@@ -445,14 +437,14 @@ public class DBAccessor {
 			db.delete(SQLitehelper.SHARED_INFO_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
 			close();
 		}
-	}
+	}*/
 	
 	/**
 	 * Check if the shared info is the default shared info
 	 * @param reference The id of the contact
 	 * @return True if the shared info is the default, false otherwise
 	 */
-	private boolean sharedInfoIsDefault(long reference)
+	/*private boolean sharedInfoIsDefault(long reference)
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
@@ -465,7 +457,7 @@ public class DBAccessor {
 		}
 		close(cur);
 		return true;
-	}
+	}*/
 	
 	/**
 	 * Used to retrieve the shared information
@@ -500,7 +492,7 @@ public class DBAccessor {
 			return sharedInfo;
 		}
 		cur.close();
-		return new String[] { DEFAULT_S1, DEFAULT_S2 };
+		return new String[] { null, null };
 	}
 		
 	/**
@@ -1013,7 +1005,7 @@ public class DBAccessor {
 	
 	/**
 	 * Get all of the rows in the database with the columns
-	 * @param select TODO
+	 * @param select Whether to get trusted, untrusted or all contacts.
 	 * @return The list of all the contacts in the database with all relevant
 	 * information about them.
 	 */

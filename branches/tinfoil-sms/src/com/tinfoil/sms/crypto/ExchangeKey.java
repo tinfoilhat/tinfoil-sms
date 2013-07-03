@@ -19,12 +19,16 @@ package com.tinfoil.sms.crypto;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * A class that creates a thread to manage a user's exchange of keys with
@@ -40,6 +44,8 @@ public class ExchangeKey implements Runnable {
     private ArrayList<String> trusted;
     private ArrayList<ContactParent> contacts;
     private Number number;
+    
+    private Activity activity;
 
     /**
      * A constructor used by the ManageContactsActivity to set up the key
@@ -47,9 +53,9 @@ public class ExchangeKey implements Runnable {
      * 
      * @param contacts The list of contacts
      */
-    public void startThread(final ArrayList<ContactParent> contacts)
+    public void startThread(Activity activity, final ArrayList<ContactParent> contacts)
     {
-        //this.c = c;
+        this.activity = activity;
         this.contacts = contacts;
         this.trusted = null;
         this.untrusted = null;
@@ -66,9 +72,9 @@ public class ExchangeKey implements Runnable {
      * @param trusted
      * @param untrusted
      */
-    public void startThread(final String trusted, final String untrusted)
+    public void startThread(Activity activity, final String trusted, final String untrusted)
     {
-        //this.c = c;
+        this.activity = activity;
         this.trusted = new ArrayList<String>();
         this.untrusted = new ArrayList<String>();
         
@@ -138,7 +144,9 @@ public class ExchangeKey implements Runnable {
         /*
          * Start Key exchanges 1 by 1, messages are prepared and then placed in
          * the messaging queue.
-         */        
+         */       
+        
+        boolean invalid = false;
         if (this.trusted != null)
         {
             for (int i = 0; i < this.trusted.size(); i++)
@@ -148,24 +156,37 @@ public class ExchangeKey implements Runnable {
                 Log.v("S1", number.getSharedInfo1());
                 Log.v("S2", number.getSharedInfo2());
                 
-                /*
-                 * Set the initiator flag since this user is starting the key exchange.
-                 */
-                number.setInitiator(true);
-                                
-                MessageService.dba.updateInitiator(number);
-             
-                /*
-                 * TODO remove
-                 * Will use MessageService.dba.getUserRow(); to get access to
-                 * the user's key. After the user's key has been generated.
-                 */
-                //String keyExchangeMessage = new String(Encryption.generateKey());
-                
-                String keyExchangeMessage = KeyExchange.sign(number);
-                
-                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+                if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+                		SMSUtility.checksharedSecret(number.getSharedInfo2()))
+                {
+	                /*
+	                 * Set the initiator flag since this user is starting the key exchange.
+	                 */
+	                number.setInitiator(true);
+	                                
+	                MessageService.dba.updateInitiator(number);
+	                
+	                String keyExchangeMessage = KeyExchange.sign(number);
+	                
+	                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+                }
+                else
+                {
+                	invalid = true;
+                	//Toast.makeText(c, "Invalid shared secrets", Toast.LENGTH_LONG).show();
+                	Log.v("Shared Secret", "Invalid shared secrets");
+                }
             }
+        }
+        
+        if (invalid)
+        {
+        	activity.runOnUiThread(new Runnable() {
+        	    public void run() {
+        	    	
+        	        Toast.makeText(activity, "Not all numbers could exchange, they must have shared secrets", Toast.LENGTH_LONG).show();
+        	    }
+        	});
         }
 
         //Dismisses the load dialog since the load is finished

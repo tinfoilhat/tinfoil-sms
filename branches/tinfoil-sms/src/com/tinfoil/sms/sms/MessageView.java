@@ -358,11 +358,11 @@ public class MessageView extends Activity implements Runnable{
                 if (!MessageService.dba.isTrustedContact(SMSUtility.format
                         (ConversationView.selectedNumber)))
                 {
-                    keyThread.startThread(SMSUtility.format(ConversationView.selectedNumber), null);
+                    keyThread.startThread(this, SMSUtility.format(ConversationView.selectedNumber), null);
                 }
                 else
                 {
-                    keyThread.startThread(null, SMSUtility.format(ConversationView.selectedNumber));
+                    keyThread.startThread(this, null, SMSUtility.format(ConversationView.selectedNumber));
                 }
 
                 return true;
