@@ -825,14 +825,15 @@ public class DBAccessor {
 			do
 			{
 				String name = USER_NAME;
-				if (cur.getInt(cur.getColumnIndex(KEY_SENT)) == 1)
+				int sentFlag = cur.getInt(cur.getColumnIndex(KEY_SENT)); 
+				if (sentFlag >= Message.RECEIVED_DEFAULT && sentFlag <= Message.RECEIVED_ENC_OBF_FAIL)
 				{
 					name = cur.getString(cur.getColumnIndex(KEY_NAME));
 				}
 				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
 				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(KEY_DATE)));
 				String id = String.valueOf(cur.getLong(cur.getColumnIndex(KEY_ID)));
-				String sent = String.valueOf(cur.getInt(cur.getColumnIndex(KEY_SENT)));
+				String sent = String.valueOf(sentFlag);
 				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
 				smsList.add(new String[]{name, message, date, id, sent});
 			}while(cur.moveToNext());
