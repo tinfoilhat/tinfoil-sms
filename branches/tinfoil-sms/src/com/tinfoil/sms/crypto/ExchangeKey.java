@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -51,6 +52,7 @@ public class ExchangeKey implements Runnable {
     private Number number;
     
     private Activity activity;
+    private TrustedContact trustedContact;
     
     private boolean multiNumber = false;
 
@@ -164,12 +166,12 @@ public class ExchangeKey implements Runnable {
             {
                 number = MessageService.dba.getNumber(trusted.get(i));
                 
-                Log.v("S1", number.getSharedInfo1());
-                Log.v("S2", number.getSharedInfo2());
-                
                 if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
                 		SMSUtility.checksharedSecret(number.getSharedInfo2()))
                 {
+                	Log.v("S1", number.getSharedInfo1());
+                    Log.v("S2", number.getSharedInfo2());
+                	
 	                /*
 	                 * Set the initiator flag since this user is starting the key exchange.
 	                 */
@@ -192,6 +194,8 @@ public class ExchangeKey implements Runnable {
         
         if (invalid)
         {
+        	trustedContact = MessageService.dba.getRow(number.getNumber());
+        	
         	activity.runOnUiThread(new Runnable() {
         	    public void run() {
         	    	
@@ -214,7 +218,7 @@ public class ExchangeKey implements Runnable {
         	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
         	    		linearLayout.addView(sharedSecret2);
         	    		
-        	    		builder.setMessage("Set the shared secret for " + number.getNumber())
+        	    		builder.setMessage("Set the shared secret for " + trustedContact.getName() + ", " + number.getNumber())
         	    		       .setCancelable(false)
         	    		       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
         	    		    	   @Override

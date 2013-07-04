@@ -383,7 +383,7 @@ public abstract class SMSUtility {
 	
 	public static boolean checksharedSecret(String secret)
 	{
-		if (secret.length() >= EditNumber.SHARED_INFO_MIN &&
+		if (secret != null && secret.length() >= EditNumber.SHARED_INFO_MIN &&
 				secret.length() <= EditNumber.SHARED_INFO_MAX)
 		{
 			return true;
