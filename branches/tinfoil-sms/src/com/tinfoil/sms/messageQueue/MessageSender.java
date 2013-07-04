@@ -68,6 +68,7 @@ public class MessageSender implements Runnable{
 			while(empty && mes == null)
 			{
 				mes = sender.getFirstInQueue();
+
 				if(mes != null)
 				{
 					break;

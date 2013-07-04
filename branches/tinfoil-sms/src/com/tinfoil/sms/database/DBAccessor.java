@@ -98,6 +98,8 @@ public class DBAccessor {
 	
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
+	
+	private static int count = 0;
 
 	/**
 	 * Creates a database that is read and write
@@ -773,6 +775,7 @@ public class DBAccessor {
 	public void open()
 	{
 		db = contactDatabase.getWritableDatabase();
+		count+=1;
 	}
 	
 	/**
@@ -782,7 +785,7 @@ public class DBAccessor {
 	public void close(Cursor cur)
 	{
 		cur.close();
-		db.close();
+		close();
 	}
 	
 	/**
@@ -790,7 +793,11 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
-		db.close();
+		count-=1;
+		if(count > 0)
+		{
+			db.close();
+		}		
 	}
 	
 	/**
