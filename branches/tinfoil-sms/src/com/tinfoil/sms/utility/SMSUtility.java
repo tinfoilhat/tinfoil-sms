@@ -41,6 +41,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.settings.EditNumber;
+import com.tinfoil.sms.settings.ManageContactsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 
 /**
@@ -249,11 +250,6 @@ public abstract class SMSUtility {
             	final String encrypted = CrpytoEngine.encrypt(number, message.getMessage());
             	
             	Log.v("After Encrypted", encrypted);
-                /*
-                final String encrypted = Encryption.aes_encrypt(new String(
-                		dba.getNumber(format(message.getNumber()))
-                        .getPublicKey()), message.getMessage());
-				*/
 
                 sendSMS(context, new Entry(message.getNumber(), encrypted,
                 		message.getId(), message.getExchange()));
@@ -269,23 +265,15 @@ public abstract class SMSUtility {
 
                 sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
 
-                //TODO change to update the time the message was sent.
                 dba.addNewMessage(new Message(message.getMessage(), true, Message.SENT_ENCRYPTED), message.getNumber(), false);
 
                 Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
             }
             else
             {
-            	//Thread.sleep(4000);
                 //Sending a plain text message
                 sendSMS(context, message);
                 sendToSelf(context, message.getNumber(), message.getMessage(), ConversationView.SENT);
-
-                //TODO change to update the time the message was sent.
-                /*if(dba.inDatabase(message.getNumber()))
-                {
-                	dba.addNewMessage(new Message(message.getMessage(), true, true), message.getNumber(), true);
-                }*/
 
                 if(!message.isExchange())
                 {
@@ -294,6 +282,13 @@ public abstract class SMSUtility {
                 
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
             }
+            
+            // Refresh the lists once the message is sent
+            if(!message.isExchange())
+            {
+            	ConversationView.updateList(context, ConversationView.messageViewActive);
+            }
+            
             return true;
         } catch (final Exception e)
         {
