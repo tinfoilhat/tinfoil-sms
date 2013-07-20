@@ -19,7 +19,6 @@ package com.tinfoil.sms.sms;
 
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +37,7 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
-@SuppressLint("all")
+
 public class KeyExchangeManager extends Activity {
 
 	private ArrayList<Entry> entries;
@@ -164,7 +163,7 @@ public class KeyExchangeManager extends Activity {
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
 	
-	@SuppressLint("NewApi")
+	//@SuppressLint("NewApi")
 	/*@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

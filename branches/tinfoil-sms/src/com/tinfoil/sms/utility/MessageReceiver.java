@@ -33,6 +33,7 @@ import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.settings.ManageContactsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageReceiver extends BroadcastReceiver {
@@ -216,6 +217,13 @@ public class MessageReceiver extends BroadcastReceiver {
 											MessageService.dba.addMessageToQueue(number.getNumber(),
 													KeyExchange.sign(number), true);
 										}
+										
+										ManageContactsActivity.updateList();
+										/*ManageContactsActivity.setRefresh(true);
+										synchronized (this) {
+											notifyAll();
+										}
+										*/
 									}
 								}
 								else

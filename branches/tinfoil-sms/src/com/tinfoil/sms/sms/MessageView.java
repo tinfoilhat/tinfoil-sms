@@ -43,6 +43,7 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
 import com.tinfoil.sms.crypto.ExchangeKey;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
@@ -286,6 +287,17 @@ public class MessageView extends Activity implements Runnable{
             messageEvent.resetCount();
             MessageService.dba.addMessageToQueue(number, text, false);
 
+            if(MessageService.dba.isTrustedContact(number))
+            {
+            	MessageService.dba.addNewMessage(new Message(text, true, 
+                		Message.SENT_ENCRYPTED), number, false);
+            }
+            else
+            {
+            	MessageService.dba.addNewMessage(new Message(text, true, 
+                		Message.SENT_DEFAULT), number, false);
+            }
+            
             //Encrypt the text message before sending it	
             //SMSUtility.sendMessage(number, text, this.getBaseContext());
             
@@ -313,6 +325,7 @@ public class MessageView extends Activity implements Runnable{
             msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
             messages.clear();
             messages.addData(msgList2);
+            messages.notifyDataSetChanged();
 
             MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
         }

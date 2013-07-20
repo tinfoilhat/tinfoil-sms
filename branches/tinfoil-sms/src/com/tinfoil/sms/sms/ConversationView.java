@@ -73,7 +73,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  * user can also select 'settings' which will take them to the main settings
  * page.
  */
-public class ConversationView extends Activity implements Runnable {
+public class ConversationView extends Activity {
 
 	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
@@ -185,8 +185,10 @@ public class ConversationView extends Activity implements Runnable {
 					}
         });
         
+        RunningClass runThread = new RunningClass();
+        
         update = false;
-        thread = new Thread(this);
+        thread = new Thread(runThread);
         thread.start();
         
         //msgList = MessageService.dba.getConversations();
@@ -244,6 +246,7 @@ public class ConversationView extends Activity implements Runnable {
     public static void updateList(final Context context, final boolean messageViewUpdate)
     {
     	//TODO remove
+    	
         //Toast.makeText(context, String.valueOf(messageViewUpdate), Toast.LENGTH_SHORT).show();
         if (MessageReceiver.myActivityStarted)
         {
@@ -268,6 +271,7 @@ public class ConversationView extends Activity implements Runnable {
             {
             	conversations.clear();
             	conversations.addData(msgList);
+            	conversations.notifyDataSetChanged();
             }
             
             if (messageViewUpdate)
@@ -333,55 +337,57 @@ public class ConversationView extends Activity implements Runnable {
 
     }
 
-	public void run() {
+    private class RunningClass implements Runnable {
+		public void run() {
+			
+			DBAccessor loader = new DBAccessor(ConversationView.this);
+			msgList = loader.getConversations();
+			if(!update) {
+				handler.sendEmptyMessage(LOAD);
+			}
+			else
+			{
+				handler.sendEmptyMessage(UPDATE);
+			}
+		}
 		
-		DBAccessor loader = new DBAccessor(this);
-		msgList = loader.getConversations();
-		if(!update) {
-			this.handler.sendEmptyMessage(LOAD);
-		}
-		else
-		{
-			this.handler.sendEmptyMessage(UPDATE);
-		}
-	}
-	
-	/**
-	 * The handler class for cleaning up after the loading thread as well as the
-	 * update thread.
-	 */
-	private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(final android.os.Message msg)
-        {
-        	if(msgList.isEmpty())
-        	{
-        		List<String> emptyItems = new ArrayList<String>();
-        		emptyItems.add("Add Contact");
-        		emptyItems.add("Import Contact");
-        		
-        		DefaultListAdapter ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
-                emptyList.setAdapter(ap);
-        		emptyList.setVisibility(ListView.VISIBLE);
-        		list.setVisibility(ListView.INVISIBLE);
-        		ConversationView.this.dialog.dismiss();
-        	}
-        	else
-        	{
-        		emptyList.setVisibility(ListView.INVISIBLE);
-        		list.setVisibility(ListView.VISIBLE);
-	        	switch (msg.what){
-	        	case LOAD:
-	        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
-	        		list.setAdapter(conversations);
+		/**
+		 * The handler class for cleaning up after the loading thread as well as the
+		 * update thread.
+		 */
+		private final Handler handler = new Handler() {
+	        @Override
+	        public void handleMessage(final android.os.Message msg)
+	        {
+	        	if(msgList.isEmpty())
+	        	{
+	        		List<String> emptyItems = new ArrayList<String>();
+	        		emptyItems.add("Add Contact");
+	        		emptyItems.add("Import Contact");
+	        		
+	        		DefaultListAdapter ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
+	                emptyList.setAdapter(ap);
+	        		emptyList.setVisibility(ListView.VISIBLE);
+	        		list.setVisibility(ListView.INVISIBLE);
 	        		ConversationView.this.dialog.dismiss();
-		        	break;
-	        	case UPDATE:
-	        		conversations.clear();
-	                conversations.addData(msgList);
-	        		break;
 	        	}
-        	}
-        }
-    };
+	        	else
+	        	{
+	        		emptyList.setVisibility(ListView.INVISIBLE);
+	        		list.setVisibility(ListView.VISIBLE);
+		        	switch (msg.what){
+		        	case LOAD:
+		        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
+		        		list.setAdapter(conversations);
+		        		ConversationView.this.dialog.dismiss();
+			        	break;
+		        	case UPDATE:
+		        		conversations.clear();
+		                conversations.addData(msgList);
+		        		break;
+		        	}
+	        	}
+	        }
+	    };
+    }
 }
