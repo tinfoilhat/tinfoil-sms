@@ -195,7 +195,9 @@ public class MessageReceiver extends BroadcastReceiver {
 							{
 								///Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 								//if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange", true))
-								if(number.getKeyExchangeFlag() == Number.AUTO)
+								if(number.getKeyExchangeFlag() == Number.AUTO &&
+										SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+										SMSUtility.checksharedSecret(number.getSharedInfo2()))
 								{
 									//Might be good to condense this into a method.
 									if(KeyExchange.verify(number, message))
@@ -218,16 +220,21 @@ public class MessageReceiver extends BroadcastReceiver {
 													KeyExchange.sign(number), true);
 										}
 										
-										ManageContactsActivity.updateList();
+										
 										/*ManageContactsActivity.setRefresh(true);
 										synchronized (this) {
 											notifyAll();
-										}
-										*/
+										}*/
+										ManageContactsActivity.updateList();
+									
 									}
 								}
 								else
 								{
+									Toast.makeText(context, "Exchange Key Message Received",
+											Toast.LENGTH_SHORT).show();
+									
+									Log.v("Key Exchange", "Manual");
 									String result = MessageService.dba.addKeyExchangeMessage(
 											new Entry(address, message));
 									

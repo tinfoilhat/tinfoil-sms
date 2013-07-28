@@ -377,6 +377,11 @@ public abstract class SMSUtility {
 		return null;		
 	}
 	
+	/**
+	 * Checks if the given shared secret is valid
+	 * @param secret The shared secret
+	 * @return Whether the secret is valid or not
+	 */
 	public static boolean checksharedSecret(String secret)
 	{
 		if (secret != null && secret.length() >= EditNumber.SHARED_INFO_MIN &&

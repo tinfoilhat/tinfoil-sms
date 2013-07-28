@@ -20,13 +20,18 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,10 +39,12 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
-
+//TODO add shared secret 
 public class KeyExchangeManager extends Activity {
 
 	private ArrayList<Entry> entries;
@@ -76,39 +83,108 @@ public class KeyExchangeManager extends Activity {
 				if(sba.get(i))
 				{
 					
-					Number number = MessageService.dba.getNumber(SMSUtility.
+					TrustedContact tc = MessageService.dba.getRow(SMSUtility.
 							format(entries.get(0).getNumber()));
 					
-					if(KeyExchange.verify(number, entries.get(i).getMessage()))
+					final Number number = tc.getNumber(SMSUtility.
+							format(entries.get(0).getNumber()));
+					
+					if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
-						Toast.makeText(this, "Exchange Key Message Received",
-								Toast.LENGTH_SHORT).show();
-						Log.v("Key Exchange", "Exchange Key Message Received");
-						
-						number.setPublicKey(KeyExchange.encodedPubKey(entries.
-								get(i).getMessage()));
-						number.setSignature(KeyExchange.encodedSignature(entries.
-								get(i).getMessage()));
-						
-						MessageService.dba.deleteKeyExchangeMessage(entries.
-								get(i).getNumber());
-						
-						MessageService.dba.updateNumberRow(number,
-								number.getNumber(), 0);
-						
-						if(!number.isInitiator())
-						{
-							Log.v("Key Exchange", "Not Initiator");
-							MessageService.dba.addMessageToQueue(number.getNumber(),
-									KeyExchange.sign(number), true);
-						}
-						//a.remove(entries.get(i).getNumber());
-						entries.remove(entries.get(i));
-						updateList();
+						respondMessage(number, entries.get(i));
 					}
-				}
+					else
+					{
+						AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        	    		LinearLayout linearLayout = new LinearLayout(this);
+        	    		linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        	    		final EditText sharedSecret1 = new EditText(this);
+        	    		sharedSecret1.setHint("Shared Secret 1");
+        	    		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
+        	    		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
+        	    		linearLayout.addView(sharedSecret1);
+
+        	    		final EditText sharedSecret2 = new EditText(this);
+        	    		sharedSecret2.setHint("Shared Secret 2");
+        	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
+        	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
+        	    		linearLayout.addView(sharedSecret2);
+        	    		
+        	    		final int value = i;
+        	    		
+        	    		builder.setMessage("Set the shared secret for " + tc.getName() + ", " + number.getNumber())
+        	    		       .setCancelable(false)
+        	    		       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        	    		    	   @Override
+        	    		    	   public void onClick(DialogInterface dialog, int id) {
+        	    		                //Save the shared secrets
+        	    		    		   String s1 = sharedSecret1.getText().toString();
+        	    		    		   String s2 = sharedSecret2.getText().toString();
+        	    		    		   if(SMSUtility.checksharedSecret(s1) &&
+        	    								SMSUtility.checksharedSecret(s2))
+        	    		    		   {
+        	    		    			   //Toast.makeText(activity, "Valid secrets", Toast.LENGTH_LONG).show();
+        	    		    			   number.setSharedInfo1(s1);
+        	    		    			   number.setSharedInfo2(s2);
+        	    		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+        	    		    			   //number.setInitiator(true);					
+       	                                
+        	    			               //MessageService.dba.updateInitiator(number);
+        	    			                
+        	    			               //String keyExchangeMessage = KeyExchange.sign(number);
+        	    			                
+        	    			               //MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+        	    			               respondMessage(number, entries.get(value));
+        	    		    		   }
+        	    		    		   else
+        	    		    		   {
+        	    		    			   Toast.makeText(KeyExchangeManager.this, "Invalid secrets", Toast.LENGTH_LONG).show();
+        	    		    		   }
+        	    		           }})
+        	    		       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        	    		    	   @Override
+        	    		    	   public void onClick(DialogInterface arg0, int arg1) {
+        	    		    		   	//Cancel the key exchange
+        	    		    		   Toast.makeText(KeyExchangeManager.this, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+        	    		    	   }});
+        	    		AlertDialog alert = builder.create();
+        	    		
+        	    		alert.setView(linearLayout);
+        	    		alert.show();
+					}
+					
+					
 				//else Item has not be touched leave it alone.
+				}
 			}
+		}
+	}
+	
+	public void respondMessage(Number number,Entry entry)
+	{
+		if(KeyExchange.verify(number, entry.getMessage()))
+		{
+			Log.v("Key Exchange", "Exchange Key Message Received");
+			
+			number.setPublicKey(KeyExchange.encodedPubKey(entry.getMessage()));
+			number.setSignature(KeyExchange.encodedSignature(entry.getMessage()));
+			
+			MessageService.dba.deleteKeyExchangeMessage(entry.getNumber());
+			
+			MessageService.dba.updateNumberRow(number,
+					number.getNumber(), 0);
+			
+			if(!number.isInitiator())
+			{
+				Log.v("Key Exchange", "Not Initiator");
+				MessageService.dba.addMessageToQueue(number.getNumber(),
+						KeyExchange.sign(number), true);
+			}
+			//a.remove(entries.get(i).getNumber());
+			entries.remove(entry);
+			updateList();
 		}
 	}
 	
