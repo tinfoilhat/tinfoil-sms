@@ -1,16 +1,10 @@
 package com.test.androidbugtest;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.app.Application;
-import android.view.Menu;
-import android.widget.Toast;
-
-import org.acra.*;
-import org.acra.annotation.*;
 
 
 /*
