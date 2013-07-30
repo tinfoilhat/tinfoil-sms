@@ -106,11 +106,13 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         
         if(MessageService.dba.isTrustedContact(contact[0]))
         {
+        	holder.indicator.setImageResource(R.drawable.encrypted);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
         else
         {
-        	holder.indicator.setVisibility(ImageView.INVISIBLE);
+        	holder.indicator.setImageResource(R.drawable.not_encrypted);
+        	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
         
         holder.c_message.setText(contact[2]);

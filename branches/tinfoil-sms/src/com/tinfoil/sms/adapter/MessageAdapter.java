@@ -121,7 +121,7 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         // Sent or received encrypted messages
         if (sentValue == Message.SENT_ENCRYPTED || sentValue == Message.RECEIVED_ENCRYPTED)
         {
-        	holder.indicator.setImageResource(R.drawable.ic_launcher);
+        	holder.indicator.setImageResource(R.drawable.encrypted);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
         // Sent or received with obfuscation
@@ -132,7 +132,7 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         // Received but failed to decrypt
         else if (sentValue == Message.RECEIVED_ENCRYPT_FAIL)
         {
-        	holder.indicator.setImageResource(R.drawable.error);
+        	holder.indicator.setImageResource(R.drawable.decryption_failed);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
         // Received but de-obfuscation failed
@@ -148,7 +148,8 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         // Default message
         else if (sentValue == Message.SENT_DEFAULT || sentValue == Message.RECEIVED_DEFAULT)
         {
-        	holder.indicator.setVisibility(ImageView.INVISIBLE);
+        	holder.indicator.setImageResource(R.drawable.not_encrypted);
+        	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
 
         return row;
