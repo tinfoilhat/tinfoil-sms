@@ -335,9 +335,15 @@ public class MessageView extends Activity implements Runnable{
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
         
-        //menu.findItem(R.id.exchange).setChecked(MessageService.dba
-        	//	.isTrustedContact(ConversationView.selectedNumber));
-        
+        /* TODO add "manage received key exchange" as an option if the contact
+         * has a pending key exchange. So that the user can handle key exchanges
+         * from the list of messages. Also, if the user does not have their
+         * shared secrets set and click to resolve the key exchange (and the
+         * confirms they desire to complete the key exchange) then a pop-up will
+         * show (just like when a user without set shared secrets attempts to
+         * send a key exchange) prompting the user to set the contact's shared
+         * secrets.
+         */
         if(MessageService.dba.isTrustedContact(ConversationView.selectedNumber))
         {
         	menu.findItem(R.id.exchange).setTitle("Untrust Contact")
