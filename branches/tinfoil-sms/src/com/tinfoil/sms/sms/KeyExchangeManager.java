@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
-//TODO add shared secret 
+//TODO comment
 public class KeyExchangeManager extends Activity {
 
 	private ArrayList<Entry> entries;
@@ -162,6 +162,11 @@ public class KeyExchangeManager extends Activity {
 		}
 	}
 	
+	/**
+	 * TODO comment
+	 * @param number
+	 * @param entry
+	 */
 	public void respondMessage(Number number,Entry entry)
 	{
 		if(KeyExchange.verify(number, entry.getMessage()))

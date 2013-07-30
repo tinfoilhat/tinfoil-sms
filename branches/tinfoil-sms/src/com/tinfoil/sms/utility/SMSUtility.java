@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,33 +108,6 @@ public abstract class SMSUtility {
 
         return number;
     }
-    
-    /**TODO remove
-     * Sends the given message to the phone with the given number
-     * 
-     * @param number The number of the phone that the message is sent to
-     * @param message The message, encrypted that will be sent to the
-     *            contact
-     */
-    /*public static void sendSMS(final Context c, final String number, final String message)
-    {
-        final String SENT = "SMS_SENT";
-
-        final Intent intent = new Intent(SENT);
-        intent.putExtra(NUMBER, number);
-        intent.putExtra(MESSAGE, message); 
-        final PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        c.registerReceiver(MS, new IntentFilter(SENT));
-
-        //SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(number, null, message, sentPI, null);
-        /*if(ServiceChecker.signal){
-        	sms.sendTextMessage(number, null, message, sentPI, null);   
-        }/
-        c.unregisterReceiver(MS);
-    }*/
 
     /**
      * Sends the given message to the phone with the given number
@@ -145,15 +118,6 @@ public abstract class SMSUtility {
     public static void sendSMS(final Context c, Entry message)
     {
         final String SENT = "SMS_SENT";
-
-        /*Intent intent = new Intent(SENT);
-        intent.putExtra(NUMBER, message.getNumber());
-        intent.putExtra(MESSAGE, message.getMessage());
-        intent.putExtra(ID, message.getId());
-        PendingIntent sentPI = PendingIntent.getBroadcast(c, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);*/
-
-        //Toast.makeText(c, message.getMessage(), Toast.LENGTH_SHORT).show();
 
         c.registerReceiver(MS, new IntentFilter(SENT));
 
@@ -171,14 +135,8 @@ public abstract class SMSUtility {
                     intent, PendingIntent.FLAG_CANCEL_CURRENT));
         }
         
-        //SmsManager sms = SmsManager.getDefault();
-        
         sms.sendMultipartTextMessage(message.getNumber(), null, messageList, sentPIList, null);
         
-        //sms.sendTextMessage(message.getNumber(), null, message.getMessage(), sentPI, null);
-        /*if(ServiceChecker.signal){
-        	sms.sendTextMessage(number, null, message, sentPI, null);
-        }*/
         c.unregisterReceiver(MS);
     }
 

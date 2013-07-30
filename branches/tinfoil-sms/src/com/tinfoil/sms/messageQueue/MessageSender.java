@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,8 @@ public class MessageSender implements Runnable{
 		
 		/*
 		 * Keep the thread running
+		 * TODO change while(true) to use a semaphore so that the thread can be
+		 * killed once the program has exited
 		 */
 		while(true)
 		{
@@ -86,7 +88,7 @@ public class MessageSender implements Runnable{
 			/*
 			 * TODO look into
 			 * 
-			 * (least complex (but still complex) could help just like the second one
+			 * (least complex (but still complex)) could help just like the second one:
 			 * The wait for sending messages could be put after all the
 			 * preparations are made for that messages such as encryption
 			 * 

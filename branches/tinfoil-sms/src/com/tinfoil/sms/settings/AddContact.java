@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,17 +40,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
- * The activity is able to identify which one it is doing
- * by the information provided to the activity. If the variable addContact ==
- * false then a previously created/imported contact is being edited. Thus editTc
- * != null and will have the contact's information.If addContact == true and
- * editTc == null then a new contact is being added with no previously known
- * information. Finally, if addContact == true and editTc != null then a new
- * contact is being added but information is already know about that contact.
- * ManageContactsActivity will start with either: addContact == true and editTc
- * == null or addContact == false and editTc != null SendMessageActivity will
- * start AddContact with: addContact == true and editTc != null Once the
- * activity has started if need to contactEdit = editTc.
+ * Add or Edit contacts of the user.
  */
 public class AddContact extends Activity {
 	
@@ -261,11 +251,14 @@ public class AddContact extends Activity {
 
         this.listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
-    
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
     	super.onActivityResult(requestCode, resultCode, data);
     	
+        /*
+         * TODO Comment
+         */
     	boolean update = false;
     	String number = null;
     	int position = 0;

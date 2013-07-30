@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,8 +362,9 @@ public class Number {
 		return publicKey;
 	}
 	
-	/**
+	/**TODO comment
 	 * Set the contact's public publicKey
+	 * @param publicKey
 	 */
 	public void setPublicKey(byte[] publicKey)
 	{

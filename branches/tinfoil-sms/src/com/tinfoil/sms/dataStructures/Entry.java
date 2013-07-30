@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,17 +27,16 @@ public class Entry {
 	private long id;
 	
 	 /*
-	  * Messages placed in the queue use the exchange
-	  * flag to identify that this message is a key exchange. Therefore it
-	  * will not be encrypted. This is not so much an issue for the initiator
-	  * of the key exchange (since they will not have the other contact's
-	  * key. However, upon receiving a key exchange message a user must
-	  * save the their now TrustedContact's key (the actual having of a key
-	  * makes any contact trusted). This however will make all queued
-	  * messages get encrypted (to that contact). This will thus make the
-	  * response key exchange message encrypted and thus unreadable. This flag
-	  * Allows the response key exchange message to be sent not encrypted even
-	  * though the contact is trusted.
+	  * Messages placed in the queue use the exchange flag to identify that the
+	  * message is a key exchange. Therefore it will not be encrypted. This is
+	  * not so much an issue for the initiator of the key exchange (since they
+	  * will not have the other contact's key. However, upon receiving a key
+	  * exchange message a user must save the their now TrustedContact's key
+	  * (the actual having of a key makes any contact trusted). This however
+	  * will make all queued messages get encrypted (to that contact). This will
+	  * thus make the response key exchange message encrypted and thus
+	  * unreadable. This flag therefore allows the response to the key exchange
+	  * message to be sent not encrypted even though the contact is trusted.
 	  */
 	private boolean exchange;
 	

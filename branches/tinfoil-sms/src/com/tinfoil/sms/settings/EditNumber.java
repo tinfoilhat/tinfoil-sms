@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,14 +52,14 @@ import com.tinfoil.sms.utility.SMSUtility;
 /**
  * An activity used to edit a single number from a given contact. 
  * 
- * This activity returns a AddContact.RESULT_CODE if changes have
- * been made and the list needs to be update, else returns default
- * result code.
+ * This activity returns a AddContact.RESULT_CODE if changes have been made and
+ * the list needs to be update, else returns default result code.
+ * 
  * The Extras are included are:
  * EditNumber.UPDATE, whether the number has been updated or not
  * EditNumber.NUMBER, the number that has been edited
- * AddContact.POSITION, the position of the given number in the
- * contact's numbers array list, -1 if it is a new number
+ * AddContact.POSITION, the position of the given number in the contact's
+ * numbers array list, -1 if it is a new number
  * EditNumber.ADD, whether the number is to update or deleted
  */
 public class EditNumber extends Activity{
@@ -75,7 +75,6 @@ public class EditNumber extends Activity{
 	private EditText bookInverse;
 	private EditText pubKey;
 	private Number number;
-	//private TrustedContact tc;
 	private String originalNumber;
 	private static int position;
 	
@@ -88,11 +87,7 @@ public class EditNumber extends Activity{
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
-        
-        
-        
-        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        
+
         keyExchangeSetting = new ArrayList<RadioButton>();
         
         keyExchangeSetting.add((RadioButton)this.findViewById(R.id.auto_exchange));
@@ -158,11 +153,7 @@ public class EditNumber extends Activity{
         {
         	/*
         	 * Initialize the values to the default values
-        	 */
-	        //sharedInfo1.setText(DBAccessor.DEFAULT_S1);
-	        
-	        //sharedInfo2.setText(DBAccessor.DEFAULT_S2);
-	        
+        	 */	        
 	        bookPath.setText(DBAccessor.DEFAULT_BOOK_PATH);
 	        
 	        bookInverse.setText(DBAccessor.DEFAULT_BOOK_INVERSE_PATH);
@@ -211,7 +202,8 @@ public class EditNumber extends Activity{
 				
 				if(number == null)
 				{
-					/* Number is a new number */						
+					/* Number is a new number */
+					//TODO clean up
 					if(originalNumber != null)
 					{
 						/* 
@@ -318,6 +310,7 @@ public class EditNumber extends Activity{
 		}
 		else
 		{
+			//TODO create a better notification for invalid shared secrets (since they key board blocks them)
 			Toast.makeText(this, "Shared secrets must be longer then " + SHARED_INFO_MIN, Toast.LENGTH_LONG).show();
 		}
 	}

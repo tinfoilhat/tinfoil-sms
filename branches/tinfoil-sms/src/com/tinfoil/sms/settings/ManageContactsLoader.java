@@ -1,3 +1,20 @@
+/** 
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.tinfoil.sms.settings;
 
 import java.util.ArrayList;
@@ -12,18 +29,27 @@ import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
+/**
+ * Loads in the contacts from the database and formats them.
+ *
+ */
 public class ManageContactsLoader implements Runnable {
 	
 	public static final String EMPTYLIST = "emptyListValues";
 	private boolean loopContinue = true;
 	private boolean refresh = false;
 	private boolean exchange;
-	//private Context context;
 	private Handler handler;
 	private Thread thread;
 	
 	public boolean[] trusted;
 	
+	//TODO change to constructor
+	/**
+	 * TODO comment
+	 * @param handler
+	 * @param exchange
+	 */
 	public void startThread(Handler handler, boolean exchange)
 	{
 		this.handler = handler;
@@ -35,9 +61,7 @@ public class ManageContactsLoader implements Runnable {
 	public void run() {
     	while(loopContinue)
     	{
-    		Log.v("Thread", String.valueOf(refresh));
-    		/**/
-
+    		//TODO comment
     		String emptyListValue = "";
 	    	
 	    	Log.v("Thread", "In the thread");
@@ -85,9 +109,11 @@ public class ManageContactsLoader implements Runnable {
 	        	msg.what = ManageContactsActivity.EMPTY;
 	        	
 	        	handler.sendMessage(msg);
-	        	//handler.sendEmptyMessage(ManageContactsActivity.EMPTY);
 	        }		        
 	        
+	        /* The wait until the contacts have changed and need to be loaded in
+	         * again
+	         */
 	        while(!refresh && loopContinue)
     		{
     			Log.v("Thread", "Waiting");
@@ -100,18 +126,27 @@ public class ManageContactsLoader implements Runnable {
 						e.printStackTrace();
 					}
     			}
-
     		}
     		
     		setRefresh(false);
 	    }
 	}
 	
+	/**
+	 * Set the semaphore to signal the thread to reload the contacts again
+	 * @param refresh Whether the contacts need to be reloaded or not
+	 */
     public synchronized void setRefresh(boolean refresh) {
 		this.refresh = refresh;
 		notifyAll();
 	}
     
+    /**
+     * The semaphore for keeping the thread running. This can be left as true
+     * until the activity is no longer in use (onDestroy) where it can be set to
+     * false.
+     * @param runner Whether the thread should be kept running
+     */
     public synchronized void setRunner(boolean runner) {
 		this.loopContinue = runner;
 		notifyAll();

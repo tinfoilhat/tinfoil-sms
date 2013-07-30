@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -428,40 +428,6 @@ public class DBAccessor {
 	}
 	
 	/**
-	 * Resets the shared information to the default shared information
-	 * @param reference The reference id for the contact
-	 */
-	/*public void resetSharedInfo (long reference)
-	{
-		if (reference != 0 && !sharedInfoIsDefault(reference) )
-		{
-			open();
-			db.delete(SQLitehelper.SHARED_INFO_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
-			close();
-		}
-	}*/
-	
-	/**
-	 * Check if the shared info is the default shared info
-	 * @param reference The id of the contact
-	 * @return True if the shared info is the default, false otherwise
-	 */
-	/*private boolean sharedInfoIsDefault(long reference)
-	{
-		open();
-		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
-				KEY_REFERENCE + " = " + reference, null, null, null, null);
-		if (cur.moveToFirst())
-		{
-			close(cur);
-			return false;
-		}
-		close(cur);
-		return true;
-	}*/
-	
-	/**
 	 * Used to retrieve the shared information
 	 * @param reference The reference id for the contact
 	 * @return Both pieces of shared information for that contact (s1 and s2)
@@ -766,7 +732,6 @@ public class DBAccessor {
 		}
 		close(cur);
 		return false;
-		
 	}
 	
     /**
@@ -855,7 +820,6 @@ public class DBAccessor {
 	 */
 	public List<String[]>  getConversations()
 	{
-		
 		String orderQuery = "(SELECT " + 
 				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME + ", " +
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER + ", " + 
@@ -891,7 +855,7 @@ public class DBAccessor {
 		return sms;
 	}
 	
-	/**
+	/**TODO comment
 	 * Get a Number from the database given the number. This method is met to
 	 * simplify transactions that require only the contact's Number and no other
 	 * information. It is a less expensive query
@@ -1534,24 +1498,5 @@ public class DBAccessor {
 		close();
 	}
 	
-	/**
-	 * Get the current length of the queue
-	 * @return : long the length of the queue
-	 */
-	/*public synchronized int queueLength()
-	{
-		open();
-		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, 
-				new String[]{"COUNT("+KEY_ID+")"},
-				null, null, null, null, null);
-		
-		if (cur.moveToFirst())
-		{
-			int count = cur.getInt(0);
-			close(cur);
-			return count;
-		}
-		close(cur);
-		return 0;
-	}*/
+	
 }

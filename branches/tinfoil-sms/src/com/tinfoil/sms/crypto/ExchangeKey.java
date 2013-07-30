@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,6 +196,7 @@ public class ExchangeKey implements Runnable {
         {
         	trustedContact = MessageService.dba.getRow(number.getNumber());
         	
+        	//TODO comment
         	activity.runOnUiThread(new Runnable() {
         	    public void run() {
         	    	
