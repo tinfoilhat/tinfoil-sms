@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
@@ -44,7 +45,6 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO fix auto complete bug
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact (a
  * contact that has exchanged their key with the user) then it will be
@@ -189,14 +189,21 @@ public class SendMessageActivity extends Activity {
                  */
             	
             	//Add contact to the database
-            	MessageService.dba.addRow(new TrustedContact(new Number(number)));
-                
+            	if(!MessageService.dba.inDatabase(number))
+            	{
+            		MessageService.dba.addRow(new TrustedContact(new Number(number)));
+            	}
             	
-                //final boolean sent = SMSUtility.sendMessage(SendMessageActivity.this.getBaseContext(), SendMessageActivity.this.newCont.getNumber(0), text);
-
             	//Add the message to the database
-                //MessageService.dba.addNewMessage(new Message(text, true, true), number, true);
-                
+            	if(MessageService.dba.isTrustedContact(number))
+            	{
+            		MessageService.dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
+            	}
+            	else
+            	{
+            		MessageService.dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
+            	}
+
                 //Add the message to the queue to send it
                 MessageService.dba.addMessageToQueue(number, text, false);         
                 
