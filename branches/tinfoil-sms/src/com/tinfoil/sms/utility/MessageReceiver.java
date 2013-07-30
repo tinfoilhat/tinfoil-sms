@@ -220,13 +220,7 @@ public class MessageReceiver extends BroadcastReceiver {
 													KeyExchange.sign(number), true);
 										}
 										
-										
-										/*ManageContactsActivity.setRefresh(true);
-										synchronized (this) {
-											notifyAll();
-										}*/
-										ManageContactsActivity.updateList();
-									
+										ManageContactsActivity.updateList();									
 									}
 								}
 								else

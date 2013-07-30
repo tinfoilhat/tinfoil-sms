@@ -105,13 +105,13 @@ public class ConversationView extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO move setup to a thread to focus on a faster UI interaction
         ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
         //Cancel all notifications from tinfoil-sms upon starting the main activity
         MessageService.mNotificationManager.cancelAll();
 
+        //TODO move setup to a thread to focus on a faster UI interaction
         MessageService.dba = new DBAccessor(this);
 
         SMSUtility.user = MessageService.dba.getUserRow();
@@ -180,9 +180,9 @@ public class ConversationView extends Activity {
         this.dialog = ProgressDialog.show(this, "Loading Messages",
                 "Please wait...", true, true, new OnCancelListener() {
 
-					public void onCancel(DialogInterface dialog) {
-										
-					}
+        	public void onCancel(DialogInterface dialog) {
+									
+			}
         });
         
         runThread = new ConversationLoader();

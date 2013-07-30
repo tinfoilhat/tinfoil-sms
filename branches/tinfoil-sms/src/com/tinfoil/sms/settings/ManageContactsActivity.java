@@ -44,7 +44,6 @@ import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.ContactChild;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
@@ -71,21 +70,23 @@ public class ManageContactsActivity extends Activity {
 
 	public static final int UPDATE = 1;
 	
+	public static final int POP = 1;
+	public static final int EMPTY = 2;	
+	
     private ExpandableListView extendableList;
     private ListView listView;
-    private ArrayList<TrustedContact> tc;
+    public static ArrayList<TrustedContact> tc;
     private ProgressDialog loadingDialog;
     private ArrayAdapter<String> arrayAp;
-    private boolean[] trusted;
+    //
 
-    private ArrayList<ContactParent> contacts;
-    private ArrayList<ContactChild> contactNumbers;
+    public static ArrayList<ContactParent> contacts;
+    public static ArrayList<ContactChild> contactNumbers;
     private static ManageContactAdapter adapter;
     
     public boolean exchange = true;
     
-    private static RunningClass runThread;
-    private static boolean refresh = false; 
+    private static ManageContactsLoader runThread;
 
     private static ExchangeKey keyThread = new ExchangeKey();
 
@@ -96,7 +97,7 @@ public class ManageContactsActivity extends Activity {
         
         exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
        
-        runThread = new RunningClass();
+        //runThread = new ManageContactsLoader();
         this.setContentView(R.layout.contact);
         
         if (!exchange)
@@ -121,7 +122,7 @@ public class ManageContactsActivity extends Activity {
                    
                 	
                     AddContact.addContact = false;
-                    AddContact.editTc = MessageService.dba.getRow(ManageContactsActivity.this.tc.get(
+                    AddContact.editTc = MessageService.dba.getRow(ManageContactsActivity.tc.get(
                     		ExpandableListView.getPackedPositionGroup(id)).getANumber());
 
                     Intent intent = new Intent(ManageContactsActivity.this,
@@ -192,7 +193,7 @@ public class ManageContactsActivity extends Activity {
      */
     private void update()
     {
-        if (this.tc != null)
+        if (tc != null)
         {
             this.extendableList.setAdapter(adapter);
             this.listView.setVisibility(ListView.INVISIBLE);
@@ -205,7 +206,7 @@ public class ManageContactsActivity extends Activity {
             this.listView.setVisibility(ListView.VISIBLE);
         }
 
-        if (this.tc != null)
+        if (tc != null)
         {
             this.extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         }
@@ -225,10 +226,10 @@ public class ManageContactsActivity extends Activity {
         //TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
         this.loadingDialog = ProgressDialog.show(this, "Loading Contacts",
                 "Loading. Please wait...", true, false);
-        RunningClass runThread = new RunningClass();
-        final Thread thread = new Thread(runThread);
-        setRefresh(true);
-        thread.start();
+        runThread = new ManageContactsLoader();
+        //final Thread thread = new Thread(runThread);
+        
+        runThread.startThread(handler, exchange);
         super.onResume();
     }
 
@@ -275,95 +276,21 @@ public class ManageContactsActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }*/
-    
-    public synchronized static void setRefresh (boolean newRefresh)
-    {
-		refresh = newRefresh;
+    @Override
+    protected void onDestroy()
+    {	  
+    	runThread.setRunner(false);
+    	super.onDestroy();
 	}
-
-    private class RunningClass implements Runnable {
-		public void run() {
-	    	//while(true)
-	    	//{
-	    		Log.v("Thread", String.valueOf(refresh));
-	    		/*while(!refresh)
-	    		{
-	    			Log.v("Thread", "Waiting");
-	    			
-	    			synchronized(this)
-	    			{
-						try {
-							this.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-	    			}
-
-	    		}
-	    		
-	    		setRefresh(false);*/
-	    			    		
-		    	String emptyListValue = "";
-		    	
-		    	Log.v("Thread", "In the thread");
-		    	if(exchange)
-		    	{
-		    		ManageContactsActivity.this.tc = MessageService.dba.getAllRows(DBAccessor.UNTRUSTED);
-		    		emptyListValue = "No contacts";
-		    	}
-		    	else
-		    	{
-		    		ManageContactsActivity.this.tc = MessageService.dba.getAllRows(DBAccessor.TRUSTED);
-		    		emptyListValue = "No Trusted Contacts";
-		    	}		    	
-		
-		        if (ManageContactsActivity.this.tc != null)
-		        {
-		        	ManageContactsActivity.this.contacts = new ArrayList<ContactParent>();
-		            int size = 0;
-		
-		            for (int i = 0; i < ManageContactsActivity.this.tc.size(); i++)
-		            {
-		                size = ManageContactsActivity.this.tc.get(i).getNumber().size();
-		
-		                ManageContactsActivity.this.contactNumbers = new ArrayList<ContactChild>();
-		
-		                ManageContactsActivity.this.trusted = MessageService.dba.isNumberTrusted(ManageContactsActivity.this.tc.get(i).getNumber());
-		
-		                for (int j = 0; j < size; j++)
-		                {
-		                    //TODO change to use primary key from trusted contact table
-		                	ManageContactsActivity.this.contactNumbers.add(new ContactChild(ManageContactsActivity.this.tc.get(i).getNumber(j),
-		                			ManageContactsActivity.this.trusted[j], false));
-		                }
-		                ManageContactsActivity.this.contacts.add(new ContactParent(ManageContactsActivity.this.tc.get(i).getName(), ManageContactsActivity.this.contactNumbers));
-		            }
-		
-		            adapter = new ManageContactAdapter(ManageContactsActivity.this, ManageContactsActivity.this.contacts);
-		            adapter.notifyDataSetChanged();
-		        }
-		        else
-		        {
-		        	arrayAp = new ArrayAdapter<String>(ManageContactsActivity.this, android.R.layout.simple_list_item_1,
-		                    new String[] { emptyListValue });
-		        	
-		        	arrayAp.notifyDataSetChanged();
-		        }		        
-		
-		        ManageContactsActivity.this.handler.sendEmptyMessage(0);
-		    }
-		
-		//}
-    }
     
     public static void updateList()
     {
         if(runThread != null)
         {
         	Log.v("Run Thread", "Running");
-            final Thread thread = new Thread(runThread);
-            //setRefresh(true);
-            thread.start();
+            //final Thread thread = new Thread(runThread);
+        	runThread.setRefresh(true);
+            //thread.start();
         }
     }
 
@@ -374,6 +301,23 @@ public class ManageContactsActivity extends Activity {
         @Override
         public void handleMessage(final Message msg)
         {
+        	switch (msg.what){
+        		case POP:
+        			adapter = new ManageContactAdapter(ManageContactsActivity.this, ManageContactsActivity.contacts);
+     	            adapter.notifyDataSetChanged();
+		            break;
+        		case EMPTY:
+        			String emptyListValue = msg.getData().getString(ManageContactsLoader.EMPTYLIST);
+        			if (emptyListValue == null)
+        			{
+        				emptyListValue = "Empty list";
+        			}
+        			arrayAp = new ArrayAdapter<String>(ManageContactsActivity.this, android.R.layout.simple_list_item_1,
+    	                    new String[] { emptyListValue });
+    	        	
+    	        	arrayAp.notifyDataSetChanged();
+        			break;
+        	}
         	Log.v("Thread", "Thread finished");
             ManageContactsActivity.this.update();
             if(ManageContactsActivity.this.loadingDialog.isShowing())

@@ -44,6 +44,7 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
+ * TODO fix auto complete bug
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact (a
  * contact that has exchanged their key with the user) then it will be
