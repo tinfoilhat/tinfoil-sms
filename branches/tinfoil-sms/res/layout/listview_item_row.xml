@@ -36,11 +36,11 @@
      
      <ImageView
 	    android:id="@+id/conversation_icon"
-	    android:src="@drawable/ic_launcher"
+	    android:src="@drawable/not_encrypted"
 	    android:layout_alignParentRight="true"
 	    android:layout_centerInParent="true"
-	    android:layout_width="20sp"
-	    android:layout_height="20sp"
+	    android:layout_width="24sp"
+	    android:layout_height="24sp"
 	    />
         
 </RelativeLayout>
