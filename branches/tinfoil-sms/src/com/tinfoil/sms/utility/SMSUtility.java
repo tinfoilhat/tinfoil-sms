@@ -32,18 +32,16 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
-import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.settings.EditNumber;
-import com.tinfoil.sms.settings.ManageContactsActivity;
 import com.tinfoil.sms.sms.ConversationView;
-import com.tinfoil.sms.sms.MessageView;
 
 /**
  * An abstract class used to retrieve contacts information from the native

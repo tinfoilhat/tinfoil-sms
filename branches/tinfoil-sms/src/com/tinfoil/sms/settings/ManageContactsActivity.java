@@ -165,6 +165,7 @@ public class ManageContactsActivity extends Activity {
     }
 
     /**
+     * TODO disable when no contact is selected
      * The onClick action for when the user clicks on keyExchange
      * @param view The view that is involved
      */
@@ -314,8 +315,7 @@ public class ManageContactsActivity extends Activity {
 		    	{
 		    		ManageContactsActivity.this.tc = MessageService.dba.getAllRows(DBAccessor.TRUSTED);
 		    		emptyListValue = "No Trusted Contacts";
-		    	}
-		    	
+		    	}		    	
 		
 		        if (ManageContactsActivity.this.tc != null)
 		        {
@@ -348,11 +348,11 @@ public class ManageContactsActivity extends Activity {
 		                    new String[] { emptyListValue });
 		        	
 		        	arrayAp.notifyDataSetChanged();
-		        }
-		        
+		        }		        
 		
 		        ManageContactsActivity.this.handler.sendEmptyMessage(0);
 		    }
+		
 		//}
     }
     
@@ -360,9 +360,9 @@ public class ManageContactsActivity extends Activity {
     {
         if(runThread != null)
         {
-        	
         	Log.v("Run Thread", "Running");
             final Thread thread = new Thread(runThread);
+            //setRefresh(true);
             thread.start();
         }
     }
