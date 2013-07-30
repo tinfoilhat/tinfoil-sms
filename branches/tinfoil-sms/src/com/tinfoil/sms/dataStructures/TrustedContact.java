@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,8 +104,8 @@ public class TrustedContact {
 	/**
 	 * Get any of the numbers for the contact.
 	 * This is used for retrieving a single number to be used. 
-	 * *NOTE: this should not be used unless it is to just get a single number to 
-	 * delete the row.
+	 * *NOTE: this should not be used unless it is to just get a single number
+	 * to delete the row.
 	 * @return The first non-null number found
 	 */
 	public String getANumber()

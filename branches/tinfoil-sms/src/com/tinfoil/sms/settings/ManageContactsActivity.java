@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,22 +47,11 @@ import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
- * TODO update when received key exchange.
- * Currently the onClick action is very confusing for people new to the app.
- * Even though items are selected depending on the state of the contact the
- * onClick action will be different. If a contact's number is trusted (has the
- * Tinfoil-sms icon next to their number) then the contact clicking the button
- * will delete the contact's key and set the to untrusted. Where as if the
- * contact's number is not trusted (there is no tinfoil-sms icon next to the
- * number) then clicking the button will initiate a key exchange with that
- * contact.
  * ManageContactActivity is an activity that allows the user to exchange keys,
  * edit and delete contacts. A list of contacts will be shown with an check box,
  * if check then the user is either exchanging or have exchanged keys with the
- * contact. To edit a contact's information hold down for a long press, which
- * will start AddContact activity with addContact == false and editTc != null. A
- * contact can be added by click 'Add Contact' in the menu this will start the
- * AddContact activity with addContact == true and editTc == null. Contacts can
+ * contact. To edit a contact's information hold down for a long press. A
+ * contact can be added by click 'Add Contact' in the menu. Contacts can
  * be deleted from tinfoil-sms's database by clicking 'Delete Contact' in the
  * menu which will start RemoveContactActivity.
  */
@@ -97,7 +86,6 @@ public class ManageContactsActivity extends Activity {
         
         exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
        
-        //runThread = new ManageContactsLoader();
         this.setContentView(R.layout.contact);
         
         if (!exchange)
@@ -227,55 +215,11 @@ public class ManageContactsActivity extends Activity {
         this.loadingDialog = ProgressDialog.show(this, "Loading Contacts",
                 "Loading. Please wait...", true, false);
         runThread = new ManageContactsLoader();
-        //final Thread thread = new Thread(runThread);
         
         runThread.startThread(handler, exchange);
         super.onResume();
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-
-        final MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.manage_contacts_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add: {
-                AddContact.addContact = true;
-                AddContact.editTc = null;
-                this.startActivity(new Intent(this, AddContact.class));
-
-                return true;
-            }
-            case R.id.all:
-                if (this.tc != null)
-                {
-                	adapter.setAllSelected(true);
-                	update();
-                }
-                return true;
-            case R.id.remove:
-                if (this.tc != null)
-                {
-                	adapter.setAllSelected(false);
-                	update();
-                }
-                return true;
-            case R.id.delete: {
-                if (this.tc != null)
-                {
-                    this.startActivity(new Intent(this.getApplicationContext(), RemoveContactsActivity.class));
-                }
-                return true;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
     @Override
     protected void onDestroy()
     {	  
@@ -288,9 +232,7 @@ public class ManageContactsActivity extends Activity {
         if(runThread != null)
         {
         	Log.v("Run Thread", "Running");
-            //final Thread thread = new Thread(runThread);
         	runThread.setRefresh(true);
-            //thread.start();
         }
     }
 
@@ -301,6 +243,7 @@ public class ManageContactsActivity extends Activity {
         @Override
         public void handleMessage(final Message msg)
         {
+        	/* Handle UI update once the thread has finished querying the data */ 
         	switch (msg.what){
         		case POP:
         			adapter = new ManageContactAdapter(ManageContactsActivity.this, ManageContactsActivity.contacts);
@@ -318,7 +261,7 @@ public class ManageContactsActivity extends Activity {
     	        	arrayAp.notifyDataSetChanged();
         			break;
         	}
-        	Log.v("Thread", "Thread finished");
+        	
             ManageContactsActivity.this.update();
             if(ManageContactsActivity.this.loadingDialog.isShowing())
             {

@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,6 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class SendMessageActivity extends Activity {
     private static MessageBoxWatcher messageEvent;
-    //private Button sendSMS;
     private AutoCompleteTextView phoneBox;
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;

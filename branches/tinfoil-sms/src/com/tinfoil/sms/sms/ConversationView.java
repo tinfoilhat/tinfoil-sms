@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,8 +115,6 @@ public class ConversationView extends Activity {
         MessageService.dba = new DBAccessor(this);
 
         SMSUtility.user = MessageService.dba.getUserRow();
-        
-        // Commented out for now since there is a library reference problem.
          
         if(SMSUtility.user == null)
         {
@@ -185,11 +183,9 @@ public class ConversationView extends Activity {
 			}
         });
         
-        runThread = new ConversationLoader();
-        
         update = false;
-        runThread.startThread(this, update, handler);
-
+        runThread = new ConversationLoader(this, update, handler);
+       
         //View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
         //list.addHeaderView(header);
         
@@ -226,11 +222,9 @@ public class ConversationView extends Activity {
 		                		ConversationView.this.getBaseContext(), 
 		                		ImportContacts.class));
 					break;
-					//Upon finishing the list view should be updated to show the contacts.
 				}
 			}
 		});
-
     }
 
     /**
@@ -244,9 +238,9 @@ public class ConversationView extends Activity {
 
         if (MessageReceiver.myActivityStarted)
         {
-            if(conversations == null)
+            if(conversations != null)
             {
-            	update = true;
+            	runThread.setUpdate(true);
             }
             
             runThread.setStart(false);
@@ -325,6 +319,10 @@ public class ConversationView extends Activity {
         {
         	if(msgList.isEmpty())
         	{
+        		/*
+        		 * The user has no contacts show the default list items to allow
+        		 * for quick import or addition of contacts.
+        		 */
         		List<String> emptyItems = new ArrayList<String>();
         		emptyItems.add("Add Contact");
         		emptyItems.add("Import Contact");
@@ -337,17 +335,19 @@ public class ConversationView extends Activity {
         	}
         	else
         	{
-        		Log.v("finished loading", "right here");
-        		//ConversationView.this.dialog.dismiss();
+        		//The user has contacts step-up the list view for the conversations
         		emptyList.setVisibility(ListView.INVISIBLE);
         		list.setVisibility(ListView.VISIBLE);
+        		
 	        	switch (msg.what){
 	        	case LOAD:
+	        		//First time load, the adapter must be constructed
 	        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
 	        		list.setAdapter(conversations);
 	        		ConversationView.this.dialog.dismiss();
 		        	break;
 	        	case UPDATE:
+	        		//The list's data has changed and needs to be updated
 	        		conversations.clear();
 	                conversations.addData(msgList);
 	        		break;

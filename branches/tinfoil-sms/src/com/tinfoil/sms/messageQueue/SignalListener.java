@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ public class SignalListener extends PhoneStateListener{
 		 * until this flag is updated 
 		 */
 		int strength = signalStrength.getGsmSignalStrength();
-		//signalStrength.
+
 		if (strength >= 0 && strength <= 31 || strength == 99 )
 		{
 			Log.v("Strength", "" + strength);
@@ -55,10 +55,6 @@ public class SignalListener extends PhoneStateListener{
 			if (strength == 0 || strength == 99)
 			{
 				ConversationView.messageSender.setSignal(false);
-				/*
-				 * Could use wait() and notify() rather then busy waiting
-				 */
-				//ConversationView.messageSender.threadNotify(false);
 			}
 			else
 			{
@@ -68,8 +64,7 @@ public class SignalListener extends PhoneStateListener{
 				ConversationView.messageSender.setSignal(true);
 				
 				ConversationView.messageSender.threadNotify(false);
-			}
-			
+			}			
 		}
 		
 		super.onSignalStrengthsChanged(signalStrength);

@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,6 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * Checks if the user has enabled the vibration option
 						 */
 						if (ConversationView.sharedPrefs.getBoolean("vibrate", true))
-								//&& Prephase3Activity.sharedPrefs.getBoolean("notification_bar", true))
 						{
 							Vibrator vibrator;
 							vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -106,8 +105,6 @@ public class MessageReceiver extends BroadcastReceiver {
 							vibrator.vibrate(Long.valueOf(value));
 						}
 	
-						//TrustedContact tcMess = MessageService.dba.getRow(ContactRetriever.format(address));
-						
 						/*
 						 * Checks if the user is a trusted contact and if tinfoil-sms encryption is
 						 * enabled.
@@ -117,7 +114,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							
 							Message encryMessage = null; 
 							/*
-							 * Since contact is trusted assume it is NOT a key exchange and that the message IS encrpyted.
+							 * Since contact is trusted assume it is NOT a key exchange and that the message IS encrypted.
 							 * If the message fails to decrypt. A warning of possible Man-In-The-Middle attack is given. 
 							 */
 							try {
@@ -248,8 +245,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								
 								Message newMessage = new Message(message, true, Message.RECEIVED_DEFAULT);
 								MessageService.dba.addNewMessage(newMessage, address, true);
-							}
-							
+							}							
 						}
 						
 						/*

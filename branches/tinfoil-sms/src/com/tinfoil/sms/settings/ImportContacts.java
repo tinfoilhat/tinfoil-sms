@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * ImportContact activity allows for contacts to be imported from the native
- * database to the tinfoil-sms database. When a contact is imported, a contacts'
+ * database to the tinfoil-sms database. When a contact is imported, a contact's
  * numbers, last message, date of last message, and type is stored. Once a
  * contact is imported they cannot be imported until deleted from tinfoil-sms's
  * database. Changes made in the tinfoil-sms database will not apply to the

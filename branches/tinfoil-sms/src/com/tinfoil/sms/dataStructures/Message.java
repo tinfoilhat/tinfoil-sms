@@ -1,5 +1,5 @@
 /** 
- * Copyright (C) 2011 Tinfoilhat
+ * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,14 @@ public class Message {
 	 * 1. Sent (encrypted)
 	 * 2. Sent (encrypted and obfuscated)
 	 * 3. Received (not encrypted, not expecting encryption)
-	 * 4. Received (encrypted (implies that they were expecting it to be encrypted and it was successfully able to decrypt it))
+	 * 4. Received (encrypted (implies that they were expecting it to be
+	 * encrypted and it was successfully able to decrypt it))
 	 * 5. Received (HashMac failed, expecting encrypted but failed to decrypt)
-	 * 6. Received (encrypted and obfuscated (implying again that they were expecting it such and succeeded in transforming it back to plain text))
+	 * 6. Received (encrypted and obfuscated (implying again that they were
+	 * expecting it such and succeeded in transforming it back to plain text))
 	 * 7. Received (de-obfuscation failed (not sure if this is possible))
-	 * 8. Received (de-obfuscated and failed to decrypt, Hash-Mac failed after de-obfuscation (not sure about this one either))
+	 * 8. Received (de-obfuscated and failed to decrypt, Hash-Mac failed after
+	 * de-obfuscation (not sure about this one either))
 	 */
 	public static final int SENT_DEFAULT = 0; 
 	public static final int SENT_ENCRYPTED = 1;
