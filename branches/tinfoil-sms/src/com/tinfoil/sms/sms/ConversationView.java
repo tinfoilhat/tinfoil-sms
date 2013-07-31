@@ -238,7 +238,9 @@ public class ConversationView extends Activity {
 
         if (MessageReceiver.myActivityStarted)
         {
-            if(conversations != null)
+        	MessageService.mNotificationManager.cancel(MessageService.MULTI);
+            
+        	if(conversations != null)
             {
             	runThread.setUpdate(true);
             }

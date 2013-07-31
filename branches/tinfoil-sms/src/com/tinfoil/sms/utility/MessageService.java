@@ -41,8 +41,9 @@ public class MessageService extends Service {
     public static final String multipleNotificationIntent = "com.tinfoil.sms.MultipleNotifications";
     public static CharSequence contentTitle;
     public static CharSequence contentText;
-    public static final int INDEX = 1;
-    public static final int KEY = 2;
+    public static final int SINGLE = 1;
+    public static final int MULTI = 2;
+    public static final int KEY = 3;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -71,6 +72,8 @@ public class MessageService extends Service {
             final String address = contentTitle.toString();
 
             if (dba.getUnreadMessageCount() > 1) {
+            	
+            	MessageService.mNotificationManager.cancel(SINGLE);
                 //Might need to change this.
                 contentTitle = dba.getRow(address).getName();
                 notifyDetails = new Notification(R.drawable.ic_launcher,
@@ -111,7 +114,7 @@ public class MessageService extends Service {
             		0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
 
             notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-            mNotificationManager.notify(INDEX, notifyDetails);
+            mNotificationManager.notify(SINGLE, notifyDetails);
 
         }
         
@@ -144,11 +147,11 @@ public class MessageService extends Service {
          * This seems to do the trick for having a notification
          * that stops if the activity is open
          */
-        if (MessageReceiver.myActivityStarted)
+        /*if (MessageReceiver.myActivityStarted)
         {
-        	MessageService.mNotificationManager.cancel(INDEX);
+        	MessageService.mNotificationManager.cancel(SINGLE);
             //MessageService.mNotificationManager.cancelAll();
-        }
+        }*/
         this.stopSelf();
         return Service.START_NOT_STICKY;
     }

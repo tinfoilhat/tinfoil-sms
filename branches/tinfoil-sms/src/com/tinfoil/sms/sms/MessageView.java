@@ -249,7 +249,7 @@ public class MessageView extends Activity implements Runnable{
             MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
             if (MessageService.mNotificationManager != null)
             {
-                MessageService.mNotificationManager.cancel(MessageService.INDEX);
+                MessageService.mNotificationManager.cancel(MessageService.SINGLE);
             }
         }       
     }
@@ -327,6 +327,7 @@ public class MessageView extends Activity implements Runnable{
             messages.addData(msgList2);
             messages.notifyDataSetChanged();
 
+            MessageService.mNotificationManager.cancel(MessageService.SINGLE);
             MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
         }
     }
