@@ -169,6 +169,27 @@ public class DBAccessor {
 	}
 	
 	/**
+	 * Get all of the pending key exchange messages.
+	 * @return The number of key exchanges pending
+	 */
+	public int getKeyExchangeMessageCount()
+	{
+		open();
+		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
+				KEY_ID}, null,
+				null, null, null, null);
+		
+		if(cur.moveToFirst())
+		{
+			int count = cur.getCount();
+			close(cur);
+			return count;
+		}
+		close(cur);
+		return 0;
+	}
+	
+	/**
 	 * Add a pending key exchange message.
 	 * @param keyExchange The pending key exchange message
 	 * @return The error message, if null the addition was successful.

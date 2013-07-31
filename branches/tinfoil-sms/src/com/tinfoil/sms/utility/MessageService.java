@@ -17,6 +17,8 @@
 
 package com.tinfoil.sms.utility;
 
+import java.util.ArrayList;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,9 +27,12 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.sms.MessageView;
 import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.sms.KeyExchangeManager;
+import com.tinfoil.sms.sms.MessageView;
 
 public class MessageService extends Service {
     public static DBAccessor dba;
@@ -38,6 +43,7 @@ public class MessageService extends Service {
     public static CharSequence contentTitle;
     public static CharSequence contentText;
     public static final int INDEX = 1;
+    public static final int KEY = 2;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -109,6 +115,28 @@ public class MessageService extends Service {
             mNotificationManager.notify(INDEX, notifyDetails);
 
         }
+        
+        ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
+        if(keyMessage != null && keyMessage.size() > 0)
+        {
+            Intent notifyIntent = null;
+            PendingIntent in = null;
+            Notification notifyDetails = null;
+
+    		notifyDetails = new Notification(R.drawable.key_exchange,
+    				"Pending Key Exchanges", System.currentTimeMillis());
+    		
+    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
+            in = PendingIntent.getActivity(this, 0, notifyIntent,
+            		android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+        	
+        	notifyDetails.setLatestEventInfo(this, "Tinfoil-SMS: Pending Key Exchanges", "Click here to resolve", in);
+            mNotificationManager.notify(KEY, notifyDetails);
+        }
+        else
+        {
+        	MessageService.mNotificationManager.cancel(MessageService.KEY);
+        }
 
         /*
          * This seems to do the trick for having a notification
@@ -116,7 +144,8 @@ public class MessageService extends Service {
          */
         if (MessageReceiver.myActivityStarted)
         {
-            MessageService.mNotificationManager.cancelAll();
+        	MessageService.mNotificationManager.cancel(INDEX);
+            //MessageService.mNotificationManager.cancelAll();
         }
         this.stopSelf();
         return Service.START_NOT_STICKY;

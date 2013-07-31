@@ -38,6 +38,7 @@ import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
+	public static boolean keyExchange = false;
 	public static final String VIBRATOR_LENTH = "500";
 	
     @Override
@@ -222,6 +223,8 @@ public class MessageReceiver extends BroadcastReceiver {
 								}
 								else
 								{
+									
+									keyExchange = true;
 									Toast.makeText(context, "Exchange Key Message Received",
 											Toast.LENGTH_SHORT).show();
 									
@@ -256,14 +259,21 @@ public class MessageReceiver extends BroadcastReceiver {
 						/*
 						 * Set the values needed for the notification
 						 */
-						MessageService.contentTitle = SMSUtility.format(address);
-						if (secretMessage != null)
+						if(!keyExchange)
 						{
-							MessageService.contentText = secretMessage;
+							MessageService.contentTitle = SMSUtility.format(address);
+							if (secretMessage != null)
+							{
+								MessageService.contentText = secretMessage;
+							}
+							else
+							{
+								MessageService.contentText = messages[0].getMessageBody();
+							}
 						}
 						else
 						{
-							MessageService.contentText = messages[0].getMessageBody();
+							
 						}
 						Intent serviceIntent = new Intent(context, MessageService.class);
 						//ServiceConnection conn = new ServiceConnection() {};
