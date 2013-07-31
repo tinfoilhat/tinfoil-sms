@@ -38,6 +38,7 @@ import com.tinfoil.sms.sms.ConversationView;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
+	public static boolean keyExchangeManual = false;
 	public static boolean keyExchange = false;
 	public static final String VIBRATOR_LENTH = "500";
 	
@@ -185,7 +186,6 @@ public class MessageReceiver extends BroadcastReceiver {
 							 * Assume it is check for key exchange message
 							 * Only once it fails is the message considered plain text.
 							 */
-							//TODO change the notification for a key exchange
 							Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 							
 							if(number.getKeyExchangeFlag() != Number.IGNORE &&
@@ -200,6 +200,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									//Might be good to condense this into a method.
 									if(KeyExchange.verify(number, message))
 									{
+										keyExchange = true;
 										Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
 										Log.v("Key Exchange", "Exchange Key Message Received");
 										
@@ -224,7 +225,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								else
 								{
 									
-									keyExchange = true;
+									keyExchangeManual = true;
 									Toast.makeText(context, "Exchange Key Message Received",
 											Toast.LENGTH_SHORT).show();
 									
@@ -256,28 +257,33 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						ConversationView.updateList(context, ConversationView.messageViewActive);
 						
-						/*
-						 * Set the values needed for the notification
-						 */
+						//Check if there should be a key exchange notification
 						if(!keyExchange)
 						{
-							MessageService.contentTitle = SMSUtility.format(address);
-							if (secretMessage != null)
+							if(!keyExchangeManual)
 							{
-								MessageService.contentText = secretMessage;
+								/*
+								 * Set the values needed for the notification
+								 */
+								MessageService.contentTitle = SMSUtility.format(address);
+								if (secretMessage != null)
+								{
+									MessageService.contentText = secretMessage;
+								}
+								else
+								{
+									MessageService.contentText = messages[0].getMessageBody();
+								}
 							}
 							else
 							{
-								MessageService.contentText = messages[0].getMessageBody();
+								MessageService.contentTitle = null;
+								MessageService.contentText = null;
 							}
+							Intent serviceIntent = new Intent(context, MessageService.class);
+							//ServiceConnection conn = new ServiceConnection() {};
+							context.startService(serviceIntent);
 						}
-						else
-						{
-							
-						}
-						Intent serviceIntent = new Intent(context, MessageService.class);
-						//ServiceConnection conn = new ServiceConnection() {};
-						context.startService(serviceIntent);
 						
 						// Prevent other applications from seeing the message received
 						this.abortBroadcast();

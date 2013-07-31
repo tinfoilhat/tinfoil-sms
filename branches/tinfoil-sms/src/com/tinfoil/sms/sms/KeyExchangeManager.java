@@ -62,8 +62,7 @@ public class KeyExchangeManager extends Activity {
 		if(entries != null)
 		{
 			updateList();
-		}
-		
+		}		
 	}
 
 	/**
@@ -163,9 +162,9 @@ public class KeyExchangeManager extends Activity {
 	}
 	
 	/**
-	 * TODO comment
-	 * @param number
-	 * @param entry
+	 * Respond to the key exchange messages 
+	 * @param number The number of the contact for the key exchange
+	 * @param entry The key exchange entry received.
 	 */
 	public void respondMessage(Number number,Entry entry)
 	{
@@ -230,6 +229,11 @@ public class KeyExchangeManager extends Activity {
 		for(int i = 0; i < entries.size(); i++)
 		{
 			numbers[i] = entries.get(i).getNumber();
+		}
+		
+		if(entries.size() == 0)
+		{
+			MessageService.mNotificationManager.cancel(MessageService.KEY);
 		}
 		
 		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);

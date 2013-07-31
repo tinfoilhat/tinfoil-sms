@@ -28,7 +28,6 @@ import android.os.IBinder;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Entry;
-import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.sms.KeyExchangeManager;
@@ -116,26 +115,29 @@ public class MessageService extends Service {
 
         }
         
-        ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
-        if(keyMessage != null && keyMessage.size() > 0)
+        if(ConversationView.sharedPrefs.getBoolean("notification_bar", true))
         {
-            Intent notifyIntent = null;
-            PendingIntent in = null;
-            Notification notifyDetails = null;
-
-    		notifyDetails = new Notification(R.drawable.key_exchange,
-    				"Pending Key Exchanges", System.currentTimeMillis());
-    		
-    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
-            in = PendingIntent.getActivity(this, 0, notifyIntent,
-            		android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-        	
-        	notifyDetails.setLatestEventInfo(this, "Tinfoil-SMS: Pending Key Exchanges", "Click here to resolve", in);
-            mNotificationManager.notify(KEY, notifyDetails);
-        }
-        else
-        {
-        	MessageService.mNotificationManager.cancel(MessageService.KEY);
+        	ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
+	        if(keyMessage != null && keyMessage.size() > 0)
+	        {
+	            Intent notifyIntent = null;
+	            PendingIntent in = null;
+	            Notification notifyDetails = null;
+	
+	    		notifyDetails = new Notification(R.drawable.key_exchange,
+	    				"Pending Key Exchanges", System.currentTimeMillis());
+	    		
+	    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
+	            in = PendingIntent.getActivity(this, 0, notifyIntent,
+	            		android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+	        	
+	        	notifyDetails.setLatestEventInfo(this, "Tinfoil-SMS: Pending Key Exchanges", "Click here to resolve", in);
+	            mNotificationManager.notify(KEY, notifyDetails);
+	        }
+	        else
+	        {
+	        	MessageService.mNotificationManager.cancel(MessageService.KEY);
+	        }
         }
 
         /*
