@@ -18,7 +18,7 @@
 	    android:singleLine="true"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-	<ImageView
+	<!-- <ImageView
 	    android:id="@+id/contact_icon"
 	    android:layout_width="20dp"
 	    android:layout_height="20dp"
@@ -26,5 +26,6 @@
 	    android:layout_centerVertical="true"
 	    android:layout_marginRight="50dp"
 	    android:src="@drawable/trusted_contact" />
+	     -->
     
 </RelativeLayout>

@@ -67,7 +67,6 @@ public class ManageContactsActivity extends Activity {
     public static ArrayList<TrustedContact> tc;
     private ProgressDialog loadingDialog;
     private ArrayAdapter<String> arrayAp;
-    //
 
     public static ArrayList<ContactParent> contacts;
     public static ArrayList<ContactChild> contactNumbers;

@@ -78,7 +78,7 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         holder = new TrustContactHolder();
         holder.name = (CheckedTextView) row.findViewById(R.id.trust_name);
         //holder.indicator = (TextView) row.findViewById(R.id.trust_indicator);
-        holder.image = (ImageView) row.findViewById(R.id.contact_icon);
+        //holder.image = (ImageView) row.findViewById(R.id.contact_icon);
         
 
         holder.name.setText(this.contacts.get(groupPosition).getNumber(childPosition).getNumber());
@@ -87,14 +87,14 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
 
         //holder.indicator.setText(String.valueOf(this.contacts.get(groupPosition).getNumber(childPosition).isTrusted()));
         
-        if(this.contacts.get(groupPosition).getNumber(childPosition).isTrusted())
+        /*if(this.contacts.get(groupPosition).getNumber(childPosition).isTrusted())
         {
         	holder.image.setVisibility(ImageView.VISIBLE);
         }
         else
         {
         	holder.image.setVisibility(ImageView.INVISIBLE);
-        }
+        }*/
 
         return row;
     }

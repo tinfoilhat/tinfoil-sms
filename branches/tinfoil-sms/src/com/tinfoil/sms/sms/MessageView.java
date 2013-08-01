@@ -43,7 +43,9 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
 import com.tinfoil.sms.crypto.ExchangeKey;
+import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
@@ -309,7 +311,10 @@ public class MessageView extends Activity {
     @Override
     protected void onResume()
     {
-    	MessageService.mNotificationManager.cancel(MessageService.SINGLE);
+    	if(MessageService.mNotificationManager != null)
+    	{
+    		MessageService.mNotificationManager.cancel(MessageService.SINGLE);
+    	}
         super.onResume();
     }
 
@@ -350,8 +355,16 @@ public class MessageView extends Activity {
         }
         else
         {
-        	menu.findItem(R.id.exchange).setTitle("Exchange Keys")
-        		.setTitleCondensed("Exchange");
+        	if(MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber) != null)
+        	{
+        		menu.findItem(R.id.exchange).setTitle("Resolve Key Exchange")
+    			.setTitleCondensed("Resolve");
+        	}
+        	else
+        	{
+        		menu.findItem(R.id.exchange).setTitle("Exchange Keys")
+        			.setTitleCondensed("Exchange");
+        	}
         }
         return true;
     }
@@ -376,11 +389,38 @@ public class MessageView extends Activity {
                 if (!MessageService.dba.isTrustedContact(SMSUtility.format
                         (ConversationView.selectedNumber)))
                 {
-                    keyThread.startThread(this, SMSUtility.format(ConversationView.selectedNumber), null);
+                	Entry entry = MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber);
+                	
+                	if (entry != null)
+                	{
+                		//TODO add in decision dialog to allow to reject.
+                		TrustedContact tc = MessageService.dba.getRow(ConversationView.selectedNumber);
+                		Number number = tc.getNumber(ConversationView.selectedNumber);
+                		if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+    							SMSUtility.checksharedSecret(number.getSharedInfo2()))
+    					{
+                			KeyExchangeManager.respondMessage(number, entry);
+    					}
+                		else
+                		{
+                			KeyExchangeManager.setAndSend(this, number, tc.getName(), entry);
+                		}
+                		
+                		if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+                		{
+                			MessageService.mNotificationManager.cancel(MessageService.KEY);
+                		}
+                		
+                		ExchangeKey.keyDialog.dismiss();
+                	}
+                	else 
+                	{
+                		keyThread.startThread(this, SMSUtility.format(ConversationView.selectedNumber), null);
+                	}
                 }
                 else
                 {
-                    keyThread.startThread(this, null, SMSUtility.format(ConversationView.selectedNumber));
+                	keyThread.startThread(this, null, SMSUtility.format(ConversationView.selectedNumber));
                 }
 
                 return true;
