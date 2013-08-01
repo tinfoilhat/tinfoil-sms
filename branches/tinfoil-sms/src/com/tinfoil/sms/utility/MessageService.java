@@ -87,6 +87,9 @@ public class MessageService extends Service {
                 notifyIntent.putExtra(multipleNotificationIntent, true);
                 in = PendingIntent.getActivity(this,
                         0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                
+                notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
+                mNotificationManager.notify(MULTI, notifyDetails);
             }
             else
             {
@@ -108,14 +111,13 @@ public class MessageService extends Service {
                             0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
                 }
                 notifyIntent.putExtra(multipleNotificationIntent, false);
+                
+                notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
+                mNotificationManager.notify(SINGLE, notifyDetails);
             }
             /*notifyIntent.putExtra("Notification", address);
             PendingIntent in = PendingIntent.getActivity(this,
             		0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
-
-            notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-            mNotificationManager.notify(SINGLE, notifyDetails);
-
         }
         
         if(ConversationView.sharedPrefs.getBoolean("notification_bar", true))
@@ -134,7 +136,7 @@ public class MessageService extends Service {
 	            in = PendingIntent.getActivity(this, 0, notifyIntent,
 	            		android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 	        	
-	        	notifyDetails.setLatestEventInfo(this, "Tinfoil-SMS: Pending Key Exchanges", "Click here to resolve", in);
+	        	notifyDetails.setLatestEventInfo(this, "Pending Key Exchanges", "Click here to resolve", in);
 	            mNotificationManager.notify(KEY, notifyDetails);
 	        }
 	        else
@@ -142,7 +144,7 @@ public class MessageService extends Service {
 	        	MessageService.mNotificationManager.cancel(MessageService.KEY);
 	        }
         }
-
+        
         /*
          * This seems to do the trick for having a notification
          * that stops if the activity is open

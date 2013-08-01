@@ -238,7 +238,6 @@ public class ConversationView extends Activity {
 
         if (MessageReceiver.myActivityStarted)
         {
-        	MessageService.mNotificationManager.cancel(MessageService.MULTI);
             
         	if(conversations != null)
             {
@@ -257,6 +256,7 @@ public class ConversationView extends Activity {
     @Override
     protected void onResume()
     {
+    	MessageService.mNotificationManager.cancel(MessageService.MULTI);
     	if(conversations != null || ap != null)
     	{
     		updateList(this, false);
@@ -274,7 +274,7 @@ public class ConversationView extends Activity {
     
     @Override
     protected void onDestroy()
-    {	       
+    {
         this.stopService(new Intent(this, MessageService.class));
         
         conversations = null;
@@ -308,7 +308,6 @@ public class ConversationView extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }   
 		
 	/**

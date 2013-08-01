@@ -55,7 +55,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  * messages belong to. If a message is sent or received the list of messages
  * will be updated and Prephase3Activity's messages will be updated as well.
  */
-public class MessageView extends Activity implements Runnable{
+public class MessageView extends Activity {
     private EditText messageBox;
     private static ListView list2;
     private static List<String[]> msgList2;
@@ -68,11 +68,16 @@ public class MessageView extends Activity implements Runnable{
     private AlertDialog popup_alert;
     private ProgressDialog dialog;
     private static ExchangeKey keyThread = new ExchangeKey();
-    private DBAccessor loader;
-    private boolean update = false;
+    
+    public static MessageLoader runThread;
+
     public static final int LOAD = 0;
     public static final int UPDATE = 1;
     
+    public static final String CONTACT_NAME = "contact_name";
+    public static final String MESSAGE_LIST = "message_list";
+    public static final String UNREAD_COUNT = "unread_count";
+    public static final String IS_TRUSTED = "is_trusted"; 
 
     /** Called when the activity is first created. */
     @Override
@@ -114,8 +119,7 @@ public class MessageView extends Activity implements Runnable{
 					}        	
         });
         
-        Thread loadThread = new Thread(this);
-        loadThread.start();
+        runThread = new MessageLoader(this, false, handler);
 
         //Set an action for when a user clicks on a message        
         list2.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -181,8 +185,7 @@ public class MessageView extends Activity implements Runnable{
 
                                                 public void onClick(final DialogInterface dialog, final int which) {
                                                 	
-                                                	// TODO user SMSUtility.parseAutoComplete(...)
-                                                    final String[] info = phoneBox.getText().toString().split(", ");
+                                                	final String[] info = SMSUtility.parseAutoComplete(phoneBox.getText().toString());
 
                                                     boolean invalid = false;
                                                     //TODO identify whether a forwarded message has a special format
@@ -264,10 +267,6 @@ public class MessageView extends Activity implements Runnable{
     	
     	if(text != null && text.length() > 0)
         {
-    		
-    		//Log.v("Message Time", ""+newMessage.getDate());
-    		//Log.v("Message Time", ""+Message.millisToDate(newMessage.getDate()));
-    		
             sendMessage(ConversationView.selectedNumber, text);
         }
     }
@@ -302,15 +301,15 @@ public class MessageView extends Activity implements Runnable{
             //SMSUtility.sendMessage(number, text, this.getBaseContext());
             
             //Start update thread
-            update = true;
-            Thread thread = new Thread(this);
-            thread.start();            
+            runThread.setUpdate(true);
+            runThread.setStart(false);
         }
     }
 
     @Override
     protected void onResume()
     {
+    	MessageService.mNotificationManager.cancel(MessageService.SINGLE);
         super.onResume();
     }
 
@@ -327,7 +326,6 @@ public class MessageView extends Activity implements Runnable{
             messages.addData(msgList2);
             messages.notifyDataSetChanged();
 
-            MessageService.mNotificationManager.cancel(MessageService.SINGLE);
             MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
         }
     }
@@ -397,76 +395,42 @@ public class MessageView extends Activity implements Runnable{
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
-
-
-	public void run() {
-		
-		if(!update)
-		{
-			loader = new DBAccessor(this);
-	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
-	
-	        messageEvent = new MessageBoxWatcher(this, R.id.word_count, isTrusted);
-	        
-			msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-			final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
-	
-	        //Toast.makeText(this, String.valueOf(unreadCount), Toast.LENGTH_SHORT).show();
-	        messages = new MessageAdapter(this, R.layout.listview_full_item_row, msgList2,
-	                unreadCount);
-	     
-	        //Retrieve the name of the contact from the database
-	        contact_name = loader.getRow(ConversationView.selectedNumber).getName();
-	
-	        //sendSMS = (Button) this.findViewById(R.id.send);
-	        this.messageBox = (EditText) this.findViewById(R.id.message);
-	
-	        /*final InputFilter[] FilterArray = new InputFilter[1];
-	
-	        if (isTrusted)
-	        {
-	        	
-	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
-	        }
-	        else
-	        {
-	            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
-	        }
-	
-	        this.messageBox.setFilters(FilterArray);*/
-	
-	        this.messageBox.addTextChangedListener(messageEvent);
-	        
-	        this.handler.sendEmptyMessage(LOAD);
-		}
-		else
-		{
-			msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
-			MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
-			update = false;
-			this.handler.sendEmptyMessage(UPDATE);
-		}
+    
+    @Override
+    protected void onDestroy()
+    {
+    	ConversationView.messageViewActive = false;
+	    runThread.setRunner(false);
+	    super.onDestroy();
 	}
-	
+
 	/**
 	 * The handler class for cleaning up after the loading thread and the update
 	 * thread.
 	 */
 	private final Handler handler = new Handler() {
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public void handleMessage(final android.os.Message msg)
         {
+        	Bundle b = msg.getData();
+        	
         	switch (msg.what){
         	case LOAD:
+		        contact_name = b.getString(MessageView.CONTACT_NAME);
+		        messageEvent = new MessageBoxWatcher(MessageView.this, R.id.word_count, b.getBoolean(MessageView.IS_TRUSTED));
+		        messageBox = (EditText) MessageView.this.findViewById(R.id.message);
+	        	messageBox.addTextChangedListener(messageEvent);
+	        	messages = new MessageAdapter(MessageView.this, R.layout.listview_full_item_row, 
+	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
 	        	list2.setAdapter(messages);
 	            list2.setItemsCanFocus(false);
 	        	MessageView.this.dialog.dismiss();
 	        	break;
         	case UPDATE:
         		messages.clear();
-        		messages.addData(msgList2);
+        		messages.addData((List<String[]>) b.get(MessageView.MESSAGE_LIST));
         		break;
         	}
         }

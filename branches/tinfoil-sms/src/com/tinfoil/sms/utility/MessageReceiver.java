@@ -57,6 +57,7 @@ public class MessageReceiver extends BroadcastReceiver {
 			
 			if (pdus != null)
 			{
+				keyExchangeManual = false;
 				SmsMessage[] messages = new SmsMessage[pdus.length];
 				StringBuilder mes = new StringBuilder();
 				for (int i = 0; i < pdus.length; i++) {
@@ -224,7 +225,6 @@ public class MessageReceiver extends BroadcastReceiver {
 								}
 								else
 								{
-									
 									keyExchangeManual = true;
 									Toast.makeText(context, "Exchange Key Message Received",
 											Toast.LENGTH_SHORT).show();
