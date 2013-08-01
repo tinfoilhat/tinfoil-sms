@@ -1,0 +1,9 @@
+480 144  xxhdpi
+
+320 96   xhdpi
+
+240 72   hdpi
+
+160 48   mdpi
+
+120 36   ldpi
