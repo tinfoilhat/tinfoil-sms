@@ -21,7 +21,7 @@
 	
 	<ImageView
 	    android:id="@+id/contact_icon"
-	    android:src="@drawable/ic_launcher"
+	    android:src="@drawable/tinfoil_logo"
 	    android:layout_alignParentRight="true"
 	    android:layout_centerInParent="true"
 	    android:layout_width="20sp"

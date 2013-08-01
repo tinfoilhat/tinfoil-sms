@@ -76,7 +76,7 @@ public class MessageService extends Service {
             	MessageService.mNotificationManager.cancel(SINGLE);
                 //Might need to change this.
                 contentTitle = dba.getRow(address).getName();
-                notifyDetails = new Notification(R.drawable.ic_launcher,
+                notifyDetails = new Notification(R.drawable.tinfoil_logo,
                         contentTitle + ": " + contentText, System.currentTimeMillis());
 
                 contentTitle = "New Messages";
@@ -94,7 +94,7 @@ public class MessageService extends Service {
             else
             {
                 contentTitle = dba.getRow(address).getName();
-                notifyDetails = new Notification(R.drawable.ic_launcher,
+                notifyDetails = new Notification(R.drawable.tinfoil_logo,
                         contentTitle + ": " + contentText, System.currentTimeMillis());
                 if (MessageReceiver.myActivityStarted)
                 {

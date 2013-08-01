@@ -38,7 +38,7 @@
      
 	<ImageView
 	    android:id="@+id/message_icon"
-	    android:src="@drawable/ic_launcher"
+	    android:src="@drawable/tinfoil_logo"
 	    android:layout_toLeftOf="@id/c_date"
 	    android:layout_width="24sp"
 	    android:layout_height="24sp"
