@@ -36,7 +36,6 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
 	private static class TrustContactHolder
     {
         CheckedTextView name;
-        ImageView image;
     }
 
     private static class ContactHolder
@@ -152,11 +151,13 @@ public class ManageContactAdapter extends BaseExpandableListAdapter {
         
         if(this.contacts.get(groupPosition).isTrusted())
         {
+        	holder.image.setImageResource(R.drawable.trusted_contact);
         	holder.image.setVisibility(ImageView.VISIBLE);
         }
         else
         {
-        	holder.image.setVisibility(ImageView.INVISIBLE);
+        	holder.image.setImageResource(R.drawable.add_contact);
+        	holder.image.setVisibility(ImageView.VISIBLE);
         }
         
         return row;

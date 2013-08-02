@@ -389,29 +389,52 @@ public class MessageView extends Activity {
                 if (!MessageService.dba.isTrustedContact(SMSUtility.format
                         (ConversationView.selectedNumber)))
                 {
-                	Entry entry = MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber);
+                	final Entry entry = MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber);
                 	
                 	if (entry != null)
                 	{
-                		//TODO add in decision dialog to allow to reject.
-                		TrustedContact tc = MessageService.dba.getRow(ConversationView.selectedNumber);
-                		Number number = tc.getNumber(ConversationView.selectedNumber);
-                		if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
-    							SMSUtility.checksharedSecret(number.getSharedInfo2()))
-    					{
-                			KeyExchangeManager.respondMessage(number, entry);
-    					}
-                		else
-                		{
-                			KeyExchangeManager.setAndSend(this, number, tc.getName(), entry);
-                		}
+                		final TrustedContact tc = MessageService.dba.getRow(ConversationView.selectedNumber);
+                		final Number number = tc.getNumber(ConversationView.selectedNumber);
                 		
-                		if(MessageService.dba.getKeyExchangeMessageCount() == 0)
-                		{
-                			MessageService.mNotificationManager.cancel(MessageService.KEY);
-                		}
+                		AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 		
-                		ExchangeKey.keyDialog.dismiss();
+                		builder.setMessage("Would you like to exchange keys with " + tc.getName() + ", " + number.getNumber() + "?")
+	         		       .setCancelable(false)
+	         		       .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+	         		    	   @Override
+	         		    	   public void onClick(DialogInterface dialog, int id) {
+	         		                //Save the shared secrets
+	         		    		if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+	          							SMSUtility.checksharedSecret(number.getSharedInfo2()))
+	          					{
+	                      			KeyExchangeManager.respondMessage(number, entry);
+	          					}
+	                      		else
+	                      		{
+	                      			KeyExchangeManager.setAndSend(MessageView.this, number, tc.getName(), entry);
+	                      		}
+	                      		
+	                      		if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+	                      		{
+	                      			MessageService.mNotificationManager.cancel(MessageService.KEY);
+	                      		}
+	         		       }})
+	         		    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+         		    	   @Override
+         		    	   public void onClick(DialogInterface arg0, int arg1) {
+         		    		   // Cancel the key exchange
+         		    		   Toast.makeText(MessageView.this, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+         		    		   
+         		    		   // Delete key exchange
+         		    		   MessageService.dba.deleteKeyExchangeMessage(number.getNumber());
+         		    	   }
+	         		    });
+                		
+		         		AlertDialog alert = builder.create();
+		         		ExchangeKey.keyDialog.dismiss();
+		         		//alert.setView();
+		         		alert.show();
+	
                 	}
                 	else 
                 	{
