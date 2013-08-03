@@ -33,7 +33,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,14 +40,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
-import com.tinfoil.sms.crypto.KeyGenerator;
-import com.tinfoil.sms.dataStructures.User;
-import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.MessageSender;
 import com.tinfoil.sms.messageQueue.SignalListener;
 import com.tinfoil.sms.settings.AddContact;
@@ -56,7 +51,6 @@ import com.tinfoil.sms.settings.ImportContacts;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
-import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * <ul>
@@ -109,28 +103,7 @@ public class ConversationView extends Activity {
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
         //TODO move setup to a thread to focus on a faster UI interaction
-        MessageService.dba = new DBAccessor(this);
-
-        SMSUtility.user = MessageService.dba.getUserRow();
-         
-        if(SMSUtility.user == null)
-        {
-        	Toast.makeText(this, "New key pair is generating...", Toast.LENGTH_SHORT).show();
-        	Log.v("First Launch", "keys are generating...");
-        	//Create the keyGenerator
-	        KeyGenerator keyGen = new KeyGenerator();
-	        
-	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
-	        //Set the user's 
-	        MessageService.dba.setUser(SMSUtility.user);
-        }
-        
-        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
-        Toast.makeText(this, "Public Key " + new String(SMSUtility.user.getPublicKey()), Toast.LENGTH_LONG);
-        
-        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
-        Toast.makeText(this, "Private Key " + new String(SMSUtility.user.getPrivateKey()), Toast.LENGTH_LONG);
-        
+                
         messageSender.startThread(getApplicationContext());
 
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
