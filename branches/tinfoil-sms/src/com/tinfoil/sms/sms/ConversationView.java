@@ -108,9 +108,6 @@ public class ConversationView extends Activity {
         ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
-        //Cancel all notifications from tinfoil-sms upon starting the main activity
-        MessageService.mNotificationManager.cancelAll();
-
         //TODO move setup to a thread to focus on a faster UI interaction
         MessageService.dba = new DBAccessor(this);
 

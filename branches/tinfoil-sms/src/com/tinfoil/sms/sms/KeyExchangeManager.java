@@ -191,6 +191,11 @@ public class KeyExchangeManager extends Activity {
 				MessageService.dba.addMessageToQueue(number.getNumber(),
 						KeyExchange.sign(number), true);
 			}
+			
+			if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+		    {
+				MessageService.mNotificationManager.cancel(MessageService.KEY);
+		    }
 			//a.remove(entries.get(i).getNumber());
 		}
 	}

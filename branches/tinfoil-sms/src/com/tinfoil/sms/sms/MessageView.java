@@ -398,12 +398,6 @@ public class MessageView extends Activity {
                       		{
                       			KeyExchangeManager.setAndSend(MessageView.this, number, tc.getName(), entry);
                       		}
-         		    		
-         		    		if(MessageService.dba.getKeyExchangeMessageCount() == 0)
-       		    		    {
-    							MessageService.mNotificationManager.cancel(MessageService.KEY);
-       		    		    }
-
 	         		    }})
 	         		    .setNegativeButton("No", new DialogInterface.OnClickListener() {
          		    	   @Override
