@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -48,8 +49,13 @@ import com.tinfoil.sms.utility.SMSUtility;
 //TODO comment
 public class KeyExchangeManager extends Activity {
 
-	private ArrayList<Entry> entries;
+	public static ArrayList<Entry> entries;
 	private ArrayAdapter<String> adapter;
+	public static final String COMPLETE = "complete";
+	public static final int FULL = 0;
+	public static final int EMPTY = 1;
+	
+	public static KeyExchangeLoader runThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +64,7 @@ public class KeyExchangeManager extends Activity {
 		// Show the Up button in the action bar.
 		//setupActionBar();
 		
-		entries = MessageService.dba.getAllKeyExchangeMessages();
-		
-		if(entries != null)
-		{
-			updateList();
-		}		
+		runThread = new KeyExchangeLoader(handler);
 	}
 
 	/**
@@ -101,12 +102,13 @@ public class KeyExchangeManager extends Activity {
 						setAndSend(this, number, tc.getName(), entries.get(i));
 					}
 					entries.remove(entries.get(i));
-					updateList();
+					
 					
 				//else Item has not be touched leave it alone.
 				}
 			}
 		}
+		updateList();
 	}
 	
 	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
@@ -127,43 +129,34 @@ public class KeyExchangeManager extends Activity {
 		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
 		linearLayout.addView(sharedSecret2);
 		
-		//final int value = index;
-		
 		builder.setMessage("Set the shared secret for " + name + ", " + number.getNumber())
-		       .setCancelable(false)
-		       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-		    	   @Override
-		    	   public void onClick(DialogInterface dialog, int id) {
-		                //Save the shared secrets
-		    		   String s1 = sharedSecret1.getText().toString();
-		    		   String s2 = sharedSecret2.getText().toString();
-		    		   if(SMSUtility.checksharedSecret(s1) &&
-								SMSUtility.checksharedSecret(s2))
-		    		   {
-		    			   //Toast.makeText(activity, "Valid secrets", Toast.LENGTH_LONG).show();
-		    			   number.setSharedInfo1(s1);
-		    			   number.setSharedInfo2(s2);
-		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
-		    			   //number.setInitiator(true);					
-                           
-			               //MessageService.dba.updateInitiator(number);
-			                
-			               //String keyExchangeMessage = KeyExchange.sign(number);
-			                
-			               //MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
-			               respondMessage(number, entry);
-		    		   }
-		    		   else
-		    		   {
-		    			   Toast.makeText(context, "Invalid secrets", Toast.LENGTH_LONG).show();
-		    		   }
-		           }})
-		       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-		    	   @Override
-		    	   public void onClick(DialogInterface arg0, int arg1) {
-		    		   	//Cancel the key exchange
-		    		   Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
-		    	   }});
+	       .setCancelable(false)
+	       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+	    	   @Override
+	    	   public void onClick(DialogInterface dialog, int id) {
+	               //Save the shared secrets
+	    		   String s1 = sharedSecret1.getText().toString();
+	    		   String s2 = sharedSecret2.getText().toString();
+	    		   if(SMSUtility.checksharedSecret(s1) &&
+							SMSUtility.checksharedSecret(s2))
+	    		   {
+	    			   number.setSharedInfo1(s1);
+	    			   number.setSharedInfo2(s2);
+	    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+
+		               respondMessage(number, entry);
+	    		   }
+	    		   else
+	    		   {
+	    			   Toast.makeText(context, "Invalid secrets", Toast.LENGTH_LONG).show();
+	    		   }
+	           }})
+	       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	    	   @Override
+	    	   public void onClick(DialogInterface arg0, int arg1) {
+	    		   	//Cancel the key exchange
+	    		   Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+	    	   }});
 		AlertDialog alert = builder.create();
 		
 		alert.setView(linearLayout);
@@ -218,43 +211,34 @@ public class KeyExchangeManager extends Activity {
 					MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
 				
 					entries.remove(entries.get(i));
-					updateList();
+					
 				}				
 			}
 			//finish();
 		}
+		updateList();
 	}
 	
 	/**
 	 * TODO change the view adapter to better represent the key exchange.
 	 * Update the list key exchange messages 
 	 */
-	private void updateList()
+	public static void updateList()
 	{
-		String[] numbers = new String[entries.size()];
-		
-		for(int i = 0; i < entries.size(); i++)
+		if (runThread != null)
 		{
-			numbers[i] = entries.get(i).getNumber();
-		}
-		
-		if(entries.size() == 0)
-		{
-			MessageService.mNotificationManager.cancel(MessageService.KEY);
-		}
-		
-		ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
-		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, numbers);
-		//a.setNotifyOnChange(true);
-		
-		list.setAdapter(adapter);
-		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			runThread.setStart(false);
+			
+			if(KeyExchangeManager.entries == null || KeyExchangeManager.entries.size() == 0)
+			{
+				MessageService.mNotificationManager.cancel(MessageService.KEY);
+			}
+		}	
 	}
 	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
-	
+	 */	
 	//@SuppressLint("NewApi")
 	/*@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -263,6 +247,7 @@ public class KeyExchangeManager extends Activity {
 		}
 	}*/
 
+	//TODO fix menu item  
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -286,5 +271,41 @@ public class KeyExchangeManager extends Activity {
 		}*/
 		return super.onOptionsItemSelected(item);
 	}
+	
+    @Override
+    protected void onDestroy()
+    {
+	    runThread.setRunner(false);
+	    super.onDestroy();
+	}
+	
+	private final Handler handler = new Handler() {
+		@Override
+        public void handleMessage(final android.os.Message msg)
+        {
+        	Bundle b = msg.getData();
+        	ListView list = null;
+        	switch (msg.what){
+        	case FULL:
+        		list = (ListView)KeyExchangeManager.this.findViewById(R.id.key_exchange_list);
+	    		adapter = new ArrayAdapter<String>(KeyExchangeManager.this, 
+	    				android.R.layout.simple_list_item_multiple_choice, (String[]) b.get(KeyExchangeManager.COMPLETE));
+	    		//a.setNotifyOnChange(true);
+	    		
+	    		list.setAdapter(adapter);
+	    		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+	    		break;
+        	case EMPTY:
+        		list = (ListView)KeyExchangeManager.this.findViewById(R.id.key_exchange_list);
+	    		adapter = new ArrayAdapter<String>(KeyExchangeManager.this, 
+	    				android.R.layout.simple_list_item_1, new String[]{"Empty List"});
+	    		//a.setNotifyOnChange(true);
+	    		
+	    		list.setAdapter(adapter);
+	    		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        		break;
+        	}
+        }
+    };
 
 }

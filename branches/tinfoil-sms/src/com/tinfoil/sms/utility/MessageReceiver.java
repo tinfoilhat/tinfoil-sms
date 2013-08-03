@@ -35,6 +35,7 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.ManageContactsActivity;
 import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.sms.KeyExchangeManager;
 
 public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
@@ -237,6 +238,8 @@ public class MessageReceiver extends BroadcastReceiver {
 									{
 										Toast.makeText(context, result, Toast.LENGTH_LONG).show();
 									}
+									
+									KeyExchangeManager.updateList();
 								}
 							}
 							else
