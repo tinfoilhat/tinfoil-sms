@@ -27,6 +27,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.sms.KeyExchangeManager;
 
 /**
  * The parent class for ManageContactsActivity. The first tab has contacts that
@@ -57,9 +58,18 @@ public class TabSelection extends TabActivity {
         Intent in2=new Intent(this, ManageContactsActivity.class);
         in2.putExtra(EXCHANGE, false);
         spec2.setContent(in2);
-
+        
         tabHost.addTab(spec1);
         tabHost.addTab(spec2);
+        
+        //Second Tab
+        TabSpec spec3=tabHost.newTabSpec("Tab 3");
+        spec3.setIndicator("Pending Key exchanges");
+        Intent in3=new Intent(this, KeyExchangeManager.class);
+        //in3.putExtra(EXCHANGE, false);
+        spec3.setContent(in3);
+        
+        tabHost.addTab(spec3);
 	}
 
     @Override
