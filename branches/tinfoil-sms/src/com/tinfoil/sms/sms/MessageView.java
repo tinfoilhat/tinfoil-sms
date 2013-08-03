@@ -323,15 +323,9 @@ public class MessageView extends Activity {
     public static void updateList()
     {
         if (ConversationView.selectedNumber != null)
-        {
-        	//TODO do this in a thread.
-            /*msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
-            messages.clear();
-            messages.addData(msgList2);*/
-        	
+        {        	
         	runThread.setUpdate(true);
         	runThread.setStart(false);
-        	
         }
     }
 
@@ -390,7 +384,7 @@ public class MessageView extends Activity {
                 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 		
                 		builder.setMessage("Would you like to exchange keys with " + tc.getName() + ", " + number.getNumber() + "?")
-	         		    .setCancelable(false)
+	         		    .setCancelable(true)
 	         		    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
          		    	   @Override
          		    	   public void onClick(DialogInterface dialog, int id) {

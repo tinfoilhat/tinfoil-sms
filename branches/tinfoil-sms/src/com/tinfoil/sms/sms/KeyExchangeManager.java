@@ -113,6 +113,7 @@ public class KeyExchangeManager extends Activity {
 		updateList();
 	}
 	
+	//TODO make sure notification goes away
 	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -132,7 +133,7 @@ public class KeyExchangeManager extends Activity {
 		linearLayout.addView(sharedSecret2);
 		
 		builder.setMessage("Set the shared secret for " + name + ", " + number.getNumber())
-	       .setCancelable(false)
+	       .setCancelable(true)
 	       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
