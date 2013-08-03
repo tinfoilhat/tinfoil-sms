@@ -195,7 +195,8 @@ public class MessageReceiver extends BroadcastReceiver {
 							{
 								///Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 								//if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange", true))
-								if(number.getKeyExchangeFlag() == Number.AUTO &&
+								if((number.getKeyExchangeFlag() == Number.AUTO ||
+										(number.getKeyExchangeFlag() == Number.MANUAL && number.isInitiator())) &&
 										SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 										SMSUtility.checksharedSecret(number.getSharedInfo2()))
 								{
