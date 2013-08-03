@@ -13,11 +13,9 @@ public class KeyExchangeLoader implements Runnable{
 
 	private boolean loopRunner = true;
     private boolean start = true;
-    //private Context context;
 	private Thread thread;
-    //private boolean update;
     private Handler handler;
-    //private ArrayList<Entry> entries;
+    private ArrayList<Entry> entries;
     
     /**
      * Create the object and start the thread 
@@ -28,10 +26,7 @@ public class KeyExchangeLoader implements Runnable{
      */
     public KeyExchangeLoader(Handler handler)
     {
-    	//this.context = context;
-    	//this.update = update;
     	this.handler = handler;
-    	//this.entries = entries;
     	thread = new Thread(this);
 		thread.start();
     }
@@ -40,29 +35,37 @@ public class KeyExchangeLoader implements Runnable{
 	public void run() {
 		while (loopRunner)
 		{
-			KeyExchangeManager.entries = MessageService.dba.getAllKeyExchangeMessages();
-			if(KeyExchangeManager.entries != null)
+			entries = MessageService.dba.getAllKeyExchangeMessages();
+			if(entries != null)
 			{
-				String[] numbers = new String[KeyExchangeManager.entries.size()];
+				String[] numbers = new String[entries.size()];
 				
-				for(int i = 0; i < KeyExchangeManager.entries.size(); i++)
+				for(int i = 0; i < entries.size(); i++)
 				{
 					numbers[i] = MessageService.dba.getRow(
-							KeyExchangeManager.entries.get(i).getNumber()).getName() 
-							+ ", " + KeyExchangeManager.entries.get(i).getNumber();
+							entries.get(i).getNumber()).getName() 
+							+ ", " + entries.get(i).getNumber();
 				}
 				
 
 				Message msg = new Message();
 	        	Bundle b = new Bundle();
 	        	b.putStringArray(KeyExchangeManager.COMPLETE, numbers);
+	        	b.putSerializable(KeyExchangeManager.ENTRIES, entries);
 	        	msg.setData(b);
+	        	msg.what = KeyExchangeManager.FULL;
 		        
-		        this.handler.sendMessage(msg);
+	        	this.handler.sendMessage(msg);
 			}
 			else
-			{		        
-		        this.handler.sendEmptyMessage(KeyExchangeManager.EMPTY);
+			{
+				Message msg = new Message();
+	        	Bundle b = new Bundle();
+	        	//b.putSerializable(KeyExchangeManager.ENTRIES, entries);
+	        	msg.setData(b);
+	        	msg.what = KeyExchangeManager.EMPTY;
+		        
+	        	this.handler.sendMessage(msg);
 			}
 
 			// Wait for the next time the list needs to be updated/loaded
@@ -82,14 +85,12 @@ public class KeyExchangeLoader implements Runnable{
 	}
 
     /**
-     * Update whether the thread is running to update the list of contacts or
-     * load from scratch, updating takes slightly less time and should be used
-     * when possible.
-     * @param update Whether the list needs to be updated or not.
+     * Get the list of entries in the database
+     * @return The list of key exchanges currently pending. 
      */
-    /*public synchronized void setUpdate(boolean update) {
-		this.update = update;
-	}*/
+    public synchronized ArrayList<Entry> getEntries() {
+   		return entries;
+   	}
     
     /**
      * The semaphore for waking the thread up to reload the contacts

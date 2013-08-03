@@ -17,8 +17,6 @@
 
 package com.tinfoil.sms.sms;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -46,12 +44,16 @@ import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
-//TODO comment
+/**
+ * The activity for handling pending key exchanges. If the user does not set
+ * the contact's shared secrets or the contact's incoming key exchange messages
+ * are set to be handled manually.
+ */
 public class KeyExchangeManager extends Activity {
 
-	public static ArrayList<Entry> entries;
 	private ArrayAdapter<String> adapter;
 	public static final String COMPLETE = "complete";
+	public static final String ENTRIES = "entries";
 	public static final int FULL = 0;
 	public static final int EMPTY = 1;
 	
@@ -74,34 +76,34 @@ public class KeyExchangeManager extends Activity {
 	 */
 	public void exchangeKey(View view)
 	{
-		if(entries != null)
+		if(runThread.getEntries() != null)
 		{
 			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
 			SparseBooleanArray sba = list.getCheckedItemPositions();
 			
-			for (int i = 0; i < entries.size(); i++)
+			for (int i = 0; i < runThread.getEntries().size(); i++)
 			{
 				if(sba.get(i))
 				{
 					
 					TrustedContact tc = MessageService.dba.getRow(SMSUtility.
-							format(entries.get(0).getNumber()));
+							format(runThread.getEntries().get(0).getNumber()));
 					
 					final Number number = tc.getNumber(SMSUtility.
-							format(entries.get(0).getNumber()));
+							format(runThread.getEntries().get(0).getNumber()));
 					
 					if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
-						respondMessage(number, entries.get(i));
+						respondMessage(number, runThread.getEntries().get(i));
 						//entries.remove(entries.get(i));
 						//updateList();
 					}
 					else
 					{
-						setAndSend(this, number, tc.getName(), entries.get(i));
+						setAndSend(this, number, tc.getName(), runThread.getEntries().get(i));
 					}
-					entries.remove(entries.get(i));
+					runThread.getEntries().remove(runThread.getEntries().get(i));
 					
 					
 				//else Item has not be touched leave it alone.
@@ -199,18 +201,18 @@ public class KeyExchangeManager extends Activity {
 	 */
 	public void reject(View view)
 	{
-		if(entries != null)
+		if(runThread.getEntries() != null)
 		{
 			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
 			SparseBooleanArray sba = list.getCheckedItemPositions();
 			
-			for (int i = 0; i < entries.size(); i++)
+			for (int i = 0; i < runThread.getEntries().size(); i++)
 			{
 				if(sba.get(i))
 				{
-					MessageService.dba.deleteKeyExchangeMessage(entries.get(i).getNumber());
+					MessageService.dba.deleteKeyExchangeMessage(runThread.getEntries().get(i).getNumber());
 				
-					entries.remove(entries.get(i));
+					runThread.getEntries().remove(runThread.getEntries().get(i));
 					
 				}				
 			}
@@ -229,7 +231,7 @@ public class KeyExchangeManager extends Activity {
 		{
 			runThread.setStart(false);
 			
-			if(KeyExchangeManager.entries == null || KeyExchangeManager.entries.size() == 0)
+			if(runThread.getEntries() == null || runThread.getEntries().size() == 0)
 			{
 				MessageService.mNotificationManager.cancel(MessageService.KEY);
 			}
@@ -280,6 +282,7 @@ public class KeyExchangeManager extends Activity {
 	}
 	
 	private final Handler handler = new Handler() {
+		//@SuppressWarnings("unchecked")
 		@Override
         public void handleMessage(final android.os.Message msg)
         {
