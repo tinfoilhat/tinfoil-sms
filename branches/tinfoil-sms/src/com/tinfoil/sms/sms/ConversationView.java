@@ -55,7 +55,6 @@ import com.tinfoil.sms.utility.MessageService;
 /**
  * <ul>
  * <li>TODO add the proper version number and name to the manifest</li>
- * <li>TODO change wrap_content to '0dp'</li>
  * </ul>
  * This activity shows all of the conversations the user has with contacts. The
  * list Will be updated every time a message is received. Upon clicking any of
@@ -102,8 +101,6 @@ public class ConversationView extends Activity {
         ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
-        //TODO move setup to a thread to focus on a faster UI interaction
-                
         messageSender.startThread(getApplicationContext());
 
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))

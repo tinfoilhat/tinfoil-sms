@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -48,6 +49,8 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.settings.AddContact;
+import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -158,7 +161,7 @@ public class MessageView extends Activity {
                                     List<String> contact = null;
                                     if (MessageView.this.tc == null)
                                     {
-                                    	//Do in thread.
+                                    	//TODO Do in thread.
                                         MessageView.this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
                                     }
 
@@ -233,8 +236,7 @@ public class MessageView extends Activity {
                                     contact_alert.show();
                                 }
                             }
-                        })
-                        .setCancelable(true);
+                        }).setCancelable(true);
                 MessageView.this.popup_alert = popup_builder.create();
                 MessageView.this.popup_alert.show();
             			
@@ -242,8 +244,6 @@ public class MessageView extends Activity {
 			}
         });
 
-        
-      
         /*
          * Reset the number of unread messages for the contact to 0
          */
@@ -388,7 +388,7 @@ public class MessageView extends Activity {
 	         		    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
          		    	   @Override
          		    	   public void onClick(DialogInterface dialog, int id) {
-         		                //Save the shared secrets
+         		            //Save the shared secrets
          		    		if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
           							SMSUtility.checksharedSecret(number.getSharedInfo2()))
           					{
@@ -417,7 +417,6 @@ public class MessageView extends Activity {
                 		
 		         		AlertDialog alert = builder.create();
 		         		ExchangeKey.keyDialog.dismiss();
-		         		//alert.setView();
 		         		alert.show();
                 	}
                 	else 
@@ -439,11 +438,32 @@ public class MessageView extends Activity {
                 }
                 return true;
 
+            case R.id.edit:
+            	
+            	AddContact.addContact = false;
+                AddContact.editTc = MessageService.dba.getRow(ConversationView.selectedNumber);
+
+                Intent intent = new Intent(MessageView.this, AddContact.class);
+                
+                MessageView.this.startActivityForResult(intent, UPDATE);
+                
+                //updateList();
+            	
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	
+    	if(resultCode == AddContact.UPDATED_NUMBER)
+    	{	
+	    	updateList();
+    	}
+    }
+
     @Override
     protected void onDestroy()
     {

@@ -48,6 +48,7 @@ public class AddContact extends Activity {
 	public static final int REQUEST_CODE = 1;
 	public static final String POSITION = "position";
 	public static final int NEW_NUMBER_CODE = -1;
+	public static final int UPDATED_NUMBER = 2;
 	
     public static TrustedContact editTc;
     public static boolean addContact;
@@ -202,6 +203,7 @@ public class AddContact extends Activity {
             
             AddContact.this.contactEdit = null;
             editTc = null;
+            AddContact.this.setResult(AddContact.UPDATED_NUMBER);
             AddContact.this.finish();
         }
         else

@@ -20,7 +20,6 @@ package com.tinfoil.sms.sms;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.tinfoil.sms.crypto.KeyGenerator;
 import com.tinfoil.sms.dataStructures.User;
