@@ -302,9 +302,22 @@ public class AddContact extends Activity {
 	    	}
 	    	else if (update)
 	    	{
-	    		String temp = data.getStringExtra(EditNumber.DELETE);
-	    		contactEdit.deleteNumber(temp);
-	    		update(null);
+	    		boolean isDeleted = data.getBooleanExtra(EditNumber.IS_DELETED, false);
+	    		
+	    		String temp = data.getStringExtra(EditNumber.DELETE);    		
+	    		
+	    		if (!isDeleted)
+	    		{
+		    		contactEdit.deleteNumber(temp);
+		    		AddContact.this.setResult(AddContact.DELETED_NUMBER);
+		    		update(null);
+	    		}
+	    		else
+	    		{
+	    			MessageService.dba.removeRow(temp);
+	    			AddContact.this.setResult(AddContact.DELETED_NUMBER);
+	    			finish();
+	    		}
 	    	}
     	}
     }
