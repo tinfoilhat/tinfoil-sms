@@ -1257,9 +1257,24 @@ public class DBAccessor {
 		cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
 		
 		open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ? ",
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ?",
 				new String[]{SMSUtility.format(numb.getNumber())});
 		close();
+	}
+	
+	public boolean deleteNumber(String number)
+	{
+		open();
+		int count = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_NUMBER + " LIKE ?",
+				new String[]{number});
+		close();
+		
+		if (count > 0)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**

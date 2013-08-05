@@ -49,6 +49,7 @@ public class AddContact extends Activity {
 	public static final String POSITION = "position";
 	public static final int NEW_NUMBER_CODE = -1;
 	public static final int UPDATED_NUMBER = 2;
+	public static final int DELETED_NUMBER = 3;
 	
     public static TrustedContact editTc;
     public static boolean addContact;
@@ -201,10 +202,21 @@ public class AddContact extends Activity {
                 MessageService.dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
             }
             
-            AddContact.this.contactEdit = null;
-            editTc = null;
-            AddContact.this.setResult(AddContact.UPDATED_NUMBER);
-            AddContact.this.finish();
+            if (AddContact.this.contactEdit.getNumber(AddContact.this.originalNumber) == null)
+            {
+            	AddContact.this.contactEdit = null;
+                editTc = null;
+                AddContact.this.setResult(AddContact.DELETED_NUMBER);
+                AddContact.this.finish();
+            }
+            else
+            {
+            	AddContact.this.contactEdit = null;
+                editTc = null;
+                AddContact.this.setResult(AddContact.UPDATED_NUMBER);
+                AddContact.this.finish();
+            }
+            
         }
         else
         {
@@ -287,6 +299,12 @@ public class AddContact extends Activity {
 	    				update(null);
 	    			}
 	    		}
+	    	}
+	    	else if (update)
+	    	{
+	    		String temp = data.getStringExtra(EditNumber.DELETE);
+	    		contactEdit.deleteNumber(temp);
+	    		update(null);
 	    	}
     	}
     }

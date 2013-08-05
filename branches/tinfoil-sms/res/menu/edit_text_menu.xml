@@ -5,4 +5,5 @@
         android:titleCondensed="Import Key"
         android:title="Import Contact Key">
     </item>
+    <item android:id="@+id/delete" android:title="Delete Number" android:titleCondensed="Delete"></item>
 </menu>

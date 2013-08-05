@@ -50,7 +50,6 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.AddContact;
-import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -446,8 +445,6 @@ public class MessageView extends Activity {
                 Intent intent = new Intent(MessageView.this, AddContact.class);
                 
                 MessageView.this.startActivityForResult(intent, UPDATE);
-                
-                //updateList();
             	
             default:
                 return super.onOptionsItemSelected(item);
@@ -461,6 +458,11 @@ public class MessageView extends Activity {
     	if(resultCode == AddContact.UPDATED_NUMBER)
     	{	
 	    	updateList();
+    	}
+    	/* Handle case where contact's number is deleted */
+    	else if (resultCode == AddContact.DELETED_NUMBER)
+    	{
+    		finish();
     	}
     }
 

@@ -67,6 +67,7 @@ public class EditNumber extends Activity{
 	public static final String UPDATE = "update";
 	public static final String NUMBER = "number";
 	public static final String ADD = "add";
+	public static final String DELETE = "delete";
 	
 	private EditText phoneNumber;
 	private EditText sharedInfo1;
@@ -367,6 +368,20 @@ public class EditNumber extends Activity{
             	}
             	
             	return true;
+            	
+            case R.id.delete:
+
+            	MessageService.dba.deleteNumber(originalNumber);
+            	Intent data = new Intent();
+            	data.putExtra(EditNumber.UPDATE, true);
+				//data.putExtra(EditNumber.NUMBER, null);
+				data.putExtra(AddContact.POSITION, position);
+				data.putExtra(EditNumber.ADD, true);
+            	data.putExtra(EditNumber.DELETE, originalNumber);
+				EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
+				
+				EditNumber.this.finish();
+            	return true;            
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -214,6 +214,15 @@ public class TrustedContact {
 		}
 		return num;
 	}
+	
+	/**
+	 * Delete the number object who's number is given.
+	 * @param number
+	 */
+	public void deleteNumber(String number)
+	{
+		this.numbers.remove(getNumber(number));
+	}
 
 	
 	/**
