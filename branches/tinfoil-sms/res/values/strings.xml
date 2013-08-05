@@ -75,7 +75,6 @@
     <string name="pref_acra_enabled">Disable Bug reporting</string>
     <string name="pref_acra_disabled">Enable Bug reporting</string>
     <string name="title_activity_tab_selection">Manage Contacts</string>
-    <string name="hello_world">Hello world!</string>
 
     <string name="add_contact">Add Contact</string>
 </resources>

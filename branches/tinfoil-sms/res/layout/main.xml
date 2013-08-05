@@ -14,6 +14,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
 		android:layout_alignParentBottom="true"
+		android:divider="@color/DividerColor"
+		android:dividerHeight="1px"
 		android:background="@color/White"/>
      
 
@@ -25,6 +27,8 @@
          android:layout_alignParentLeft="true"
          android:layout_alignParentRight="true"
 		 android:layout_alignParentBottom="true"
+		 android:divider="@color/DividerColor"
+		 android:dividerHeight="1px"
 		 android:background="@color/White"
 		 >
      </ListView>

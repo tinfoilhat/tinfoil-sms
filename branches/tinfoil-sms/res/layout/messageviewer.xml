@@ -2,13 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/White" >
+    android:background="@color/White">
+    
 
     <ListView
         android:id="@+id/message_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/linearLayout3"
+        android:divider="@color/DividerColor"
+		android:dividerHeight="1px"
         android:layout_alignParentTop="true" >
 
     </ListView>
