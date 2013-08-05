@@ -43,7 +43,7 @@ import com.tinfoil.sms.utility.MessageService;
  * Add or Edit contacts of the user.
  */
 public class AddContact extends Activity {
-	
+
 	public static final String EDIT_NUMBER = "edit_number";
 	public static final int REQUEST_CODE = 1;
 	public static final String POSITION = "position";
@@ -202,7 +202,7 @@ public class AddContact extends Activity {
                 MessageService.dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
             }
             
-            if (AddContact.this.contactEdit.getNumber(AddContact.this.originalNumber) == null)
+            if (AddContact.this.originalNumber != null && AddContact.this.contactEdit.getNumber(AddContact.this.originalNumber) == null)
             {
             	AddContact.this.contactEdit = null;
                 editTc = null;

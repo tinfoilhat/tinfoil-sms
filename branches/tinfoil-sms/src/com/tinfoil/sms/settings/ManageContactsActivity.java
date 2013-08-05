@@ -92,6 +92,8 @@ public class ManageContactsActivity extends Activity {
         	((Button)this.findViewById(R.id.exchange_keys)).setText("Untrust");
         }
         
+        this.startThread();
+        
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
 
@@ -202,7 +204,7 @@ public class ManageContactsActivity extends Activity {
     protected void onResume()
     {
     	super.onResume();
-    	this.startThread();
+    	updateList();
     }
 
     /**
@@ -242,6 +244,8 @@ public class ManageContactsActivity extends Activity {
         @Override
         public void handleMessage(final Message msg)
         {
+        	
+        	//TODO disable the key exchange button until an item is actually selected.
         	Button encry = (Button)ManageContactsActivity.this.findViewById(R.id.exchange_keys);
         	
         	/* Handle UI update once the thread has finished querying the data */ 

@@ -53,9 +53,6 @@ import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
 
 /**
- * <ul>
- * <li>TODO add the proper version number and name to the manifest</li>
- * </ul>
  * This activity shows all of the conversations the user has with contacts. The
  * list Will be updated every time a message is received. Upon clicking any of
  * the conversations MessageView activity will be started with selectedNumber =

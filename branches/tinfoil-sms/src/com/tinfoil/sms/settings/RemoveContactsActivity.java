@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
@@ -50,6 +51,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
     private ProgressDialog dialog;
     private boolean clicked = false;
     private ArrayAdapter<String> appAdapt;
+    private boolean empty = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -74,8 +76,10 @@ public class RemoveContactsActivity extends Activity implements Runnable {
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
 
-                RemoveContactsActivity.this.toggle(position);
-
+            	if(!empty)
+            	{
+                    RemoveContactsActivity.this.toggle(position);
+            	}
             }
         });
     }
@@ -106,14 +110,17 @@ public class RemoveContactsActivity extends Activity implements Runnable {
      */
     public void toggle(final int i)
     {
-        if (!this.contact[i])
-        {
-            this.contact[i] = true;
-        }
-        else
-        {
-            this.contact[i] = false;
-        }
+    	if (this.contact.length > 0)
+    	{
+    		if (!this.contact[i])
+	        {
+	            this.contact[i] = true;
+	        }
+	        else
+	        {
+	            this.contact[i] = false;
+	        }
+    	}
     }
 
     /**
@@ -212,10 +219,18 @@ public class RemoveContactsActivity extends Activity implements Runnable {
         public void handleMessage(final Message msg)
         {
             RemoveContactsActivity.this.listView.setAdapter(RemoveContactsActivity.this.appAdapt);
+            Button delete = (Button)RemoveContactsActivity.this.findViewById(R.id.delete_cont);
+            
             if (RemoveContactsActivity.this.tc != null)
             {
-
+            	delete.setEnabled(true);
                 RemoveContactsActivity.this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                empty = false;
+            }
+            else
+            {
+            	delete.setEnabled(false);
+            	empty = true;
             }
             RemoveContactsActivity.this.listView.setItemsCanFocus(false);
 
