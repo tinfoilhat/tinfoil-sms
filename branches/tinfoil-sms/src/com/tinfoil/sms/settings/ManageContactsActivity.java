@@ -91,10 +91,10 @@ public class ManageContactsActivity extends Activity {
         {
         	((Button)this.findViewById(R.id.exchange_keys)).setText("Untrust");
         }
+        
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
 
-        
         this.extendableList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -153,12 +153,12 @@ public class ManageContactsActivity extends Activity {
     }
 
     /**
-     * TODO disable when no contact is selected
      * The onClick action for when the user clicks on keyExchange
      * @param view The view that is involved
      */
     public void keyExchange(View view)
     {
+    	
     	/*
          * Launch Exchange Keys thread.
          */
@@ -242,13 +242,19 @@ public class ManageContactsActivity extends Activity {
         @Override
         public void handleMessage(final Message msg)
         {
+        	Button encry = (Button)ManageContactsActivity.this.findViewById(R.id.exchange_keys);
+        	
         	/* Handle UI update once the thread has finished querying the data */ 
         	switch (msg.what){
         		case POP:
+
+        			encry.setEnabled(true);
         			adapter = new ManageContactAdapter(ManageContactsActivity.this, ManageContactsActivity.contacts);
      	            adapter.notifyDataSetChanged();
 		            break;
         		case EMPTY:
+        			
+        			encry.setEnabled(false);
         			String emptyListValue = msg.getData().getString(ManageContactsLoader.EMPTYLIST);
         			if (emptyListValue == null)
         			{

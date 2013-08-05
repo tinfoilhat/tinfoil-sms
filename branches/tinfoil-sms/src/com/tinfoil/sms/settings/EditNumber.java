@@ -376,6 +376,7 @@ public class EditNumber extends Activity{
             	
             	if (MessageService.dba.getRow(originalNumber).getNumbers().size() == 1)
             	{
+            		//TODO add warning message about contact deletion
             		MessageService.dba.removeRow(originalNumber);
             		data.putExtra(EditNumber.IS_DELETED, true);
             	}
