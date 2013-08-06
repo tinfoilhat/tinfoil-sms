@@ -36,22 +36,27 @@ import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 
 /**
  * RemoveContactActivity is an activity that allows for contacts to be deleted
  * from tinfoil-sms's database. ***Please note that contacts will not be deleted
  * from the native database.
  */
-public class RemoveContactsActivity extends Activity implements Runnable {
+public class RemoveContactsActivity extends Activity {
     private ListView listView;
     private boolean[] contact;
     private ArrayList<TrustedContact> tc;
     private ProgressDialog dialog;
-    private boolean clicked = false;
+    //private boolean clicked = false;
     private ArrayAdapter<String> appAdapt;
     private boolean empty = false;
+    private RemoveContactsLoader runThread;
+    
+    public static final String NAMES = "names";
+    public static final String CONTACTS = "contacts";
+    public static final String TRUSTED = "trusted_contacts";
+    public static final int UPDATE = 0;
+    public static final int EMPTY = 1;
 
     /** Called when the activity is first created. */
     @Override
@@ -59,7 +64,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         
         this.setContentView(R.layout.remove_contacts);
-        this.clicked = false;
+        //this.clicked = false;
 
         this.listView = (ListView) this.findViewById(R.id.removeable_contact_list);
 
@@ -67,8 +72,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
                 "Loading. Please wait...", true, false);
 
         //update();
-        final Thread thread = new Thread(this);
-        thread.start();
+        runThread = new RemoveContactsLoader(false, contact, tc, handler);
 
         //Create what happens when you click on a button
         this.listView.setOnItemClickListener(new OnItemClickListener()
@@ -83,7 +87,7 @@ public class RemoveContactsActivity extends Activity implements Runnable {
             }
         });
     }
-    
+        
     /**
      * The onClick action for when the user clicks the delete selected
      * @param view The view that is involved
@@ -92,14 +96,23 @@ public class RemoveContactsActivity extends Activity implements Runnable {
     {
     	if (RemoveContactsActivity.this.tc != null)
         {
-            RemoveContactsActivity.this.clicked = true;
+            //RemoveContactsActivity.this.clicked = true;
             RemoveContactsActivity.this.dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts",
                     "Deleting. Please wait...", true, false);
-            final Thread thread2 = new Thread(RemoveContactsActivity.this);
-            thread2.start();
+            
+            runThread.setClicked(true);
+            runThread.setStart(false);
+            //thread2.start();
 
             //update();
         }
+    }    
+    
+    @Override
+    protected void onDestroy()
+    {   
+    	runThread.setRunner(false);
+    	super.onDestroy();
     }
 
     /**
@@ -121,32 +134,6 @@ public class RemoveContactsActivity extends Activity implements Runnable {
 	            this.contact[i] = false;
 	        }
     	}
-    }
-
-    /**
-     * Updates the list of contacts
-     */
-    private void update()
-    {
-        String[] names;
-        this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
-
-        if (this.tc != null)
-        {
-            //The string that is displayed for each item on the list 
-            names = new String[this.tc.size()];
-            for (int i = 0; i < this.tc.size(); i++)
-            {
-                names[i] = this.tc.get(i).getName();
-            }
-            this.appAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
-        }
-        else
-        {
-            names = new String[] { "No Contacts" };
-            this.appAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-        }
-
     }
 
     @Override
@@ -186,52 +173,39 @@ public class RemoveContactsActivity extends Activity implements Runnable {
 
     }
 
-    public void run() {
-        if (this.clicked)
-        {
-            for (int i = 0; i < this.tc.size(); i++)
-            {
-                if (this.contact[i])
-                {
-                    MessageService.dba.removeRow(this.tc.get(i).getANumber());
-                }
-            }
-        }
-
-        this.update();
-        if (this.tc != null)
-        {
-
-            this.contact = new boolean[this.tc.size()];
-            for (int i = 0; i < this.tc.size(); i++)
-            {
-                this.contact[i] = false;
-            }
-        }
-        this.handler.sendEmptyMessage(0);
-    }
-
+    
     /**
      * The handler class for cleaning up the loading thread
      */
     private final Handler handler = new Handler() {
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public void handleMessage(final Message msg)
         {
-            RemoveContactsActivity.this.listView.setAdapter(RemoveContactsActivity.this.appAdapt);
-            Button delete = (Button)RemoveContactsActivity.this.findViewById(R.id.delete_cont);
-            
-            if (RemoveContactsActivity.this.tc != null)
-            {
-            	delete.setEnabled(true);
-                RemoveContactsActivity.this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-                empty = false;
-            }
-            else
-            {
-            	delete.setEnabled(false);
+        	Bundle b = msg.getData();
+        	tc = (ArrayList<TrustedContact>) b.getSerializable(RemoveContactsActivity.TRUSTED);
+        	contact = b.getBooleanArray(RemoveContactsActivity.CONTACTS);
+        	String[] names = b.getStringArray(RemoveContactsActivity.NAMES);
+        	
+        	Button delete = (Button)RemoveContactsActivity.this.findViewById(R.id.delete_cont);
+        	
+        	switch(msg.what){
+        	case EMPTY:
+        		RemoveContactsActivity.this.appAdapt = new ArrayAdapter<String>
+        			(RemoveContactsActivity.this, android.R.layout.simple_list_item_1, names);
+        		delete.setEnabled(false);
             	empty = true;
-            }
+        		break;
+        	case UPDATE:
+        		RemoveContactsActivity.this.appAdapt = new ArrayAdapter<String>
+        			(RemoveContactsActivity.this, android.R.layout.simple_list_item_multiple_choice, names);
+    			delete.setEnabled(true);
+            	RemoveContactsActivity.this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            	empty = false;
+        		break;
+        	}
+            RemoveContactsActivity.this.listView.setAdapter(RemoveContactsActivity.this.appAdapt);
+            
             RemoveContactsActivity.this.listView.setItemsCanFocus(false);
 
             RemoveContactsActivity.this.dialog.dismiss();
