@@ -228,7 +228,6 @@ public class KeyExchangeManager extends Activity {
 	}
 	
 	/**
-	 * TODO change the view adapter to better represent the key exchange.
 	 * Update the list key exchange messages 
 	 */
 	public static void updateList()
@@ -316,7 +315,7 @@ public class KeyExchangeManager extends Activity {
         		reject.setEnabled(false);
         		list = (ListView)KeyExchangeManager.this.findViewById(R.id.key_exchange_list);
 	    		adapter = new ArrayAdapter<String>(KeyExchangeManager.this, 
-	    				android.R.layout.simple_list_item_1, new String[]{"Empty List"});
+	    				android.R.layout.simple_list_item_1, new String[]{"No Pending Key Echanges"});
 	    		//a.setNotifyOnChange(true);
 	    		
 	    		list.setAdapter(adapter);

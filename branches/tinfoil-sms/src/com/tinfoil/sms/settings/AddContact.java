@@ -258,6 +258,7 @@ public class AddContact extends Activity {
         else
         {
             this.contactEdit = new TrustedContact("");
+            
             this.listView.setAdapter(new ContactAdapter(this, R.layout.add_number, this.contactEdit));
         }
 
@@ -271,7 +272,7 @@ public class AddContact extends Activity {
     	super.onActivityResult(requestCode, resultCode, data);
     	
         /*
-         * TODO Comment
+         * Get the result data
          */
     	boolean update = false;
     	String number = null;
@@ -285,13 +286,27 @@ public class AddContact extends Activity {
     		position = data.getIntExtra(AddContact.POSITION, 0);
     		addNumber = data.getBooleanExtra(EditNumber.ADD, true);
     		
+    		/*
+    		 * Add the new number to the list of numbers
+    		 */
 	    	if(update && number != null)
 	    	{    	
 	    		if(addNumber)
 	    		{
 	    			if(position == AddContact.NEW_NUMBER_CODE)
 	    			{
-	    				update(number);
+	    				if(contactEdit.getNumbers().size() <= 1)
+	    				{
+	    					this.contactName.setText(number);
+	    					contactEdit.setName(number);
+	    					contactEdit.setNumber(number);
+	    					MessageService.dba.updateContactInfo(contactEdit, number);
+	    					update(null);
+	    				}
+	    				else
+	    				{
+	    					update(number);
+	    				}
 	    			}
 	    			else
 	    			{
@@ -302,6 +317,9 @@ public class AddContact extends Activity {
 	    	}
 	    	else if (update)
 	    	{
+	    		/*
+	    		 * Remove the number or the contact from the list
+	    		 */
 	    		boolean isDeleted = data.getBooleanExtra(EditNumber.IS_DELETED, false);
 	    		
 	    		String temp = data.getStringExtra(EditNumber.DELETE);    		

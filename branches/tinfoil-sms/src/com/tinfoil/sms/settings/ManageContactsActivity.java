@@ -244,7 +244,6 @@ public class ManageContactsActivity extends Activity {
         @Override
         public void handleMessage(final Message msg)
         {
-        	
         	//TODO disable the key exchange button until an item is actually selected.
         	Button encry = (Button)ManageContactsActivity.this.findViewById(R.id.exchange_keys);
         	

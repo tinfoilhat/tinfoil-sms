@@ -303,8 +303,8 @@ public abstract class SMSUtility {
 	}
 
 	/**
-	 * TODO comment
-	 * @param entry
+	 * Parse an auto-complete entry of a 'name, number'
+	 * @param entry The entry that contains the 'name, number'
 	 * @return A string array with the first element being the contact's name
 	 * and the second element being the contact's number. If the given string
 	 * only contains the contact's number the first element will be null.
