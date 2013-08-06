@@ -32,6 +32,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
@@ -58,8 +59,6 @@ public class ImportContacts extends Activity {
     public static final int LOAD = 0;
     public static final int FINISH = 1;
 
-    //private boolean stop = false;
-    
     private ImportContactLoader runThread;
 
     @Override
@@ -168,8 +167,14 @@ public class ImportContacts extends Activity {
         }
         names.add("No Contacts to Import");
         return names;
-
     }
+    
+    @Override
+    protected void onDestroy()
+    {
+	    runThread.setRunner(false);
+	    super.onDestroy();
+	}
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -229,9 +234,11 @@ public class ImportContacts extends Activity {
 		        	Bundle b = msg.getData();
 		        	tc = (ArrayList<TrustedContact>) b.getSerializable(ImportContacts.TRUSTED_CONTACTS);
 		        	inDb = (ArrayList<Boolean>) b.getSerializable(ImportContacts.IN_DATABASE);
+		        	Button button = (Button)ImportContacts.this.findViewById(R.id.confirm);
 		        	
 		            if (ImportContacts.this.tc != null && ImportContacts.this.tc.size() > 0)
 		            {
+		            	button.setEnabled(true);
 		                ImportContacts.this.disable = false;
 		                ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
 		                        android.R.layout.simple_list_item_multiple_choice, ImportContacts.this.getNames()));
@@ -240,6 +247,7 @@ public class ImportContacts extends Activity {
 		            }
 		            else
 		            {
+		            	button.setEnabled(false);
 		                ImportContacts.this.disable = true;
 		                ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
 		                        android.R.layout.simple_list_item_1, ImportContacts.this.getNames()));

@@ -38,7 +38,8 @@ public class ImportContactLoader implements Runnable{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public ImportContactLoader(Activity activity, boolean clicked, ArrayList<Boolean> inDb, ArrayList<TrustedContact> tc, Handler handler)
+    public ImportContactLoader(Activity activity, boolean clicked, 
+    		ArrayList<Boolean> inDb, ArrayList<TrustedContact> tc, Handler handler)
     {
     	this.activity = activity;
     	this.handler = handler;
