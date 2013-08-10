@@ -47,6 +47,43 @@ table {
   border-spacing: 0;
 }
 
+
+/*******************************************************************************
+Custom Styles
+*******************************************************************************/
+.title {
+  float: left;
+}
+.logo {
+  float: right;
+}
+
+.logo img {
+  width: 160px;
+  border: none;
+  box-shadow: none;
+  margin: 0 5px;
+}
+
+.downloads {
+  clear: both;
+}
+
+.googleplay {
+    background: url("../images/en_generic_rgb_wo_60.png") no-repeat scroll right bottom transparent;
+    display: block;
+    float: left;
+    height: 70px;
+    margin-left: 0;
+    overflow: hidden;
+    text-indent: -5000px;
+    width: 172px;
+}
+
+#main_content_wrap {
+  padding-top: 25px;
+}
+
 /*******************************************************************************
 Theme Styles
 *******************************************************************************/
