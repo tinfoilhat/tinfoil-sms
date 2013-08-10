@@ -297,7 +297,7 @@ public class AddContact extends Activity {
 	    			{
 	    				if(contactEdit.getNumbers().size() <= 1)
 	    				{
-	    					if(contactEdit.getName() != "")
+	    					if(contactEdit.getName() == "")
 	    					{
 	    						this.contactName.setText(number);
 	    						contactEdit.setName(number);
@@ -306,7 +306,7 @@ public class AddContact extends Activity {
 	    					{
 	    						contactEdit.setName(contactName.getText().toString());
 	    					}
-	    					contactEdit.setNumber(number);
+	    					contactEdit.addNumber(number);
 	    					MessageService.dba.updateContactInfo(contactEdit, number);
 	    					update(null);
 	    				}
