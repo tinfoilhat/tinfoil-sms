@@ -72,6 +72,7 @@ public class KeyExchangeManager extends Activity {
 
 	/**
 	 * TODO handle bad shared secrets 
+	 * TODO update list upon completing
 	 * The onClick action for when the exchange key message is pressed. Sends a
 	 * key exchange message for each contact that is selected.
 	 * @param view The View 

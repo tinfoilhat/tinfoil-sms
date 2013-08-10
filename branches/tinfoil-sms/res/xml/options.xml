@@ -79,7 +79,7 @@
 		    android:title="Encrypted Messages" 
 		    android:key="showEncrypt" 
 		    android:summary="Display the original encrypted message"
-		    android:defaultValue="true" />
+		    android:defaultValue="false" />
 		
 		<PreferenceScreen 
             android:title="My Public Key" 
