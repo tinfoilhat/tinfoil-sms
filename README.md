@@ -1,54 +1,57 @@
 Tinfoil-SMS
-============
+========================================
 
-Tinfoil Head Manifesto
-----------------------
+## What is Tinfoil-SMS
 
-We here stand as mortal men committed to creating a software application
-that will protect the rights and freedom of all men, as all men are created
-equal.
+You can never be sure who or what is viewing your messages or what they’re 
+going to do with them if they should get them. Tinfoil-SMS is an encrypted 
+messaging application so your texts don’t fall into the wrong hands. 
+Tinfoil-SMS uses 256 bit ECC encryption key as well as a unique signed 
+key exchange to prevent any “man-in-the-middle” attacks.
 
-We hold the following as inalienable rights of men
-
-+ A right to privacy
-+ A right to security
-+ A right to cryptography
-
-
-In addition, we call upon all men to value security above all else, as
-security is only as good as the weakest link. Heed the following.
-
-1. Trust no one
-2. Design systems with the intent that everyone is acting against the system
-3. Security above all else, including performance
+The only way an unwanted party will see your messages is if they know 
+your secret passphrases and preform a key exchange with you. If you 
+think we’re bluffing or you need to see it to believe it, feel free to 
+poke around the source code. It’s open source and we’ve got nothing to hide. 
 
 
-We view the tinfoil hat as a right of passage, as a quick view of
-[facebook's privacy mess](http://www.nytimes.com/interactive/2010/05/12/business/facebook-privacy.html?ref=personaltech)
-will traumatize even the most reserved facebook users.
 
-Take heed of the warnings presented in this document, Tinfoil-SMS is designed with the tinfoilhead[1]
-in mind.
+## Guiding Principles
 
-[1]: https://en.wikipedia.org/wiki/Tinfoil_hat "Tinfoil Head"
-
-
-Project Guidelines and Goals
-----------------------------
-
-+ Tinfoil-SMS will be released as open source software under the GNU Public License Version 3
-+ Project is currently alpha, the goal is a beta release by September
-+ Tinfoil-SMS will make use of public key cryptography using ECC[2]
-+ Use message authentication (HMAC) to verify messages from contacts
-+ Use steganography to obfuscate text messages
-+ Automatically import contacts from the phone to Tinfoil-SMS
-+ Enable automatically adding new contacts that are trusted
-
-[2]: https://en.wikipedia.org/wiki/Elliptic_curve_cryptography "Elliptic Curve Cryptography"
+1. The worst security is a false sense of security
+2. The best security is the appearance of no security
+3. Design systems with the intent that everyone is acting against the system
+4. Security above all else, including performance
 
 
-Copyright (Really Copyleft)
----------------------------
+
+## Project Goals
+
+* Always free for anyone to use and with no limitations
+* Released as open source software under the GNU General Public License Version 3
+* Simple to use and understand UI
+* Easy to import contacts from the phone to Tinfoil-SMS
+* Public key cryptography using Elliptic Curve Cryptography (ECC)
+* A secure and reliable public key signing scheme to mitigate man-in-the-middle attacks
+* AES-256 block cipher with SHA-256 message HMAC
+* Incorporate steganography to obfuscate text messages
+* Comprehensive source code documentation and wiki
+* Thorough guide to help mitigate any security risks as a result of improper use
+* Project is currently alpha, the goal is a beta release by September
+
+
+
+## Future Plans
+
+* Thorough beta phase with comprehensive bug testing and reporting using ACRA and Bug Sense
+* Security audits and a detailed cryptanalysis of the application and the library, [Orwell](https://github.com/gnu-user/Orwell)
+* Finalizing the cryptography during the beta release, so that it can remain unchanged for the stable release
+* A stable release within 6 months of the beta release
+* Incorporating steganography to obfuscate text messages for the next major release
+
+
+
+## Copyright (Really Copyleft)
 
 All of the source code in this repository, where the copyright notice is indicated in the source
 code, is licensed under the [GNU General Public License, Version 3](http://www.gnu.org/licenses/gpl.html).
