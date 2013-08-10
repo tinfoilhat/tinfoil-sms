@@ -27,6 +27,7 @@ import android.util.Log;
 
 public class MessageSender implements Runnable{
 
+	private boolean loopRunner = true;
 	private Context c;
 	private boolean empty = true;
 	private Thread thread;
@@ -40,6 +41,7 @@ public class MessageSender implements Runnable{
 	public void startThread(Context c) {
 		this.c = c;
 		this.sender = new DBAccessor(c);
+		empty = true;
 		thread = new Thread(this);
 		thread.start();
 	}
@@ -75,6 +77,10 @@ public class MessageSender implements Runnable{
 				{
 					break;
 				}
+				else if (mes == null && !loopRunner)
+				{
+					break;
+				}
 				
 				synchronized(this){
 					try {
@@ -85,6 +91,11 @@ public class MessageSender implements Runnable{
 				}
 			}
 			
+			if (mes == null && !loopRunner)
+			{
+				break;
+			}
+
 			/*
 			 * TODO look into
 			 * 
@@ -110,7 +121,7 @@ public class MessageSender implements Runnable{
 			 * messages. If there is no service, wait till the service state
 			 * changes to signal.
 			 */
-			while(!signal)
+			while(!signal && loopRunner)
 			{
 				Log.v("Signal", "none");
 				synchronized(this){
@@ -121,6 +132,7 @@ public class MessageSender implements Runnable{
 					}
 				}
 			}
+			
 			Log.v("Signal", "some");
 			
 			synchronized(this){
@@ -133,7 +145,9 @@ public class MessageSender implements Runnable{
 			if(mes != null) {
 				SMSUtility.sendMessage(this.sender, c, mes);
 			}
-		}		
+		}
+		loopRunner = true;
+		empty = true;
 	}
 	
 	/**
@@ -167,6 +181,17 @@ public class MessageSender implements Runnable{
 	 */
 	public synchronized void setSignal(boolean signal) {
 		this.signal = signal;
+	}
+	
+    /**
+     * The semaphore for keeping the thread running. This can be left as true
+     * until the activity is no longer in use (onDestroy) where it can be set to
+     * false.
+     * @param runner Whether the thread should be kept running
+     */
+    public synchronized void setRunner(boolean runner) {
+		this.loopRunner = runner;
+		notifyAll();
 	}
 }
 	

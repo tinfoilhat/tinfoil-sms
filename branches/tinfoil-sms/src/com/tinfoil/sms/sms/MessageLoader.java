@@ -26,14 +26,11 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.loader.Loader;
 
-public class MessageLoader implements Runnable{
+public class MessageLoader extends Loader{
 	
-    private boolean loopRunner = true;
-    private boolean start = true;
     private Context context;
-	private Thread thread;
     private boolean update;
     private Handler handler;
     
@@ -49,63 +46,47 @@ public class MessageLoader implements Runnable{
     	this.context = context;
     	this.update = update;
     	this.handler = handler;
-    	thread = new Thread(this);
-		thread.start();
+    	start();
     }
 
-    public void run() {
-		while (loopRunner)
-		{
-			if(!update)
-			{
-				DBAccessor loader = new DBAccessor(context);
-		        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
-		        
-				List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-				final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
+    @Override
+	public void execution() {
+    	
+		DBAccessor loader = new DBAccessor(context);
+		if(!update)
+		{				
+	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
+	        
+			List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
+			final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
 
-		        //Retrieve the name of the contact from the database
-		        String contact_name = loader.getRow(ConversationView.selectedNumber).getName();
-				
-		        Message msg = new Message();
-	        	Bundle b = new Bundle();
-	        	b.putString(MessageView.CONTACT_NAME, contact_name);
-	        	b.putBoolean(MessageView.IS_TRUSTED, isTrusted);
-	        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
-	        	b.putInt(MessageView.UNREAD_COUNT, unreadCount);
-	        	msg.setData(b);
-	        	msg.what = MessageView.LOAD;
-		        
-		        this.handler.sendMessage(msg);
-			}
-			else
-			{
-				List<String[]> msgList2 = MessageService.dba.getSMSList(ConversationView.selectedNumber);
-				MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
-				setUpdate(false);
-				
-				Message msg = new Message();
-	        	Bundle b = new Bundle();
-	        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
-	        	msg.setData(b);
-	        	msg.what = MessageView.UPDATE;
-		        
-		        this.handler.sendMessage(msg);
-			}
-
-			// Wait for the next time the list needs to be updated/loaded
-			while(loopRunner && start)
-			{
-				synchronized(this){
-					try {
-						wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
+	        //Retrieve the name of the contact from the database
+	        String contact_name = loader.getRow(ConversationView.selectedNumber).getName();
 			
-			setStart(true);
+	        Message msg = new Message();
+        	Bundle b = new Bundle();
+        	b.putString(MessageView.CONTACT_NAME, contact_name);
+        	b.putBoolean(MessageView.IS_TRUSTED, isTrusted);
+        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
+        	b.putInt(MessageView.UNREAD_COUNT, unreadCount);
+        	msg.setData(b);
+        	msg.what = MessageView.LOAD;
+	        
+	        this.handler.sendMessage(msg);
+		}
+		else
+		{
+			List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
+			loader.updateMessageCount(ConversationView.selectedNumber, 0);
+			setUpdate(false);
+			
+			Message msg = new Message();
+        	Bundle b = new Bundle();
+        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
+        	msg.setData(b);
+        	msg.what = MessageView.UPDATE;
+	        
+	        this.handler.sendMessage(msg);
 		}
 	}
     
@@ -117,25 +98,5 @@ public class MessageLoader implements Runnable{
      */
     public synchronized void setUpdate(boolean update) {
 		this.update = update;
-	}
-    
-    /**
-     * The semaphore for waking the thread up to reload the contacts
-     * @param start Whether to start the execution of the thread or not
-     */
-    public synchronized void setStart(boolean start) {
-		this.start = start;
-		notifyAll();
-	}
-    
-    /**
-     * The semaphore for keeping the thread running. This can be left as true
-     * until the activity is no longer in use (onDestroy) where it can be set to
-     * false.
-     * @param runner Whether the thread should be kept running
-     */
-    public synchronized void setRunner(boolean runner) {
-		this.loopRunner = runner;
-		notifyAll();
 	}
 }

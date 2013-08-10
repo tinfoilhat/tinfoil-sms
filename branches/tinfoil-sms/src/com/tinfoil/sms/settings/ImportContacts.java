@@ -75,7 +75,7 @@ public class ImportContacts extends Activity {
                 "Locating Contacts...", true, true, new OnCancelListener() {
     		
         	public void onCancel(DialogInterface dialog) {
-    			runThread.stop();
+    			runThread.setStop(true);
     			dialog.dismiss();
     			ImportContacts.this.finish();
     		}

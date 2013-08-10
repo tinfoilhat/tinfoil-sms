@@ -92,7 +92,7 @@ public class ManageContactsActivity extends Activity {
         	((Button)this.findViewById(R.id.exchange_keys)).setText("Untrust");
         }
         
-        this.startThread();
+        ManageContactsActivity.this.startThread();
         
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
@@ -172,7 +172,7 @@ public class ManageContactsActivity extends Activity {
         ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
 
             public void onDismiss(final DialogInterface dialog) {
-                ManageContactsActivity.this.startThread();
+            	updateList();
             }
         });
     }
@@ -231,7 +231,7 @@ public class ManageContactsActivity extends Activity {
         if(runThread != null)
         {
         	Log.v("Run Thread", "Running");
-        	runThread.setRefresh(true);
+        	runThread.setStart(false);
         }
     }
 

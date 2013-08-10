@@ -53,7 +53,7 @@ public class MessageBroadcastReciever extends BroadcastReceiver {
                 if (id > 0)
                 {
                     //Message Sent successful from queue 
-                    Toast.makeText(c, "Queue message sent", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(c, "Queue message sent", Toast.LENGTH_SHORT).show();
                     //MessageService.dba.deleteQueueEntry(id);
 
                     //TODO Might be good if this section notifies the queue signaling the next message can be send
@@ -62,7 +62,7 @@ public class MessageBroadcastReciever extends BroadcastReceiver {
                     //success = 2;
                 }
 
-                Toast.makeText(c, "Message Sent", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(c, "Message Sent", Toast.LENGTH_SHORT).show();
             }
         }
     }

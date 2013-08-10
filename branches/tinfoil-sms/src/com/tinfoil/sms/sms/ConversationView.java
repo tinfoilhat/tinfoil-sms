@@ -78,7 +78,7 @@ public class ConversationView extends Activity {
     public static boolean messageViewActive = false;
     
     public static MessageSender messageSender = new MessageSender();
-    
+      
     private ProgressDialog dialog;
     private static boolean update = false;
     public static final int LOAD = 0;
@@ -246,6 +246,7 @@ public class ConversationView extends Activity {
         MessageReceiver.myActivityStarted = false;
         
         runThread.setRunner(false);
+        messageSender.setRunner(false);
         super.onDestroy();
     }
 
