@@ -252,7 +252,10 @@ public class ImportContacts extends Activity {
 		                ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
 		                        android.R.layout.simple_list_item_1, ImportContacts.this.getNames()));
 		            }
-		            ImportContacts.this.dialog.dismiss();
+		            if (ImportContacts.this.dialog.isShowing())
+		            {
+		            	ImportContacts.this.dialog.dismiss();
+		            }
 		            break;
 	    		case FINISH:
 	    			ImportContacts.this.finish();

@@ -19,6 +19,7 @@ package com.tinfoil.sms.settings;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,7 +28,6 @@ import android.util.Log;
 import com.tinfoil.sms.dataStructures.ContactChild;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 
 /**
  * Loads in the contacts from the database and formats them.
@@ -41,7 +41,7 @@ public class ManageContactsLoader implements Runnable {
 	private boolean exchange;
 	private Handler handler;
 	private Thread thread;
-	
+	private Context context;
 	public boolean[] trusted;
 	
 	//TODO change to constructor
@@ -50,8 +50,9 @@ public class ManageContactsLoader implements Runnable {
 	 * @param handler
 	 * @param exchange
 	 */
-	public void startThread(Handler handler, boolean exchange)
+	public ManageContactsLoader(Context context, Handler handler, boolean exchange)
 	{
+		this.context = context;
 		this.handler = handler;
 		this.exchange = exchange;
     	thread = new Thread(this);
@@ -63,16 +64,18 @@ public class ManageContactsLoader implements Runnable {
     	{
     		//TODO comment
     		String emptyListValue = "";
+    		
+    		DBAccessor loader = new DBAccessor(context);
 	    	
 	    	Log.v("Thread", "In the thread");
 	    	if(exchange)
 	    	{
-	    		ManageContactsActivity.tc = MessageService.dba.getAllRows(DBAccessor.UNTRUSTED);
+	    		ManageContactsActivity.tc = loader.getAllRows(DBAccessor.UNTRUSTED);
 	    		emptyListValue = "No contacts";
 	    	}
 	    	else
 	    	{
-	    		ManageContactsActivity.tc = MessageService.dba.getAllRows(DBAccessor.TRUSTED);
+	    		ManageContactsActivity.tc = loader.getAllRows(DBAccessor.TRUSTED);
 	    		emptyListValue = "No Trusted Contacts";
 	    	}		    	
 	
@@ -87,7 +90,7 @@ public class ManageContactsLoader implements Runnable {
 	
 	                ManageContactsActivity.contactNumbers = new ArrayList<ContactChild>();
 	
-	                trusted = MessageService.dba.isNumberTrusted(ManageContactsActivity.tc.get(i).getNumber());
+	                trusted = loader.isNumberTrusted(ManageContactsActivity.tc.get(i).getNumber());
 	
 	                for (int j = 0; j < size; j++)
 	                {

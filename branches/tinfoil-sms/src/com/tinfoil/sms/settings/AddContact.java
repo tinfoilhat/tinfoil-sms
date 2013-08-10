@@ -74,7 +74,7 @@ public class AddContact extends Activity {
         /*
          * Check if a user is editing a contact or creating a new contact.
          */
-        if (!addContact || editTc != null)
+        if (!addContact && editTc != null)
         {
             this.contactEdit = editTc;
             this.originalNumber = this.contactEdit.getANumber();
