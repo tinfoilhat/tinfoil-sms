@@ -205,16 +205,6 @@ public class EditNumber extends Activity{
 				if(number == null)
 				{
 					/* Number is a new number */
-					//TODO clean up
-					if(originalNumber != null)
-					{
-						/* 
-						 * The contact is not new and has another number.
-						 * Get the contact from the database
-						 */
-						
-						//number = MessageService.dba.getNumber(originalNumber);
-					}
 					number = new Number(phoneNumber.getText().toString());
 				}
 				else
@@ -376,7 +366,6 @@ public class EditNumber extends Activity{
             	
             	if (MessageService.dba.getRow(originalNumber).getNumbers().size() == 1)
             	{
-            		//TODO add warning message about contact deletion
             		MessageService.dba.removeRow(originalNumber);
             		data.putExtra(EditNumber.IS_DELETED, true);
             	}

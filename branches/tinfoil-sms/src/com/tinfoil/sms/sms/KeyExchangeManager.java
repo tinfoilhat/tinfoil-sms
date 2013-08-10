@@ -71,7 +71,6 @@ public class KeyExchangeManager extends Activity {
 	}
 
 	/**
-	 * TODO handle bad shared secrets 
 	 * TODO update list upon completing
 	 * The onClick action for when the exchange key message is pressed. Sends a
 	 * key exchange message for each contact that is selected.
@@ -83,8 +82,9 @@ public class KeyExchangeManager extends Activity {
 		{
 			ListView list = (ListView)this.findViewById(R.id.key_exchange_list);
 			SparseBooleanArray sba = list.getCheckedItemPositions();
+			int i = 0;
 			
-			for (int i = 0; i < runThread.getEntries().size(); i++)
+			while(runThread.getEntries() != null && i < runThread.getEntries().size())
 			{
 				if(sba.get(i))
 				{
@@ -99,21 +99,16 @@ public class KeyExchangeManager extends Activity {
 							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
 						respondMessage(number, runThread.getEntries().get(i));
-						//entries.remove(entries.get(i));
-						//updateList();
 					}
 					else
 					{
 						setAndSend(this, number, tc.getName(), runThread.getEntries().get(i));
 					}
-					runThread.getEntries().remove(runThread.getEntries().get(i));
-					
-					
-				//else Item has not be touched leave it alone.
 				}
+				
+				i++;
 			}
-		}
-		updateList();
+		}		
 	}
 	
 	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
@@ -198,8 +193,16 @@ public class KeyExchangeManager extends Activity {
 		    {
 				MessageService.mNotificationManager.cancel(MessageService.KEY);
 		    }
-			//a.remove(entries.get(i).getNumber());
+			if (runThread != null && runThread.getEntries() != null)
+			{
+				runThread.getEntries().remove(entry);
+			}
 		}
+		else
+		{
+			 //TODO handle bad shared secrets 
+		}
+		updateList();
 	}
 	
 	/**
