@@ -80,6 +80,14 @@ Custom Styles
     width: 172px;
 }
 
+.screenshots img {
+  width: 300px;
+  border: none;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+}
+
 #main_content_wrap {
   padding-top: 25px;
 }
