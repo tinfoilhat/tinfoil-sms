@@ -97,7 +97,7 @@ public class KeyExchangeManager extends Activity {
 					if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
-						respondMessage(number, runThread.getEntries().get(i));
+						respondMessage(this, number, runThread.getEntries().get(i));
 					}
 					else
 					{
@@ -143,7 +143,7 @@ public class KeyExchangeManager extends Activity {
 	    			   number.setSharedInfo2(s2);
 	    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
 
-		               respondMessage(number, entry);
+		               respondMessage(context, number, entry);
 	    		   }
 	    		   else
 	    		   {
@@ -164,10 +164,11 @@ public class KeyExchangeManager extends Activity {
 	
 	/**
 	 * Respond to the key exchange messages 
+	 * @param context TODO
 	 * @param number The number of the contact for the key exchange
 	 * @param entry The key exchange entry received.
 	 */
-	public static void respondMessage(Number number,Entry entry)
+	public static void respondMessage(final Context context, Number number, Entry entry)
 	{
 		if(KeyExchange.verify(number, entry.getMessage()))
 		{
@@ -199,7 +200,54 @@ public class KeyExchangeManager extends Activity {
 		}
 		else
 		{
-			 //TODO handle bad shared secrets 
+			 Log.v("Key Exchange", "Invalid key exchange");
+			 //Toast.makeText(context, "Invalid Key exchange", Toast.LENGTH_LONG).show();
+			 
+			 String name = MessageService.dba.getRow(number.getNumber()).getName();
+			 
+			 final String text = name + ", " + number.getNumber();
+			 
+			 AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			 
+			 builder.setMessage("The Key Exchange with " + text
+			 					+ " was unsuccessful. This is a potential man-in-the-middle attack." +
+			 					" Please ensure your shared secrets are correct")
+		       .setCancelable(true).setTitle("Warning!")
+		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		    	   @Override
+		    	   public void onClick(DialogInterface dialog, int id) {
+		    		  
+		           }})
+		       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
+	    	   @Override
+	    	   public void onClick(DialogInterface arg0, int arg1) {
+    		   	
+	    		   //Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+	    		   AlertDialog.Builder builder = new AlertDialog.Builder(context);
+	  			 
+		  			 builder.setMessage("The shared secrets you have do not match those in the " +
+		  					 			"key exchange. This could mean the secrets are wrong or " +
+		  					 			"there key exchange was tampered with")
+		  		       .setCancelable(true).setTitle("Warning!")
+		  		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		  		    	   @Override
+		  		    	   public void onClick(DialogInterface dialog, int id) {
+		  		               //Save the shared secrets
+		  		    		  
+		  		           }})
+		  		       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
+		  	    	   @Override
+		  	    	   public void onClick(DialogInterface arg0, int arg1) {
+		  	    		   	//Cancel the key exchange
+		  	    		   Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+		  	    	   }});
+		  			AlertDialog alert = builder.create();
+		  			
+		  			alert.show();
+	    	   }});
+			AlertDialog alert = builder.create();
+			
+			alert.show();
 		}
 		updateList();
 	}

@@ -404,7 +404,7 @@ public class MessageView extends Activity {
          		    		if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
           							SMSUtility.checksharedSecret(number.getSharedInfo2()))
           					{
-                      			KeyExchangeManager.respondMessage(number, entry);
+                      			KeyExchangeManager.respondMessage(MessageView.this, number, entry);
           					}
                       		else
                       		{
