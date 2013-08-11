@@ -1,108 +1,97 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset='utf-8' />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <meta name="description" content="Tinfoil-SMS : Texting for the paranoid." />
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Tinfoil-SMS : " />
+  <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <title>Tinfoil-SMS</title>
+</head>
 
-    <title>Tinfoil-SMS</title>
-  </head>
+<body>
+  <!-- HEADER -->
+  <div id="header_wrap" class="outer">
+    <header class="inner">
+      <a id="forkme_banner" href="https://github.com/tinfoilhat/tinfoil-sms">View on GitHub</a>
+      <div class="title">
+        <h1 id="project_title">Tinfoil-SMS</h1>
+        <h2 id="project_tagline">Texting for the paranoid.</h2>
+      </div>
+      <div class="logo">
+        <img alt="Tinfoil Head" src="images/tinfoilhead.png" />
+      </div>
+      <div class="downloads">
+        <section>
+          <a class="googleplay" href="https://play.google.com/store/apps/details?id=Tinfoil-sms" target="_blank">Get it on Google Play</a>
+          <a class="zip_download_link" href="https://github.com/tinfoilhat/tinfoil-sms/zipball/master">Download as a .zip file</a>
+          <a class="tar_download_link" href="https://github.com/tinfoilhat/tinfoil-sms/tarball/master">Download as a tar.gz file</a>
+        </section>
+      </div>
+    </header>
+  </div>
 
-  <body>
+  <!-- MAIN CONTENT -->
+  <div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+      <h3><a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a></h3>
+      
+      <p><em><strong><q>If one would give me six lines written by the hand of the most honest man, I would find something in them to have him hanged.</q></em></strong><br/>– Cardinal Richelieu</p>
+      
+      <h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>What is Tinfoil-SMS?</h3>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/tinfoilhat/tinfoil-sms">View on GitHub</a>
-          <div class="title">
-            <h1 id="project_title">Tinfoil-SMS</h1>
-            <h2 id="project_tagline">Texting for the paranoid.</h2>
-          </div>
-          <div class="logo">
-            <img alt="Tinfoil Head" src="images/tinfoilhead.png" />
-          </div>
-          <div class="downloads">
-            <section>
-              <a class="googleplay" href="https://play.google.com/store/apps/details?id=Tinfoil-sms" target="_blank">Get it on Google Play</a>
-              <a class="zip_download_link" href="https://github.com/tinfoilhat/tinfoil-sms/zipball/master">Download as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/tinfoilhat/tinfoil-sms/tarball/master">Download as a tar.gz file</a>
-            </section>
-        </div>
-        </header>
-    </div>
+      <p>You can never be sure who or what is viewing your messages or what they’re going to do with them if they should get them. Tinfoil-SMS is an encrypted messaging application so your texts don’t fall into the wrong hands. Tinfoil-SMS uses 256 bit ECC public keys as well as a unique signed key exchange to prevent any “man-in-the-middle” attacks.</p>
+      <p>The only way an unwanted party will see your messages is if they know your secret passphrases and trick you into accepting a key exchange from them. If you think we’re bluffing or you need to see it to believe it, feel free to poke around the source code. It’s open source and we’ve got nothing to hide.</p>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a></h3>
+      <h3><a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Key Features</h3>
 
-<p><em><strong><q>If one would give me six lines written by the hand of the most honest man, I would find something in them to have him hanged.</q></em></strong><br>– Cardinal Richelieu</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>What is Tinfoil-SMS?</h3>
-
-<p>You can never be sure who or what is viewing your messages or what they’re going to do with them if they should get them. Tinfoil-SMS is an encrypted messaging application so your texts don’t fall into the wrong hands. Tinfoil-SMS uses 256 bit ECC encryption key as well as a unique signed key exchange to prevent any “man-in-the-middle” attacks.</p><p>The only way an unwanted party will see your messages is if they know your secret catch phrases and preform a key exchange with you. If you think we’re bluffing or you need to see it to believe it, feel free to poke around the source code. It’s open source and we’ve got nothing to hide. </p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Key Features</h3>
-
-<p>
-•  Simple to use and understand UI.<br/>
-• In-app tutorial.<br/>
-• Can natively be used with or without encryption feature.<br/>
-• Public key cryptography using Elliptic Curve Cryptography (ECC).<br/>
-• Shared secrets ensure unique encryption.<br/>
-• Uses a 256 bit ECC public encryption key with AES-256 block cipher in CTR mode.<br/>
-• AES-256 block cipher in CTR mode.<br/>
-• SHA-256 message HMAC.<br/>
-• CSPRNG based on ISAAC.<br/>
-• Public key cryptography.<br/>
-</p>
+      <p>
+        • Always free for anyone to use and with no limitations</br>
+        • Simple to use and understand UI<br/>
+        • In-app tutorial<br/>
+        • Can natively be used with or without encryption enabled<br/>
+        • Public key cryptography using Elliptic Curve Cryptography (ECC)<br/>
+        • Public key signing scheme using shared secrets to prevent “man-in-the-middle” attacks<br/>
+        • AES-256 block cipher in CTR mode<br/>
+        • SHA-256 message HMAC<br/>
+        • CSPRNG based on ISAAC<br/>
+      </p>
 
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Screenshots</h3>
+      <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Screenshots</h3>
 
-<div class="screenshots">
-  <img src="./images/conversation.png" alt="Conversation" />
-  <img src="./images/shared_secrets.png" alt="Shared Secrets" />
-  <img src="./images/manage_contacts.png" alt="Manage Contacts" />
-  <img src="./images/key_exchange.png" alt="Key Exchange" />
-</div>
+      <div class="screenshots">
+        <img src="./images/conversation.png" alt="Conversation" />
+        <img src="./images/shared_secrets.png" alt="Shared Secrets" />
+        <img src="./images/manage_contacts.png" alt="Manage Contacts" />
+        <img src="./images/key_exchange.png" alt="Key Exchange" />
+      </div>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Tutorial</h3>
+      <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Tutorial</h3>
 
-<p>Tinfoil-SMS requires both parties to set up shared secrets and exchange keys before messages can be securely sent. This process is explained when you first open the application, however there is also a<a href="https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough" target="_blank" class="user-mention"> full tutorial page</a> that can guide you through it as well.</p>
+      <p>Tinfoil-SMS requires both parties to set up shared secrets and exchange keys before messages can be securely sent. This process is explained when you first open the application, however there is also a<a href="https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough" target="_blank" class="user-mention"> detailed walkthrough</a> that can guide you through it as well.</p>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+      <h3><a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+      <p>Having trouble with Tinfoil-SMS? All in app bugs for beta releases are automatically reported, however if you have any questions, comments or concerns; check out the documentation on our <a href="https://github.com/tinfoilhat/tinfoil-sms/wiki" target="_blank">Wiki</a> or email us at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> and we’ll try to respond as soon as possible.</p>
 
-<p>Having trouble with Tinfoil-SMS? All in app bugs are automatically reported, however if you have any questions, comments or concerns; check out the documentation on our <a href="https://github.com/tinfoilhat/tinfoil-sms" target="_blank">Github page</a> or email us at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> and we’ll try to respond as soon as possible.</p>
+      <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors &amp; Contributors</h3>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors & Contributors</h3>
+      <p>Cryptography by Jonathan G. <a href="https://github.com/gnu-user" target="_blank" class="user-mention">@gnu-user</a><br/>
+          Application UI and debugging by Joseph H. <a href="https://github.com/dataBaseError" target="_blank" class="user-mention">@dataBaseError</a><br/>
+          Web copy, base HTML formatting, and graphics by Zach J. <a href="http://zachjordan.me/" target="_blank" class="user-mention">@TheZachJordan</a>.
+      </p>
+    </section>
+  </div>
 
-<p>Cryptography by Jonathan G. <a href="https://github.com/gnu-user" target="_blank" class="user-mention">@gnu-user</a><br/>
-  Application UI and debugging by Joseph H. <a href="https://github.com/dataBaseError" target="_blank" class="user-mention">@dataBaseError</a><br/>
-  Web copy, base HTML formatting, and graphics by Zach J. <a href="http://zachjordan.me/" target="_blank" class="user-mention">@TheZachJordan</a>.</p>
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Tinfoil-SMS maintained by <a href="https://github.com/tinfoilhat" target="_blank">tinfoilhat</a><br/>
-          Published with <a href="http://pages.github.com" target="_blank">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-  </body>
+  <!-- FOOTER  -->
+  <div id="footer_wrap" class="outer">
+    <footer class="inner">
+      <p class="copyright">Tinfoil-SMS maintained by <a href="https://github.com/tinfoilhat" target="_blank">tinfoilhat</a><br/>
+        Published with <a href="http://pages.github.com" target="_blank">GitHub Pages</a></p>
+    </footer>
+  </div>
+</body>
 </html>
