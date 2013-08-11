@@ -199,10 +199,8 @@ public class ConversationView extends Activity {
      */
     public static void updateList(final Context context, final boolean messageViewUpdate)
     {
-
         if (MessageReceiver.myActivityStarted)
         {
-            
         	if(conversations != null)
             {
             	runThread.setUpdate(true);
@@ -310,7 +308,10 @@ public class ConversationView extends Activity {
 	        		//First time load, the adapter must be constructed
 	        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
 	        		list.setAdapter(conversations);
-	        		ConversationView.this.dialog.dismiss();
+	        		if(ConversationView.this.dialog.isShowing())
+	        		{
+	        			ConversationView.this.dialog.dismiss();
+	        		}
 		        	break;
 	        	case UPDATE:
 	        		//The list's data has changed and needs to be updated

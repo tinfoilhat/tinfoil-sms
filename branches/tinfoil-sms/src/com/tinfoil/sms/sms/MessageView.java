@@ -495,7 +495,10 @@ public class MessageView extends Activity {
 	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
 	        	list2.setAdapter(messages);
 	            list2.setItemsCanFocus(false);
-	        	MessageView.this.dialog.dismiss();
+	            if(MessageView.this.dialog.isShowing())
+	            {
+	            	MessageView.this.dialog.dismiss();
+	            }
 	        	break;
         	case UPDATE:
         		messages.clear();
