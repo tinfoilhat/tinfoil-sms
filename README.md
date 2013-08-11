@@ -17,12 +17,11 @@ source code. It’s open source and we’ve got nothing to hide.
 
 ## Get Tinfoil-SMS
 
-You can get the latest release of Tinfoil-SMS from the 
-[Google Play Store](http://tinfoilhat.github.io/tinfoil-sms/), please see the 
-project Github page for the relevant download URLs and screenshots of the
-application. Or if you prefer, you can get a copy of the latest code from the 
-master branch, feel free to submit pull requests for any contributions you would
-like to make.
+You can get the latest release of Tinfoil-SMS from the Google Play Store, 
+please see the project [Github page](http://tinfoilhat.github.io/tinfoil-sms/) 
+for the relevant download URLs and screenshots of the application. Or if you 
+prefer, you can get a copy of the latest code from the master branch, feel free 
+to submit pull requests for any contributions you would like to make.
 
 
 ## Guiding Principles
