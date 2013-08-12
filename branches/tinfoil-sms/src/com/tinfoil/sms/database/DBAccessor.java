@@ -20,6 +20,7 @@ package com.tinfoil.sms.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.Entry;
@@ -32,6 +33,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 /**
  * Creates a database that is read and write and provides methods to 
@@ -760,8 +762,23 @@ public class DBAccessor {
      */
 	public void open()
 	{
-		db = contactDatabase.getWritableDatabase();
-		count+=1;
+	    try
+	    {
+	        db = contactDatabase.getWritableDatabase();
+            count+=1;
+	    }
+	    catch(SQLiteException e)
+	    {
+            e.printStackTrace();
+            BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
+	    }
+	    finally 
+	    {
+	        if(db != null && db.isOpen())
+	        {
+	            db.close();
+	        }
+	    }
 	}
 	
 	/**
@@ -770,8 +787,23 @@ public class DBAccessor {
 	 */
 	public void close(Cursor cur)
 	{
-		cur.close();
-		close();
+	    try
+	    {
+    		cur.close();
+    		close();
+        }
+        catch(SQLiteException e)
+        {
+            e.printStackTrace();
+            BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
+        }
+        finally 
+        {
+            if(db != null && db.isOpen())
+            {
+                db.close();
+            }
+        }
 	}
 	
 	/**
@@ -779,11 +811,26 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
-		count-=1;
-		if(count > 0)
-		{
-			db.close();
-		}		
+	    try
+	    {
+    		count-=1;
+    		if(count > 0)
+    		{
+    			db.close();
+    		}
+        }
+        catch(SQLiteException e)
+        {
+            e.printStackTrace();
+            BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
+        }
+        finally 
+        {
+            if(db != null && db.isOpen())
+            {
+                db.close();
+            }
+        }
 	}
 	
 	/**
