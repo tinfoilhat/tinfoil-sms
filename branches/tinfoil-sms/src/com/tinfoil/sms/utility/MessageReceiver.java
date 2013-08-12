@@ -17,6 +17,8 @@
 
 package com.tinfoil.sms.utility;
 
+import org.spongycastle.crypto.InvalidCipherTextException;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +29,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
@@ -167,16 +170,21 @@ public class MessageReceiver extends BroadcastReceiver {
 								 */
 								newMessage = new Message(secretMessage, true, Message.RECEIVED_ENCRYPTED);
 								MessageService.dba.addNewMessage(newMessage, address, true);
-							} 
-							catch (Exception e) 
-							{
+							}
+					        catch (InvalidCipherTextException e)
+					        {
 								encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPT_FAIL);
 								MessageService.dba.addNewMessage(encryMessage, address, true);
 								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
 								Toast.makeText(context, "Possible Man In The Middle Attack", Toast.LENGTH_LONG).show();
 								e.printStackTrace();
+								BugSenseHandler.sendExceptionMessage("Type", "Decrypt Message Error or Man In The Middle Attack", e);
 							}
-							
+							catch (Exception e)
+							{
+							    e.printStackTrace();
+                                BugSenseHandler.sendExceptionMessage("Type", "Message Receiver Error", e);  
+							}
 						}
 						else
 						{

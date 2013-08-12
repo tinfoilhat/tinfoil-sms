@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
@@ -81,6 +82,7 @@ public class RemoveContactsLoader implements Runnable{
 						wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+						BugSenseHandler.sendExceptionMessage("Type", "Remove Contacts Concurrency Issue", e);
 					}
 				}
 			}
