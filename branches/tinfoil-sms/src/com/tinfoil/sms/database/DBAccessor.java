@@ -772,13 +772,6 @@ public class DBAccessor {
             e.printStackTrace();
             BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
 	    }
-	    finally 
-	    {
-	        if(db != null && db.isOpen())
-	        {
-	            db.close();
-	        }
-	    }
 	}
 	
 	/**
