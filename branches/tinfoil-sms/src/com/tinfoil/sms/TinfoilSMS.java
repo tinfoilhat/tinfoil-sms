@@ -17,41 +17,15 @@
 
 package com.tinfoil.sms;
 
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
+import com.bugsense.trace.BugSenseHandler;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-@ReportsCrashes(
-        formKey = "",
-        formUri = "http://code4peace.dyndns.org:5984/acra-tinfoilsms/_design/acra-storage/_update/report",
-        reportType = org.acra.sender.HttpSender.Type.JSON,
-        httpMethod = org.acra.sender.HttpSender.Method.PUT,
-        formUriBasicAuthLogin="reporter",
-        formUriBasicAuthPassword="reportALLthecrashes987",
-        logcatArguments = { "-t", "200", "-v", "time"},
-        // Your usual ACRA configuration
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text
-        )
-
-/*
-@ReportsCrashes(
-        formKey = "",
-        formUri = "http://code4peace.dyndns.org:5984/acra-tinfoilsms/_design/acra-storage/_update/report",
-        reportType = org.acra.sender.HttpSender.Type.JSON,
-        httpMethod = org.acra.sender.HttpSender.Method.PUT,
-        formUriBasicAuthLogin="reporter",
-        formUriBasicAuthPassword="reportALLthecrashes987",
-        // Your usual ACRA configuration
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text
-        )
-*/
 
 /**
- * The main application class which is simply used to initialize ACRA, which is
+ * The main application class which is simply used to initialize Bugsense, which is
  * used to report crashes and other bugs in the application.
  */
 public class TinfoilSMS extends Application
@@ -59,7 +33,11 @@ public class TinfoilSMS extends Application
     @Override
     public void onCreate()
     {
-      super.onCreate();
-      ACRA.init(this);
+        super.onCreate();
+        
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("bugsense_enable", true))
+        {
+            BugSenseHandler.initAndStartSession(this, "169095e2");
+        }
     }
 }

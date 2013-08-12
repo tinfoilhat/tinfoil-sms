@@ -117,10 +117,10 @@
         android:key="feedback_category">
         
         <CheckBoxPreference
-            android:key="acra.enable"
-		    android:title="@string/pref_enable_acra"
-		    android:summaryOn="@string/pref_acra_enabled"
-		    android:summaryOff="@string/pref_acra_disabled"
+            android:key="bugsense_enable"
+		    android:title="@string/pref_enable_bugsense"
+		    android:summaryOn="@string/pref_bugsense_enabled"
+		    android:summaryOff="@string/pref_bugsense_disabled"
 		    android:defaultValue="true"/>
         
           <PreferenceScreen 
