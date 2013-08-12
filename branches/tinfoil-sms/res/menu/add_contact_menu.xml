@@ -5,6 +5,4 @@
 		android:title="Delete Contact"
 		android:titleCondensed="Delete">
     </item>
-    
-
 </menu>

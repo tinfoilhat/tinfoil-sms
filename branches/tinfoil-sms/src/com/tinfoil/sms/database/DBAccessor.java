@@ -20,6 +20,7 @@ package com.tinfoil.sms.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.Entry;
@@ -32,6 +33,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 /**
  * Creates a database that is read and write and provides methods to 
@@ -760,8 +763,7 @@ public class DBAccessor {
      */
 	public void open()
 	{
-		db = contactDatabase.getWritableDatabase();
-		count+=1;
+	    db = contactDatabase.getWritableDatabase();
 	}
 	
 	/**
@@ -779,11 +781,10 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
-		count-=1;
-		if(count > 0)
+		if (db != null && db.isOpen())
 		{
 			db.close();
-		}		
+		}
 	}
 	
 	/**

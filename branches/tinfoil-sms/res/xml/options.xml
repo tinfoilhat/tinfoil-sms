@@ -7,7 +7,7 @@
         
         <CheckBoxPreference 
             android:key="enable"
-            android:summary="Enable or disable SMS encrption"
+            android:summary="Enable or disable SMS encryption"
             android:title="Enable Tinfoil-SMS" 
             android:defaultValue="true" />
                    
@@ -20,7 +20,7 @@
         <CheckBoxPreference 
             android:title="Native Save" 
             android:key="native_save" 
-            android:summary="Save messages to native sms app" 
+            android:summary="Save messages to the native SMS app"
             android:defaultValue="false" />
        
         <EditTextPreference 
@@ -62,7 +62,7 @@
 	    <PreferenceScreen 
 	        android:title="Add Book"
 	        android:key="add_book" 
-	        android:summary="Add a Book Source to the reference list" android:enabled="false">
+	        android:summary="Add a book source to the reference list" android:enabled="false">
         </PreferenceScreen>
 		<PreferenceScreen 
 		    android:title="Manage Books" 
@@ -107,7 +107,7 @@
         <EditTextPreference 
             android:key="vibrate_length"
             android:title="Vibrate Length" 
-            android:summary="Select length of vibration notification" 
+            android:summary="Select the length of vibration notification" 
             android:defaultValue="500"
             android:inputType="number" />
     </PreferenceCategory>
@@ -117,16 +117,16 @@
         android:key="feedback_category">
         
         <CheckBoxPreference
-            android:key="acra.enable"
-		    android:title="@string/pref_enable_acra"
-		    android:summaryOn="@string/pref_acra_enabled"
-		    android:summaryOff="@string/pref_acra_disabled"
+            android:key="bugsense_enable"
+		    android:title="@string/pref_enable_bugsense"
+		    android:summaryOn="@string/pref_bugsense_enabled"
+		    android:summaryOff="@string/pref_bugsense_disabled"
 		    android:defaultValue="true"/>
         
           <PreferenceScreen 
             android:title="Donate"
             android:key="donate"
-            android:summary="Support the Developers">
+            android:summary="Support the developers">
         </PreferenceScreen>  
 	</PreferenceCategory>
     

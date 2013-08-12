@@ -37,6 +37,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Number;
@@ -161,10 +162,12 @@ public class UserKeySettings extends Activity {
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
+			BugSenseHandler.sendExceptionMessage("Type", "Export Public Key Not Found Error", e);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			BugSenseHandler.sendExceptionMessage("Type", "Export Public Key Error", e);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.tinfoil.sms.loader;
 
+import com.bugsense.trace.BugSenseHandler;
+
 public abstract class Loader implements Runnable {
 	
     private boolean loopRunner = true;
@@ -25,6 +27,7 @@ public abstract class Loader implements Runnable {
 						wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+			            BugSenseHandler.sendExceptionMessage("Type", "Loader Concurrency Issue", e);
 					}
 				}
 			}

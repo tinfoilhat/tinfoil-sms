@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.spongycastle.crypto.InvalidCipherTextException;
+
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,6 +34,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
@@ -198,13 +201,13 @@ public abstract class SMSUtility {
                     ConversationView.sharedPrefs.getBoolean("enable", true) &&
                     !message.isExchange())
             {
-            	Encryption CrpytoEngine = new Encryption();
+            	Encryption CryptoEngine = new Encryption();
             	
             	Number number = dba.getNumber(format(message.getNumber()));
             	
             	Log.v("Before Encryption", message.getMessage());
                 //Create the an encrypted message
-            	final String encrypted = CrpytoEngine.encrypt(number, message.getMessage());
+            	final String encrypted = CryptoEngine.encrypt(number, message.getMessage());
             	
             	Log.v("After Encrypted", encrypted);
 
@@ -247,10 +250,19 @@ public abstract class SMSUtility {
             }*/
             
             return true;
-        } catch (final Exception e)
+        }
+        catch (InvalidCipherTextException e)
+        {
+            Toast.makeText(context, "FAILED TO ENCRYPT", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            BugSenseHandler.sendExceptionMessage("Type", "Encrypt Message Error", e);
+            return false;
+        }
+        catch (final Exception e)
         {
             Toast.makeText(context, "FAILED TO SEND", Toast.LENGTH_LONG).show();
             e.printStackTrace();
+            BugSenseHandler.sendExceptionMessage("Type", "Send Message Error", e);
             return false;
         }
     }

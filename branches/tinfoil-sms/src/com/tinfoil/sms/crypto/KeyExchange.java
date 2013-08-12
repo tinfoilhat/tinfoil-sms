@@ -27,6 +27,8 @@ import org.spongycastle.util.encoders.Hex;
 import android.util.Base64;
 import android.util.Log;
 
+import com.bugsense.trace.BugSense;
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.utility.SMSUtility;
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECGKeyExchange;
@@ -74,6 +76,8 @@ public abstract class KeyExchange
         }
         catch (IllegalArgumentException e)
         {
+            e.printStackTrace();
+            BugSenseHandler.sendExceptionMessage("Type", "Key Exchange Decode Error", e);
             return false;
         }
         
