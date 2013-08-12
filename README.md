@@ -3,17 +3,25 @@ Tinfoil-SMS
 
 ## What is Tinfoil-SMS
 
-You can never be sure who or what is viewing your messages or what they’re 
-going to do with them if they should get them. Tinfoil-SMS is an encrypted 
-messaging application so your texts don’t fall into the wrong hands. 
-Tinfoil-SMS uses 256 bit ECC encryption key as well as a unique signed 
-key exchange to prevent any “man-in-the-middle” attacks.
+You can never be sure who or what is viewing your messages or what they’re going 
+to do with them if they should get them. Tinfoil-SMS is an encrypted messaging 
+application so your texts don’t fall into the wrong hands. Tinfoil-SMS uses 256 
+bit ECC public keys as well as a unique signed key exchange to prevent any 
+“man-in-the-middle” attacks.
 
-The only way an unwanted party will see your messages is if they know 
-your secret passphrases and preform a key exchange with you. If you 
-think we’re bluffing or you need to see it to believe it, feel free to 
-poke around the source code. It’s open source and we’ve got nothing to hide. 
+The only way an unwanted party will see your messages is if they know your secret 
+passphrases and trick you into accepting a key exchange from them. If you think 
+we’re bluffing or you need to see it to believe it, feel free to poke around the 
+source code. It’s open source and we’ve got nothing to hide.
 
+
+## Get Tinfoil-SMS
+
+You can get the latest release of Tinfoil-SMS from the Google Play Store, 
+please see the project [Github page](http://tinfoilhat.github.io/tinfoil-sms/) 
+for the relevant download URLs and screenshots of the application. Or if you 
+prefer, you can get a copy of the latest code from the master branch, feel free 
+to submit pull requests for any contributions you would like to make.
 
 
 ## Guiding Principles
