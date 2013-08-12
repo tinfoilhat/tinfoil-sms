@@ -34,6 +34,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 /**
  * Creates a database that is read and write and provides methods to 
@@ -762,16 +763,7 @@ public class DBAccessor {
      */
 	public void open()
 	{
-	    try
-	    {
-	        db = contactDatabase.getWritableDatabase();
-            count+=1;
-	    }
-	    catch(SQLiteException e)
-	    {
-            e.printStackTrace();
-            BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
-	    }
+	    db = contactDatabase.getWritableDatabase();
 	}
 	
 	/**
@@ -780,23 +772,8 @@ public class DBAccessor {
 	 */
 	public void close(Cursor cur)
 	{
-	    try
-	    {
-    		cur.close();
-    		close();
-        }
-        catch(SQLiteException e)
-        {
-            e.printStackTrace();
-            BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
-        }
-        finally 
-        {
-            if(db != null && db.isOpen())
-            {
-                db.close();
-            }
-        }
+		cur.close();
+		close();
 	}
 	
 	/**
@@ -804,26 +781,10 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
-	    try
-	    {
-    		count-=1;
-    		if(count > 0)
-    		{
-    			db.close();
-    		}
-        }
-        catch(SQLiteException e)
-        {
-            e.printStackTrace();
-            BugSenseHandler.sendExceptionMessage("Type", "Database Connection Error", e);
-        }
-        finally 
-        {
-            if(db != null && db.isOpen())
-            {
-                db.close();
-            }
-        }
+		if (db != null && db.isOpen())
+		{
+			db.close();
+		}
 	}
 	
 	/**
