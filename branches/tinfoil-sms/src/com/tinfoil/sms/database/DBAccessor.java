@@ -81,7 +81,7 @@ public class DBAccessor {
 	public static final int LENGTH = 21;
 	public static final int OTHER_INDEX = 7;
 	
-	public static String[] TYPES = new String[] {"", "Home", "Mobile", "Work", "Work Fax",
+	public static String[] TYPES = new String[] {"Home", "Mobile", "Work", "Work Fax",
     	"Home Fax", "Pager", "Other", "Custom", "Callback", "Car", "Company Main", "ISDN", 
     	"Main", "Other Fax", "Telex", "TTY TTD", "Work Mobile", "Work Pager", "Assistant", 
     	"MMS"};

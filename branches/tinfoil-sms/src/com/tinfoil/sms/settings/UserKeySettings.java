@@ -52,7 +52,7 @@ public class UserKeySettings extends Activity {
 	private AutoCompleteTextView phoneBook;
 	
 	public static final String path = "/keys";
-	public static final String file = "public_key.txt";
+	public static final String file = "exchange.txt";
 	
 	
 	@Override
@@ -107,7 +107,6 @@ public class UserKeySettings extends Activity {
 
                 	public void onClick(final DialogInterface dialog, final int which) { 
                 		
-                		//TODO use this to properly sign the key exchange file.
                 		String[] contactInfo = SMSUtility.parseAutoComplete(phoneBook.getText().toString());
                 		//String number = null;
                 		if(contactInfo != null)
@@ -122,30 +121,9 @@ public class UserKeySettings extends Activity {
                 			number.setInitiator(true);
                 			MessageService.dba.updateInitiator(number);
                 			String keyExchangeMessage = KeyExchange.sign(number);
-                			
-	                		File root = Environment.getExternalStorageDirectory();
+
+	            			writeToFile(contactInfo[1], keyExchangeMessage);
 	            			
-	            			File keys = new File(root.getAbsolutePath() + path);
-	            			keys.mkdirs();
-	            			
-	            			File pubKey = new File(keys, contactInfo[1] + "_" + file);
-	            			
-	            			try {
-	            				FileOutputStream f  = new FileOutputStream(pubKey);
-	            				PrintWriter pw = new PrintWriter(f);
-	            				pw.println(keyExchangeMessage);
-	            				pw.flush();
-	            				pw.close();
-	            				f.close();
-	            			}
-	            			catch (FileNotFoundException e)
-	            			{
-	            				e.printStackTrace();
-	            			}
-	            			catch (IOException e)
-	            			{
-	            				e.printStackTrace();
-	            			}
 	            			Toast.makeText(UserKeySettings.this, "Written to your sd card under " + path + "/" + contactInfo[1] + "_" + file, Toast.LENGTH_SHORT).show();
                 		}
                 	}
@@ -160,13 +138,33 @@ public class UserKeySettings extends Activity {
 			popup_alert.show();
 			
 			//getExternalFilesDir(null);
-			
-			
 		}
-		
 	}
 	
-	
-	
-	
+	public static void writeToFile(String name, String text)
+	{
+		File root = Environment.getExternalStorageDirectory();
+		
+		File keys = new File(root.getAbsolutePath() + path);
+		keys.mkdirs();
+		
+		File pubKey = new File(keys, name + "_" + file);
+		
+		try {
+			FileOutputStream f  = new FileOutputStream(pubKey);
+			PrintWriter pw = new PrintWriter(f);
+			pw.println(text);
+			pw.flush();
+			pw.close();
+			f.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

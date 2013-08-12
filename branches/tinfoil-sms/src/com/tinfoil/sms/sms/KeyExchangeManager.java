@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -164,7 +166,7 @@ public class KeyExchangeManager extends Activity {
 	
 	/**
 	 * Respond to the key exchange messages 
-	 * @param context TODO
+	 * @param context The context of the activity
 	 * @param number The number of the contact for the key exchange
 	 * @param entry The key exchange entry received.
 	 */
@@ -222,28 +224,10 @@ public class KeyExchangeManager extends Activity {
 	    	   @Override
 	    	   public void onClick(DialogInterface arg0, int arg1) {
     		   	
-	    		   //Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
-	    		   AlertDialog.Builder builder = new AlertDialog.Builder(context);
-	  			 
-		  			 builder.setMessage("The shared secrets you have do not match those in the " +
-		  					 			"key exchange. This could mean the secrets are wrong or " +
-		  					 			"there key exchange was tampered with")
-		  		       .setCancelable(true).setTitle("Warning!")
-		  		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		  		    	   @Override
-		  		    	   public void onClick(DialogInterface dialog, int id) {
-		  		               //Save the shared secrets
-		  		    		  
-		  		           }})
-		  		       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
-		  	    	   @Override
-		  	    	   public void onClick(DialogInterface arg0, int arg1) {
-		  	    		   	//Cancel the key exchange
-		  	    		   Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
-		  	    	   }});
-		  			AlertDialog alert = builder.create();
-		  			
-		  			alert.show();
+	    		   String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges";
+	    		   Intent i = new Intent(Intent.ACTION_VIEW);
+	    		   i.setData(Uri.parse(url));
+	    		   context.startActivity(i);
 	    	   }});
 			AlertDialog alert = builder.create();
 			
@@ -307,16 +291,16 @@ public class KeyExchangeManager extends Activity {
 	}*/
 
 	//TODO fix menu item  
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.key_exchange_manager, menu);
 		return true;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		/*switch (item.getItemId()) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
 			// activity, the Up button is shown. Use NavUtils to allow users
@@ -327,9 +311,9 @@ public class KeyExchangeManager extends Activity {
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-		}*/
+		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 	
     @Override
     protected void onDestroy()
