@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -97,7 +99,7 @@ public class KeyExchangeManager extends Activity {
 					if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
-						respondMessage(number, runThread.getEntries().get(i));
+						respondMessage(this, number, runThread.getEntries().get(i));
 					}
 					else
 					{
@@ -143,7 +145,7 @@ public class KeyExchangeManager extends Activity {
 	    			   number.setSharedInfo2(s2);
 	    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
 
-		               respondMessage(number, entry);
+		               respondMessage(context, number, entry);
 	    		   }
 	    		   else
 	    		   {
@@ -164,10 +166,11 @@ public class KeyExchangeManager extends Activity {
 	
 	/**
 	 * Respond to the key exchange messages 
+	 * @param context The context of the activity
 	 * @param number The number of the contact for the key exchange
 	 * @param entry The key exchange entry received.
 	 */
-	public static void respondMessage(Number number,Entry entry)
+	public static void respondMessage(final Context context, Number number, Entry entry)
 	{
 		if(KeyExchange.verify(number, entry.getMessage()))
 		{
@@ -199,7 +202,36 @@ public class KeyExchangeManager extends Activity {
 		}
 		else
 		{
-			 //TODO handle bad shared secrets 
+			 Log.v("Key Exchange", "Invalid key exchange");
+			 //Toast.makeText(context, "Invalid Key exchange", Toast.LENGTH_LONG).show();
+			 
+			 String name = MessageService.dba.getRow(number.getNumber()).getName();
+			 
+			 final String text = name + ", " + number.getNumber();
+			 
+			 AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			 
+			 builder.setMessage("The Key Exchange with " + text
+			 					+ " was unsuccessful. This is a potential man-in-the-middle attack." +
+			 					" Please ensure your shared secrets are correct")
+		       .setCancelable(true).setTitle("Warning!")
+		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		    	   @Override
+		    	   public void onClick(DialogInterface dialog, int id) {
+		    		  
+		           }})
+		       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
+	    	   @Override
+	    	   public void onClick(DialogInterface arg0, int arg1) {
+    		   	
+	    		   String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges";
+	    		   Intent i = new Intent(Intent.ACTION_VIEW);
+	    		   i.setData(Uri.parse(url));
+	    		   context.startActivity(i);
+	    	   }});
+			AlertDialog alert = builder.create();
+			
+			alert.show();
 		}
 		updateList();
 	}
@@ -259,16 +291,16 @@ public class KeyExchangeManager extends Activity {
 	}*/
 
 	//TODO fix menu item  
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.key_exchange_manager, menu);
 		return true;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		/*switch (item.getItemId()) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
 			// activity, the Up button is shown. Use NavUtils to allow users
@@ -279,9 +311,9 @@ public class KeyExchangeManager extends Activity {
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-		}*/
+		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 	
     @Override
     protected void onDestroy()

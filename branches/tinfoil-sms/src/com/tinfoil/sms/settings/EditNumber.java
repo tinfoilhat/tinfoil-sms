@@ -26,6 +26,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,6 +49,8 @@ import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.sms.KeyExchangeManager;
+import com.tinfoil.sms.sms.MessageView;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -314,48 +319,96 @@ public class EditNumber extends Activity{
         return true;
     }
     
+    private String[] fileNames;
+    private AlertDialog popup_alert;
+    
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.import_key:
             	
-            	//TODO make a dialog to allow them to set the folder and the file to look for.
-            	if(SMSUtility.isMediaAvailable())
+            	if(SMSUtility.isMediaAvailable() && SMSUtility.checksharedSecret(number.getSharedInfo1()) 
+            			&& SMSUtility.checksharedSecret(number.getSharedInfo2()))
             	{
-            		StringBuilder sb = new StringBuilder();
-            		File root = Environment.getExternalStorageDirectory();
-            		File pubKey = new File(root.getAbsolutePath() + UserKeySettings.path + "/" + originalNumber + "_" + UserKeySettings.file);
+            		final File root = Environment.getExternalStorageDirectory();
             		
-            		try {
-						FileInputStream f = new FileInputStream(pubKey);
-						
-						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(f));
-					    String line;
-					    while ((line = bufferedReader.readLine()) != null) {
-					        sb.append(line);
-					    }
-					    bufferedReader.close();
-					    f.close();
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-           		
-            		String keyExchangeMessage = sb.toString();
+            		File dir = new File(root.getAbsolutePath() + UserKeySettings.path + "/"); 
+            		File[] contents = dir.listFiles();
             		
-            		if(KeyExchange.isKeyExchange(keyExchangeMessage))
+            		fileNames = new String[contents.length];
+            		for (int i = 0; i < contents.length; i++)
             		{
-            			if(KeyExchange.verify(number, keyExchangeMessage))
-						{
-            				Log.v("Key Exchange", "Exchange Key Message Received");
-			                
-							number.setPublicKey(KeyExchange.encodedPubKey(keyExchangeMessage));
-							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
-							
-							MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
-						}
+            			fileNames[i] = contents[i].getAbsolutePath();
             		}
+        			
+        			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
+        			
+        			
+        			popup_builder.setTitle("Input contact's number")
+        				.setCancelable(true)
+                        .setSingleChoiceItems(fileNames, 0, new DialogInterface.OnClickListener() {
+
+                        	public void onClick(final DialogInterface dialog, final int which) { 
+                        		
+                        		popup_alert.dismiss();
+                        		String selectedFile = (String) fileNames[which];
+                        		
+                        		if(selectedFile != null)
+                        		{                        			
+                        			StringBuilder sb = new StringBuilder();
+                        			
+                        			File pubKey = new File(selectedFile);
+                            		
+                            		try {
+                						FileInputStream f = new FileInputStream(pubKey);
+                						
+                						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(f));
+                					    String line;
+                					    while ((line = bufferedReader.readLine()) != null) {
+                					        sb.append(line);
+                					    }
+                					    bufferedReader.close();
+                					    f.close();
+                					} catch (FileNotFoundException e) {
+                						e.printStackTrace();
+                					} catch (IOException e) {
+                						e.printStackTrace();
+                					}
+                           		
+                            		String keyExchangeMessage = sb.toString();
+                            		
+                            		if(KeyExchange.isKeyExchange(keyExchangeMessage))
+                            		{
+                            			if(KeyExchange.verify(number, keyExchangeMessage))
+                						{
+                            				Log.v("Key Exchange", "Exchange Key Message Received");
+                			                
+                							number.setPublicKey(KeyExchange.encodedPubKey(keyExchangeMessage));
+                							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
+                							
+                							MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
+                							Toast.makeText(EditNumber.this, "Key Exchange Import", Toast.LENGTH_SHORT).show();
+                							
+                							if(!number.isInitiator())
+    										{
+    											Log.v("Key Exchange", "Not Initiator");
+    											//MessageService.dba.addMessageToQueue(number.getNumber(),
+    												//	KeyExchange.sign(number), true);
+    											exportOrSend(EditNumber.this, number);
+    										}
+    										
+    										ManageContactsActivity.updateList();
+                						}
+                            		}
+        	            			
+                        		}
+                        	}
+                        });
+        			
+        			popup_alert = popup_builder.create();
+        			popup_alert.show();
+            		
+            		
             	}
             	
             	return true;
@@ -372,7 +425,6 @@ public class EditNumber extends Activity{
             	else
             	{
             		MessageService.dba.deleteNumber(originalNumber);
-            		
             	}
             	
             	data.putExtra(EditNumber.UPDATE, true);
@@ -387,7 +439,29 @@ public class EditNumber extends Activity{
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
     
+    public static void exportOrSend(Context context,final Number number)
+    {
+    	final String name = MessageService.dba.getRow(number.getNumber()).getName();
+    	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    	builder.setMessage("Would you like to export or send via SMS the exchange keys for " + name + ", " + number.getNumber() + "?")
+		    .setCancelable(true)
+		    .setPositiveButton("SMS", new DialogInterface.OnClickListener() {
+	    	   @Override
+	    	   public void onClick(DialogInterface dialog, int id) {
+	    		   MessageService.dba.addMessageToQueue(number.getNumber(),
+							KeyExchange.sign(number), true);
+		    }})
+		    .setNegativeButton("Export", new DialogInterface.OnClickListener() {
+	    	   @Override
+	    	   public void onClick(DialogInterface dialog, int id) {
+	    		   UserKeySettings.writeToFile(number.getNumber(), KeyExchange.sign(number));
+	    	   }
+		    });
+		
+ 		AlertDialog alert = builder.create();
+ 		alert.show();
+    }
+
 }

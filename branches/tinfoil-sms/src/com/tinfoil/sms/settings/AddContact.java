@@ -17,6 +17,10 @@
 
 package com.tinfoil.sms.settings;
 
+import java.lang.reflect.Array;
+
+import org.spongycastle.util.Arrays;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

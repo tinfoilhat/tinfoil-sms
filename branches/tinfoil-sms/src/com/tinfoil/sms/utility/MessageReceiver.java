@@ -222,7 +222,7 @@ public class MessageReceiver extends BroadcastReceiver {
 													KeyExchange.sign(number), true);
 										}
 										
-										ManageContactsActivity.updateList();									
+										ManageContactsActivity.updateList();
 									}
 								}
 								else
