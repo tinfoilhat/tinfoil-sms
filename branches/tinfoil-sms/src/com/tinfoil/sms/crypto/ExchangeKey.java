@@ -158,7 +158,7 @@ public class ExchangeKey implements Runnable {
          * Start Key exchanges 1 by 1, messages are prepared and then placed in
          * the messaging queue.
          */       
-        
+
         boolean invalid = false;
         if (this.trusted != null)
         {
@@ -196,7 +196,9 @@ public class ExchangeKey implements Runnable {
         {
         	trustedContact = MessageService.dba.getRow(number.getNumber());
         	
-        	//TODO comment
+        	/*
+        	 * Get the shared secrets from the user.
+        	 */
         	activity.runOnUiThread(new Runnable() {
         	    public void run() {
         	    	

@@ -216,7 +216,7 @@ public abstract class SMSUtility {
                 
                 MessageService.dba.updateEncryptNonce(number);
 
-                if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
+                if (ConversationView.sharedPrefs.getBoolean("showEncrypt", false))
                 {
                     sendToSelf(context, message.getNumber(), encrypted, ConversationView.SENT);
                     dba.addNewMessage(new Message (encrypted, true, Message.SENT_ENCRYPTED),
