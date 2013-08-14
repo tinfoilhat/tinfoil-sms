@@ -74,6 +74,10 @@
     <string name="pref_bugsense_enabled">Disable bug reporting</string>
     <string name="pref_bugsense_disabled">Enable bug reporting</string>
     <string name="title_activity_tab_selection">Manage Contacts</string>
-
     <string name="add_contact">Add Contact</string>
+    <string name="title_activity_donations">Donate</string>
+    <string name="hello_world">Hello world!</string>
+
+    
+    <string name="donate">Donate</string>
 </resources>

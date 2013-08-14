@@ -127,6 +127,11 @@
             android:title="Donate"
             android:key="donate"
             android:summary="Support the developers">
+			
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:targetPackage="com.tinfoil.sms"
+				android:targetClass="com.tinfoil.sms.settings.DonationsActivity" />
         </PreferenceScreen>  
 	</PreferenceCategory>
     

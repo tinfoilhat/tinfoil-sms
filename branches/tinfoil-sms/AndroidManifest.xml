@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -103,6 +103,10 @@
         <activity
             android:name="com.tinfoil.sms.settings.TabSelection"
             android:label="@string/title_activity_tab_selection" >
+        </activity>
+        <activity
+            android:name="com.tinfoil.sms.settings.DonationsActivity"
+            android:label="@string/title_activity_donations" >
         </activity>
     </application>
 
