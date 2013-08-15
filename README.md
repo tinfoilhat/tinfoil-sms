@@ -1,3 +1,6 @@
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZP8ZHVFATTTY" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="PayPal - The safer, easier way to pay online!" title="PayPal - The safer, easier way to pay online!" border="0" /></a>
+<a href="http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a> 
+
 Tinfoil-SMS
 ========================================
 
