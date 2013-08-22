@@ -76,8 +76,10 @@
     <string name="title_activity_tab_selection">Manage Contacts</string>
     <string name="add_contact">Add Contact</string>
     <string name="title_activity_donations">Donate</string>
-    <string name="hello_world">Hello world!</string>
 
     
     <string name="donate">Donate</string>
+    <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
+    <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
+    
 </resources>

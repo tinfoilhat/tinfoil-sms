@@ -31,14 +31,27 @@ public class DonationsActivity extends Activity {
 					DonationsActivity.this.finish();
 				}		    	
 		    })
-		    .setPositiveButton(this.getString(R.string.donate), new DialogInterface.OnClickListener() {
+		    .setNeutralButton("Flattr", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//String url = "http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid";
+					Intent i = new Intent(Intent.ACTION_VIEW);
+					i.setData(Uri.parse(DonationsActivity.this.getString(R.string.flattr_url)));
+					DonationsActivity.this.startActivity(i);
+					
+					DonationsActivity.this.finish();
+				}
+			})
+		    .setPositiveButton("PayPal", new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
-	    		   String url = "https://github.com/tinfoilhat/tinfoil-sms";
+	    		   //String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZP8ZHVFATTTY";
 	    		   Intent i = new Intent(Intent.ACTION_VIEW);
-	    		   i.setData(Uri.parse(url));
+	    		   i.setData(Uri.parse(DonationsActivity.this.getString(R.string.paypal_url)));
 	    		   DonationsActivity.this.startActivity(i);
-
+	    		   
+	    		   DonationsActivity.this.finish();
 	    	   }})
 		    .setNegativeButton("No", new DialogInterface.OnClickListener() {
 	    	   @Override
