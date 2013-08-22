@@ -25,12 +25,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -108,6 +110,25 @@ public class DBAccessor {
 	public DBAccessor (Context c)
 	{
 		contactDatabase = new SQLitehelper(c);
+		
+		if(!TinfoilSMS.threadable)
+		{
+			db = contactDatabase.getWritableDatabase();
+		}
+	}
+	
+	public static DBAccessor createNewConnection(Context c)
+	{
+		if(TinfoilSMS.threadable)
+		{
+			return new DBAccessor(c);
+		}
+		
+		if(MessageService.dba == null)
+		{
+			MessageService.dba = new DBAccessor(c);
+		}
+		return MessageService.dba;
 	}
 	
 	/**
@@ -760,7 +781,11 @@ public class DBAccessor {
      */
 	public void open()
 	{
-	    db = contactDatabase.getWritableDatabase();
+		if(count == 0 && TinfoilSMS.threadable)
+	    {
+			db = contactDatabase.getWritableDatabase();
+	    }
+		count++;
 	}
 	
 	/**
@@ -778,9 +803,13 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
+		count--;
 		if (db != null && db.isOpen())
 		{
-			db.close();
+			if(count == 0 && TinfoilSMS.threadable)
+			{
+				db.close();
+			}
 		}
 	}
 	

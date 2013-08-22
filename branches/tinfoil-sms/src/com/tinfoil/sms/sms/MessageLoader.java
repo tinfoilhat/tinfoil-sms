@@ -25,12 +25,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.Loader;
 
 public class MessageLoader extends Loader{
 	
-    private Context context;
     private boolean update;
     private Handler handler;
     
@@ -43,7 +41,7 @@ public class MessageLoader extends Loader{
      */
     public MessageLoader(Context context, boolean update, Handler handler)
     {
-    	this.context = context;
+    	super(context);
     	this.update = update;
     	this.handler = handler;
     	start();
@@ -52,7 +50,6 @@ public class MessageLoader extends Loader{
     @Override
 	public void execution() {
     	
-		DBAccessor loader = new DBAccessor(context);
 		if(!update)
 		{				
 	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);

@@ -2,6 +2,7 @@ package com.tinfoil.sms.sms;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,8 +23,9 @@ public class KeyExchangeLoader extends Loader{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public KeyExchangeLoader(Handler handler)
+    public KeyExchangeLoader(Context context, Handler handler)
     {
+    	super(context);
     	this.handler = handler;
     	start();
     }

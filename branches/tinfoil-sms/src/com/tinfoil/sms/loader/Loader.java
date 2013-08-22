@@ -1,6 +1,9 @@
 package com.tinfoil.sms.loader;
 
+import android.content.Context;
+
 import com.bugsense.trace.BugSenseHandler;
+import com.tinfoil.sms.database.DBAccessor;
 
 public abstract class Loader implements Runnable {
 	
@@ -8,6 +11,15 @@ public abstract class Loader implements Runnable {
     private boolean start = true;
     private Thread thread;
     
+    protected Context context;
+    
+    protected DBAccessor loader;
+    
+    public Loader(Context context)
+    {
+    	this.context = context;
+    }
+        
     public void start()
     {
     	thread = new Thread(this);
@@ -18,6 +30,7 @@ public abstract class Loader implements Runnable {
 	public void run() {
 		while (loopRunner)
 		{
+			loader = DBAccessor.createNewConnection(context);
 			execution();
 			// Wait for the next time the list needs to be updated/loaded
 			while(loopRunner && start)

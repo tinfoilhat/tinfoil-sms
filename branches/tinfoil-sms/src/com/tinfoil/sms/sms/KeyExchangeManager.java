@@ -68,7 +68,7 @@ public class KeyExchangeManager extends Activity {
 		// Show the Up button in the action bar.
 		//setupActionBar();
 		
-		runThread = new KeyExchangeLoader(handler);
+		runThread = new KeyExchangeLoader(this, handler);
 	}
 
 	/**

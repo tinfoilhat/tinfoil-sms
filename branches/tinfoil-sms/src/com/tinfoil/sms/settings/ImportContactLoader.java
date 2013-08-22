@@ -17,7 +17,6 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.Loader;
 import com.tinfoil.sms.sms.ConversationView;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 public class ImportContactLoader extends Loader{
@@ -39,6 +38,7 @@ public class ImportContactLoader extends Loader{
     public ImportContactLoader(Activity activity, boolean clicked, 
     		ArrayList<Boolean> inDb, ArrayList<TrustedContact> tc, Handler handler)
     {
+    	super(activity.getBaseContext());
     	this.activity = activity;
     	this.handler = handler;
     	this.clicked = clicked;
@@ -176,7 +176,7 @@ public class ImportContactLoader extends Loader{
                      * added.
                      */
                     if (number != null && !number.isEmpty() &&
-                            !MessageService.dba.inDatabase(number))
+                            !loader.inDatabase(number))
                     {
                         tc.add(new TrustedContact(name, number));
                         this.inDb.add(false);
@@ -254,7 +254,7 @@ public class ImportContactLoader extends Loader{
                     } while (sCur.moveToNext());
                 }
                 if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber())
-                        && !MessageService.dba.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
+                        && !loader.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
                 {
                     tc.add(new TrustedContact(newNumber));
                     this.inDb.add(false);
@@ -276,7 +276,7 @@ public class ImportContactLoader extends Loader{
             {
                 if (this.inDb.get(i))
                 {
-                    MessageService.dba.addRow(tc.get(i));
+                    loader.addRow(tc.get(i));
                 }
             }
             

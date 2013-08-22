@@ -72,7 +72,7 @@ public class RemoveContactsActivity extends Activity {
                 "Loading. Please wait...", true, false);
 
         //update();
-        runThread = new RemoveContactsLoader(false, contact, tc, handler);
+        runThread = new RemoveContactsLoader(this, false, contact, tc, handler);
 
         //Create what happens when you click on a button
         this.listView.setOnItemClickListener(new OnItemClickListener()

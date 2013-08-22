@@ -20,7 +20,6 @@ package com.tinfoil.sms.sms;
 import android.content.Context;
 import android.os.Handler;
 
-import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.Loader;
 
 /**
@@ -28,7 +27,6 @@ import com.tinfoil.sms.loader.Loader;
  */
 public class ConversationLoader extends Loader {
 
-    private Context context;
     private boolean update;
     private Handler handler;
     
@@ -41,6 +39,7 @@ public class ConversationLoader extends Loader {
      */
     public ConversationLoader(Context context, boolean update, Handler handler)
     {
+    	super(context);
     	this.context = context;
     	this.update = update;
     	this.handler = handler;
@@ -49,7 +48,6 @@ public class ConversationLoader extends Loader {
 
     @Override
 	public void execution() {
-		DBAccessor loader = new DBAccessor(context);
 	
 		ConversationView.msgList = loader.getConversations();
 		if(!update) {

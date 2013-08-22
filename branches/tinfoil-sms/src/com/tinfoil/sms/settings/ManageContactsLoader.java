@@ -39,7 +39,6 @@ public class ManageContactsLoader extends Loader{
 	public static final String EMPTYLIST = "emptyListValues";
 	private boolean exchange;
 	private Handler handler;
-	private Context context;
 	public boolean[] trusted;
 	
 	/**
@@ -49,7 +48,7 @@ public class ManageContactsLoader extends Loader{
 	 */
 	public ManageContactsLoader(Context context, Handler handler, boolean exchange)
 	{
-		this.context = context;
+		super(context);
 		this.handler = handler;
 		this.exchange = exchange;
     	start();
@@ -63,8 +62,6 @@ public class ManageContactsLoader extends Loader{
 		 */
 		String emptyListValue = "";
 		
-		DBAccessor loader = new DBAccessor(context);
-    	
     	Log.v("Thread", "In the thread");
     	if(exchange)
     	{

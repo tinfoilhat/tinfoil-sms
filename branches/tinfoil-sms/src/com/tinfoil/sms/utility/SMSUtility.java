@@ -243,13 +243,7 @@ public abstract class SMSUtility {
                 
                 Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
             }
-            
-            // Refresh the lists once the message is sent
-            /*if(!message.isExchange())
-            {
-            	MessageView.updateList();
-            }*/
-            
+
             return true;
         }
         catch (InvalidCipherTextException e)
@@ -361,6 +355,12 @@ public abstract class SMSUtility {
 		return false;
 	}
 	
+	/**
+	 * Checks the two given strings.
+	 * @param original The original string
+	 * @param updated The updated string
+	 * @return If the 2 strings are the same return true, otherwise false
+	 */
     public static boolean isChanged(String original, String updated)
     {
     	if(original != null && updated != null && original.equals(updated))

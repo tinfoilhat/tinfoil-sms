@@ -3,18 +3,16 @@ package com.tinfoil.sms.settings;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.loader.Loader;
 
-public class RemoveContactsLoader implements Runnable{
+public class RemoveContactsLoader extends Loader{
 
-    private boolean loopRunner = true;
-    private boolean start = true;
 	private Thread thread;
 	private boolean clicked;
 	private boolean[] contact;
@@ -28,68 +26,51 @@ public class RemoveContactsLoader implements Runnable{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public RemoveContactsLoader(boolean clicked, boolean[] contact, ArrayList<TrustedContact> tc, Handler handler)
+    public RemoveContactsLoader(Context context, boolean clicked, boolean[] contact, ArrayList<TrustedContact> tc, Handler handler)
     {
+    	super(context);
     	this.clicked = clicked;
     	this.contact = contact;
     	this.handler = handler;
     	this.tc = tc;
     	thread = new Thread(this);
 		thread.start();
-    }
-	
-	@Override
-	public void run() {
 		
-		while (loopRunner)
-		{
-	        if (this.clicked)
-	        {
-	            for (int i = 0; i < this.tc.size(); i++)
-	            {
-	                if (this.contact[i])
-	                {
-	                    MessageService.dba.removeRow(this.tc.get(i).getANumber());
-	                }
-	            }
-	        }
-	
-	        String[] names = update();
-	        
-	        android.os.Message msg = new android.os.Message();
-        	Bundle b = new Bundle();
-        	b.putSerializable(RemoveContactsActivity.TRUSTED, (Serializable) tc);
-        	b.putBooleanArray(RemoveContactsActivity.CONTACTS, contact);
-        	b.putStringArray(RemoveContactsActivity.NAMES, names);
-        	msg.setData(b);
-        	
-        	if (tc != null)
-        	{
-        		msg.what = RemoveContactsActivity.UPDATE;
-        	}
-        	else
-        	{
-        		msg.what = RemoveContactsActivity.EMPTY;
-        	}
-        	
-        	handler.sendMessage(msg);
-        
-	    	// Wait for the next time the list needs to be updated/loaded
-			while(loopRunner && start)
-			{
-				synchronized(this){
-					try {
-						wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-						BugSenseHandler.sendExceptionMessage("Type", "Remove Contacts Concurrency Issue", e);
-					}
-				}
-			}
-			
-			start = true;
-		}
     }
+    
+	@Override
+	public void execution() {
+		if (this.clicked)
+        {
+            for (int i = 0; i < this.tc.size(); i++)
+            {
+                if (this.contact[i])
+                {
+                	loader.removeRow(this.tc.get(i).getANumber());
+                }
+            }
+        }
+
+        String[] names = update();
+        
+        android.os.Message msg = new android.os.Message();
+    	Bundle b = new Bundle();
+    	b.putSerializable(RemoveContactsActivity.TRUSTED, (Serializable) tc);
+    	b.putBooleanArray(RemoveContactsActivity.CONTACTS, contact);
+    	b.putStringArray(RemoveContactsActivity.NAMES, names);
+    	msg.setData(b);
+    	
+    	if (tc != null)
+    	{
+    		msg.what = RemoveContactsActivity.UPDATE;
+    	}
+    	else
+    	{
+    		msg.what = RemoveContactsActivity.EMPTY;
+    	}
+    	
+    	handler.sendMessage(msg);
+	}
 	
 	/**
      * Updates the list of contacts
@@ -97,7 +78,7 @@ public class RemoveContactsLoader implements Runnable{
     private String[] update()
     {
         String[] names;
-        this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
+        this.tc = loader.getAllRows(DBAccessor.ALL);
 
         if (this.tc != null)
         {
@@ -130,25 +111,4 @@ public class RemoveContactsLoader implements Runnable{
 		this.clicked = clicked;
 		notifyAll();
 	}
-    
-    /**
-     * The semaphore for waking the thread up to reload the contacts
-     * @param start Whether to start the execution of the thread or not
-     */
-    public synchronized void setStart(boolean start) {
-		this.start = start;
-		notifyAll();
-	}
-    
-    /**
-     * The semaphore for keeping the thread running. This can be left as true
-     * until the activity is no longer in use (onDestroy) where it can be set to
-     * false.
-     * @param runner Whether the thread should be kept running
-     */
-    public synchronized void setRunner(boolean runner) {
-		this.loopRunner = runner;
-		notifyAll();
-	}
-
 }
