@@ -27,15 +27,13 @@ import org.spongycastle.util.encoders.Hex;
 import android.util.Base64;
 import android.util.Log;
 
-import com.bugsense.trace.BugSense;
 import com.bugsense.trace.BugSenseHandler;
+import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.SMSUtility;
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECGKeyExchange;
 import com.tinfoilsms.crypto.ECGKeyUtil;
 import com.tinfoilsms.crypto.ECKeyParam;
-
-import com.tinfoil.sms.dataStructures.Number;
 
 
 /**
@@ -50,6 +48,9 @@ public abstract class KeyExchange
     /* The size in bytes, of the checksum used, CRC32 is 4 bytes (32 bits) */
     private static final int CHECKSUM_SIZE = 4;
     
+    public static final int VALID_KEY_EXCHANGE = 0;
+    public static final int VALID_KEY_REVERSE = 1;
+    public static final int INVALID_KEY_EXCHANGE = 2;    
     
     /**
      * Attempts to identify if the message received is a key exchange by checking
@@ -191,6 +192,44 @@ public abstract class KeyExchange
         return Base64.encodeToString(signedPubKeySum, Base64.DEFAULT);
     }
     
+    /**
+     * Facilitate the verification of the key exchange and allow for
+     * the user to decide if they wish to ignore the security vulnerability
+     * caused by accepting a key exchange initiation from the other contact
+     * after initiating a key exchange them self. (User A sends a key
+     * exchange to User B and then receives a key exchange from User B
+     * but the key exchange has User B as the initiator) This could lead to 
+     * a man in the middle attack.
+     * 
+     * @param number The contact's Number
+     * @param signedPubKey The signed public key received from the contact
+     * @return If it is a valid key exchange the return will be VALID_KEY_EXCHANGE,
+     * if the sender was set as the initiator (reversed) the return will be
+     * VALID_KEY_REVERSE, otherwise it will return INVALID_KEY_EXCHANGE
+     */
+    public static int validateKeyExchange(Number number, String signedPubKey)
+    {
+    	if(verify(number, signedPubKey))
+    	{
+    		return VALID_KEY_EXCHANGE;
+    	}
+    	
+    	if(number.isInitiator())
+    	{
+	    	// Check if the key exchange is initiated by the other person
+	    	number.setInitiator(false);
+	    	
+	    	if(verify(number, signedPubKey))
+	    	{
+	    		return VALID_KEY_REVERSE;
+	    	}
+	    	
+	    	// Set the initiator back to previous state
+	    	number.setInitiator(true);
+    	}
+    	
+		return INVALID_KEY_EXCHANGE;
+    }
     
     /**
      * Verifies the public key received and verifies that the signature is valid

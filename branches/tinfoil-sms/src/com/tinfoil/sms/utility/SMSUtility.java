@@ -23,9 +23,11 @@ import java.util.regex.Pattern;
 
 import org.spongycastle.crypto.InvalidCipherTextException;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.crypto.Encryption;
+import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
@@ -65,6 +68,7 @@ public abstract class SMSUtility {
     public static final int MESSAGE_LENGTH = 160;
     public static final int LIMIT = 50;
     public static final boolean saveMessage = false;
+    
     
     public static User user;
 
@@ -359,5 +363,7 @@ public abstract class SMSUtility {
 		}
 		return false;
 	}
+	
+	
 	
 }

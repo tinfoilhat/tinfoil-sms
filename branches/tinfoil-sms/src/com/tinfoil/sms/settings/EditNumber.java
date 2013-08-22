@@ -54,6 +54,7 @@ import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
+ * TODO add remove initiator flag.
  * An activity used to edit a single number from a given contact. 
  * 
  * This activity returns a AddContact.RESULT_CODE if changes have been made and

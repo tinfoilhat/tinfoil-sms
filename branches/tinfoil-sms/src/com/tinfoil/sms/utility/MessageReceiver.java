@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.crypto.KeyExchange;
+import com.tinfoil.sms.crypto.KeyExchangeHandler;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
@@ -44,6 +45,7 @@ public class MessageReceiver extends BroadcastReceiver {
 	public static boolean myActivityStarted = false;
 	public static boolean keyExchangeManual = false;
 	public static boolean keyExchange = false;
+	public static boolean invalidKeyExchange = false;
 	public static final String VIBRATOR_LENTH = "500";
 	
     @Override
@@ -92,7 +94,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 					}
 					
-					String address = messages[0].getOriginatingAddress();
+					final String address = messages[0].getOriginatingAddress();
 					String secretMessage = null;
 						    	
 			    	/*
@@ -112,12 +114,15 @@ public class MessageReceiver extends BroadcastReceiver {
 							vibrator.vibrate(Long.valueOf(value));
 						}
 	
+						invalidKeyExchange = false;
+						
 						/*
 						 * Checks if the user is a trusted contact and if tinfoil-sms encryption is
 						 * enabled.
 						 */
 						if (MessageService.dba.isTrustedContact((address)) && 
 								ConversationView.sharedPrefs.getBoolean("enable", true)) {
+							
 							
 							Message encryMessage = null; 
 							/*
@@ -208,30 +213,74 @@ public class MessageReceiver extends BroadcastReceiver {
 										SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 										SMSUtility.checksharedSecret(number.getSharedInfo2()))
 								{
-									//Might be good to condense this into a method.
-									if(KeyExchange.verify(number, message))
-									{
-										keyExchange = true;
-										Toast.makeText(context, "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
-										Log.v("Key Exchange", "Exchange Key Message Received");
-										
-										Log.v("S1", number.getSharedInfo1());
-						                Log.v("S2", number.getSharedInfo2());
-						                
-										number.setPublicKey(KeyExchange.encodedPubKey(message));
-										number.setSignature(KeyExchange.encodedSignature(message));
-										
-										MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
-										
-										if(!number.isInitiator())
-										{
-											Log.v("Key Exchange", "Not Initiator");
-											MessageService.dba.addMessageToQueue(number.getNumber(),
-													KeyExchange.sign(number), true);
+									new KeyExchangeHandler(context, number, message, false){
+
+										@Override
+										public void accept(){
+											keyExchange = true;
+											Toast.makeText(this.getContext(), "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
+											Log.v("Key Exchange", "Exchange Key Message Received");
+											
+											Log.v("S1", this.getNumber().getSharedInfo1());
+							                Log.v("S2", this.getNumber().getSharedInfo2());
+							                
+							                this.getNumber().setPublicKey(KeyExchange.encodedPubKey(this.getSignedPubKey()));
+							                this.getNumber().setSignature(KeyExchange.encodedSignature(this.getSignedPubKey()));
+											
+											MessageService.dba.updateNumberRow(this.getNumber(), this.getNumber().getNumber(), 0);
+											
+											if(!this.getNumber().isInitiator())
+											{
+												Log.v("Key Exchange", "Not Initiator");
+												MessageService.dba.addMessageToQueue(this.getNumber().getNumber(),
+														KeyExchange.sign(this.getNumber()), true);
+											}
+											
+											ManageContactsActivity.updateList();
+											super.accept();
 										}
 										
-										ManageContactsActivity.updateList();
+										@Override
+										public void invalid(){
+											invalidKeyExchange = true;
+											super.invalid();
+										}
+										
+										public void store(){
+											cancel();
+										}
+										
+										public void cancel(){
+											keyExchangeManual = true;
+											Toast.makeText(this.getContext(), "Exchange Key Message Received",
+													Toast.LENGTH_SHORT).show();
+											
+											Log.v("Key Exchange", "Manual");
+											String result = MessageService.dba.addKeyExchangeMessage(
+													new Entry(address, this.getSignedPubKey()));
+											
+											if(result != null)
+											{
+												Toast.makeText(this.getContext(), result, Toast.LENGTH_LONG).show();
+											}
+											
+											KeyExchangeManager.updateList();
+											super.cancel();
+										}
+										
+										@Override
+										public void finishWith(){}
+									};
+									
+									//Might be good to condense this into a method.
+								/*	if(KeyExchange.verify(number, message))
+									{
+										
 									}
+									else
+									{
+										invalidKeyExchange = true;
+									}*/
 								}
 								else
 								{
@@ -269,32 +318,38 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						ConversationView.updateList(context, ConversationView.messageViewActive);
 						
-						//Check if there should be a key exchange notification
-						if(!keyExchange)
+						
+						//Check if the message was an invalid key exchange
+						if(!invalidKeyExchange)
 						{
-							if(!keyExchangeManual)
+							
+							//Check if there should be a key exchange notification
+							if(!keyExchange)
 							{
-								/*
-								 * Set the values needed for the notification
-								 */
-								MessageService.contentTitle = SMSUtility.format(address);
-								if (secretMessage != null)
+								if(!keyExchangeManual)
 								{
-									MessageService.contentText = secretMessage;
+									/*
+									 * Set the values needed for the notification
+									 */
+									MessageService.contentTitle = SMSUtility.format(address);
+									if (secretMessage != null)
+									{
+										MessageService.contentText = secretMessage;
+									}
+									else
+									{
+										MessageService.contentText = messages[0].getMessageBody();
+									}
 								}
 								else
 								{
-									MessageService.contentText = messages[0].getMessageBody();
+									MessageService.contentTitle = null;
+									MessageService.contentText = null;
 								}
+								Intent serviceIntent = new Intent(context, MessageService.class);
+								//ServiceConnection conn = new ServiceConnection() {};
+								context.startService(serviceIntent);
 							}
-							else
-							{
-								MessageService.contentTitle = null;
-								MessageService.contentText = null;
-							}
-							Intent serviceIntent = new Intent(context, MessageService.class);
-							//ServiceConnection conn = new ServiceConnection() {};
-							context.startService(serviceIntent);
 						}
 						
 						// Prevent other applications from seeing the message received

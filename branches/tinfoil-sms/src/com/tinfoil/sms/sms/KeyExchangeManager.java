@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
+import com.tinfoil.sms.crypto.KeyExchangeHandler;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
@@ -168,70 +169,87 @@ public class KeyExchangeManager extends Activity {
 	 * @param number The number of the contact for the key exchange
 	 * @param entry The key exchange entry received.
 	 */
-	public static void respondMessage(final Context context, Number number, Entry entry)
+	public static void respondMessage(final Context context, final Number number, final Entry entry)
 	{
-		if(KeyExchange.verify(number, entry.getMessage()))
-		{
-			Log.v("Key Exchange", "Exchange Key Message Received");
+		
+		new KeyExchangeHandler(context, number, entry.getMessage(), true){
 			
-			number.setPublicKey(KeyExchange.encodedPubKey(entry.getMessage()));
-			number.setSignature(KeyExchange.encodedSignature(entry.getMessage()));
-			
-			MessageService.dba.deleteKeyExchangeMessage(entry.getNumber());
-			
-			MessageService.dba.updateNumberRow(number,
-					number.getNumber(), 0);
-			
-			if(!number.isInitiator())
-			{
-				Log.v("Key Exchange", "Not Initiator");
-				MessageService.dba.addMessageToQueue(number.getNumber(),
-						KeyExchange.sign(number), true);
+			@Override
+			public void accept(){
+				Log.v("Key Exchange", "Exchange Key Message Received");
+				
+				number.setPublicKey(KeyExchange.encodedPubKey(entry.getMessage()));
+				number.setSignature(KeyExchange.encodedSignature(entry.getMessage()));
+				
+				MessageService.dba.deleteKeyExchangeMessage(entry.getNumber());
+				
+				MessageService.dba.updateNumberRow(number,
+						number.getNumber(), 0);
+				
+				if(!number.isInitiator())
+				{
+					Log.v("Key Exchange", "Not Initiator");
+					MessageService.dba.addMessageToQueue(number.getNumber(),
+							KeyExchange.sign(number), true);
+				}
+				
+				if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+			    {
+					MessageService.mNotificationManager.cancel(MessageService.KEY);
+			    }
+				if (runThread != null && runThread.getEntries() != null)
+				{
+					runThread.getEntries().remove(entry);
+				}
+				super.accept();
 			}
-			
-			if(MessageService.dba.getKeyExchangeMessageCount() == 0)
-		    {
-				MessageService.mNotificationManager.cancel(MessageService.KEY);
-		    }
-			if (runThread != null && runThread.getEntries() != null)
-			{
-				runThread.getEntries().remove(entry);
-			}
-		}
-		else
-		{
-			 Log.v("Key Exchange", "Invalid key exchange");
-			 //Toast.makeText(context, "Invalid Key exchange", Toast.LENGTH_LONG).show();
-			 
-			 String name = MessageService.dba.getRow(number.getNumber()).getName();
-			 
-			 final String text = name + ", " + number.getNumber();
-			 
-			 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-			 
-			 builder.setMessage("The Key Exchange with " + text
-			 					+ " was unsuccessful. This is a potential man-in-the-middle attack." +
-			 					" Please ensure your shared secrets are correct")
-		       .setCancelable(true).setTitle("Warning!")
-		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void invalid(){
+				Log.v("Key Exchange", "Invalid key exchange");
+				 //Toast.makeText(context, "Invalid Key exchange", Toast.LENGTH_LONG).show();
+				 
+				 String name = MessageService.dba.getRow(number.getNumber()).getName();
+				 
+				 final String text = name + ", " + number.getNumber();
+				 
+				 AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				 
+				 builder.setMessage("The Key Exchange with " + text
+				 					+ " was unsuccessful. This is a potential man-in-the-middle attack." +
+				 					" Please ensure your shared secrets are correct")
+			       .setCancelable(true).setTitle("Warning!")
+			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			    	   @Override
+			    	   public void onClick(DialogInterface dialog, int id) {
+			    		  
+			           }})
+			       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
 		    	   @Override
-		    	   public void onClick(DialogInterface dialog, int id) {
-		    		  
-		           }})
-		       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
-	    	   @Override
-	    	   public void onClick(DialogInterface arg0, int arg1) {
-    		   	
-	    		   String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges";
-	    		   Intent i = new Intent(Intent.ACTION_VIEW);
-	    		   i.setData(Uri.parse(url));
-	    		   context.startActivity(i);
-	    	   }});
-			AlertDialog alert = builder.create();
+		    	   public void onClick(DialogInterface arg0, int arg1) {
+	    		   	
+		    		   String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges";
+		    		   Intent i = new Intent(Intent.ACTION_VIEW);
+		    		   i.setData(Uri.parse(url));
+		    		   context.startActivity(i);
+		    	   }});
+				AlertDialog alert = builder.create();
+				
+				alert.show();
+				
+				super.invalid();
+			}
 			
-			alert.show();
-		}
-		updateList();
+			@Override
+			public void cancel(){
+				super.cancel();
+			}
+
+			public void finishWith() {
+				updateList();
+			}
+		
+		};		
 	}
 	
 	/**

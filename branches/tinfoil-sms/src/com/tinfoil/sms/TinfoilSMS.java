@@ -17,11 +17,10 @@
 
 package com.tinfoil.sms;
 
-import com.bugsense.trace.BugSenseHandler;
-
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.bugsense.trace.BugSenseHandler;
 
 
 /**
