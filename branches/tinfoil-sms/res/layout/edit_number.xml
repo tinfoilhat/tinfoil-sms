@@ -80,7 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/shared_secret_2"
-                android:text="@string/book_path_text" />
+                android:text="@string/book_path_text"
+                android:visibility="invisible" />
 
             <EditText
                 android:id="@+id/book_path"
@@ -90,15 +91,17 @@
                 android:layout_below="@+id/book_path_text"
                 android:ems="10"
                 android:hint="@string/book_path"
-                android:inputType="text" />
-
+                android:inputType="text"
+                android:visibility="invisible" />
+            
             <TextView
                 android:id="@+id/book_inverse_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/book_path"
-                android:text="@string/book_inverse_text" />
+                android:text="@string/book_inverse_text"
+                android:visibility="invisible"  />
 
             <EditText
                 android:id="@+id/book_inverse"
@@ -108,14 +111,15 @@
                 android:layout_below="@+id/book_inverse_text"
                 android:ems="10"
                 android:hint="@string/book_inverse"
-                android:inputType="text" />
+                android:inputType="text"
+                android:visibility="invisible" />
 
              <TextView
                 android:id="@+id/contact_pub_key_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/book_inverse"
+                android:layout_below="@+id/shared_secret_2"
                 android:text="@string/contact_public_key" />
             
             <EditText
@@ -127,6 +131,14 @@
                 android:ems="10"
                 android:hint="@string/public_key"
                 android:inputType="text" />
+            
+            <TextView
+                android:id="@+id/view_pub_key"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/contact_pub_key_text"
+                android:visibility="invisible" />
             
             <RadioGroup
 			    android:id="@+id/radioGroup1"

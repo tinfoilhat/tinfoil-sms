@@ -168,12 +168,16 @@ public class EditNumber extends Activity{
         
         if(trusted)
         {
-        	TextView pubKeyTitle = (TextView)findViewById(R.id.contact_pub_key_text);
+        	TextView pubKeyView = (TextView)findViewById(R.id.view_pub_key);
         	
         	sharedInfo1.setEnabled(false);
         	sharedInfo2.setEnabled(false);
-        	pubKeyTitle.setVisibility(TextView.INVISIBLE);
+        	phoneNumber.setEnabled(false);
+        	//pubKeyTitle.setVisibility(TextView.VISIBLE);
         	pubKey.setVisibility(EditText.INVISIBLE);
+        	
+        	pubKeyView.setVisibility(TextView.VISIBLE);
+        	pubKeyView.setText(new String(number.getPublicKey()));
         	
         	// Find the radio button group view
         	View rg = (View)findViewById(R.id.radioGroup1);
@@ -184,7 +188,7 @@ public class EditNumber extends Activity{
         	 */
         	RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
         	        ViewGroup.LayoutParams.WRAP_CONTENT);
-        	p.addRule(RelativeLayout.BELOW,R.id.book_inverse);
+        	p.addRule(RelativeLayout.BELOW,R.id.view_pub_key);
         	rg.setLayoutParams(p);
         }
 	}
