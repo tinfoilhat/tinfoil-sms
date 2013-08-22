@@ -781,11 +781,11 @@ public class DBAccessor {
      */
 	public void open()
 	{
-		if(count == 0 && TinfoilSMS.threadable)
+		if(TinfoilSMS.threadable)
 	    {
 			db = contactDatabase.getWritableDatabase();
 	    }
-		count++;
+		//count++;
 	}
 	
 	/**
@@ -803,10 +803,10 @@ public class DBAccessor {
 	 */
 	public void close()
 	{
-		count--;
+		//count--;
 		if (db != null && db.isOpen())
 		{
-			if(count == 0 && TinfoilSMS.threadable)
+			if(TinfoilSMS.threadable)
 			{
 				db.close();
 			}

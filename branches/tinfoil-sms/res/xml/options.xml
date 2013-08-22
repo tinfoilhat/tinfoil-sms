@@ -6,10 +6,11 @@
         android:key="application_category">
         
         <CheckBoxPreference 
-            android:key="enable"
+            android:key="@string/enable_settings"
             android:summary="Enable or disable SMS encryption"
             android:title="Enable Tinfoil-SMS" 
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            android:persistent="true" />
                    
     </PreferenceCategory>
     
@@ -19,17 +20,18 @@
         
         <CheckBoxPreference 
             android:title="Native Save" 
-            android:key="native_save" 
+            android:key="@string/native_save_settings" 
             android:summary="Save messages to the native SMS app"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            android:persistent="true" />
        
         <EditTextPreference 
             android:title="Message Limit"
-            android:key="message_limit" 
+            android:key="@string/message_limit_settings" 
            	android:inputType="number"
             android:summary="Maximum number of messages saved for contacts" 
             android:persistent="true"
-            android:defaultValue="50"/>
+            android:defaultValue="50" />
         
     </PreferenceCategory>
     
@@ -39,7 +41,8 @@
         
         <PreferenceScreen 
 	        android:title="Import Contacts"
-	        android:key="import_contacts" android:summary="Import Trusted Contacts from phone">
+	        android:key="import_contacts"
+	        android:summary="Import Trusted Contacts from phone">
                 <intent
              		android:action="android.intent.action.VIEW"
              		android:targetPackage="com.tinfoil.sms"
@@ -78,9 +81,10 @@
 		
 		<CheckBoxPreference 
 		    android:title="Encrypted Messages" 
-		    android:key="showEncrypt" 
+		    android:key="@string/show_encrypt_settings"
 		    android:summary="Display the original encrypted message"
-		    android:defaultValue="false" />
+		    android:defaultValue="false"
+		    android:persistent="true" />
 		
 		<PreferenceScreen 
             android:title="My Public Key" 
@@ -99,17 +103,20 @@
         android:title="Notification Settings">
         <CheckBoxPreference 
             android:title="Enable Notifications" 
-            android:key="notification_bar"
-            android:defaultValue="true"/>
+            android:key="@string/notification_bar_settings"
+            android:defaultValue="true"
+            android:persistent="true"/>
         <CheckBoxPreference 
             android:title="Vibrate" 
-            android:key="vibrate"
-            android:defaultValue="true"/>
+            android:key="@string/vibrate_settings"
+            android:defaultValue="true"
+            android:persistent="true"/>
         <EditTextPreference 
-            android:key="vibrate_length"
+            android:key="@string/vibrate_length_settings"
             android:title="Vibrate Length" 
             android:summary="Select the length of vibration notification" 
             android:defaultValue="500"
+            android:persistent="true"
             android:inputType="number" />
     </PreferenceCategory>
     
@@ -118,11 +125,12 @@
         android:key="feedback_category">
         
         <CheckBoxPreference
-            android:key="bugsense_enable"
+            android:key="@string/bugsense_enable_settings"
 		    android:title="@string/pref_enable_bugsense"
 		    android:summaryOn="@string/pref_bugsense_enabled"
 		    android:summaryOff="@string/pref_bugsense_disabled"
-		    android:defaultValue="true"/>
+		    android:defaultValue="true"
+		    android:persistent="true"/>
         
           <PreferenceScreen 
             android:title="Donate"

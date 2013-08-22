@@ -63,7 +63,8 @@ public class MessageService extends Service {
          * to allow notifications
          */
         if (contentTitle != null && contentText != null &&
-                ConversationView.sharedPrefs.getBoolean("notification_bar", true))
+                ConversationView.sharedPrefs.getBoolean(
+                this.getResources().getString(R.string.notification_bar_settings), true))
         {
             Intent notifyIntent = null;
             PendingIntent in = null;
@@ -120,7 +121,8 @@ public class MessageService extends Service {
             		0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
         }
         
-        if(ConversationView.sharedPrefs.getBoolean("notification_bar", true))
+        if(ConversationView.sharedPrefs.getBoolean(
+        		this.getResources().getString(R.string.notification_bar_settings), true))
         {
         	ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
 	        if(keyMessage != null && keyMessage.size() > 0)

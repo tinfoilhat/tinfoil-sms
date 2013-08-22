@@ -30,6 +30,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.crypto.KeyExchangeHandler;
@@ -106,11 +107,13 @@ public class MessageReceiver extends BroadcastReceiver {
 						/*
 						 * Checks if the user has enabled the vibration option
 						 */
-						if (ConversationView.sharedPrefs.getBoolean("vibrate", true))
+						if (ConversationView.sharedPrefs.getBoolean(context.getResources()
+								.getString(R.string.vibrate_settings), true))
 						{
 							Vibrator vibrator;
 							vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-							String value = ConversationView.sharedPrefs.getString("vibrate_length", VIBRATOR_LENTH);
+							String value = ConversationView.sharedPrefs.getString(
+									context.getResources().getString(R.string.vibrate_length_settings), VIBRATOR_LENTH);
 							vibrator.vibrate(Long.valueOf(value));
 						}
 	
@@ -121,7 +124,8 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * enabled.
 						 */
 						if (MessageService.dba.isTrustedContact((address)) && 
-								ConversationView.sharedPrefs.getBoolean("enable", true)) {
+								ConversationView.sharedPrefs.getBoolean(
+								context.getResources().getString(R.string.enable_settings), true)) {
 							
 							
 							Message encryMessage = null; 
@@ -162,7 +166,8 @@ public class MessageReceiver extends BroadcastReceiver {
 								 * Checks if the user has set encrypted messages to be shown in
 								 * messageView
 								 */
-								if (ConversationView.sharedPrefs.getBoolean("showEncrypt", true))
+								if (ConversationView.sharedPrefs.getBoolean(
+										context.getResources().getString(R.string.show_encrypt_settings), false))
 								{
 									encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPTED);
 									MessageService.dba.addNewMessage(encryMessage, address, true);

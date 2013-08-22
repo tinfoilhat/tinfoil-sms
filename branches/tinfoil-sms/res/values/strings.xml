@@ -82,4 +82,13 @@
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     
+    <string name="show_encrypt_settings">show_encrypt</string>
+    <string name="enable_settings">enable</string>
+    <string name="native_save_settings">native_save</string>
+    <string name="message_limit_settings">message_limit</string>
+    <string name="notification_bar_settings">notification_bar</string>
+    <string name="vibrate_settings">vibrate</string>
+    <string name="vibrate_length_settings">vibrate_length</string>
+    <string name="bugsense_enable_settings">bugsense_enable</string>
+    
 </resources>
