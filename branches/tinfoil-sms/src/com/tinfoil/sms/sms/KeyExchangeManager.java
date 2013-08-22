@@ -171,7 +171,7 @@ public class KeyExchangeManager extends Activity {
 	 */
 	public static void respondMessage(final Context context, final Number number, final Entry entry)
 	{
-		
+		// Handles the key exchange received.
 		new KeyExchangeHandler(context, number, entry.getMessage(), true){
 			
 			@Override

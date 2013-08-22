@@ -225,8 +225,17 @@ public class EditNumber extends Activity{
 				/*
 				 * Set the updated information
 				 */
-				number.setSharedInfo1(sharedInfo1.getText().toString());
-				number.setSharedInfo2(sharedInfo2.getText().toString());
+				String newSharedInfo1 = sharedInfo1.getText().toString();
+				String newSharedInfo2 = sharedInfo2.getText().toString();
+				
+				if(SMSUtility.isChanged(number.getSharedInfo1(), newSharedInfo1) ||
+						SMSUtility.isChanged(number.getSharedInfo2(), newSharedInfo2))
+				{
+					number.setInitiator(false);
+				}
+				
+				number.setSharedInfo1(newSharedInfo1);
+				number.setSharedInfo2(newSharedInfo2);
 				number.setBookPath(bookPath.getText().toString());
 				number.setBookInversePath(bookInverse.getText().toString());
 				

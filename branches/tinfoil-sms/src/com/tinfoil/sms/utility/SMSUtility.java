@@ -364,6 +364,12 @@ public abstract class SMSUtility {
 		return false;
 	}
 	
-	
-	
+    public static boolean isChanged(String original, String updated)
+    {
+    	if(original != null && updated != null && original.equals(updated))
+    	{
+    		return true;
+    	}
+    	return false;
+    }	
 }

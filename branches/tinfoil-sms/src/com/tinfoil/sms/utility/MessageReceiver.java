@@ -213,6 +213,7 @@ public class MessageReceiver extends BroadcastReceiver {
 										SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 										SMSUtility.checksharedSecret(number.getSharedInfo2()))
 								{
+									// Handle the key exchange received 
 									new KeyExchangeHandler(context, number, message, false){
 
 										@Override
