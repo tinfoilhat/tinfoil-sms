@@ -56,6 +56,7 @@
     	</PreferenceScreen>
 	</PreferenceCategory>
 	
+    <!-- 
 	<PreferenceCategory 
     android:key="book_category" 
     android:title="Book Settings">
@@ -70,7 +71,7 @@
 		    
 		</PreferenceScreen>
 	</PreferenceCategory>
-	
+	-->
 	<PreferenceCategory 
 	    android:key="encryption_category" 
 	    android:title="Encryption Settings">
