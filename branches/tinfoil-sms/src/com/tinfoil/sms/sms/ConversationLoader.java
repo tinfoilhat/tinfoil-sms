@@ -19,14 +19,9 @@ package com.tinfoil.sms.sms;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
-import com.tinfoil.sms.crypto.KeyGenerator;
-import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.Loader;
-import com.tinfoil.sms.utility.MessageService;
-import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * Manages the thread used to query for the contacts' information.
@@ -54,29 +49,8 @@ public class ConversationLoader extends Loader {
 
     @Override
 	public void execution() {
-		MessageService.dba = new DBAccessor(context);
 		DBAccessor loader = new DBAccessor(context);
-
-        SMSUtility.user = loader.getUserRow();
-         
-        if(SMSUtility.user == null)
-        {
-        	//Toast.makeText(context, "New key pair is generating...", Toast.LENGTH_SHORT).show();
-        	Log.v("First Launch", "keys are generating...");
-        	//Create the keyGenerator
-	        KeyGenerator keyGen = new KeyGenerator();
-	        
-	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
-	        //Set the user's 
-	        loader.setUser(SMSUtility.user);
-        }
-        
-        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
-        //Toast.makeText(context, "Public Key " + new String(SMSUtility.user.getPublicKey()), Toast.LENGTH_LONG).show();
-        
-        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
-        //Toast.makeText(context, "Private Key " + new String(SMSUtility.user.getPrivateKey()), Toast.LENGTH_LONG).show();			
-		
+	
 		ConversationView.msgList = loader.getConversations();
 		if(!update) {
 			handler.sendEmptyMessage(ConversationView.LOAD);

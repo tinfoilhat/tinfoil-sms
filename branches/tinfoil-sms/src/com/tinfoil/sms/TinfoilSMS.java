@@ -29,6 +29,8 @@ import com.bugsense.trace.BugSenseHandler;
  */
 public class TinfoilSMS extends Application
 {
+	public static boolean threadable = false;
+	
     @Override
     public void onCreate()
     {

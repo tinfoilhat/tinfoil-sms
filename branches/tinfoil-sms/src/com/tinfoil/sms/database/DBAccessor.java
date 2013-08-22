@@ -20,21 +20,18 @@ package com.tinfoil.sms.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bugsense.trace.BugSenseHandler;
-import com.tinfoil.sms.dataStructures.Message;
-import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.dataStructures.Entry;
-import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.dataStructures.User;
-import com.tinfoil.sms.sms.ConversationView;
-import com.tinfoil.sms.utility.SMSUtility;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.util.Log;
+
+import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * Creates a database that is read and write and provides methods to 

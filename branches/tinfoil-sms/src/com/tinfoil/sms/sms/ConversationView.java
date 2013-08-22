@@ -28,11 +28,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,8 +44,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
+import com.tinfoil.sms.crypto.KeyGenerator;
+import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.MessageSender;
 import com.tinfoil.sms.messageQueue.SignalListener;
 import com.tinfoil.sms.settings.AddContact;
@@ -51,6 +57,7 @@ import com.tinfoil.sms.settings.ImportContacts;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * This activity shows all of the conversations the user has with contacts. The
@@ -99,6 +106,41 @@ public class ConversationView extends Activity {
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
         messageSender.startThread(getApplicationContext());
+        
+        MessageService.dba = new DBAccessor(this);
+        
+        SMSUtility.user = MessageService.dba.getUserRow();
+        
+        if(SMSUtility.user == null)
+        {
+        	//Toast.makeText(context, "New key pair is generating...", Toast.LENGTH_SHORT).show();
+        	Log.v("First Launch", "keys are generating...");
+        	//Create the keyGenerator
+	        KeyGenerator keyGen = new KeyGenerator();
+	        
+	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
+	        
+	        //Set the user's 
+	        MessageService.dba.setUser(SMSUtility.user);
+        }
+        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
+        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
+        
+        // Set the user's build version
+        String versionNumber =  Build.VERSION.RELEASE;
+        String[] numbers = versionNumber.split("\\.");
+        
+        try {
+        	if(Integer.valueOf(numbers[0]) >= 4 && Integer.valueOf(numbers[1]) >= 1)
+        	{
+        		TinfoilSMS.threadable = true;
+        	}
+        }
+        // If the version cannot be parsed assume the version is requires the 2.3 version
+        catch (NumberFormatException e){}
+        
+        Log.v("Build Version", Build.VERSION.RELEASE + " " + TinfoilSMS.threadable);
+        Log.v("Build Thread Safe", ""+TinfoilSMS.threadable);
 
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
