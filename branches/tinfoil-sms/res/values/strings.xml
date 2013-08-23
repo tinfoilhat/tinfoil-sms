@@ -5,9 +5,10 @@
     <string name="vibration_default_length">500</string>
     <string name="contact_name">name</string>
     
-    <string name="accept">OK</string>
+    <string name="okay">OK</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
+    <string name="tell_me_more">Tell Me More</string>
     
     <string name="key_exchange_failed_to_decrypt">FAILED TO DECRYPT</string>
     <string name="possible_man_in_the_middle_attack_warning">Possible Man In The Middle Attack</string>
@@ -24,13 +25,11 @@
     <string name="key_exchange_error_message_1">The Key Exchange with</string>
     <string name="key_exchange_error_message_2">was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct</string>
     <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
-    <string name="key_exchange_okay">OK</string>
-    <string name="key_exchange_tell_me_more">Tell Me More</string>
     <string name="invalid_secrets">Invalid Secrets</string>
 	<string name="shared_secret_hint_1">Shared Secret 1</string>
 	<string name="shared_secret_hint_2">Shared Secret 2</string>
 	<string name="save_shared_secret">Save</string>
-	<string name="cancel_shared_secret">Cancel</string>
+	
 	<string name="set_shared_secrets">Set the shared secret for</string>
 	<string name="set_shared_secrets_title">Key Exchange</string>
 
@@ -137,6 +136,10 @@
     <!-- Exchange Key -->
     <string name="unsuccessful_key_exchanges">Not all numers could exchange, they must have shared secrets</string>
     <string name="key_exchange_cancelled">Key Exchange Cancelled</string>
+    
+    <!-- KeyExchangeHandler strings -->
+    <string name="key_exchange_double_message">initiated a key exchange after you initiated one. This is a potential man-in-the-middle attack. Would you like to exchange keys anyways?</string>
+    <string name="key_exchange_double_title">Key Exchange Warning!</string>
 
     <!-- Application crash reporting -->
     <string name="pref_enable_bugsense">Enable Bugsense</string>
@@ -151,6 +154,8 @@
     <string name="donate_dialog_message">Would you like to donate to Tinfoil-SMS?</string>
     <string name="flattr_option">Flattr</string>
     <string name="paypal_option">PayPal</string>
+    
+    <!-- Urls -->
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     

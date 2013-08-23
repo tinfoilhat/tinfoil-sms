@@ -223,7 +223,7 @@ public class AddContact extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
             builder.setMessage(R.string.insufficent_message)
                     .setCancelable(true)
-                    .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
 
                         }

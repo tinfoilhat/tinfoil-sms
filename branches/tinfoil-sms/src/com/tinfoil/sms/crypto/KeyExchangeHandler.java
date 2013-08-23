@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.MessageService;
 
@@ -21,8 +22,7 @@ public abstract class KeyExchangeHandler {
 	{
 		this.context = context;
 		this.number = number;
-		this.signedPubKey = signedPubKey;
-		
+		this.signedPubKey = signedPubKey;		
 		this.showDialog = showDialog; 
 		
 		handleVerification();
@@ -48,11 +48,9 @@ public abstract class KeyExchangeHandler {
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				 
-				builder.setMessage(text + " initiated a key exchange after you initiated one."
-								+ " This is a potential man-in-the-middle attack." +
-								" Would you like to exchange keys anyways?")
+				builder.setMessage(text + " " + context.getString(R.string.key_exchange_double_message))
 				   .setCancelable(true)
-				   .setTitle("Key Exchange Warning!")
+				   .setTitle(R.string.key_exchange_double_title)
 				   .setOnCancelListener(new DialogInterface.OnCancelListener() {
 					
 						@Override
@@ -60,12 +58,12 @@ public abstract class KeyExchangeHandler {
 							cancel();
 						}
 					})
-				   .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+				   .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 					   @Override
 					   public void onClick(DialogInterface dialog, int id) {
 						   accept();
 				       }})
-				   .setNeutralButton("Tell Me More", new DialogInterface.OnClickListener() {
+				   .setNeutralButton(R.string.tell_me_more, new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -75,7 +73,7 @@ public abstract class KeyExchangeHandler {
 							 context.startActivity(i);
 						}
 					})
-				   .setNegativeButton("No", new DialogInterface.OnClickListener() {
+				   .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 					   @Override
 					   public void onClick(DialogInterface arg0, int which) {
 						   	// Delete the key exchange message that was received

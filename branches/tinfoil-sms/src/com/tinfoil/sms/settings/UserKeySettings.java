@@ -103,7 +103,7 @@ public class UserKeySettings extends Activity {
 			popup_builder.setTitle(R.string.import_contacts_title)
 				.setCancelable(true)
                 .setView(phoneBook)
-                .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 
                 	public void onClick(final DialogInterface dialog, final int which) { 
                 		

@@ -153,7 +153,7 @@ public class KeyExchangeManager extends Activity {
 	    			   Toast.makeText(context, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
 	    		   }
 	           }})
-	       .setNegativeButton(R.string.cancel_shared_secret, new DialogInterface.OnClickListener() {
+	       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   	//Cancel the key exchange
@@ -223,12 +223,12 @@ public class KeyExchangeManager extends Activity {
 				 builder.setMessage(message)
 			       .setCancelable(true)
 			       .setTitle(R.string.key_exchange_error_title)
-			       .setPositiveButton(R.string.key_exchange_okay, new DialogInterface.OnClickListener() {
+			       .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
 			    	   @Override
 			    	   public void onClick(DialogInterface dialog, int id) {
 			    		  
 			           }})
-			       .setNegativeButton(R.string.key_exchange_tell_me_more, new DialogInterface.OnClickListener() {
+			       .setNegativeButton(R.string.tell_me_more, new DialogInterface.OnClickListener() {
 		    	   @Override
 		    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   	

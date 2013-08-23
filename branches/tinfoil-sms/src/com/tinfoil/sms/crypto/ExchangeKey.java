@@ -251,7 +251,7 @@ public class ExchangeKey implements Runnable {
         	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
         	    		    		   }
         	    		           }})
-        	    		       .setNegativeButton(R.string.cancel_shared_secret, new DialogInterface.OnClickListener() {
+        	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
         	    		    	   @Override
         	    		    	   public void onClick(DialogInterface arg0, int arg1) {
         	    		    		   	//Cancel the key exchange
