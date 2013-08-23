@@ -4,10 +4,22 @@
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
     <string name="contact_name">name</string>
+    
+    <!-- ConversationView Activity strings -->
+    <string name="add_contacts_list">Add Contact</string>
+    <string name="import_contacts_list">Import Contact</string>
 
     <!-- KeyExchangeManager Activity strings -->
     <string name="key_exchange_manager">Key Exchange Manager</string>
-    <string name="action_settings">Settings</string>
+    <string name="empty_key_exchange_list">No Pending Key Echanges</string>
+    <string name="key_exchange_error_title">Warning!</string>
+    <string name="key_exchange_error_message_1">The Key Exchange with </string>
+    <string name="key_exchange_error_message_2"> was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct</string>
+    <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
+    <string name="key_exchange_okay">OK</string>
+    <string name="key_exchange_tell_me_more">Tell Me More</string>
+    <string name="invalid_secrets">Invalid secrets</string>
+	<string name="key_exchange_cancelled">Key exchange cancelled</string>
 
     <!-- Settings strings -->
     <string name="settings">Settings</string>
@@ -76,12 +88,13 @@
     <string name="title_activity_tab_selection">Manage Contacts</string>
     <string name="add_contact">Add Contact</string>
     <string name="title_activity_donations">Donate</string>
-
-    
+	
+    <!-- The Donation strings -->
     <string name="donate">Donate</string>
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     
+    <!-- Settings string keys -->
     <string name="show_encrypt_settings">show_encrypt</string>
     <string name="enable_settings">enable</string>
     <string name="native_save_settings">native_save</string>

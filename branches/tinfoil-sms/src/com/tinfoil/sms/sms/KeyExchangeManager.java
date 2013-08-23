@@ -148,14 +148,14 @@ public class KeyExchangeManager extends Activity {
 	    		   }
 	    		   else
 	    		   {
-	    			   Toast.makeText(context, "Invalid secrets", Toast.LENGTH_LONG).show();
+	    			   Toast.makeText(context, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
 	    		   }
 	           }})
 	       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   	//Cancel the key exchange
-	    		   Toast.makeText(context, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+	    		   Toast.makeText(context, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
 	    	   }});
 		AlertDialog alert = builder.create();
 		
@@ -207,7 +207,6 @@ public class KeyExchangeManager extends Activity {
 			@Override
 			public void invalid(){
 				Log.v("Key Exchange", "Invalid key exchange");
-				 //Toast.makeText(context, "Invalid Key exchange", Toast.LENGTH_LONG).show();
 				 
 				 String name = MessageService.dba.getRow(number.getNumber()).getName();
 				 
@@ -215,20 +214,23 @@ public class KeyExchangeManager extends Activity {
 				 
 				 AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				 
-				 builder.setMessage("The Key Exchange with " + text
-				 					+ " was unsuccessful. This is a potential man-in-the-middle attack." +
-				 					" Please ensure your shared secrets are correct")
-			       .setCancelable(true).setTitle("Warning!")
-			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				 String message = context.getResources().getString
+						 (R.string.key_exchange_error_message_1) + text +
+						 context.getString(R.string.key_exchange_error_message_2);
+				 
+				 builder.setMessage(message)
+			       .setCancelable(true)
+			       .setTitle(R.string.key_exchange_error_title)
+			       .setPositiveButton(R.string.key_exchange_okay, new DialogInterface.OnClickListener() {
 			    	   @Override
 			    	   public void onClick(DialogInterface dialog, int id) {
 			    		  
 			           }})
-			       .setNegativeButton("Tell Me More", new DialogInterface.OnClickListener() {
+			       .setNegativeButton(R.string.key_exchange_tell_me_more, new DialogInterface.OnClickListener() {
 		    	   @Override
 		    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   	
-		    		   String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges";
+		    		   String url = context.getResources().getString(R.string.key_exchange_info_url);
 		    		   Intent i = new Intent(Intent.ACTION_VIEW);
 		    		   i.setData(Uri.parse(url));
 		    		   context.startActivity(i);
@@ -294,43 +296,7 @@ public class KeyExchangeManager extends Activity {
 			}
 		}	
 	}
-	
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */	
-	//@SuppressLint("NewApi")
-	/*@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}*/
 
-	//TODO fix menu item  
-	/*@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.key_exchange_manager, menu);
-		return true;
-	}*/
-
-	/*@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}*/
-	
     @Override
     protected void onDestroy()
     {
@@ -366,8 +332,11 @@ public class KeyExchangeManager extends Activity {
         		accept.setEnabled(false);
         		reject.setEnabled(false);
         		list = (ListView)KeyExchangeManager.this.findViewById(R.id.key_exchange_list);
+
 	    		adapter = new ArrayAdapter<String>(KeyExchangeManager.this, 
-	    				android.R.layout.simple_list_item_1, new String[]{"No Pending Key Echanges"});
+	    				android.R.layout.simple_list_item_1, new String[]
+	    				{KeyExchangeManager.this.getResources().getString
+	    				(R.string.empty_key_exchange_list)});
 	    		//a.setNotifyOnChange(true);
 	    		
 	    		list.setAdapter(adapter);

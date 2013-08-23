@@ -101,7 +101,7 @@ public class DBAccessor {
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
 	
-	private static int count = 0;
+	//private static int count = 0;
 
 	/**
 	 * Creates a database that is read and write
@@ -217,16 +217,6 @@ public class DBAccessor {
 	 */
 	public String addKeyExchangeMessage(Entry keyExchange)
 	{
-		/*
-		 * TODO handle the error messages better.
-		 * 	- handle by checking if the first message matches any new key exchange messages
-		 * 	if it does
-		 * 		- Discard message
-		 * 		- maybe update the user that another attempt by a contact to exchange keys was made
-		 *  else it doesnt mate
-		 *  	- Discard
-		 *  	- Warn user that it is a possible man in the middle attack, or that the contact may have changed their keys.
-		 */
 		Entry prev = getKeyExchangeMessage(keyExchange.getNumber());
 		if(prev == null)
 		{
@@ -903,12 +893,13 @@ public class DBAccessor {
 		return sms;
 	}
 	
-	/**TODO comment
+	/**
 	 * Get a Number from the database given the number. This method is met to
 	 * simplify transactions that require only the contact's Number and no other
 	 * information. It is a less expensive query
-	 * @param number
-	 * @return
+	 * @param number The contact's number
+	 * @return The Number containing all the relevant information about the
+	 * contact's number
 	 */
 	public Number getNumber(String number)
 	{

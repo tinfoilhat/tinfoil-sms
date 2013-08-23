@@ -7,7 +7,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
 
 import com.tinfoil.sms.R;
 
@@ -63,13 +62,6 @@ public class DonationsActivity extends Activity {
 		
  		AlertDialog alert = builder.create();
  		alert.show();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.donations, menu);
-		return true;
 	}
 
 }

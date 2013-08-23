@@ -66,12 +66,12 @@ public class UserKeySettings extends Activity {
 		keyView.setText(new String(SMSUtility.user.getPublicKey()));
 	}
 
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.user_key_settings, menu);
 		return true;
-	}
+	}*/
 	
 	public void exportKey(View view)
 	{

@@ -24,8 +24,6 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -181,13 +179,13 @@ public class ConversationView extends Activity {
         list = (ListView) this.findViewById(R.id.conversation_list);
         emptyList = (ListView) this.findViewById(R.id.empty);
         
-        this.dialog = ProgressDialog.show(this, "Loading Messages",
+        /*this.dialog = ProgressDialog.show(this, "Loading Messages",
                 "Please wait...", true, true, new OnCancelListener() {
 
         	public void onCancel(DialogInterface dialog) {
 									
 			}
-        });
+        });*/
         
         update = false;
         runThread = new ConversationLoader(this, update, handler);
@@ -330,8 +328,9 @@ public class ConversationView extends Activity {
         		 * for quick import or addition of contacts.
         		 */
         		List<String> emptyItems = new ArrayList<String>();
-        		emptyItems.add("Add Contact");
-        		emptyItems.add("Import Contact");
+        		
+        		emptyItems.add(ConversationView.this.getResources().getString(R.string.add_contacts_list));
+        		emptyItems.add(ConversationView.this.getResources().getString(R.string.import_contacts_list));
         		
         		ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
                 emptyList.setAdapter(ap);
@@ -350,10 +349,10 @@ public class ConversationView extends Activity {
 	        		//First time load, the adapter must be constructed
 	        		conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
 	        		list.setAdapter(conversations);
-	        		if(ConversationView.this.dialog.isShowing())
+	        		/*if(ConversationView.this.dialog.isShowing())
 	        		{
 	        			ConversationView.this.dialog.dismiss();
-	        		}
+	        		}*/
 		        	break;
 	        	case UPDATE:
 	        		//The list's data has changed and needs to be updated
