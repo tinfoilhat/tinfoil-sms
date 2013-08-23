@@ -20,8 +20,11 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -133,11 +136,14 @@ public class MessageView extends Activity {
                     		.getStringArray(R.array.sms_options),
                     			new DialogInterface.OnClickListener() {
 
+                        	@SuppressLint({ "NewApi"})
+                        	@TargetApi(11)
                             public void onClick(final DialogInterface dialog, final int which) {
 
                                 final String[] messageValue = (String[]) list2.getItemAtPosition(item_num);
 
                                 //Toast.makeText(MessageView.this, messageValue[1], Toast.LENGTH_SHORT).show();
+                                //Log.v("message", messageValue[1]);
                                 if (which == 0)
                                 {
                                     //option = Delete
@@ -146,9 +152,21 @@ public class MessageView extends Activity {
                                 }
                                 else if (which == 1)
                                 {
-                                    //TODO implement
-                                    //option = Copy message
-                                    Toast.makeText(MessageView.this.getBaseContext(), "implement me", Toast.LENGTH_SHORT).show();
+                                	//option = Copy message
+                                	
+                                	/*if(TinfoilSMS.threadable)
+                                	{
+                                		android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(MessageView.this.CLIPBOARD_SERVICE); 
+                                		android.content.ClipData clip = android.content.ClipData.newPlainText("text label","text to clip");
+                                	    clipboard.setPrimaryClip(clip);
+                                	}
+                                	else
+                                	{*/
+                                		android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                	    clipboard.setText(messageValue[1]);
+                                	//}
+                                    
+                                    //Toast.makeText(MessageView.this.getBaseContext(), "implement me", Toast.LENGTH_SHORT).show();
                                 }
                                 else if (which == 2)
                                 {

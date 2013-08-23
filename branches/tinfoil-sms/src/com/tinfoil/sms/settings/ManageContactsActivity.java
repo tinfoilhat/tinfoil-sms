@@ -21,8 +21,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -164,17 +162,17 @@ public class ManageContactsActivity extends Activity {
     	/*
          * Launch Exchange Keys thread.
          */
-        ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this,
-        		"Exchanging Keys", "Exchanging. Please wait...", true, false);
+        /*ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this,
+        		"Exchanging Keys", "Exchanging. Please wait...", true, false);*/
 
         keyThread.startThread(this, adapter.getContacts());
 
-        ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
+        /*ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
 
             public void onDismiss(final DialogInterface dialog) {
             	updateList();
             }
-        });
+        });*/
     }
     
     /**

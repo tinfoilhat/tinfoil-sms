@@ -89,7 +89,6 @@
     <string name="key_exchange_dialog_message">Would you like to exchange keys with</string>
     <string name="key_exchange_dialog_pos_button">OK</string>
     <string name="key_exchange_dialog_neg_button">No</string>
-    <string name="key_exchange_cancelled">Key exchange cancelled</string>
 
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Send</string>
