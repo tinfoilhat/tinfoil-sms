@@ -12,9 +12,9 @@
     <!-- KeyExchangeManager Activity strings -->
     <string name="key_exchange_manager">Key Exchange Manager</string>
     <string name="empty_key_exchange_list">No Pending Key Echanges</string>
-    <string name="key_exchange_error_title">Warning!</string>
-    <string name="key_exchange_error_message_1">The Key Exchange with </string>
-    <string name="key_exchange_error_message_2"> was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct</string>
+    <string name="key_exchange_error_title">Key Exchange Warning!</string>
+    <string name="key_exchange_error_message_1">The Key Exchange with</string>
+    <string name="key_exchange_error_message_2">was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct</string>
     <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
     <string name="key_exchange_okay">OK</string>
     <string name="key_exchange_tell_me_more">Tell Me More</string>
@@ -25,7 +25,7 @@
 	<string name="save_shared_secret">Save</string>
 	<string name="cancel_shared_secret">Cancel</string>
 	<string name="set_shared_secrets">Set the shared secret for </string>
-	<string name="set_shared_secrets_title">Key Exchange Secrets</string>
+	<string name="set_shared_secrets_title">Key Exchange</string>
 
     <!-- Settings strings -->
     <string name="settings">Settings</string>
@@ -72,6 +72,24 @@
 
     <!-- MessageView strings -->
     <string name="message">Messages</string>
+    <string name="forward_title">Input contact number</string>
+    <string name="forward_positive_button">OK</string>
+    <string name="invalid_number_message">Invalid number</string>
+    <string name="untrust_contact_menu_full">Untrust Contact</string>
+    <string name="untrust_contact_menu_short">Untrust</string>
+    <string name="resolve_key_exchange_full">Resolve Key Exchange</string>
+    <string name="resolve_key_exchange_short">Resolve</string>
+    <string name="exchange_key_full">Exchange Keys</string>
+    <string name="exchange_key_short">Exchange Keys</string>
+    <string-array name="sms_options">
+        <item>Delete message</item>
+        <item>Copy message</item>
+        <item>Forward message</item>
+    </string-array>
+    <string name="key_exchange_dialog_message">Would you like to exchange keys with</string>
+    <string name="key_exchange_dialog_pos_button">OK</string>
+    <string name="key_exchange_dialog_neg_button">No</string>
+    <string name="key_exchange_cancelled">Key exchange cancelled</string>
 
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Send</string>

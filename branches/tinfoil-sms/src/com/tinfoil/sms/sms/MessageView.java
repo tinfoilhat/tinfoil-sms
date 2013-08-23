@@ -22,9 +22,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,12 +62,11 @@ public class MessageView extends Activity {
     private static ListView list2;
     private static MessageAdapter messages;
     private static MessageBoxWatcher messageEvent;
-    private static final String[] options = new String[] { "Delete message", "Copy message", "Forward message" };
     private static String contact_name;
     private ArrayList<TrustedContact> tc;
     private static AutoCompleteTextView phoneBox;
     private AlertDialog popup_alert;
-    private ProgressDialog dialog;
+    //private ProgressDialog dialog;
     private static ExchangeKey keyThread = new ExchangeKey();
     
     public static MessageLoader runThread;
@@ -113,14 +110,14 @@ public class MessageView extends Activity {
         list2 = (ListView) this.findViewById(R.id.message_list);
 
         //This allows for the loading to be cancelled
-        this.dialog = ProgressDialog.show(this, "Loading Messages",
+        /*this.dialog = ProgressDialog.show(this, "Loading Messages",
                 "Please wait...", true, true, new OnCancelListener() {
 
 					public void onCancel(DialogInterface dialog) {
 						MessageView.this.dialog.dismiss();
 						MessageView.this.onBackPressed();						
 					}        	
-        });
+        });*/
         
         runThread = new MessageLoader(this, false, handler);
 
@@ -132,7 +129,9 @@ public class MessageView extends Activity {
 
                 final AlertDialog.Builder popup_builder = new AlertDialog.Builder(MessageView.this);
                 popup_builder.setTitle(contact_name)
-                        .setItems(options, new DialogInterface.OnClickListener() {
+                        .setItems(MessageView.this.getResources()
+                    		.getStringArray(R.array.sms_options),
+                    			new DialogInterface.OnClickListener() {
 
                             public void onClick(final DialogInterface dialog, final int which) {
 
@@ -180,10 +179,10 @@ public class MessageView extends Activity {
 
                                     final AlertDialog.Builder contact_builder = new AlertDialog.Builder(MessageView.this);
 
-                                    contact_builder.setTitle("Input contact number")
+                                    contact_builder.setTitle(R.string.forward_title)
                                             .setCancelable(true)
                                             .setView(phoneBox)
-                                            .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                                            .setPositiveButton(R.string.forward_positive_button, new DialogInterface.OnClickListener() {
 
                                                 public void onClick(final DialogInterface dialog, final int which) {
                                                 	
@@ -247,7 +246,7 @@ public class MessageView extends Activity {
 
         if (invalid)
         {
-            Toast.makeText(MessageView.this.getBaseContext(), "Invalid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MessageView.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
         }
         else
         {
@@ -347,20 +346,23 @@ public class MessageView extends Activity {
 
         if(MessageService.dba.isTrustedContact(ConversationView.selectedNumber))
         {
-        	menu.findItem(R.id.exchange).setTitle("Untrust Contact")
-        		.setTitleCondensed("Untrust");
+        	menu.findItem(R.id.exchange)
+        		.setTitle(R.string.untrust_contact_menu_full)
+        		.setTitleCondensed(this.getResources().getString(R.string.untrust_contact_menu_short));
         }
         else
         {
         	if(MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber) != null)
         	{
-        		menu.findItem(R.id.exchange).setTitle("Resolve Key Exchange")
-    			.setTitleCondensed("Resolve");
+        		menu.findItem(R.id.exchange)
+        			.setTitle(R.string.resolve_key_exchange_full)
+        			.setTitleCondensed(this.getResources().getString(R.string.resolve_key_exchange_short));
         	}
         	else
         	{
-        		menu.findItem(R.id.exchange).setTitle("Exchange Keys")
-        			.setTitleCondensed("Exchange");
+        		menu.findItem(R.id.exchange)
+        			.setTitle(R.string.exchange_key_full)
+        			.setTitleCondensed(this.getResources().getString(R.string.exchange_key_short));
         	}
         }
         return true;
@@ -380,8 +382,8 @@ public class MessageView extends Activity {
         switch (item.getItemId()) {
             case R.id.exchange:
 
-            	ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
-                        "Exchanging. Please wait...", true, false);
+            	/*ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
+                        "Exchanging. Please wait...", true, false);*/
 
                 if (!MessageService.dba.isTrustedContact(SMSUtility.format
                         (ConversationView.selectedNumber)))
@@ -395,9 +397,11 @@ public class MessageView extends Activity {
                 		
                 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 		
-                		builder.setMessage("Would you like to exchange keys with " + tc.getName() + ", " + number.getNumber() + "?")
-	         		    .setCancelable(true)
-	         		    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                		builder.setMessage(this.getResources().getString(R.string.key_exchange_dialog_message)
+                			+ " " + tc.getName() + ", " + number.getNumber() + "?")
+                			.setCancelable(true)
+                			.setPositiveButton(R.string.key_exchange_dialog_pos_button,
+	         		    		new DialogInterface.OnClickListener() {
          		    	   @Override
          		    	   public void onClick(DialogInterface dialog, int id) {
          		            //Save the shared secrets
@@ -411,11 +415,13 @@ public class MessageView extends Activity {
                       			KeyExchangeManager.setAndSend(MessageView.this, number, tc.getName(), entry);
                       		}
 	         		    }})
-	         		    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	         		    .setNegativeButton(R.string.key_exchange_dialog_neg_button,
+	         		    		new DialogInterface.OnClickListener() {
          		    	   @Override
          		    	   public void onClick(DialogInterface arg0, int arg1) {
          		    		   // Cancel the key exchange
-         		    		   Toast.makeText(MessageView.this, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+         		    		   Toast.makeText(MessageView.this, MessageView.this.getResources()
+         		    				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
          		    		   
          		    		   // Delete key exchange
          		    		   MessageService.dba.deleteKeyExchangeMessage(number.getNumber());
@@ -428,7 +434,7 @@ public class MessageView extends Activity {
 	         		    });
                 		
 		         		AlertDialog alert = builder.create();
-		         		ExchangeKey.keyDialog.dismiss();
+		         		//ExchangeKey.keyDialog.dismiss();
 		         		alert.show();
                 	}
                 	else 
@@ -508,10 +514,10 @@ public class MessageView extends Activity {
 	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
 	        	list2.setAdapter(messages);
 	            list2.setItemsCanFocus(false);
-	            if(MessageView.this.dialog.isShowing())
+	            /*if(MessageView.this.dialog.isShowing())
 	            {
 	            	MessageView.this.dialog.dismiss();
-	            }
+	            }*/
 	        	break;
         	case UPDATE:
         		messages.clear();

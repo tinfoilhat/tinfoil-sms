@@ -45,7 +45,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class ExchangeKey implements Runnable {
 
-    public static ProgressDialog keyDialog;
+    //public static ProgressDialog keyDialog;
     private ArrayList<String> untrusted;
     private ArrayList<String> trusted;
     private ArrayList<ContactParent> contacts;
@@ -270,7 +270,7 @@ public class ExchangeKey implements Runnable {
         }
 
         //Dismisses the load dialog since the load is finished
-        keyDialog.dismiss();
+        //keyDialog.dismiss();
     }
 
 }

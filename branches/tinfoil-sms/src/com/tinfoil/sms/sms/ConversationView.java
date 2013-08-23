@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -84,7 +83,7 @@ public class ConversationView extends Activity {
     
     public static MessageSender messageSender = new MessageSender();
       
-    private ProgressDialog dialog;
+    //private ProgressDialog dialog;
     private static boolean update = false;
     public static final int LOAD = 0;
     public static final int UPDATE = 1;
@@ -336,7 +335,7 @@ public class ConversationView extends Activity {
                 emptyList.setAdapter(ap);
         		emptyList.setVisibility(ListView.VISIBLE);
         		list.setVisibility(ListView.INVISIBLE);
-        		ConversationView.this.dialog.dismiss();
+        		//ConversationView.this.dialog.dismiss();
         	}
         	else
         	{

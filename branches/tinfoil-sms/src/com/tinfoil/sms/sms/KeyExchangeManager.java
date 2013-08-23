@@ -130,7 +130,7 @@ public class KeyExchangeManager extends Activity {
 		linearLayout.addView(sharedSecret2);
 		
 		builder.setMessage(context.getResources().getString
-				(R.string.set_shared_secrets) + name + ", " + number.getNumber())
+				(R.string.set_shared_secrets) + " " + name + ", " + number.getNumber())
 		   .setTitle(R.string.set_shared_secrets_title)
 	       .setCancelable(true)
 	       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
@@ -217,7 +217,7 @@ public class KeyExchangeManager extends Activity {
 				 AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				 
 				 String message = context.getResources().getString
-						 (R.string.key_exchange_error_message_1) + text +
+						 (R.string.key_exchange_error_message_1) + " " + text + " " + 
 						 context.getString(R.string.key_exchange_error_message_2);
 				 
 				 builder.setMessage(message)
