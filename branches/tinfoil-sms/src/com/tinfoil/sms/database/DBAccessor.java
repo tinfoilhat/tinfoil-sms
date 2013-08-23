@@ -320,7 +320,7 @@ public class DBAccessor {
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
         
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(ConversationView.sharedPrefs.getString
-        		("message_limit", String.valueOf(SMSUtility.LIMIT))))
+        		(TinfoilSMS.MESSAGE_LIMIT, String.valueOf(SMSUtility.LIMIT))))
         {
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);

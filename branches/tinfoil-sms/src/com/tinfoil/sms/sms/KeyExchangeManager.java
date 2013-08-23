@@ -118,20 +118,22 @@ public class KeyExchangeManager extends Activity {
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
 		final EditText sharedSecret1 = new EditText(context);
-		sharedSecret1.setHint("Shared Secret 1");
+		sharedSecret1.setHint(context.getResources().getString(R.string.shared_secret_hint_1));
 		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
 		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
 		linearLayout.addView(sharedSecret1);
 
 		final EditText sharedSecret2 = new EditText(context);
-		sharedSecret2.setHint("Shared Secret 2");
+		sharedSecret2.setHint(context.getResources().getString(R.string.shared_secret_hint_2));
 		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
 		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
 		linearLayout.addView(sharedSecret2);
 		
-		builder.setMessage("Set the shared secret for " + name + ", " + number.getNumber())
+		builder.setMessage(context.getResources().getString
+				(R.string.set_shared_secrets) + name + ", " + number.getNumber())
+		   .setTitle(R.string.set_shared_secrets_title)
 	       .setCancelable(true)
-	       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+	       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	               //Save the shared secrets
@@ -151,7 +153,7 @@ public class KeyExchangeManager extends Activity {
 	    			   Toast.makeText(context, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
 	    		   }
 	           }})
-	       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	       .setNegativeButton(R.string.cancel_shared_secret, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   	//Cancel the key exchange

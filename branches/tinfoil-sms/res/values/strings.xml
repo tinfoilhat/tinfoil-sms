@@ -20,6 +20,12 @@
     <string name="key_exchange_tell_me_more">Tell Me More</string>
     <string name="invalid_secrets">Invalid secrets</string>
 	<string name="key_exchange_cancelled">Key exchange cancelled</string>
+	<string name="shared_secret_hint_1">Shared Secret 1</string>
+	<string name="shared_secret_hint_2">Shared Secret 2</string>
+	<string name="save_shared_secret">Save</string>
+	<string name="cancel_shared_secret">Cancel</string>
+	<string name="set_shared_secrets">Set the shared secret for </string>
+	<string name="set_shared_secrets_title">Key Exchange Secrets</string>
 
     <!-- Settings strings -->
     <string name="settings">Settings</string>

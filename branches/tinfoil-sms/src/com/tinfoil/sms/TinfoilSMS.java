@@ -31,10 +31,14 @@ public class TinfoilSMS extends Application
 {
 	public static boolean threadable = false;
 	
+	public static String MESSAGE_LIMIT;
+
     @Override
     public void onCreate()
     {
         super.onCreate();
+        
+        MESSAGE_LIMIT = this.getResources().getString(R.string.message_limit_settings);      
         
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("bugsense_enable", true))
         {
