@@ -224,7 +224,7 @@ public class ExchangeKey implements Runnable {
         	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
         	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
         	    		       .setCancelable(false)
-        	    		       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
+        	    		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
         	    		    	   @Override
         	    		    	   public void onClick(DialogInterface dialog, int id) {
         	    		                //Save the shared secrets

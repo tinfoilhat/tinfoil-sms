@@ -326,11 +326,9 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						ConversationView.updateList(context, ConversationView.messageViewActive);
 						
-						//TODO fix to support the new key exchange procedure
 						//Check if the message was an invalid key exchange
 						if(!invalidKeyExchange)
-						{
-							
+						{							
 							//Check if there should be a key exchange notification
 							if(!keyExchange)
 							{

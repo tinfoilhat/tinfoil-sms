@@ -9,6 +9,7 @@
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
     <string name="tell_me_more">Tell Me More</string>
+    <string name="save">Save</string>
     
     <string name="key_exchange_failed_to_decrypt">FAILED TO DECRYPT</string>
     <string name="possible_man_in_the_middle_attack_warning">Possible Man In The Middle Attack</string>
@@ -28,7 +29,7 @@
     <string name="invalid_secrets">Invalid Secrets</string>
 	<string name="shared_secret_hint_1">Shared Secret 1</string>
 	<string name="shared_secret_hint_2">Shared Secret 2</string>
-	<string name="save_shared_secret">Save</string>
+	
 	
 	<string name="set_shared_secrets">Set the shared secret for</string>
 	<string name="set_shared_secrets_title">Key Exchange</string>
@@ -47,9 +48,6 @@
     <string name="add_number">Add Number</string>
     <string name="phone_type_title">Phone Type:</string>
     <string name="insufficent_message">Insufficient information provided</string>
-
-    <!-- Shared between AddContact and EditNumber -->
-    <string name="save">Save</string>
 
     <!-- ManageContactsActivity strings -->
     <string name="exchange_keys">Exchange Keys</string>
@@ -122,6 +120,12 @@
     <!-- DeleteContacts strings -->
     <string name="delete_contacts">Delete Contacts</string>
     
+    <!-- SMSUtility strings -->
+    <string name="encrypted_message_sent">Encrypted Message sent</string>
+    <string name="message_sent">Message sent</string>
+    <string name="failed_to_encrypt">FAILED TO ENCRYPT</string>
+    <string name="failed_to_sent">FAILED TO SEND</string>
+    
     <!-- Tabbed activity -->
     <string name="contacts_tab">Contacts</string>
     <string name="trusted_contact_tab">Trusted Contacts</string>
@@ -168,5 +172,11 @@
     <string name="vibrate_settings">vibrate</string>
     <string name="vibrate_length_settings">vibrate_length</string>
     <string name="bugsense_enable_settings">bugsense_enable</string>
+    
+    <!-- Notification strings -->
+    <string name="new_message_notification_title">New Messages</string>
+    <string name="unread_email_message">unread messages</string>
+    <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
+    <string name="pending_key_exchange_message">Click here to resolve</string>
     
 </resources>

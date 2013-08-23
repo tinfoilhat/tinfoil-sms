@@ -133,7 +133,7 @@ public class KeyExchangeManager extends Activity {
 				+ " " + name + ", " + number.getNumber())
 		   .setTitle(R.string.set_shared_secrets_title)
 	       .setCancelable(true)
-	       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
+	       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	               //Save the shared secrets

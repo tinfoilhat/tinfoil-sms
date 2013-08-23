@@ -80,8 +80,9 @@ public class MessageService extends Service {
                 notifyDetails = new Notification(R.drawable.tinfoil_logo,
                         contentTitle + ": " + contentText, System.currentTimeMillis());
 
-                contentTitle = "New Messages";
-                contentText = dba.getUnreadMessageCount() + " unread messages";
+                contentTitle = this.getString(R.string.new_message_notification_title);
+                contentText = dba.getUnreadMessageCount() + " " +
+                		this.getString(R.string.unread_email_message);
 
                 //No extra is added so the user will be brought to the main menu
                 notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
@@ -132,13 +133,16 @@ public class MessageService extends Service {
 	            Notification notifyDetails = null;
 	
 	    		notifyDetails = new Notification(R.drawable.key_exchange,
-	    				"Pending Key Exchanges", System.currentTimeMillis());
+	    				this.getString(R.string.pending_key_exchange_notification),
+	    				System.currentTimeMillis());
 	    		
 	    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
 	            in = PendingIntent.getActivity(this, 0, notifyIntent,
 	            		android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 	        	
-	        	notifyDetails.setLatestEventInfo(this, "Pending Key Exchanges", "Click here to resolve", in);
+	        	notifyDetails.setLatestEventInfo(this, 
+	        			this.getString(R.string.pending_key_exchange_notification),
+	        			this.getString(R.string.pending_key_exchange_message), in);
 	            mNotificationManager.notify(KEY, notifyDetails);
 	        }
 	        else

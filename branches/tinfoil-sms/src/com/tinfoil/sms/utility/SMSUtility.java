@@ -232,7 +232,7 @@ public abstract class SMSUtility {
 
                 //dba.addNewMessage(new Message(message.getMessage(), true, Message.SENT_ENCRYPTED), message.getNumber(), false);
 
-                Toast.makeText(context, "Encrypted Message sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.encrypted_message_sent, Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -245,21 +245,21 @@ public abstract class SMSUtility {
                 	dba.addNewMessage(new Message(message.getMessage(), true, Message.SENT_DEFAULT), message.getNumber(), true);	
                 }*/             
                 
-                Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.message_sent, Toast.LENGTH_SHORT).show();
             }
 
             return true;
         }
         catch (InvalidCipherTextException e)
         {
-            Toast.makeText(context, "FAILED TO ENCRYPT", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.failed_to_encrypt, Toast.LENGTH_LONG).show();
             e.printStackTrace();
             BugSenseHandler.sendExceptionMessage("Type", "Encrypt Message Error", e);
             return false;
         }
         catch (final Exception e)
         {
-            Toast.makeText(context, "FAILED TO SEND", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.failed_to_sent, Toast.LENGTH_LONG).show();
             e.printStackTrace();
             BugSenseHandler.sendExceptionMessage("Type", "Send Message Error", e);
             return false;
