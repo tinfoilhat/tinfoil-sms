@@ -20,7 +20,6 @@ package com.tinfoil.sms.settings;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,7 +62,7 @@ public class ManageContactsActivity extends Activity {
     private ExpandableListView extendableList;
     private ListView listView;
     public static ArrayList<TrustedContact> tc;
-    private ProgressDialog loadingDialog;
+    //private ProgressDialog loadingDialog;
     private ArrayAdapter<String> arrayAp;
 
     public static ArrayList<ContactParent> contacts;
@@ -87,7 +86,7 @@ public class ManageContactsActivity extends Activity {
         
         if (!exchange)
         {
-        	((Button)this.findViewById(R.id.exchange_keys)).setText("Untrust");
+        	((Button)this.findViewById(R.id.exchange_keys)).setText(R.string.untrust_button_name);
         }
         
         ManageContactsActivity.this.startThread();
@@ -211,8 +210,8 @@ public class ManageContactsActivity extends Activity {
     private void startThread()
     {
         //TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
-        this.loadingDialog = ProgressDialog.show(this, "Loading Contacts",
-                "Loading. Please wait...", true, false);
+        /*this.loadingDialog = ProgressDialog.show(this, "Loading Contacts",
+                "Loading. Please wait...", true, false);*/
         runThread = new ManageContactsLoader(this, handler, exchange);
         super.onResume();
     }
@@ -257,7 +256,7 @@ public class ManageContactsActivity extends Activity {
         			String emptyListValue = msg.getData().getString(ManageContactsLoader.EMPTYLIST);
         			if (emptyListValue == null)
         			{
-        				emptyListValue = "Empty list";
+        				emptyListValue = ManageContactsActivity.this.getResources().getString(R.string.empty_list_value);
         			}
         			arrayAp = new ArrayAdapter<String>(ManageContactsActivity.this, android.R.layout.simple_list_item_1,
     	                    new String[] { emptyListValue });
@@ -267,10 +266,10 @@ public class ManageContactsActivity extends Activity {
         	}
         	
             ManageContactsActivity.this.update();
-            if(ManageContactsActivity.this.loadingDialog.isShowing())
+            /*if(ManageContactsActivity.this.loadingDialog.isShowing())
             {
             	ManageContactsActivity.this.loadingDialog.dismiss();
-            }
+            }*/
         }
     };
 

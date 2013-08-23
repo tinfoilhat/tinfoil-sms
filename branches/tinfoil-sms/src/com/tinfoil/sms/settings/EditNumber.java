@@ -321,7 +321,8 @@ public class EditNumber extends Activity{
 		else
 		{
 			//TODO create a better notification for invalid shared secrets (since they key board blocks them)
-			Toast.makeText(this, "Shared secrets must be longer then " + SHARED_INFO_MIN, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, this.getResources().getString(R.string.shared_secret)
+					+ SHARED_INFO_MIN, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -357,7 +358,7 @@ public class EditNumber extends Activity{
         			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
         			
         			
-        			popup_builder.setTitle("Input contact's number")
+        			popup_builder.setTitle(R.string.export_number_title)
         				.setCancelable(true)
                         .setSingleChoiceItems(fileNames, 0, new DialogInterface.OnClickListener() {
 
@@ -402,7 +403,7 @@ public class EditNumber extends Activity{
                 							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
                 							
                 							MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
-                							Toast.makeText(EditNumber.this, "Key Exchange Import", Toast.LENGTH_SHORT).show();
+                							Toast.makeText(EditNumber.this, R.string.key_exchange_import, Toast.LENGTH_SHORT).show();
                 							
                 							if(!number.isInitiator())
     										{
@@ -422,8 +423,6 @@ public class EditNumber extends Activity{
         			
         			popup_alert = popup_builder.create();
         			popup_alert.show();
-            		
-            		
             	}
             	
             	return true;
@@ -460,15 +459,16 @@ public class EditNumber extends Activity{
     {
     	final String name = MessageService.dba.getRow(number.getNumber()).getName();
     	AlertDialog.Builder builder = new AlertDialog.Builder(context);
-    	builder.setMessage("Would you like to export or send via SMS the exchange keys for " + name + ", " + number.getNumber() + "?")
+    	builder.setMessage(context.getResources().getString(R.string.key_exchange_respond)
+    			+ " " + name + ", " + number.getNumber() + "?")
 		    .setCancelable(true)
-		    .setPositiveButton("SMS", new DialogInterface.OnClickListener() {
+		    .setPositiveButton(R.string.sms_option, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	    		   MessageService.dba.addMessageToQueue(number.getNumber(),
 							KeyExchange.sign(number), true);
 		    }})
-		    .setNegativeButton("Export", new DialogInterface.OnClickListener() {
+		    .setNegativeButton(R.string.export_option, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	    		   UserKeySettings.writeToFile(number.getNumber(), KeyExchange.sign(number));

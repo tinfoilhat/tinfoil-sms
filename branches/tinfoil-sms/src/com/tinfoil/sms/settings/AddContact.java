@@ -17,10 +17,6 @@
 
 package com.tinfoil.sms.settings;
 
-import java.lang.reflect.Array;
-
-import org.spongycastle.util.Arrays;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -106,7 +102,7 @@ public class AddContact extends Activity {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                     final int position, long arg3) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-                builder.setTitle("Phone Type:");
+                builder.setTitle(R.string.phone_type_title);
                 builder.setSingleChoiceItems(DBAccessor.TYPES, AddContact.this.contactEdit.getNumber()
                         .get(position).getType(), new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int item) {
@@ -225,14 +221,14 @@ public class AddContact extends Activity {
         else
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
-            builder.setMessage("Insufficient information provided")
+            builder.setMessage(R.string.insufficent_message)
                     .setCancelable(true)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
 
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int whichButton) {
                             dialog.cancel();// Canceled.
                         }

@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/phone_number"
                 android:layout_below="@+id/phone_number"
-                android:text="@string/s1_text" />
+                android:text="@string/shared_secret_hint_1" />
 
             <EditText
                 android:id="@+id/shared_secret_1"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/shared_secret_1"
-                android:text="@string/s2_text" />
+                android:text="@string/shared_secret_hint_2" />
 
             <EditText
                 android:id="@+id/shared_secret_2"

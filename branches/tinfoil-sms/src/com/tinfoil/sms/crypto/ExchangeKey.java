@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.text.InputType;
 import android.util.Log;
@@ -29,6 +28,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
@@ -210,20 +210,22 @@ public class ExchangeKey implements Runnable {
         	    		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         	    		final EditText sharedSecret1 = new EditText(activity);
-        	    		sharedSecret1.setHint("Shared Secret 1");
+        	    		sharedSecret1.setHint(R.string.shared_secret_hint_1);
         	    		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
         	    		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
         	    		linearLayout.addView(sharedSecret1);
 
         	    		final EditText sharedSecret2 = new EditText(activity);
-        	    		sharedSecret2.setHint("Shared Secret 2");
+        	    		sharedSecret2.setHint(R.string.shared_secret_hint_1);
         	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
         	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
         	    		linearLayout.addView(sharedSecret2);
         	    		
-        	    		builder.setMessage("Set the shared secret for " + trustedContact.getName() + ", " + number.getNumber())
+        	    		builder.setMessage(activity.getResources()
+        	    			   .getString(R.string.set_shared_secrets) + " " + 
+        	    			   trustedContact.getName() + ", " + number.getNumber())
         	    		       .setCancelable(false)
-        	    		       .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        	    		       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
         	    		    	   @Override
         	    		    	   public void onClick(DialogInterface dialog, int id) {
         	    		                //Save the shared secrets
@@ -247,14 +249,14 @@ public class ExchangeKey implements Runnable {
         	    		    		   }
         	    		    		   else
         	    		    		   {
-        	    		    			   Toast.makeText(activity, "Invalid secrets", Toast.LENGTH_LONG).show();
+        	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
         	    		    		   }
         	    		           }})
-        	    		       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        	    		       .setNegativeButton(R.string.cancel_shared_secret, new DialogInterface.OnClickListener() {
         	    		    	   @Override
         	    		    	   public void onClick(DialogInterface arg0, int arg1) {
         	    		    		   	//Cancel the key exchange
-        	    		    		   Toast.makeText(activity, "Key exchange cancelled", Toast.LENGTH_LONG).show();
+        	    		    		   Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
         	    		    	   }});
         	    		AlertDialog alert = builder.create();
         	    		
@@ -263,7 +265,7 @@ public class ExchangeKey implements Runnable {
         	    	}
         	    	else
         	    	{
-        	    		Toast.makeText(activity, "Not all numbers could exchange, they must have shared secrets", Toast.LENGTH_LONG).show();
+        	    		Toast.makeText(activity, R.string.unsuccessful_key_exchanges, Toast.LENGTH_LONG).show();
         	    	}
         	    }
         	});

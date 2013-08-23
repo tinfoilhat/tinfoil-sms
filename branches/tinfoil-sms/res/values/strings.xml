@@ -18,13 +18,12 @@
     <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
     <string name="key_exchange_okay">OK</string>
     <string name="key_exchange_tell_me_more">Tell Me More</string>
-    <string name="invalid_secrets">Invalid secrets</string>
-	<string name="key_exchange_cancelled">Key exchange cancelled</string>
+    <string name="invalid_secrets">Invalid Secrets</string>
 	<string name="shared_secret_hint_1">Shared Secret 1</string>
 	<string name="shared_secret_hint_2">Shared Secret 2</string>
 	<string name="save_shared_secret">Save</string>
 	<string name="cancel_shared_secret">Cancel</string>
-	<string name="set_shared_secrets">Set the shared secret for </string>
+	<string name="set_shared_secrets">Set the shared secret for</string>
 	<string name="set_shared_secrets_title">Key Exchange</string>
 
     <!-- Settings strings -->
@@ -39,6 +38,10 @@
     <string name="add_contact_activity">Edit Contact</string>
     <string name="number">Number</string>
     <string name="add_number">Add Number</string>
+    <string name="phone_type_title">Phone Type:</string>
+    <string name="insufficent_message">Insufficient information provided</string>
+    <string name="accept">OK</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Shared between AddContact and EditNumber -->
     <string name="save">Save</string>
@@ -46,11 +49,11 @@
     <!-- ManageContactsActivity strings -->
     <string name="exchange_keys">Exchange Keys</string>
     <string name="manage_contacts">Manage Contacts</string>
+    <string name="untrust_button_name">Untrust</string>
+    <string name="empty_list_value">Empty list</string>
 
     <!-- EditNumber strings -->
-    <string name="s1_text">Shared Secret 1</string>
     <string name="shared_secret_1">Secret message</string>
-    <string name="s2_text">Shared Secret 2</string>
     <string name="shared_secret_2">Secret message</string>
     <string name="book_path_text">Book Path</string>
     <string name="book_path">default</string>
@@ -89,6 +92,12 @@
     <string name="key_exchange_dialog_message">Would you like to exchange keys with</string>
     <string name="key_exchange_dialog_pos_button">OK</string>
     <string name="key_exchange_dialog_neg_button">No</string>
+    <string name="shared_secret">Shared secrets must be longer then</string>
+    <string name="export_number_title">Input contact\'s number</string>
+    <string name="key_exchange_import">Key Exchange Import</string>
+    <string name="key_exchange_respond">Would you like to export or send via SMS the exchange keys for</string>
+    <string name="sms_option">SMS</string>
+    <string name="export_option">Export</string>
 
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Send</string>
@@ -96,6 +105,7 @@
     <!-- SendMessageActivity strings -->
     <string name="to">To</string>
     <string name="send_message">Send Message</string>
+    <string name="insufficent_information_provided">You have failed to provide sufficient information</string>
 
     <!-- DeleteContacts strings -->
     <string name="delete_contacts">Delete Contacts</string>
@@ -103,6 +113,10 @@
     <!-- UserKeySettings strings -->
     <string name="user_public_key">Your Public Key:</string>
     <string name="export_public_key">Export Public Key</string>
+    
+    <!-- Exchange Key -->
+    <string name="unsuccessful_key_exchanges">Not all numers could exchange, they must have shared secrets</string>
+    <string name="key_exchange_cancelled">Key Exchange Cancelled</string>
 
     <!-- Application crash reporting -->
     <string name="pref_enable_bugsense">Enable Bugsense</string>

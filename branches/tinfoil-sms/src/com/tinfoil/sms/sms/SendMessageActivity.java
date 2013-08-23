@@ -135,7 +135,7 @@ public class SendMessageActivity extends Activity {
                         {
                         	
                         	//TODO make this reminder part of the onClick action rather then in the text box listener onChange.
-                            Toast.makeText(SendMessageActivity.this.getBaseContext(), "Invaild number", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SendMessageActivity.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -212,7 +212,7 @@ public class SendMessageActivity extends Activity {
             else
             {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
-                builder.setMessage("You have failed to provide sufficient information")
+                builder.setMessage(R.string.insufficent_information_provided)
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, final int id) {

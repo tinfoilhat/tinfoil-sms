@@ -153,6 +153,7 @@ public class MessageView extends Activity {
                                 else if (which == 1)
                                 {
                                 	//option = Copy message
+                                	//TODO look into not using the deprecated version of copy
                                 	
                                 	/*if(TinfoilSMS.threadable)
                                 	{
