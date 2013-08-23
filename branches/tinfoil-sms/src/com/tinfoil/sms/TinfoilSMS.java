@@ -38,7 +38,7 @@ public class TinfoilSMS extends Application
     {
         super.onCreate();
         
-        MESSAGE_LIMIT = this.getResources().getString(R.string.message_limit_settings);      
+        MESSAGE_LIMIT = this.getString(R.string.message_limit_settings);      
         
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("bugsense_enable", true))
         {

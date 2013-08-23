@@ -367,7 +367,7 @@ public class MessageView extends Activity {
         {
         	menu.findItem(R.id.exchange)
         		.setTitle(R.string.untrust_contact_menu_full)
-        		.setTitleCondensed(this.getResources().getString(R.string.untrust_contact_menu_short));
+        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short));
         }
         else
         {
@@ -375,13 +375,13 @@ public class MessageView extends Activity {
         	{
         		menu.findItem(R.id.exchange)
         			.setTitle(R.string.resolve_key_exchange_full)
-        			.setTitleCondensed(this.getResources().getString(R.string.resolve_key_exchange_short));
+        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short));
         	}
         	else
         	{
         		menu.findItem(R.id.exchange)
         			.setTitle(R.string.exchange_key_full)
-        			.setTitleCondensed(this.getResources().getString(R.string.exchange_key_short));
+        			.setTitleCondensed(this.getString(R.string.exchange_key_short));
         	}
         }
         return true;
@@ -416,7 +416,7 @@ public class MessageView extends Activity {
                 		
                 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 		
-                		builder.setMessage(this.getResources().getString(R.string.key_exchange_dialog_message)
+                		builder.setMessage(this.getString(R.string.key_exchange_dialog_message)
                 			+ " " + tc.getName() + ", " + number.getNumber() + "?")
                 			.setCancelable(true)
                 			.setPositiveButton(R.string.key_exchange_dialog_pos_button,
@@ -439,7 +439,7 @@ public class MessageView extends Activity {
          		    	   @Override
          		    	   public void onClick(DialogInterface arg0, int arg1) {
          		    		   // Cancel the key exchange
-         		    		   Toast.makeText(MessageView.this, MessageView.this.getResources()
+         		    		   Toast.makeText(MessageView.this, MessageView.this
          		    				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
          		    		   
          		    		   // Delete key exchange

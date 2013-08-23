@@ -21,7 +21,7 @@ public class DonationsActivity extends Activity {
 		
 		
 		builder.setTitle(this.getString(R.string.donate))
-			.setMessage("Would you like to donate to Tinfoil-SMS?")
+			.setMessage(R.string.donate_dialog_message)
 		    .setCancelable(true)
 		    .setOnCancelListener(new OnCancelListener(){
 
@@ -30,7 +30,7 @@ public class DonationsActivity extends Activity {
 					DonationsActivity.this.finish();
 				}		    	
 		    })
-		    .setNeutralButton("Flattr", new DialogInterface.OnClickListener() {
+		    .setNeutralButton(R.string.flattr_option, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -42,7 +42,7 @@ public class DonationsActivity extends Activity {
 					DonationsActivity.this.finish();
 				}
 			})
-		    .setPositiveButton("PayPal", new DialogInterface.OnClickListener() {
+		    .setPositiveButton(R.string.paypal_option, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	    		   //String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZP8ZHVFATTTY";
@@ -52,7 +52,7 @@ public class DonationsActivity extends Activity {
 	    		   
 	    		   DonationsActivity.this.finish();
 	    	   }})
-		    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   // Cancel the key exchange

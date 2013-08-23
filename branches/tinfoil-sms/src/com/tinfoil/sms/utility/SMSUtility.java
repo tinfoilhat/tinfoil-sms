@@ -161,7 +161,7 @@ public abstract class SMSUtility {
     public static void sendToSelf(final Context c, final String srcNumber, final String decMessage, final String dest) {
         //Prevent message from doing to native client given user settings
         if (ConversationView.sharedPrefs.getBoolean(
-        		c.getResources().getString(R.string.native_save_settings), false))
+        		c.getString(R.string.native_save_settings), false))
         {
             final ContentValues values = new ContentValues();
             values.put("address", srcNumber);
@@ -202,7 +202,7 @@ public abstract class SMSUtility {
         {
             if (dba.isTrustedContact(message.getNumber()) &&
                     ConversationView.sharedPrefs.getBoolean(
-                    context.getResources().getString(R.string.enable_settings), true) &&
+                    context.getString(R.string.enable_settings), true) &&
                     !message.isExchange())
             {
             	Encryption CryptoEngine = new Encryption();
@@ -221,7 +221,7 @@ public abstract class SMSUtility {
                 MessageService.dba.updateEncryptNonce(number);
 
                 if(ConversationView.sharedPrefs.getBoolean(
-                		context.getResources().getString(R.string.show_encrypt_settings), false))
+                		context.getString(R.string.show_encrypt_settings), false))
                 {
                     sendToSelf(context, message.getNumber(), encrypted, ConversationView.SENT);
                     dba.addNewMessage(new Message (encrypted, true, Message.SENT_ENCRYPTED),

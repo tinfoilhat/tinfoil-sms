@@ -107,13 +107,13 @@ public class MessageReceiver extends BroadcastReceiver {
 						/*
 						 * Checks if the user has enabled the vibration option
 						 */
-						if (ConversationView.sharedPrefs.getBoolean(context.getResources()
+						if (ConversationView.sharedPrefs.getBoolean(context
 								.getString(R.string.vibrate_settings), true))
 						{
 							Vibrator vibrator;
 							vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 							String value = ConversationView.sharedPrefs.getString(
-									context.getResources().getString(R.string.vibrate_length_settings), VIBRATOR_LENTH);
+									context.getString(R.string.vibrate_length_settings), VIBRATOR_LENTH);
 							vibrator.vibrate(Long.valueOf(value));
 						}
 	
@@ -125,7 +125,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						if (MessageService.dba.isTrustedContact((address)) && 
 								ConversationView.sharedPrefs.getBoolean(
-								context.getResources().getString(R.string.enable_settings), true)) {
+								context.getString(R.string.enable_settings), true)) {
 							
 							
 							Message encryMessage = null; 
@@ -167,7 +167,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								 * messageView
 								 */
 								if (ConversationView.sharedPrefs.getBoolean(
-										context.getResources().getString(R.string.show_encrypt_settings), false))
+										context.getString(R.string.show_encrypt_settings), false))
 								{
 									encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPTED);
 									MessageService.dba.addNewMessage(encryMessage, address, true);
@@ -185,8 +185,9 @@ public class MessageReceiver extends BroadcastReceiver {
 					        {
 								encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPT_FAIL);
 								MessageService.dba.addNewMessage(encryMessage, address, true);
-								Toast.makeText(context, "FAILED TO DECRYPT", Toast.LENGTH_LONG).show();
-								Toast.makeText(context, "Possible Man In The Middle Attack", Toast.LENGTH_LONG).show();
+								
+								Toast.makeText(context, R.string.key_exchange_failed_to_decrypt, Toast.LENGTH_LONG).show();
+								Toast.makeText(context, R.string.possible_man_in_the_middle_attack_warning, Toast.LENGTH_LONG).show();
 								e.printStackTrace();
 								BugSenseHandler.sendExceptionMessage("Type", "Decrypt Message Error or Man In The Middle Attack", e);
 							}
@@ -224,7 +225,8 @@ public class MessageReceiver extends BroadcastReceiver {
 										@Override
 										public void accept(){
 											keyExchange = true;
-											Toast.makeText(this.getContext(), "Exchange Key Message Received", Toast.LENGTH_SHORT).show();
+											
+											Toast.makeText(this.getContext(), R.string.key_exchange_received, Toast.LENGTH_SHORT).show();
 											Log.v("Key Exchange", "Exchange Key Message Received");
 											
 											Log.v("S1", this.getNumber().getSharedInfo1());
@@ -258,7 +260,7 @@ public class MessageReceiver extends BroadcastReceiver {
 										
 										public void cancel(){
 											keyExchangeManual = true;
-											Toast.makeText(this.getContext(), "Exchange Key Message Received",
+											Toast.makeText(this.getContext(), R.string.key_exchange_received,
 													Toast.LENGTH_SHORT).show();
 											
 											Log.v("Key Exchange", "Manual");
@@ -291,7 +293,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								else
 								{
 									keyExchangeManual = true;
-									Toast.makeText(context, "Exchange Key Message Received",
+									Toast.makeText(context, R.string.key_exchange_received,
 											Toast.LENGTH_SHORT).show();
 									
 									Log.v("Key Exchange", "Manual");
@@ -324,7 +326,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						ConversationView.updateList(context, ConversationView.messageViewActive);
 						
-						
+						//TODO fix to support the new key exchange procedure
 						//Check if the message was an invalid key exchange
 						if(!invalidKeyExchange)
 						{

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.Loader;
@@ -95,7 +96,7 @@ public class RemoveContactsLoader extends Loader{
         }
         else
         {
-            names = new String[] { "No Contacts" };
+            names = new String[] { context.getString(R.string.empty_loader_value) };
             //this.appAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
         }
         

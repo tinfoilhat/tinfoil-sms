@@ -100,10 +100,10 @@ public class UserKeySettings extends Activity {
             phoneBook.setAdapter(adapter);
 			
 			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
-			popup_builder.setTitle("Input contact's number")
+			popup_builder.setTitle(R.string.import_contacts_title)
 				.setCancelable(true)
                 .setView(phoneBook)
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
 
                 	public void onClick(final DialogInterface dialog, final int which) { 
                 		
@@ -124,7 +124,7 @@ public class UserKeySettings extends Activity {
 
 	            			writeToFile(contactInfo[1], keyExchangeMessage);
 	            			
-	            			Toast.makeText(UserKeySettings.this, "Written to your sd card under " + path + "/" + contactInfo[1] + "_" + file, Toast.LENGTH_SHORT).show();
+	            			Toast.makeText(UserKeySettings.this, UserKeySettings.this.getString(R.string.written_path)+ " " + path + "/" + contactInfo[1] + "_" + file, Toast.LENGTH_SHORT).show();
                 		}
                 	}
                 });/*.setNegativeButton("Cancel", new OnClickListener(){

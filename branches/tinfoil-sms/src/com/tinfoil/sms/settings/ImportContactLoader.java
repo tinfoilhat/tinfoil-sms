@@ -124,7 +124,7 @@ public class ImportContactLoader extends Loader{
                                                 "1" + SMSUtility.format(numb) },
                                         "date DESC LIMIT " +
                                                 Integer.valueOf(ConversationView.sharedPrefs.getString
-                                                (context.getResources().getString(R.string.message_limit_settings),
+                                                (context.getString(R.string.message_limit_settings),
                                                 String.valueOf(SMSUtility.LIMIT))));
                                 if (mCur != null && mCur.moveToFirst())
                                 {
@@ -209,7 +209,7 @@ public class ImportContactLoader extends Loader{
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
                                 Integer.valueOf(ConversationView.sharedPrefs.getString
-                                        (context.getResources().getString(R.string.message_limit_settings), String.valueOf(SMSUtility.LIMIT))));
+                                        (context.getString(R.string.message_limit_settings), String.valueOf(SMSUtility.LIMIT))));
 
                 if (nCur != null && nCur.moveToFirst())
                 {
@@ -233,7 +233,7 @@ public class ImportContactLoader extends Loader{
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
                                 Integer.valueOf(ConversationView.sharedPrefs.getString
-                                        (context.getResources().getString(R.string.message_limit_settings), String.valueOf(SMSUtility.LIMIT))));
+                                        (context.getString(R.string.message_limit_settings), String.valueOf(SMSUtility.LIMIT))));
 
                 if (sCur != null && sCur.moveToFirst())
                 {

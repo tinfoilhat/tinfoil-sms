@@ -5,6 +5,14 @@
     <string name="vibration_default_length">500</string>
     <string name="contact_name">name</string>
     
+    <string name="accept">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="no">No</string>
+    
+    <string name="key_exchange_failed_to_decrypt">FAILED TO DECRYPT</string>
+    <string name="possible_man_in_the_middle_attack_warning">Possible Man In The Middle Attack</string>
+    <string name="key_exchange_received">Exchange Key Message Received</string>
+    
     <!-- ConversationView Activity strings -->
     <string name="add_contacts_list">Add Contact</string>
     <string name="import_contacts_list">Import Contact</string>
@@ -40,8 +48,6 @@
     <string name="add_number">Add Number</string>
     <string name="phone_type_title">Phone Type:</string>
     <string name="insufficent_message">Insufficient information provided</string>
-    <string name="accept">OK</string>
-    <string name="cancel">Cancel</string>
 
     <!-- Shared between AddContact and EditNumber -->
     <string name="save">Save</string>
@@ -51,6 +57,8 @@
     <string name="manage_contacts">Manage Contacts</string>
     <string name="untrust_button_name">Untrust</string>
     <string name="empty_list_value">Empty list</string>
+    <string name="empty_loader_value">No Contacts</string>
+    <string name="empty_loader_trusted_value">No Trusted Contacts</string>
 
     <!-- EditNumber strings -->
     <string name="shared_secret_1">Secret message</string>
@@ -72,6 +80,11 @@
 
     <!-- ImportContacts strings -->
     <string name="import_contacts">Import Contacts</string>
+    <string name="searching_title">Searching</string>
+    <string name="searching_message">Locating Contacts&#8230;</string>
+    <string name="importing_title">Importing</string>
+    <string name="importing_message">Saving Contacts&#8230;</string>
+    <string name="empty_import_list">No Contacts to Import</string>
 
     <!-- MessageView strings -->
     <string name="message">Messages</string>
@@ -109,10 +122,17 @@
 
     <!-- DeleteContacts strings -->
     <string name="delete_contacts">Delete Contacts</string>
+    
+    <!-- Tabbed activity -->
+    <string name="contacts_tab">Contacts</string>
+    <string name="trusted_contact_tab">Trusted Contacts</string>
+    <string name="pending_key_exchange_tab">Pending Key exchanges</string>
 
     <!-- UserKeySettings strings -->
     <string name="user_public_key">Your Public Key:</string>
     <string name="export_public_key">Export Public Key</string>
+    <string name="import_contacts_title">Input contact\'s number</string>
+    <string name="written_path">Written to your sd card under</string>
     
     <!-- Exchange Key -->
     <string name="unsuccessful_key_exchanges">Not all numers could exchange, they must have shared secrets</string>
@@ -123,11 +143,14 @@
     <string name="pref_bugsense_enabled">Disable bug reporting</string>
     <string name="pref_bugsense_disabled">Enable bug reporting</string>
     <string name="title_activity_tab_selection">Manage Contacts</string>
-    <string name="add_contact">Add Contact</string>
+    <string name="add_contact">Add contact</string>
     <string name="title_activity_donations">Donate</string>
 	
     <!-- The Donation strings -->
     <string name="donate">Donate</string>
+    <string name="donate_dialog_message">Would you like to donate to Tinfoil-SMS?</string>
+    <string name="flattr_option">Flattr</string>
+    <string name="paypal_option">PayPal</string>
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     

@@ -51,7 +51,8 @@ public abstract class KeyExchangeHandler {
 				builder.setMessage(text + " initiated a key exchange after you initiated one."
 								+ " This is a potential man-in-the-middle attack." +
 								" Would you like to exchange keys anyways?")
-				   .setCancelable(true).setTitle("Key Exchange Warning!")
+				   .setCancelable(true)
+				   .setTitle("Key Exchange Warning!")
 				   .setOnCancelListener(new DialogInterface.OnCancelListener() {
 					
 						@Override

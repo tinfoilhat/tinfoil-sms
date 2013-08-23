@@ -118,19 +118,19 @@ public class KeyExchangeManager extends Activity {
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
 		final EditText sharedSecret1 = new EditText(context);
-		sharedSecret1.setHint(context.getResources().getString(R.string.shared_secret_hint_1));
+		sharedSecret1.setHint(context.getString(R.string.shared_secret_hint_1));
 		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
 		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
 		linearLayout.addView(sharedSecret1);
 
 		final EditText sharedSecret2 = new EditText(context);
-		sharedSecret2.setHint(context.getResources().getString(R.string.shared_secret_hint_2));
+		sharedSecret2.setHint(context.getString(R.string.shared_secret_hint_2));
 		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
 		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
 		linearLayout.addView(sharedSecret2);
 		
-		builder.setMessage(context.getResources().getString
-				(R.string.set_shared_secrets) + " " + name + ", " + number.getNumber())
+		builder.setMessage(context.getString(R.string.set_shared_secrets)
+				+ " " + name + ", " + number.getNumber())
 		   .setTitle(R.string.set_shared_secrets_title)
 	       .setCancelable(true)
 	       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
@@ -216,7 +216,7 @@ public class KeyExchangeManager extends Activity {
 				 
 				 AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				 
-				 String message = context.getResources().getString
+				 String message = context.getString
 						 (R.string.key_exchange_error_message_1) + " " + text + " " + 
 						 context.getString(R.string.key_exchange_error_message_2);
 				 
@@ -232,7 +232,7 @@ public class KeyExchangeManager extends Activity {
 		    	   @Override
 		    	   public void onClick(DialogInterface arg0, int arg1) {
 	    		   	
-		    		   String url = context.getResources().getString(R.string.key_exchange_info_url);
+		    		   String url = context.getString(R.string.key_exchange_info_url);
 		    		   Intent i = new Intent(Intent.ACTION_VIEW);
 		    		   i.setData(Uri.parse(url));
 		    		   context.startActivity(i);
@@ -337,7 +337,7 @@ public class KeyExchangeManager extends Activity {
 
 	    		adapter = new ArrayAdapter<String>(KeyExchangeManager.this, 
 	    				android.R.layout.simple_list_item_1, new String[]
-	    				{KeyExchangeManager.this.getResources().getString
+	    				{KeyExchangeManager.this.getString
 	    				(R.string.empty_key_exchange_list)});
 	    		//a.setNotifyOnChange(true);
 	    		

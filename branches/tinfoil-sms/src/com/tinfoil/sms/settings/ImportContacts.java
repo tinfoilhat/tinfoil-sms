@@ -71,8 +71,10 @@ public class ImportContacts extends Activity {
         runThread = new ImportContactLoader(this, false, inDb, tc, handler);
         
         //final Thread thread = new Thread(this);
-        this.dialog = ProgressDialog.show(this, "Searching",
-                "Locating Contacts...", true, true, new OnCancelListener() {
+        this.dialog = ProgressDialog.show(this, this
+        		.getString(R.string.searching_title), this
+        		.getString(R.string.searching_message), true, true, 
+        		new OnCancelListener() {
     		
         	public void onCancel(DialogInterface dialog) {
     			runThread.setStop(true);
@@ -106,8 +108,9 @@ public class ImportContacts extends Activity {
 
             runThread.setStart(false);
 
-            ImportContacts.this.dialog = ProgressDialog.show(ImportContacts.this, "Importing",
-                    "Saving Contacts...", true, false);
+            ImportContacts.this.dialog = ProgressDialog.show(ImportContacts.this,
+            		this.getString(R.string.importing_title),
+                    this.getString(R.string.importing_message), true, false);
         }
     }
 
@@ -165,7 +168,7 @@ public class ImportContacts extends Activity {
             }
             return names;
         }
-        names.add("No Contacts to Import");
+        names.add(this.getString(R.string.empty_import_list));
         return names;
     }
     

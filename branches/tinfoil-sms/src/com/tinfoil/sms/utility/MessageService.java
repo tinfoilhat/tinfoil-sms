@@ -64,7 +64,7 @@ public class MessageService extends Service {
          */
         if (contentTitle != null && contentText != null &&
                 ConversationView.sharedPrefs.getBoolean(
-                this.getResources().getString(R.string.notification_bar_settings), true))
+                this.getString(R.string.notification_bar_settings), true))
         {
             Intent notifyIntent = null;
             PendingIntent in = null;
@@ -122,7 +122,7 @@ public class MessageService extends Service {
         }
         
         if(ConversationView.sharedPrefs.getBoolean(
-        		this.getResources().getString(R.string.notification_bar_settings), true))
+        		this.getString(R.string.notification_bar_settings), true))
         {
         	ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
 	        if(keyMessage != null && keyMessage.size() > 0)

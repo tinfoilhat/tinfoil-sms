@@ -20,7 +20,6 @@ package com.tinfoil.sms.settings;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,7 +45,7 @@ public class RemoveContactsActivity extends Activity {
     private ListView listView;
     private boolean[] contact;
     private ArrayList<TrustedContact> tc;
-    private ProgressDialog dialog;
+    //private ProgressDialog dialog;
     //private boolean clicked = false;
     private ArrayAdapter<String> appAdapt;
     private boolean empty = false;
@@ -68,9 +67,9 @@ public class RemoveContactsActivity extends Activity {
 
         this.listView = (ListView) this.findViewById(R.id.removeable_contact_list);
 
-        this.dialog = ProgressDialog.show(this, "Loading Contacts",
+        /*this.dialog = ProgressDialog.show(this, "Loading Contacts",
                 "Loading. Please wait...", true, false);
-
+		*/
         //update();
         runThread = new RemoveContactsLoader(this, false, contact, tc, handler);
 
@@ -97,8 +96,9 @@ public class RemoveContactsActivity extends Activity {
     	if (RemoveContactsActivity.this.tc != null)
         {
             //RemoveContactsActivity.this.clicked = true;
-            RemoveContactsActivity.this.dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts",
+            /*RemoveContactsActivity.this.dialog = ProgressDialog.show(RemoveContactsActivity.this, "Deleting Contacts",
                     "Deleting. Please wait...", true, false);
+            */
             
             runThread.setClicked(true);
             runThread.setStart(false);
@@ -208,7 +208,7 @@ public class RemoveContactsActivity extends Activity {
             
             RemoveContactsActivity.this.listView.setItemsCanFocus(false);
 
-            RemoveContactsActivity.this.dialog.dismiss();
+            //RemoveContactsActivity.this.dialog.dismiss();
         }
     };
 

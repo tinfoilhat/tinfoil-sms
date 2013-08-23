@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.ContactChild;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.database.DBAccessor;
@@ -62,17 +63,16 @@ public class ManageContactsLoader extends Loader{
 		 */
 		String emptyListValue = "";
 		
-    	Log.v("Thread", "In the thread");
     	if(exchange)
     	{
     		ManageContactsActivity.tc = loader.getAllRows(DBAccessor.UNTRUSTED);
-    		emptyListValue = "No contacts";
+    		emptyListValue = context.getString(R.string.empty_loader_value);
     	}
     	else
     	{
     		ManageContactsActivity.tc = loader.getAllRows(DBAccessor.TRUSTED);
-    		emptyListValue = "No Trusted Contacts";
-    	}		    	
+    		emptyListValue = context.getString(R.string.empty_loader_trusted_value);
+    	}
 
         if (ManageContactsActivity.tc != null)
         {

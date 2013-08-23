@@ -221,9 +221,8 @@ public class ExchangeKey implements Runnable {
         	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
         	    		linearLayout.addView(sharedSecret2);
         	    		
-        	    		builder.setMessage(activity.getResources()
-        	    			   .getString(R.string.set_shared_secrets) + " " + 
-        	    			   trustedContact.getName() + ", " + number.getNumber())
+        	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
+        	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
         	    		       .setCancelable(false)
         	    		       .setPositiveButton(R.string.save_shared_secret, new DialogInterface.OnClickListener() {
         	    		    	   @Override

@@ -47,14 +47,14 @@ public class TabSelection extends TabActivity {
         
         //First Tab
         TabSpec spec1=tabHost.newTabSpec("Tab 1");
-        spec1.setIndicator("Contacts");
+        spec1.setIndicator(this.getString(R.string.contacts_tab));
         Intent in1=new Intent(this, ManageContactsActivity.class);
         in1.putExtra(EXCHANGE, true);
         spec1.setContent(in1);
         
         //Second Tab
         TabSpec spec2=tabHost.newTabSpec("Tab 2");
-        spec2.setIndicator("Trusted Contacts");
+        spec2.setIndicator(this.getString(R.string.trusted_contact_tab));
         Intent in2=new Intent(this, ManageContactsActivity.class);
         in2.putExtra(EXCHANGE, false);
         spec2.setContent(in2);
@@ -64,7 +64,7 @@ public class TabSelection extends TabActivity {
         
         //Second Tab
         TabSpec spec3=tabHost.newTabSpec("Tab 3");
-        spec3.setIndicator("Pending Key exchanges");
+        spec3.setIndicator(this.getString(R.string.pending_key_exchange_tab));
         Intent in3=new Intent(this, KeyExchangeManager.class);
         //in3.putExtra(EXCHANGE, false);
         spec3.setContent(in3);

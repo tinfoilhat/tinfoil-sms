@@ -44,7 +44,7 @@ public class MessageBroadcastReciever extends BroadcastReceiver {
 
             if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF)
             {
-                Toast.makeText(c, "SMS put in queue to send", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(c, "SMS put in queue to send", Toast.LENGTH_SHORT).show();
                 Toast.makeText(c, bundle.getString(SMSUtility.MESSAGE), Toast.LENGTH_LONG).show();
             }
             else if (result == Activity.RESULT_OK)

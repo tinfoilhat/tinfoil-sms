@@ -256,7 +256,7 @@ public class ManageContactsActivity extends Activity {
         			String emptyListValue = msg.getData().getString(ManageContactsLoader.EMPTYLIST);
         			if (emptyListValue == null)
         			{
-        				emptyListValue = ManageContactsActivity.this.getResources().getString(R.string.empty_list_value);
+        				emptyListValue = ManageContactsActivity.this.getString(R.string.empty_list_value);
         			}
         			arrayAp = new ArrayAdapter<String>(ManageContactsActivity.this, android.R.layout.simple_list_item_1,
     	                    new String[] { emptyListValue });

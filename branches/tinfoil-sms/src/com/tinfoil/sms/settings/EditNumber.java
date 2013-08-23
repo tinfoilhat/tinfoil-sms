@@ -321,7 +321,7 @@ public class EditNumber extends Activity{
 		else
 		{
 			//TODO create a better notification for invalid shared secrets (since they key board blocks them)
-			Toast.makeText(this, this.getResources().getString(R.string.shared_secret)
+			Toast.makeText(this, this.getString(R.string.shared_secret)
 					+ SHARED_INFO_MIN, Toast.LENGTH_LONG).show();
 		}
 	}
@@ -459,7 +459,7 @@ public class EditNumber extends Activity{
     {
     	final String name = MessageService.dba.getRow(number.getNumber()).getName();
     	AlertDialog.Builder builder = new AlertDialog.Builder(context);
-    	builder.setMessage(context.getResources().getString(R.string.key_exchange_respond)
+    	builder.setMessage(context.getString(R.string.key_exchange_respond)
     			+ " " + name + ", " + number.getNumber() + "?")
 		    .setCancelable(true)
 		    .setPositiveButton(R.string.sms_option, new DialogInterface.OnClickListener() {

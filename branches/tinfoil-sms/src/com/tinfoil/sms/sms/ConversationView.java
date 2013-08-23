@@ -328,8 +328,8 @@ public class ConversationView extends Activity {
         		 */
         		List<String> emptyItems = new ArrayList<String>();
         		
-        		emptyItems.add(ConversationView.this.getResources().getString(R.string.add_contacts_list));
-        		emptyItems.add(ConversationView.this.getResources().getString(R.string.import_contacts_list));
+        		emptyItems.add(ConversationView.this.getString(R.string.add_contacts_list));
+        		emptyItems.add(ConversationView.this.getString(R.string.import_contacts_list));
         		
         		ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
                 emptyList.setAdapter(ap);
