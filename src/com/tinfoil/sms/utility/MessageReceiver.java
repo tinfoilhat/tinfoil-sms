@@ -273,6 +273,12 @@ public class MessageReceiver extends BroadcastReceiver {
 											}
 											
 											KeyExchangeManager.updateList();
+											
+											MessageService.contentTitle = null;
+											MessageService.contentText = null;
+											
+											Intent serviceIntent = new Intent(this.getContext(), MessageService.class);
+											this.getContext().startService(serviceIntent);
 											super.cancel();
 										}
 										
