@@ -145,7 +145,7 @@ public class ManageContactsActivity extends Activity {
 
                 checked_text.setChecked(adapter.getContacts().get(groupPosition)
                 		.getNumber(childPosition).isSelected());
-
+                
                 return true;
             }
         });
@@ -209,7 +209,6 @@ public class ManageContactsActivity extends Activity {
      */
     private void startThread()
     {
-        //TODO Override dialog to make so if BACK is pressed it exits the activity if it hasn't finished loading
         /*this.loadingDialog = ProgressDialog.show(this, "Loading Contacts",
                 "Loading. Please wait...", true, false);*/
         runThread = new ManageContactsLoader(this, handler, exchange);
@@ -223,6 +222,9 @@ public class ManageContactsActivity extends Activity {
     	super.onDestroy();
 	}
     
+    /**
+     * Update the list of contacts
+     */
     public static void updateList()
     {
         if(runThread != null)

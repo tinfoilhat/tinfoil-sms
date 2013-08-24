@@ -19,7 +19,6 @@ package com.tinfoil.sms.dataStructures;
 
 /**
  * A class for holding information involving the user.
- * TODO comment
  */
 public class User {
 	
@@ -32,21 +31,37 @@ public class User {
 		this.privateKey = privateKey;
 	}
 	
+	/**
+	 * Get the User's public key.
+	 * @return The User's public key.
+	 */
 	public byte[] getPublicKey()
 	{
 		return publicKey;
 	}
 	
+	/**
+	 * Set the User's public key.
+	 * @param publicKey The new public key for the User.
+	 */
 	public void setPublicKey(byte[] publicKey)
 	{
 		this.publicKey = publicKey;
 	}
 	
+	/**
+	 * Get the User's private key.
+	 * @return The User's private key.
+	 */
 	public byte[] getPrivateKey()
 	{
 		return privateKey;
 	}
 	
+	/**
+	 * Set the User's private key.
+	 * @param privateKey The new private key for the User.
+	 */
 	public void setPrivateKey(byte[] privateKey)
 	{
 		this.privateKey = privateKey;

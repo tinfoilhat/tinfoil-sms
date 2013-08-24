@@ -52,9 +52,9 @@ public class Number {
 	private int keyExchangeFlag;
 	
 	/**
-	 * TODO document rest of params
 	 * A class used to store information from the numbers table
 	 * 
+	 * @param id The number's sql id.
 	 * @param number A number for the contact
 	 * @param type The type of number, whether it is a cell, home, etc.
 	 * For more information of types of numbers please see the DBAccessor
@@ -94,6 +94,11 @@ public class Number {
 		this.keyExchangeFlag = keyExchangeFlag;
 	}
 	
+	/**
+	 * A class used to store information from the numbers table
+	 * @param number The Number for the contact.
+	 * @param publicKey The contact's public key.
+	 */
 	public Number (String number, byte[] publicKey)
 	{
 		this.setNumber(number);
@@ -362,9 +367,9 @@ public class Number {
 		return publicKey;
 	}
 	
-	/**TODO comment
+	/**
 	 * Set the contact's public publicKey
-	 * @param publicKey
+	 * @param publicKey The public key for the contact.
 	 */
 	public void setPublicKey(byte[] publicKey)
 	{

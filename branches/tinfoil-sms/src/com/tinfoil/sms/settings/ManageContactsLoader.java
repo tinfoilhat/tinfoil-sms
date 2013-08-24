@@ -23,7 +23,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.ContactChild;
@@ -43,9 +42,10 @@ public class ManageContactsLoader extends Loader{
 	public boolean[] trusted;
 	
 	/**
-	 * TODO comment
-	 * @param handler
-	 * @param exchange
+	 * The constructor for creating the contact loader.
+	 * @param context The context of the loading.
+	 * @param handler The handler for sending messages.
+	 * @param exchange Whether the loading is for trusted or untrusted contacts
 	 */
 	public ManageContactsLoader(Context context, Handler handler, boolean exchange)
 	{

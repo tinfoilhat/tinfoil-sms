@@ -111,6 +111,13 @@ public class KeyExchangeManager extends Activity {
 		}		
 	}
 	
+	/**
+	 * Set the shared secrets for the contacts.
+	 * @param context The context of the setting.
+	 * @param number The Number of the contact.
+	 * @param name The name of the contact
+	 * @param entry The key exchange message.
+	 */
 	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);

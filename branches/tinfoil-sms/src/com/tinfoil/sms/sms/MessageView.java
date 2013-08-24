@@ -237,6 +237,10 @@ public class MessageView extends Activity {
         }       
     }
     
+    /**
+     * Forward the given message.
+     * @param message The message that is going to be forwarded.
+     */
     private void forward(String message)
     {
     	final String[] info = SMSUtility.parseAutoComplete(phoneBox.getText().toString());

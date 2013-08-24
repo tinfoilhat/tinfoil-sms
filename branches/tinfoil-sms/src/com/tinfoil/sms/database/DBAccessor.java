@@ -1103,7 +1103,7 @@ public class DBAccessor {
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{KEY_UNREAD},
 				KEY_NUMBER + " = ?", new String[]{SMSUtility.format(number)}, null, null, KEY_ID);
 		int count = 0;
-		if (cur.moveToFirst())
+		if (cur != null && cur.moveToFirst())
 		{
 			count = cur.getInt(cur.getColumnIndex(KEY_UNREAD));
 		}
@@ -1519,12 +1519,18 @@ public class DBAccessor {
 		if (cur.moveToFirst())
 		{
 			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
-			Entry entry = new Entry(getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
-					cur.getString(cur.getColumnIndex(KEY_MESSAGE)), id, cur.getInt(cur.getColumnIndex(KEY_EXCHANGE)));
-			close(cur);
-			
-			deleteQueueEntry(id);
-			return entry;
+			String number = getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE)));
+
+			if(number != null)
+			{
+				Entry entry = new Entry(number,
+						cur.getString(cur.getColumnIndex(KEY_MESSAGE)),
+						id, cur.getInt(cur.getColumnIndex(KEY_EXCHANGE)));
+				close(cur);
+				
+				deleteQueueEntry(id);
+				return entry;
+			}
 		}
 		close(cur);		
 		return null;
