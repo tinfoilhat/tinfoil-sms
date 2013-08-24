@@ -132,6 +132,13 @@
 		    android:defaultValue="true"
 		    android:persistent="true"/>
         
+          <PreferenceScreen
+           	android:title="@string/source_code_title"
+            android:key="source_code"
+            android:summary="@string/source_code_sub_title">	
+          </PreferenceScreen>
+          
+          
           <PreferenceScreen 
             android:title="Donate"
             android:key="donate"
@@ -140,8 +147,9 @@
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:targetPackage="com.tinfoil.sms"
-				android:targetClass="com.tinfoil.sms.settings.DonationsActivity" />
-        </PreferenceScreen>  
+				android:targetClass="com.tinfoil.sms.settings.DonationsActivity" />	
+        </PreferenceScreen>
+            
 	</PreferenceCategory>
     
 	

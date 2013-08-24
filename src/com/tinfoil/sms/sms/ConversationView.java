@@ -21,10 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -102,6 +107,12 @@ public class ConversationView extends Activity {
         ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).listen(this.pSL, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         MessageService.mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
+        /*
+         * Load the shared preferences
+         */
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        getEULA();
+        
         messageSender.startThread(getApplicationContext());
         
         MessageService.dba = new DBAccessor(this);
@@ -165,11 +176,6 @@ public class ConversationView extends Activity {
         ConversationView.messageViewActive = false;
         this.setContentView(R.layout.main);
         
-        /*
-         * Load the shared preferences
-         */
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         MessageReceiver.myActivityStarted = true;
 
         /*
@@ -310,7 +316,52 @@ public class ConversationView extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }   
+    }
+    
+    private PackageInfo getPackageInfo() {
+        PackageInfo pi = null;
+        try {
+             pi = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return pi;
+    }
+    
+    public void getEULA()
+    {
+    	PackageInfo versionInfo = getPackageInfo();
+    	final String eulaKey = "eula_" + versionInfo.versionCode;
+    	boolean hasBeenShown = sharedPrefs.getBoolean(eulaKey, false);
+
+    	if(hasBeenShown == false){
+	    	String title = this.getString(R.string.eula_title) + " v" + versionInfo.versionCode;
+	    	String message = "";
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(this)
+	        .setTitle(title)
+	        .setMessage(message)
+	        .setPositiveButton(R.string.accept, new Dialog.OnClickListener() {
+	
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+	                SharedPreferences.Editor editor = sharedPrefs.edit();
+	                editor.putBoolean(eulaKey, true);
+	                editor.commit();
+				}
+	        })
+	        .setNegativeButton(R.string.reject, new Dialog.OnClickListener() {
+	
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	                // Close the activity as they have declined the EULA
+	                ConversationView.this.finish();
+	            }
+	
+	        });
+	    	builder.create().show();
+        }
+    }
 		
 	/**
 	 * The handler class for cleaning up after the loading thread as well as the

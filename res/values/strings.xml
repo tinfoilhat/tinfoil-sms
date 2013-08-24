@@ -5,11 +5,13 @@
     <string name="vibration_default_length">500</string>
     <string name="contact_name">name</string>
     
-    <string name="okay">OK</string>
+    <string name="okay">Okay</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
     <string name="tell_me_more">Tell Me More</string>
     <string name="save">Save</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
     
     <string name="key_exchange_failed_to_decrypt">FAILED TO DECRYPT</string>
     <string name="possible_man_in_the_middle_attack_warning">Possible Man In The Middle Attack</string>
@@ -18,6 +20,35 @@
     <!-- ConversationView Activity strings -->
     <string name="add_contacts_list">Add Contact</string>
     <string name="import_contacts_list">Import Contact</string>
+    <string name="eula_title">Tinfoil-SMS EULA</string>
+    
+    <!-- Database Accessor strings -->
+    <string name="duplicate_key_exchange">has sent another key exchange message</string>
+    <string name="duplicate_key_exchange_warning_1">Warning: a message identify as a key exchange is different from previously received key exchange messages from</string>
+	<string name="duplicate_key_exchange_warning_2">possible man in the middle attack.</string>
+    <string name="user">Me</string>
+    <string-array name="phone_types">
+        <item>Home</item>
+        <item>Mobile</item>
+        <item>Work</item>
+        <item>Work Fax</item>
+        <item>Home Fax</item>
+        <item>Pager</item>
+        <item>Other</item>
+		<item>Custom</item>
+		<item>Callback</item>
+		<item>Car</item>
+		<item>Company Main</item>
+		<item>ISDN</item>
+		<item>Main</item>
+		<item>Other Fax</item>
+		<item>Telex</item>
+		<item>TTY TTD</item>
+		<item>Work Mobile</item>
+		<item>Work Pager</item>
+		<item>Assistant</item> 
+    	<item>MMS</item>
+    </string-array>
 
     <!-- KeyExchangeManager Activity strings -->
     <string name="key_exchange_manager">Key Exchange Manager</string>
@@ -29,8 +60,7 @@
     <string name="invalid_secrets">Invalid Secrets</string>
 	<string name="shared_secret_hint_1">Shared Secret 1</string>
 	<string name="shared_secret_hint_2">Shared Secret 2</string>
-	
-	
+
 	<string name="set_shared_secrets">Set the shared secret for</string>
 	<string name="set_shared_secrets_title">Key Exchange</string>
 
@@ -162,6 +192,7 @@
     <!-- Urls -->
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
+    <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
     
     <!-- Settings string keys -->
     <string name="show_encrypt_settings">show_encrypt</string>
@@ -172,6 +203,10 @@
     <string name="vibrate_settings">vibrate</string>
     <string name="vibrate_length_settings">vibrate_length</string>
     <string name="bugsense_enable_settings">bugsense_enable</string>
+    <string name="source_code_settings">source_code</string>
+    
+    <string name="source_code_title">Get Tinfoil-SMS Source</string>
+    <string name="source_code_sub_title">Contribute to Tinfoil-SMS</string>
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">New Messages</string>

@@ -25,6 +25,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.tinfoil.sms.R;
 import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
@@ -78,7 +79,7 @@ public class DBAccessor {
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;
 	
-	private static final String USER_NAME = "Me";
+	private static String USER_NAME = "Me";
 	
 	public static final int LENGTH = 21;
 	public static final int OTHER_INDEX = 7;
@@ -101,6 +102,8 @@ public class DBAccessor {
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
 	
+	private Context context;
+	
 	//private static int count = 0;
 
 	/**
@@ -109,7 +112,9 @@ public class DBAccessor {
 	 */
 	public DBAccessor (Context c)
 	{
-		contactDatabase = new SQLitehelper(c);
+		this.context = c;
+		localizeStrings(c);
+		contactDatabase = new SQLitehelper(c);		
 		
 		if(!TinfoilSMS.threadable)
 		{
@@ -119,6 +124,7 @@ public class DBAccessor {
 	
 	public static DBAccessor createNewConnection(Context c)
 	{
+		localizeStrings(c);
 		if(TinfoilSMS.threadable)
 		{
 			return new DBAccessor(c);
@@ -129,6 +135,12 @@ public class DBAccessor {
 			MessageService.dba = new DBAccessor(c);
 		}
 		return MessageService.dba;
+	}
+	
+	public static void localizeStrings(Context c)
+	{
+		USER_NAME = c.getString(R.string.user);
+		TYPES = c.getResources().getStringArray(R.array.phone_types);
 	}
 	
 	/**
@@ -236,14 +248,13 @@ public class DBAccessor {
 			if(prev.getMessage().compareTo(keyExchange.getMessage()) == 0)
 			{
 				//Contact sent another message
-				return keyExchange.getNumber() + " has sent another key exchange message";
+				return keyExchange.getNumber() + " " + context.getString(R.string.duplicate_key_exchange);
 			}
 			else
 			{
-				return "Warning: a message identify as a key exchange is " +
-					    "different from previously recieved key exchange " +
-					    "messages from " + keyExchange.getNumber() + " " +
-					    "possible man in the middle attack.";
+				return context.getString(R.string.duplicate_key_exchange_warning_1)
+						+ " " + keyExchange.getNumber() + " " +
+						context.getString(R.string.duplicate_key_exchange_warning_2);
 			}
 		}		
 	}
