@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/import_key"
-        android:titleCondensed="Import Key"
-        android:title="Import Contact Key">
+        android:title="@string/import_contact_key_menu"
+        android:titleCondensed="@string/import_contact_key_menu_condensed">
     </item>
-    <item android:id="@+id/delete" android:title="Delete Number" android:titleCondensed="Delete"></item>
+    <item
+        android:id="@+id/delete"
+		android:title="@string/delete_number_menu"
+		android:titleCondensed="@string/delete_number_menu_condensed">
+    </item>
 </menu>

@@ -21,6 +21,11 @@
     <string name="add_contacts_list">Add Contact</string>
     <string name="import_contacts_list">Import Contact</string>
     <string name="eula_title">Tinfoil-SMS EULA</string>
+    <string name="eula_message">Please see the license at\n</string>
+    <string name="compose_menu">Compose</string>
+    <string name="settings_menu">Settings</string>
+    <string name="pending_key_exchange_menu">Pending Key Exchanges</string>
+    <string name="pending_key_exchange_menu_condensed">Exchange</string>
     
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">has sent another key exchange message</string>
@@ -63,6 +68,11 @@
 
 	<string name="set_shared_secrets">Set the shared secret for</string>
 	<string name="set_shared_secrets_title">Key Exchange</string>
+	
+	<!--RemoveContactsActivity strings  -->
+	<string name="select_all_menu_condensed">All</string>
+	<string name="remove_all_menu">Remove All</string>
+	<string name="remove_all_menu_condensed">Remove</string>
 
     <!-- Settings strings -->
     <string name="settings">Settings</string>
@@ -78,6 +88,8 @@
     <string name="add_number">Add Number</string>
     <string name="phone_type_title">Phone Type:</string>
     <string name="insufficent_message">Insufficient information provided</string>
+    <string name="delete_contact_menu">Delete Contact</string>
+    <string name="delete_contact_menu_condensed">Delete</string>
 
     <!-- ManageContactsActivity strings -->
     <string name="exchange_keys">Exchange Keys</string>
@@ -101,6 +113,10 @@
     <string name="manual_key_exchange">Manual Exchange</string>
     <string name="ignore_key_exchange">Ignore All Exchange</string>
     <string name="edit_number">Edit Number</string>
+    <string name="import_contact_key_menu">Import Contact Key</string>
+    <string name="import_contact_key_menu_condensed">Import Key</string>
+    <string name="delete_number_menu">Delete Number</string>
+    <string name="delete_number_menu_condensed">Delete</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Phone Number</string>
@@ -112,6 +128,8 @@
     <string name="importing_title">Importing</string>
     <string name="importing_message">Saving Contacts&#8230;</string>
     <string name="empty_import_list">No Contacts to Import</string>
+    <string name="select_all_menu">Select All</string>
+    <string name="deselect_all_menu">Deselect All</string>
 
     <!-- MessageView strings -->
     <string name="message">Messages</string>
@@ -138,6 +156,9 @@
     <string name="key_exchange_respond">Would you like to export or send via SMS the exchange keys for</string>
     <string name="sms_option">SMS</string>
     <string name="export_option">Export</string>
+    <string name="delete_thread_menu">Delete Thread</string>
+    <string name="exchange_keys_menu">Exchange Keys</string>
+    <string name="edit_contact_menu">Edit Contact</string>
 
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Send</string>
@@ -193,6 +214,7 @@
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
+    <string name="eula_link">https://raw.github.com/tinfoilhat/tinfoil-sms/master/EULA</string>
     
     <!-- Settings string keys -->
     <string name="show_encrypt_settings">show_encrypt</string>
@@ -207,6 +229,32 @@
     
     <string name="source_code_title">Get Tinfoil-SMS Source</string>
     <string name="source_code_sub_title">Contribute to Tinfoil-SMS</string>
+    <string name="application_settings_options">Application Settings</string>
+    <string name="enable_tinfoil_sms_option_summary">Enable or disable SMS encryption</string>
+    <string name="enable_tinfoil_sms_option_title">Enable Tinfoil-SMS</string>
+    <string name="message_settings_option_title">Message Settings</string>
+    <string name="native_save_option_title">Native Save</string>
+    <string name="native_save_option_summary">Save messages to the native SMS app</string>
+    <string name="message_limit_option_title">Message Limit</string>
+    <string name="maximum_number_of_messages_saved">Maximum number of messages saved for contacts</string>
+    <string name="contact_settings_option_title">Contact Settings</string>
+    <string name="import_contacts_option_title">Import Contacts</string>
+    <string name="import_contacts_option_summary">Import Trusted Contacts from phone</string>
+    <string name="manage_contacts_option_title">Manage Contacts</string>
+    <string name="encryption_option_title">Encryption Settings</string>
+    <string name="encryption_message_option_title">Encrypted Messages</string>
+    <string name="encrypted_message_option_summary">Display the original encrypted message</string>
+    <string name="public_key_option_title">My Public Key</string>
+    <string name="public_key_option_summary">Manage your public key</string>
+    <string name="notifications_option_title">Notification Settings</string>
+    <string name="enable_notification_option_title">Enable Notifications</string>
+    <string name="vibrate_option_title">Vibrate</string>
+    <string name="vibrate_length_option_title">Vibrate Length</string>
+    <string name="vibrate_length_option_summary">Select the length of vibration notification</string>
+    <string name="feedback_options">Feedback</string>
+    <string name="donate_option_title">Donate</string>
+    <string name="donate_option_summary">Support the developers</string>
+	
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">New Messages</string>

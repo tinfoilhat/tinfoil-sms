@@ -1,10 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	<item
  	    android:id="@+id/delete"
- 	    android:title="Delete Thread"/>
+ 	    android:title="@string/delete_thread_menu"/>
  	<item
         android:id="@+id/exchange"
-        android:title="Exchange Keys"/>
- 	<item android:id="@+id/edit" android:title="Edit Contact"></item>
+        android:title="@string/exchange_keys_menu"/>
+ 	<item
+ 	    android:id="@+id/edit"
+ 	    android:title="@string/edit_contact_menu"></item>
 </menu>
 

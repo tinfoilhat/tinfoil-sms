@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	
-    <item android:id="@+id/all" android:title="Select All" />
-    <item android:id="@+id/rm_import" android:title="Deselect All" />
+    <item
+        android:id="@+id/all"
+        android:title="@string/select_all_menu" />
+    <item
+        android:id="@+id/rm_import"
+        android:title="@string/deselect_all_menu" />
 
 </menu>

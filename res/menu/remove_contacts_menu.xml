@@ -1,10 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	
     
-    <item android:id="@+id/all"
-        android:title="Select All" android:titleCondensed="All"/>
-    <item android:id="@+id/remove"
-        android:title="Remove All" android:titleCondensed="Remove"/>
+    <item
+        android:id="@+id/all"
+        android:title="@string/select_all_menu"
+        android:titleCondensed="@string/select_all_menu_condensed"/>
+    <item
+        android:id="@+id/remove"
+        android:title="@string/remove_all_menu"
+        android:titleCondensed="@string/remove_all_menu_condensed"/>
 	
 </menu>
 

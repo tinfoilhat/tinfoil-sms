@@ -1,8 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
  	
-    <item android:id="@+id/compose" android:title="Compose" />
-    <item android:id="@+id/settings" android:title="Settings" />
-    <item android:id="@+id/exchange" android:titleCondensed="Exchange" android:title="Pending Key Exchanges"></item>	
+    <item
+        android:id="@+id/compose"
+        android:title="@string/compose_menu" />
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings_menu" />
+    <item
+        android:id="@+id/exchange"
+        android:titleCondensed="@string/pending_key_exchange_menu_condensed"
+        android:title="@string/pending_key_exchange_menu" />
 	
 </menu>
 
