@@ -65,6 +65,28 @@ Custom Styles
   margin: 0 5px;
 }
 
+.donate {
+  text-align: center;
+  margin-top: -15px;
+  margin-bottom: 15px;
+}
+
+span .FlattrButton {
+  position: relative;
+  top: 5px;
+  left: -5px;
+}
+
+span .PayPalButton {
+  width: 74px;
+  height: 21px;
+  border: none;
+  box-shadow: none;
+  margin: 0 5px;
+  top: 9px;
+  right: 2px;
+}
+
 .downloads {
   clear: both;
 }
