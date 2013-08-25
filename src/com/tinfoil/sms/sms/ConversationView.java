@@ -26,6 +26,7 @@ import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -361,7 +362,7 @@ public class ConversationView extends Activity {
 	    	String title = this.getString(R.string.eula_title);
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 	        .setTitle(title)
-	        .setCancelable(false)
+	        .setCancelable(true)
 	        .setView(textBox)
 	        .setPositiveButton(R.string.accept, new Dialog.OnClickListener() {
 	
@@ -372,13 +373,21 @@ public class ConversationView extends Activity {
 	                editor.commit();
 				}
 	        })
-	        .setNegativeButton(R.string.reject, new Dialog.OnClickListener() {
+	        .setOnCancelListener(new OnCancelListener(){
+
+				@Override
+				public void onCancel(DialogInterface arg0) {
+					// Close the activity as they have declined the EULA
+	                ConversationView.this.finish();
+				}	        	
+	        })
+	        .setNegativeButton(R.string.refuse, new Dialog.OnClickListener() {
 	
 	            @Override
 	            public void onClick(DialogInterface dialog, int which) {
 	                // Close the activity as they have declined the EULA
 	                ConversationView.this.finish();
-	            }	
+	            }
 	        });
 	    	builder.create().show();
         }
