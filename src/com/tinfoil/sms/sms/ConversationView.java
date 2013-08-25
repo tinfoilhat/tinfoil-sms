@@ -342,12 +342,11 @@ public class ConversationView extends Activity {
     	if(hasBeenShown == false){
     		
     		final TextView textBox = new TextView(this);	
-    		String licenseMessage = "Please see the license at\n";
-    		String message = "https://raw.github.com/tinfoilhat/tinfoil-sms/master/EULA";
-    		final SpannableString link = new SpannableString(licenseMessage + message);
-    		Linkify.addLinks(link, Linkify.WEB_URLS);
+    		String licenseMessage = this.getString(R.string.eula);
+    		final SpannableString license = new SpannableString(licenseMessage);
+    		Linkify.addLinks(license, Linkify.WEB_URLS);
     		
-    		textBox.setText(link);
+    		textBox.setText(license);
     		
     		int horDimen = Math.round(this.getResources().getDimension(R.dimen.activity_horizontal_margin));
     		int verDimen = Math.round(this.getResources().getDimension(R.dimen.activity_vertical_margin));
@@ -359,7 +358,7 @@ public class ConversationView extends Activity {
     		textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
     		
 
-	    	String title = this.getString(R.string.eula_title) + " v" + versionInfo.versionCode;
+	    	String title = this.getString(R.string.eula_title);
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 	        .setTitle(title)
 	        .setCancelable(false)
