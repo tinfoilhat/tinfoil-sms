@@ -36,14 +36,19 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.TinfoilSMS;
@@ -335,16 +340,34 @@ public class ConversationView extends Activity {
     	boolean hasBeenShown = sharedPrefs.getBoolean(eulaKey, false);
 
     	if(hasBeenShown == false){
+    		
+    		final TextView textBox = new TextView(this);	
+    		String licenseMessage = "Please see the license at\n";
+    		String message = "https://raw.github.com/tinfoilhat/tinfoil-sms/master/EULA";
+    		final SpannableString link = new SpannableString(licenseMessage + message);
+    		Linkify.addLinks(link, Linkify.WEB_URLS);
+    		
+    		textBox.setText(link);
+    		
+    		int horDimen = Math.round(this.getResources().getDimension(R.dimen.activity_horizontal_margin));
+    		int verDimen = Math.round(this.getResources().getDimension(R.dimen.activity_vertical_margin));
+    		textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
+
+    		textBox.setMovementMethod(LinkMovementMethod.getInstance());
+    		textBox.setTextColor(this.getResources().getColor(R.color.White));
+    		textBox.setTextSize(18);
+    		textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+    		
+
 	    	String title = this.getString(R.string.eula_title) + " v" + versionInfo.versionCode;
-	    	String message = "";
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 	        .setTitle(title)
-	        .setMessage(message)
+	        .setCancelable(false)
+	        .setView(textBox)
 	        .setPositiveButton(R.string.accept, new Dialog.OnClickListener() {
 	
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 	                SharedPreferences.Editor editor = sharedPrefs.edit();
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
@@ -356,8 +379,7 @@ public class ConversationView extends Activity {
 	            public void onClick(DialogInterface dialog, int which) {
 	                // Close the activity as they have declined the EULA
 	                ConversationView.this.finish();
-	            }
-	
+	            }	
 	        });
 	    	builder.create().show();
         }
