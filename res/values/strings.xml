@@ -21,21 +21,20 @@
     <string name="add_contacts_list">Add Contact</string>
     <string name="import_contacts_list">Import Contact</string>
     <string name="eula_title">Tinfoil-SMS EULA</string>
-    <string name="eula_message">Please see the license at\n</string>
+    <string name="eula_message">"PLEASE READ THE TERMS AND CONDITIONS OF THIS END USER LICENSE AGREEMENT (EULA) CAREFULLY BEFORE INSTALLING OR USING THIS SOFTWARE.\n
+This distribution includes cryptographic software. The country in which you currently reside may have restrictions on the import, possession, use, and/or re-export to another country, of encryption software. BEFORE using any encryption software, please check your country's laws, regulations and policies concerning the import, possession, or use, and re-export of encryption software, to see if this is permitted. See http://www.wassenaar.org for more information.\n
+BY CLICKING ACCEPT YOU ACKNOWLEDGE THAT YOU UNDERSTAND THE CRYPTOGRAPHIC IMPORT/EXPORT LAWS OF YOUR COUNTRY AND ARE FULLY RESPONSIBLE FOR ENSURING THAT YOU ARE LEGALLY PERMITTED TO IMPORT/EXPORT THIS SOFTWARE. BY CLICKING ACCEPT YOU AGREE THAT YOU MAY NOT HOLD THE AUTHORS LIABLE FOR ANY LEGAL RAMIFICATIONS AS A RESULT OF THIS SOFTWARE, NOR MAY THE AUTHORS BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THIS SOFTWARE.\n
+LASTLY, THIS SOFTWARE IS OPEN SOURCE AND IS LICENSED UNDER THE GNU GENERAL PUBLIC LICENSE V3 (GPLv3). BY CLICKING ACCEPT YOU MUST ALSO AGREE TO THE TERMS OF THE GNU GENERAL PUBLIC LICENSE V3, PLEASE SEE http://www.gnu.org/licenses/gpl.html FOR THE COMPLETE LICENSE. FURTHERMORE, DUE TO THE OPEN SOURCE NATURE OF THIS SOFTWARE, WHEN YOU IMPORT THIS SOFTWARE OR SOURCE CODE TO YOUR COUNTRY, REDISTRIBUTE IT FROM THERE OR EVEN JUST EMAIL TECHNICAL SUGGESTIONS OR SOURCE PATCHES TO THE AUTHORS YOU ARE STRONGLY ADVISED TO PAY CLOSE ATTENTION TO ANY IMPORT/EXPORT AND/OR USE LAWS WHICH MAY APPLY TO YOU.\n
+ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USER LICENSE AGREEMENT (EULA)."</string>
     <string name="compose_menu">Compose</string>
     <string name="settings_menu">Settings</string>
     <string name="pending_key_exchange_menu">Pending Key Exchanges</string>
     <string name="pending_key_exchange_menu_condensed">Exchange</string>
-    <string name="eula">"PLEASE READ THE TERMS AND CONDITIONS OF THIS END USER LICENSE AGREEMENT (EULA) CAREFULLY BEFORE INSTALLING OR USING THIS SOFTWARE.\n
-This distribution includes cryptographic software. The country in which you currently reside may have restrictions on the import, possession, use, and/or re-export to another country, of encryption software. BEFORE using any encryption software, please check your country's laws, regulations and policies concerning the import, possession, or use, and re-export of encryption software, to see if this is permitted. See http://www.wassenaar.org/ for more information.\n
-BY CLICKING ACCEPT YOU ACKNOWLEDGE THAT YOU UNDERSTAND THE CRYPTOGRAPHIC IMPORT/EXPORT LAWS OF YOUR COUNTRY AND ARE FULLY RESPONSIBLE FOR ENSURING THAT YOU ARE LEGALLY PERMITTED TO IMPORT/EXPORT THIS SOFTWARE. BY CLICKING ACCEPT YOU AGREE THAT YOU MAY NOT HOLD THE AUTHORS LIABLE FOR ANY LEGAL RAMIFICATIONS AS A RESULT OF THIS SOFTWARE, NOR MAY THE AUTHORS BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THIS SOFTWARE.\n
-LASTLY, THIS SOFTWARE IS OPEN SOURCE AND IS LICENSED UNDER THE GNU GENERAL PUBLIC LICENSE V3 (GPLv3). BY CLICKING ACCEPT YOU MUST ALSO AGREE TO THE TERMS OF THE GNU GENERAL PUBLIC LICENSE V3, PLEASE SEE http://www.gnu.org/licenses/gpl.html FOR THE COMPLETE LICENSE. FURTHERMORE, DUE TO THE OPEN SOURCE NATURE OF THIS SOFTWARE, WHEN YOU IMPORT THIS SOFTWARE OR SOURCE CODE TO YOUR COUNTRY, REDISTRIBUTE IT FROM THERE OR EVEN JUST EMAIL TECHNICAL SUGGESTIONS OR SOURCE PATCHES TO THE AUTHORS YOU ARE STRONGLY ADVISED TO PAY CLOSE ATTENTION TO ANY IMPORT/EXPORT AND/OR USE LAWS WHICH MAY APPLY TO YOU.\n
-ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USER LICENSE AGREEMENT (EULA)."</string>
     
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">has sent another key exchange message</string>
-    <string name="duplicate_key_exchange_warning_1">Warning: a message identify as a key exchange is different from previously received key exchange messages from</string>
-	<string name="duplicate_key_exchange_warning_2">possible man in the middle attack.</string>
+    <string name="duplicate_key_exchange_warning_1">Warning: A message received has been identified as a different key exchange than the one previously received from</string>
+	<string name="duplicate_key_exchange_warning_2">This is a potential man-in-the-middle attack.</string>
     <string name="user">Me</string>
     <string-array name="phone_types">
         <item>Home</item>
@@ -62,10 +61,10 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
 
     <!-- KeyExchangeManager Activity strings -->
     <string name="key_exchange_manager">Key Exchange Manager</string>
-    <string name="empty_key_exchange_list">No Pending Key Echanges</string>
+    <string name="empty_key_exchange_list">No Pending Key Exchanges</string>
     <string name="key_exchange_error_title">Key Exchange Warning!</string>
     <string name="key_exchange_error_message_1">The Key Exchange with</string>
-    <string name="key_exchange_error_message_2">was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct</string>
+    <string name="key_exchange_error_message_2">was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct.</string>
     <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
     <string name="invalid_secrets">Invalid Secrets</string>
 	<string name="shared_secret_hint_1">Shared Secret 1</string>
@@ -100,13 +99,13 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="exchange_keys">Exchange Keys</string>
     <string name="manage_contacts">Manage Contacts</string>
     <string name="untrust_button_name">Untrust</string>
-    <string name="empty_list_value">Empty list</string>
+    <string name="empty_list_value">Empty List</string>
     <string name="empty_loader_value">No Contacts</string>
     <string name="empty_loader_trusted_value">No Trusted Contacts</string>
 
     <!-- EditNumber strings -->
-    <string name="shared_secret_1">Secret message</string>
-    <string name="shared_secret_2">Secret message</string>
+    <string name="shared_secret_1">Secret Message</string>
+    <string name="shared_secret_2">Secret Message</string>
     <string name="book_path_text">Book Path</string>
     <string name="book_path">default</string>
     <string name="book_inverse_text">Book Inverse Path</string>
@@ -116,7 +115,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="key_exchange_settings">Key Exchange Settings</string>
     <string name="auto_key_exchange">Automatically Exchange</string>
     <string name="manual_key_exchange">Manual Exchange</string>
-    <string name="ignore_key_exchange">Ignore All Exchange</string>
+    <string name="ignore_key_exchange">Ignore All Exchanges</string>
     <string name="edit_number">Edit Number</string>
     <string name="import_contact_key_menu">Import Contact Key</string>
     <string name="import_contact_key_menu_condensed">Import Key</string>
@@ -138,9 +137,9 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
 
     <!-- MessageView strings -->
     <string name="message">Messages</string>
-    <string name="forward_title">Input contact number</string>
+    <string name="forward_title">Input Contact Number</string>
     <string name="forward_positive_button">OK</string>
-    <string name="invalid_number_message">Invalid number</string>
+    <string name="invalid_number_message">Invalid Number</string>
     <string name="untrust_contact_menu_full">Untrust Contact</string>
     <string name="untrust_contact_menu_short">Untrust</string>
     <string name="resolve_key_exchange_full">Resolve Key Exchange</string>
@@ -148,17 +147,17 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="exchange_key_full">Exchange Keys</string>
     <string name="exchange_key_short">Exchange Keys</string>
     <string-array name="sms_options">
-        <item>Delete message</item>
-        <item>Copy message</item>
-        <item>Forward message</item>
+        <item>Delete Message</item>
+        <item>Copy Message</item>
+        <item>Forward Message</item>
     </string-array>
     <string name="key_exchange_dialog_message">Would you like to exchange keys with</string>
     <string name="key_exchange_dialog_pos_button">OK</string>
     <string name="key_exchange_dialog_neg_button">No</string>
-    <string name="shared_secret">Shared secrets must be longer then</string>
-    <string name="export_number_title">Input contact\'s number</string>
+    <string name="shared_secret">Shared secrets must be longer than</string>
+    <string name="export_number_title">Input Contact\'s Number</string>
     <string name="key_exchange_import">Key Exchange Import</string>
-    <string name="key_exchange_respond">Would you like to export or send via SMS the exchange keys for</string>
+    <string name="key_exchange_respond">Would you like to export or send via SMS the key exchange for</string>
     <string name="sms_option">SMS</string>
     <string name="export_option">Export</string>
     <string name="delete_thread_menu">Delete Thread</string>
@@ -177,24 +176,24 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="delete_contacts">Delete Contacts</string>
     
     <!-- SMSUtility strings -->
-    <string name="encrypted_message_sent">Encrypted Message sent</string>
-    <string name="message_sent">Message sent</string>
+    <string name="encrypted_message_sent">Encrypted Message Sent</string>
+    <string name="message_sent">Message Sent</string>
     <string name="failed_to_encrypt">FAILED TO ENCRYPT</string>
     <string name="failed_to_sent">FAILED TO SEND</string>
     
     <!-- Tabbed activity -->
     <string name="contacts_tab">Contacts</string>
     <string name="trusted_contact_tab">Trusted Contacts</string>
-    <string name="pending_key_exchange_tab">Pending Key exchanges</string>
+    <string name="pending_key_exchange_tab">Pending Key Exchanges</string>
 
     <!-- UserKeySettings strings -->
     <string name="user_public_key">Your Public Key:</string>
     <string name="export_public_key">Export Public Key</string>
-    <string name="import_contacts_title">Input contact\'s number</string>
-    <string name="written_path">Written to your sd card under</string>
+    <string name="import_contacts_title">Input Contact\'s Number</string>
+    <string name="written_path">Written to your SD card under</string>
     
     <!-- Exchange Key -->
-    <string name="unsuccessful_key_exchanges">Not all numers could exchange, they must have shared secrets</string>
+    <string name="unsuccessful_key_exchanges">Not all numbers could be exchanged, they must have shared secrets</string>
     <string name="key_exchange_cancelled">Key Exchange Cancelled</string>
     
     <!-- KeyExchangeHandler strings -->
@@ -203,10 +202,10 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
 
     <!-- Application crash reporting -->
     <string name="pref_enable_bugsense">Enable Bugsense</string>
-    <string name="pref_bugsense_enabled">Disable bug reporting</string>
-    <string name="pref_bugsense_disabled">Enable bug reporting</string>
+    <string name="pref_bugsense_enabled">Disable Bug Reporting</string>
+    <string name="pref_bugsense_disabled">Enable Bug Reporting</string>
     <string name="title_activity_tab_selection">Manage Contacts</string>
-    <string name="add_contact">Add contact</string>
+    <string name="add_contact">Add Contact</string>
     <string name="title_activity_donations">Donate</string>
 	
     <!-- The Donation strings -->
@@ -254,7 +253,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="enable_notification_option_title">Enable Notifications</string>
     <string name="vibrate_option_title">Vibrate</string>
     <string name="vibrate_length_option_title">Vibrate Length</string>
-    <string name="vibrate_length_option_summary">Select the length of vibration notification</string>
+    <string name="vibrate_length_option_summary">Select the length of vibration notifications</string>
     <string name="feedback_options">Feedback</string>
     <string name="donate_option_title">Donate</string>
     <string name="donate_option_summary">Support the developers</string>
@@ -262,7 +261,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">New Messages</string>
-    <string name="unread_email_message">unread messages</string>
+    <string name="unread_email_message">Unread Messages</string>
     <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
     <string name="pending_key_exchange_message">Click here to resolve</string>
     

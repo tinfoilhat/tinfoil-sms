@@ -343,7 +343,7 @@ public class ConversationView extends Activity {
     	if(hasBeenShown == false){
     		
     		final TextView textBox = new TextView(this);	
-    		String licenseMessage = this.getString(R.string.eula);
+    		String licenseMessage = this.getString(R.string.eula_message);
     		final SpannableString license = new SpannableString(licenseMessage);
     		Linkify.addLinks(license, Linkify.WEB_URLS);
     		
