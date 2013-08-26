@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
@@ -223,7 +224,7 @@ public class ExchangeKey implements Runnable {
         	    		
         	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
         	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
-        	    		       .setCancelable(false)
+        	    		       .setCancelable(true)
         	    		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
         	    		    	   @Override
         	    		    	   public void onClick(DialogInterface dialog, int id) {
@@ -251,10 +252,19 @@ public class ExchangeKey implements Runnable {
         	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
         	    		    		   }
         	    		           }})
+        	    		       .setOnCancelListener(new OnCancelListener(){
+
+									@Override
+									public void onCancel(DialogInterface arg0) {
+										//Cancel the key exchange
+										Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
+									}
+        	    		    	   
+        	    		       })
         	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
         	    		    	   @Override
         	    		    	   public void onClick(DialogInterface arg0, int arg1) {
-        	    		    		   	//Cancel the key exchange
+        	    		    			//Cancel the key exchange
         	    		    		   Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
         	    		    	   }});
         	    		AlertDialog alert = builder.create();

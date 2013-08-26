@@ -213,7 +213,7 @@ public class SendMessageActivity extends Activity {
             {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
                 builder.setMessage(R.string.insufficent_information_provided)
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, final int id) {
                             }
