@@ -22,6 +22,9 @@ import org.spongycastle.crypto.InvalidCipherTextException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -115,6 +118,14 @@ public class MessageReceiver extends BroadcastReceiver {
 							String value = ConversationView.sharedPrefs.getString(
 									context.getString(R.string.vibrate_length_settings), VIBRATOR_LENTH);
 							vibrator.vibrate(Long.valueOf(value));
+						}
+						
+						if (ConversationView.sharedPrefs.getBoolean(context
+								.getString(R.string.ringtone_settings_key), false))
+						{
+							Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+							Ringtone ringtone = RingtoneManager.getRingtone(context, notification);
+							ringtone.play();
 						}
 	
 						invalidKeyExchange = false;

@@ -118,6 +118,8 @@
             android:defaultValue="500"
             android:persistent="true"
             android:inputType="number" />
+        <CheckBoxPreference
+            android:title="@string/ringtone_settings_title" android:key="@string/ringtone_settings_key" android:summary="Ringtone" android:defaultValue="false"/>
     </PreferenceCategory>
     
     <PreferenceCategory 

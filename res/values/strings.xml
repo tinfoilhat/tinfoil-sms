@@ -265,4 +265,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
     <string name="pending_key_exchange_message">Click here to resolve</string>
     
+    <string name="ringtone_settings_title">Enable Ringtone</string>
+    <string name="ringtone_settings_key">ringtone_settings</string>
+    
 </resources>
