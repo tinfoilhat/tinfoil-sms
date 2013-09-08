@@ -29,6 +29,7 @@ import android.os.IBinder;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.sms.KeyExchangeManager;
 import com.tinfoil.sms.sms.MessageView;
@@ -64,7 +65,7 @@ public class MessageService extends Service {
          */
         if (contentTitle != null && contentText != null &&
                 ConversationView.sharedPrefs.getBoolean(
-                this.getString(R.string.notification_bar_settings), true))
+                QuickPrefsActivity.NOTIFICATION_BAR_SETTING_KEY, true))
         {
             Intent notifyIntent = null;
             PendingIntent in = null;
@@ -123,7 +124,7 @@ public class MessageService extends Service {
         }
         
         if(ConversationView.sharedPrefs.getBoolean(
-        		this.getString(R.string.notification_bar_settings), true))
+        		QuickPrefsActivity.NOTIFICATION_BAR_SETTING_KEY, true))
         {
         	ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
 	        if(keyMessage != null && keyMessage.size() > 0)

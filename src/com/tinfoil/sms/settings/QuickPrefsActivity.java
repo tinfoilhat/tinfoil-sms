@@ -34,6 +34,21 @@ import android.view.MenuItem;
 
 public class QuickPrefsActivity extends PreferenceActivity {
     
+	public static final String ENABLE_SETTING_KEY = "enable";
+	public static final String NATIVE_SAVE_SETTING_KEY = "native_save_settings";
+	public static final String MESSAGE_LIMIT_SETTING_KEY = "message_limit";
+	public static final String IMPORT_CONTACT_SETTING_KEY = "import_contacts";
+	public static final String MANAGE_CONTACTS_SETTING_KEY = "manage_contacts";
+	public static final String SHOW_ENCRYPT_SETTING_KEY = "show_encrypt";
+	public static final String PUBLIC_KEY_SETTING_KEY = "public_key";
+	public static final String NOTIFICATION_BAR_SETTING_KEY = "notification_bar";
+	public static final String VIBRATE_SETTING_KEY = "vibrate";
+	public static final String VIBRATE_LENGTH_SETTING_KEY = "vibrate_length_settings";
+	public static final String RINGTONE_SETTING_KEY = "ringtone_settings";
+	public static final String BUGSENSE_ENABLE_SETTING_KEY = "bugsense_enable";
+	public static final String SOURCE_CODE_SETTING_KEY = "source_code";
+	//public static final String messageLimitKey = 
+	
 	/**
 	 * Things done when the preference menu is created  
 	 * Left as default
@@ -48,7 +63,7 @@ public class QuickPrefsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.options);
         
         
-        PreferenceScreen sourceCode = (PreferenceScreen)findPreference(this.getString(R.string.source_code_settings));
+        PreferenceScreen sourceCode = (PreferenceScreen)findPreference(SOURCE_CODE_SETTING_KEY);
         sourceCode.setOnPreferenceClickListener(new OnPreferenceClickListener(){
 
 			@Override
@@ -63,7 +78,7 @@ public class QuickPrefsActivity extends PreferenceActivity {
         });
         
         //TODO implement the OnPreferenceChangeListener for the other preferences that use numbers only
-        EditTextPreference messageLimit = (EditTextPreference)findPreference(this.getString(R.string.message_limit_settings));
+        EditTextPreference messageLimit = (EditTextPreference)findPreference(MESSAGE_LIMIT_SETTING_KEY);
         messageLimit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
         {
 			public boolean onPreferenceChange(Preference preference,

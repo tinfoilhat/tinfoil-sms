@@ -21,6 +21,7 @@ import android.app.Application;
 import android.preference.PreferenceManager;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 
 
 /**
@@ -31,16 +32,13 @@ public class TinfoilSMS extends Application
 {
 	public static boolean threadable = false;
 	
-	public static String MESSAGE_LIMIT;
-
     @Override
     public void onCreate()
     {
         super.onCreate();
         
-        MESSAGE_LIMIT = this.getString(R.string.message_limit_settings);      
-        
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("bugsense_enable", true))
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+        		QuickPrefsActivity.BUGSENSE_ENABLE_SETTING_KEY, true))
         {
             BugSenseHandler.initAndStartSession(this, "169095e2");
         }

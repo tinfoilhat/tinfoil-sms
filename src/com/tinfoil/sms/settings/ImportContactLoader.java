@@ -12,7 +12,6 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 
-import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
@@ -124,7 +123,7 @@ public class ImportContactLoader extends Loader{
                                                 "1" + SMSUtility.format(numb) },
                                         "date DESC LIMIT " +
                                                 Integer.valueOf(ConversationView.sharedPrefs.getString
-                                                (context.getString(R.string.message_limit_settings),
+                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
                                                 String.valueOf(SMSUtility.LIMIT))));
                                 if (mCur != null && mCur.moveToFirst())
                                 {
@@ -209,7 +208,7 @@ public class ImportContactLoader extends Loader{
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
                                 Integer.valueOf(ConversationView.sharedPrefs.getString
-                                        (context.getString(R.string.message_limit_settings), String.valueOf(SMSUtility.LIMIT))));
+                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
 
                 if (nCur != null && nCur.moveToFirst())
                 {
@@ -233,7 +232,7 @@ public class ImportContactLoader extends Loader{
                         new String[] { "body", "address", "date", "type" }, "thread_id = ?",
                         new String[] { id }, "date DESC LIMIT " +
                                 Integer.valueOf(ConversationView.sharedPrefs.getString
-                                        (context.getString(R.string.message_limit_settings), String.valueOf(SMSUtility.LIMIT))));
+                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
 
                 if (sCur != null && sCur.moveToFirst())
                 {

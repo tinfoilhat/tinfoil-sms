@@ -42,6 +42,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.ManageContactsActivity;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.sms.KeyExchangeManager;
 
@@ -110,18 +111,18 @@ public class MessageReceiver extends BroadcastReceiver {
 						/*
 						 * Checks if the user has enabled the vibration option
 						 */
-						if (ConversationView.sharedPrefs.getBoolean(context
-								.getString(R.string.vibrate_settings), true))
+						if (ConversationView.sharedPrefs.getBoolean(
+								QuickPrefsActivity.VIBRATE_SETTING_KEY, true))
 						{
 							Vibrator vibrator;
 							vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 							String value = ConversationView.sharedPrefs.getString(
-									context.getString(R.string.vibrate_length_settings), VIBRATOR_LENTH);
+									QuickPrefsActivity.VIBRATE_LENGTH_SETTING_KEY, VIBRATOR_LENTH);
 							vibrator.vibrate(Long.valueOf(value));
 						}
 						
-						if (ConversationView.sharedPrefs.getBoolean(context
-								.getString(R.string.ringtone_settings_key), false))
+						if (ConversationView.sharedPrefs.getBoolean(
+								QuickPrefsActivity.RINGTONE_SETTING_KEY, false))
 						{
 							Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 							Ringtone ringtone = RingtoneManager.getRingtone(context, notification);
@@ -136,7 +137,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 */
 						if (MessageService.dba.isTrustedContact((address)) && 
 								ConversationView.sharedPrefs.getBoolean(
-								context.getString(R.string.enable_settings), true)) {
+								QuickPrefsActivity.ENABLE_SETTING_KEY, true)) {
 							
 							
 							Message encryMessage = null; 
@@ -168,7 +169,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								Log.v("After Decryption", secretMessage);
 								
 								MessageService.dba.updateDecryptNonce(contactNumber);
-								
+
 								/*secretMessage = Encryption.aes_decrypt(new String (MessageService.dba.getNumber
 										(SMSUtility.format(address)).getPublicKey()), messages[0].getMessageBody());
 								 */
@@ -178,7 +179,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								 * messageView
 								 */
 								if (ConversationView.sharedPrefs.getBoolean(
-										context.getString(R.string.show_encrypt_settings), false))
+										QuickPrefsActivity.SHOW_ENCRYPT_SETTING_KEY, false))
 								{
 									encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPTED);
 									MessageService.dba.addNewMessage(encryMessage, address, true);

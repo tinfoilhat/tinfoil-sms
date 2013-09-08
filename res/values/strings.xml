@@ -219,17 +219,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
     
-    <!-- Settings string keys -->
-    <string name="show_encrypt_settings">show_encrypt</string>
-    <string name="enable_settings">enable</string>
-    <string name="native_save_settings">native_save</string>
-    <string name="message_limit_settings">message_limit</string>
-    <string name="notification_bar_settings">notification_bar</string>
-    <string name="vibrate_settings">vibrate</string>
-    <string name="vibrate_length_settings">vibrate_length</string>
-    <string name="bugsense_enable_settings">bugsense_enable</string>
-    <string name="source_code_settings">source_code</string>
-    
+    <!-- Settings string keys -->    
     <string name="source_code_title">Get Tinfoil-SMS Source</string>
     <string name="source_code_sub_title">Contribute to Tinfoil-SMS</string>
     <string name="application_settings_options">Application Settings</string>
@@ -257,7 +247,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="feedback_options">Feedback</string>
     <string name="donate_option_title">Donate</string>
     <string name="donate_option_summary">Support the developers</string>
-	
+	<string name="ringtone_settings_title">Enable Ringtone</string>
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">New Messages</string>
@@ -265,7 +255,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
     <string name="pending_key_exchange_message">Click here to resolve</string>
     
-    <string name="ringtone_settings_title">Enable Ringtone</string>
-    <string name="ringtone_settings_key">ringtone_settings</string>
+
     
 </resources>

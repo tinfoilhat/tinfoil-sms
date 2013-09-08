@@ -32,6 +32,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -331,7 +332,7 @@ public class DBAccessor {
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
         
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(ConversationView.sharedPrefs.getString
-        		(TinfoilSMS.MESSAGE_LIMIT, String.valueOf(SMSUtility.LIMIT))))
+        		(QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))))
         {
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
             		null, null, null, null, null);

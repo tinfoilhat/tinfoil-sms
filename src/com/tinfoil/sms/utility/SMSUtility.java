@@ -45,6 +45,7 @@ import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.settings.EditNumber;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 
 /**
@@ -161,7 +162,7 @@ public abstract class SMSUtility {
     public static void sendToSelf(final Context c, final String srcNumber, final String decMessage, final String dest) {
         //Prevent message from doing to native client given user settings
         if (ConversationView.sharedPrefs.getBoolean(
-        		c.getString(R.string.native_save_settings), false))
+        		QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, false))
         {
             final ContentValues values = new ContentValues();
             values.put("address", srcNumber);
@@ -202,7 +203,7 @@ public abstract class SMSUtility {
         {
             if (dba.isTrustedContact(message.getNumber()) &&
                     ConversationView.sharedPrefs.getBoolean(
-                    context.getString(R.string.enable_settings), true) &&
+                    QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, true) &&
                     !message.isExchange())
             {
             	Encryption CryptoEngine = new Encryption();
@@ -221,7 +222,7 @@ public abstract class SMSUtility {
                 MessageService.dba.updateEncryptNonce(number);
 
                 if(ConversationView.sharedPrefs.getBoolean(
-                		context.getString(R.string.show_encrypt_settings), false))
+                		QuickPrefsActivity.SHOW_ENCRYPT_SETTING_KEY, false))
                 {
                     sendToSelf(context, message.getNumber(), encrypted, ConversationView.SENT);
                     dba.addNewMessage(new Message (encrypted, true, Message.SENT_ENCRYPTED),

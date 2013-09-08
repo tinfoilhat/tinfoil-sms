@@ -6,7 +6,7 @@
         android:key="application_category">
         
         <CheckBoxPreference 
-            android:key="@string/enable_settings"
+            android:key="enable"
             android:summary="@string/enable_tinfoil_sms_option_summary"
             android:title="@string/enable_tinfoil_sms_option_title" 
             android:defaultValue="true"
@@ -20,14 +20,14 @@
         
         <CheckBoxPreference 
             android:title="@string/native_save_option_title" 
-            android:key="@string/native_save_settings" 
+            android:key="native_save" 
             android:summary="@string/native_save_option_summary"
             android:defaultValue="false"
             android:persistent="true" />
        
         <EditTextPreference 
             android:title="@string/message_limit_option_title"
-            android:key="@string/message_limit_settings" 
+            android:key="message_limit" 
            	android:inputType="number"
             android:summary="@string/maximum_number_of_messages_saved" 
             android:persistent="true"
@@ -81,7 +81,7 @@
 		
 		<CheckBoxPreference 
 		    android:title="@string/encryption_message_option_title" 
-		    android:key="@string/show_encrypt_settings"
+		    android:key="show_encrypt"
 		    android:summary="@string/encrypted_message_option_summary"
 		    android:defaultValue="false"
 		    android:persistent="true" />
@@ -103,23 +103,26 @@
         android:title="@string/notifications_option_title">
         <CheckBoxPreference 
             android:title="@string/enable_notification_option_title" 
-            android:key="@string/notification_bar_settings"
+            android:key="notification_bar"
             android:defaultValue="true"
             android:persistent="true"/>
         <CheckBoxPreference 
             android:title="@string/vibrate_option_title" 
-            android:key="@string/vibrate_settings"
+            android:key="vibrate"
             android:defaultValue="true"
             android:persistent="true"/>
         <EditTextPreference 
-            android:key="@string/vibrate_length_settings"
+            android:key="vibrate_length_settings"
             android:title="@string/vibrate_length_option_title" 
             android:summary="@string/vibrate_length_option_summary" 
             android:defaultValue="500"
             android:persistent="true"
             android:inputType="number" />
         <CheckBoxPreference
-            android:title="@string/ringtone_settings_title" android:key="@string/ringtone_settings_key" android:summary="Ringtone" android:defaultValue="false"/>
+            android:title="@string/ringtone_settings_title"
+            android:key="ringtone_settings"
+            android:summary="Ringtone"
+            android:defaultValue="false"/>
     </PreferenceCategory>
     
     <PreferenceCategory 
@@ -127,7 +130,7 @@
         android:key="feedback_category">
         
         <CheckBoxPreference
-            android:key="@string/bugsense_enable_settings"
+            android:key="bugsense_enable"
 		    android:title="@string/pref_enable_bugsense"
 		    android:summaryOn="@string/pref_bugsense_enabled"
 		    android:summaryOff="@string/pref_bugsense_disabled"
