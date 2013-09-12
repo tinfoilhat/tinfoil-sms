@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.tinfoil.sms.settings;
 
 import com.tinfoil.sms.R;
