@@ -78,7 +78,6 @@ public abstract class KeyExchange
         catch (IllegalArgumentException e)
         {
             e.printStackTrace();
-            BugSenseHandler.sendExceptionMessage("Type", "Key Exchange Decode Error", e);
             return false;
         }
         
