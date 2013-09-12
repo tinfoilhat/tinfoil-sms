@@ -17,3 +17,8 @@ local.properties
 
 # Git commit messages
 message.git
+
+# Ignore backup files
+*.*~
+*~
+*.swp
