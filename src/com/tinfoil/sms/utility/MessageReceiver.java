@@ -70,12 +70,14 @@ public class MessageReceiver extends BroadcastReceiver {
 			{
 				keyExchangeManual = false;
 				SmsMessage[] messages = new SmsMessage[pdus.length];
-				StringBuilder mes = new StringBuilder();
+				String fullMessage = "";
 				for (int i = 0; i < pdus.length; i++) {
 					messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-					mes.append(messages[i].getMessageBody());
+					fullMessage += messages[i].getMessageBody();
 				}
-				Log.v("Message",mes.toString());
+				
+				
+				Log.v("Message",fullMessage.toString());
 				
 				//Log.v("message", messages[0].getMessageBody() + messages[1].getMessageBody());
 				/*
@@ -153,18 +155,18 @@ public class MessageReceiver extends BroadcastReceiver {
 								 * sender of the message
 								 */
 								SMSUtility.sendToSelf(context, messages[0].getOriginatingAddress(), 
-										messages[0].getMessageBody(), ConversationView.INBOX);
+										fullMessage, ConversationView.INBOX);
 		
 								//Updates the last message received
 								Message newMessage = null;
 
-								Log.v("Before Decryption", messages[0].getMessageBody());
+								Log.v("Before Decryption", fullMessage);
 								
 								Encryption CryptoEngine = new Encryption();
 								
 								Number contactNumber = MessageService.dba.getNumber(SMSUtility.format(address));
 								
-								secretMessage = CryptoEngine.decrypt(contactNumber, messages[0].getMessageBody());
+								secretMessage = CryptoEngine.decrypt(contactNumber, fullMessage);
 								
 								Log.v("After Decryption", secretMessage);
 								
@@ -181,7 +183,7 @@ public class MessageReceiver extends BroadcastReceiver {
 								if (ConversationView.sharedPrefs.getBoolean(
 										QuickPrefsActivity.SHOW_ENCRYPT_SETTING_KEY, false))
 								{
-									encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPTED);
+									encryMessage = new Message(fullMessage, true, Message.RECEIVED_ENCRYPTED);
 									MessageService.dba.addNewMessage(encryMessage, address, true);
 								}
 								
@@ -195,7 +197,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							}
 					        catch (InvalidCipherTextException e)
 					        {
-								encryMessage = new Message(messages[0].getMessageBody(), true, Message.RECEIVED_ENCRYPT_FAIL);
+								encryMessage = new Message(fullMessage, true, Message.RECEIVED_ENCRYPT_FAIL);
 								MessageService.dba.addNewMessage(encryMessage, address, true);
 								
 								Toast.makeText(context, R.string.key_exchange_failed_to_decrypt, Toast.LENGTH_LONG).show();
@@ -211,8 +213,8 @@ public class MessageReceiver extends BroadcastReceiver {
 						}
 						else
 						{
-							String message = messages[0].getMessageBody();
-							Log.v("message", message);
+							//String message = messages[0].getMessageBody();
+							Log.v("message", fullMessage);
 													
 							/*
 							 * Since the user is not trusted, the message could be a key exchange
@@ -222,7 +224,7 @@ public class MessageReceiver extends BroadcastReceiver {
 							Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 							
 							if(number.getKeyExchangeFlag() != Number.IGNORE &&
-									KeyExchange.isKeyExchange(message))
+									KeyExchange.isKeyExchange(fullMessage))
 							{
 								///Number number = MessageService.dba.getNumber(SMSUtility.format(address));
 								//if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange", true))
@@ -232,7 +234,7 @@ public class MessageReceiver extends BroadcastReceiver {
 										SMSUtility.checksharedSecret(number.getSharedInfo2()))
 								{
 									// Handle the key exchange received 
-									new KeyExchangeHandler(context, number, message, false){
+									new KeyExchangeHandler(context, number, fullMessage, false){
 
 										@Override
 										public void accept(){
@@ -316,7 +318,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									
 									Log.v("Key Exchange", "Manual");
 									String result = MessageService.dba.addKeyExchangeMessage(
-											new Entry(address, message));
+											new Entry(address, fullMessage));
 									
 									if(result != null)
 									{
@@ -332,9 +334,9 @@ public class MessageReceiver extends BroadcastReceiver {
 								 * Send and store a plain text message to the contact
 								 */
 								SMSUtility.sendToSelf(context, address,
-										message, ConversationView.INBOX);
+										fullMessage, ConversationView.INBOX);
 								
-								Message newMessage = new Message(message, true, Message.RECEIVED_DEFAULT);
+								Message newMessage = new Message(fullMessage, true, Message.RECEIVED_DEFAULT);
 								MessageService.dba.addNewMessage(newMessage, address, true);
 							}							
 						}
@@ -362,7 +364,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									}
 									else
 									{
-										MessageService.contentText = messages[0].getMessageBody();
+										MessageService.contentText = fullMessage;
 									}
 								}
 								else
