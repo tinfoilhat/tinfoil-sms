@@ -46,6 +46,7 @@ public class QuickPrefsActivity extends PreferenceActivity {
 	public static final String RINGTONE_SETTING_KEY = "ringtone_settings";
 	public static final String BUGSENSE_ENABLE_SETTING_KEY = "bugsense_enable";
 	public static final String SOURCE_CODE_SETTING_KEY = "source_code";
+	public static final String REVERSE_MESSAGE_ORDERING_KEY = "list_order";
 	//public static final String messageLimitKey = 
 	
 	/**

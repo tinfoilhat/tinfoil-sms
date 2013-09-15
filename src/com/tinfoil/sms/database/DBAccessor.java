@@ -825,6 +825,15 @@ public class DBAccessor {
 	{
 		List<String[]> smsList = new ArrayList<String[]>();
 		open();
+		
+		String reversed = "";
+		
+		/* Reverse the order of the list when loading. */
+		if (ConversationView.sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
+		{
+			reversed = " DESC";
+		}	
+		
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + ", " +
 				SQLitehelper.MESSAGES_TABLE_NAME, new String[]{
@@ -840,7 +849,7 @@ public class DBAccessor {
 				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE + " IS NOT NULL AND " +
 				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER + " = ?", new String[]{
 				SMSUtility.format(number)}, null, null, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE + " DESC");
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE + reversed);
 		
 		if (cur.moveToFirst())
 		{

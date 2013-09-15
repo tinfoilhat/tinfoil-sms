@@ -51,6 +51,7 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.AddContact;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -537,6 +538,11 @@ public class MessageView extends Activity {
 	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
 	        	list2.setAdapter(messages);
 	            list2.setItemsCanFocus(false);
+	            
+	            if(!ConversationView.sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
+	            {
+	            	list2.setStackFromBottom(true);
+	            }
 	            /*if(MessageView.this.dialog.isShowing())
 	            {
 	            	MessageView.this.dialog.dismiss();

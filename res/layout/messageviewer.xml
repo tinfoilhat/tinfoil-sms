@@ -12,7 +12,7 @@
         android:layout_above="@+id/linearLayout3"
         android:divider="@color/DividerColor"
 		android:dividerHeight="1px"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentTop="true">
 
     </ListView>
 
