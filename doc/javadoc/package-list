@@ -1,0 +1,10 @@
+com.tinfoil.sms
+com.tinfoil.sms.adapter
+com.tinfoil.sms.crypto
+com.tinfoil.sms.dataStructures
+com.tinfoil.sms.database
+com.tinfoil.sms.loader
+com.tinfoil.sms.messageQueue
+com.tinfoil.sms.settings
+com.tinfoil.sms.sms
+com.tinfoil.sms.utility
