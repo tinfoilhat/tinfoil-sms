@@ -217,7 +217,7 @@ public class ExchangeKey implements Runnable {
         	    		linearLayout.addView(sharedSecret1);
 
         	    		final EditText sharedSecret2 = new EditText(activity);
-        	    		sharedSecret2.setHint(R.string.shared_secret_hint_1);
+        	    		sharedSecret2.setHint(R.string.shared_secret_hint_2);
         	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
         	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
         	    		linearLayout.addView(sharedSecret2);
