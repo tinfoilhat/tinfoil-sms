@@ -78,7 +78,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " " + DBAccessor.KEY_NUMBER + " TEXT," +
+            " " + DBAccessor.KEY_NUMBER + " TEXT UNIQUE," +
             " " + DBAccessor.KEY_TYPE + " INTEGER," +
             " " + DBAccessor.KEY_UNREAD + " INTEGER," +
             " " + DBAccessor.KEY_PUBLIC_KEY + " BLOB," +

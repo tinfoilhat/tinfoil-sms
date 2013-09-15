@@ -56,9 +56,25 @@ public class TrustedContact {
 		this.numbers = new ArrayList<Number>();
 		for (int i = 0; i<numbers.size(); i++)
 		{
-			this.numbers.add(numbers.get(i));
+			if(checkUnique(numbers.get(i).getNumber()))
+			{
+				this.numbers.add(numbers.get(i));
+			}
 		}
 	}
+	
+	public boolean checkUnique(String number)
+	{
+		for(int i = 0; i < this.numbers.size(); i ++)
+		{
+			if(number.equals(this.numbers.get(i).getNumber()))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	/**
 	 * A class for storing information retrieved or to be stored in the database. 
@@ -68,7 +84,11 @@ public class TrustedContact {
 	{
 		this.name = numbers.getNumber();
 		this.numbers = new ArrayList<Number>();
-		this.numbers.add(numbers);
+
+		if(checkUnique(numbers.getNumber()))
+		{
+			this.numbers.add(numbers);
+		}
 	}
 	
 	/**
@@ -126,7 +146,10 @@ public class TrustedContact {
 	 */
 	public void setNumber(int index, String number)
 	{
-		this.numbers.get(index).setNumber(number);
+		if(checkUnique(number))
+		{
+			this.numbers.get(index).setNumber(number);
+		}
 	}
 	
 	/**
@@ -151,7 +174,10 @@ public class TrustedContact {
 	 */
 	public void addNumber(String number)
 	{
-		this.numbers.add(new Number(number));
+		if(checkUnique(number))
+		{
+			this.numbers.add(new Number(number));
+		}
 	}
 	
 	/**
@@ -160,7 +186,10 @@ public class TrustedContact {
 	 */
 	public void addNumber(Number number)
 	{
-		this.numbers.add(number);
+		if(checkUnique(number.getNumber()))
+		{
+			this.numbers.add(number);
+		}
 	}
 	
 	/**
