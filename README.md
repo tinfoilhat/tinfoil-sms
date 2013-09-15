@@ -39,7 +39,7 @@ to submit pull requests for any contributions you would like to make.
 ## Project Goals
 
 * Always free for anyone to use and with no limitations
-* Released as open source software under the GNU General Public License Version 3
+* Released as Open Source software under the GNU General Public License Version 3
 * Simple to use and understand UI
 * Easy to import contacts from the phone to Tinfoil-SMS
 * Public key cryptography using Elliptic Curve Cryptography (ECC)
