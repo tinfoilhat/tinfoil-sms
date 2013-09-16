@@ -48,13 +48,12 @@ to submit pull requests for any contributions you would like to make.
 * Incorporate steganography to obfuscate text messages
 * Comprehensive source code documentation and wiki
 * Thorough guide to help mitigate any security risks as a result of improper use
-* Project is currently alpha, the goal is a beta release by September
 
 
 
 ## Future Plans
 
-* Thorough beta phase with comprehensive bug testing and reporting using ACRA and Bug Sense
+* Thorough beta phase with comprehensive bug testing and reporting using BugSense
 * Security audits and a detailed cryptanalysis of the application and the library, [Orwell](https://github.com/gnu-user/Orwell)
 * Finalizing the cryptography during the beta release, so that it can remain unchanged for the stable release
 * A stable release within 6 months of the beta release
