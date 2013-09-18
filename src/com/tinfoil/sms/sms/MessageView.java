@@ -538,15 +538,17 @@ public class MessageView extends Activity {
 	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
 	        	list2.setAdapter(messages);
 	            list2.setItemsCanFocus(false);
-	            
+
+	            /*
+	             * Set the list to list from the bottom up and auto scroll to
+	             * the bottom of the list
+	             */
 	            if(!ConversationView.sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
 	            {
 	            	list2.setStackFromBottom(true);
+	            	list2.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 	            }
-	            /*if(MessageView.this.dialog.isShowing())
-	            {
-	            	MessageView.this.dialog.dismiss();
-	            }*/
+
 	        	break;
         	case UPDATE:
         		messages.clear();
