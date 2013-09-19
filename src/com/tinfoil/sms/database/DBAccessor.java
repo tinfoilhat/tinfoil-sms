@@ -20,6 +20,8 @@ package com.tinfoil.sms.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -121,6 +123,9 @@ public class DBAccessor {
 		{
 			db = contactDatabase.getWritableDatabase();
 		}
+		
+		//ContentResolver a = c.getContentResolver();
+		
 	}
 	
 	public static DBAccessor createNewConnection(Context c)
@@ -781,7 +786,7 @@ public class DBAccessor {
     /**
      * Open the database to be used
      */
-	public void open()
+	public synchronized void open()
 	{
 		if(TinfoilSMS.threadable)
 	    {
@@ -803,7 +808,7 @@ public class DBAccessor {
 	/**
 	 * Close the database
 	 */
-	public void close()
+	public synchronized void close()
 	{
 		//count--;
 		if (db != null && db.isOpen())
