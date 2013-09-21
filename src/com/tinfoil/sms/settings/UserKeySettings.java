@@ -30,9 +30,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,6 +132,8 @@ public class UserKeySettings extends Activity {
                 		
                 		String[] contactInfo = SMSUtility.parseAutoComplete(phoneBook.getText().toString());
                 		//String number = null;
+                		
+                		
                 		if(contactInfo != null)
                 		{
                 			if(contactInfo[0] == null)
@@ -136,17 +141,70 @@ public class UserKeySettings extends Activity {
                 				contactInfo[0] = contactInfo[1];
                 			}
                 			
-                			Number number = MessageService.dba.getNumber(contactInfo[1]);
+                			final Number number = MessageService.dba.getNumber(contactInfo[1]);
                 			
-                			number.setInitiator(true);
-                			MessageService.dba.updateInitiator(number);
                 			
-                			//TODO add check for shared secrets
-                			String keyExchangeMessage = KeyExchange.sign(number);
+                			AlertDialog.Builder builder = new AlertDialog.Builder(UserKeySettings.this);
+                			LinearLayout linearLayout = new LinearLayout(UserKeySettings.this);
+                			linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-	            			writeToFile(contactInfo[1], keyExchangeMessage);
-	            			
-	            			Toast.makeText(UserKeySettings.this, UserKeySettings.this.getString(R.string.written_path)+ " " + path + "/" + contactInfo[1] + "_" + file, Toast.LENGTH_SHORT).show();
+                			final EditText sharedSecret1 = new EditText(UserKeySettings.this);
+                			sharedSecret1.setHint(UserKeySettings.this.getString(R.string.shared_secret_hint_1));
+                			sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
+                			sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
+                			linearLayout.addView(sharedSecret1);
+
+                			final EditText sharedSecret2 = new EditText(UserKeySettings.this);
+                			sharedSecret2.setHint(UserKeySettings.this.getString(R.string.shared_secret_hint_2));
+                			sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
+                			sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
+                			linearLayout.addView(sharedSecret2);
+                			
+                			builder.setMessage(UserKeySettings.this.getString(R.string.set_shared_secrets)
+                					+ " " + contactInfo[0] + ", " + number.getNumber())
+                			   .setTitle(R.string.set_shared_secrets_title)
+                		       .setCancelable(true)
+                		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                		    	   @Override
+                		    	   public void onClick(DialogInterface dialog, int id) {
+                		               //Save the shared secrets
+                		    		   
+                		    		   String s1 = sharedSecret1.getText().toString();
+                		    		   String s2 = sharedSecret2.getText().toString();
+                		    		   if(SMSUtility.checksharedSecret(s1) &&
+                								SMSUtility.checksharedSecret(s2))
+                		    		   {
+                		    			   number.setSharedInfo1(s1);
+                		    			   number.setSharedInfo2(s2);
+                		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+
+                		    			   number.setInitiator(true);
+                		    			   MessageService.dba.updateInitiator(number);
+	       		                			
+                		    			   //TODO add check for shared secrets
+                		    			   String keyExchangeMessage = KeyExchange.sign(number);
+	       		
+                		    			   writeToFile(number.getNumber(), keyExchangeMessage);
+	       			            			
+                		    			   Toast.makeText(UserKeySettings.this, UserKeySettings.this.getString(R.string.written_path)
+                		    					   + " " + path + "/" + number.getNumber() + "_" + file, Toast.LENGTH_SHORT).show();
+       			            			
+                		    		   }
+                		    		   else
+                		    		   {
+                		    			   Toast.makeText(UserKeySettings.this, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
+                		    		   }
+                		    }})
+		    		 	       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		    		 	    	   @Override
+		    		 	    	   public void onClick(DialogInterface arg0, int arg1) {
+		    		 	    		   	//Cancel the key exchange
+		    		 	    		   Toast.makeText(UserKeySettings.this, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
+		    		 	    	   }});
+		    		 		AlertDialog alert = builder.create();
+		    		 		
+		    		 		alert.setView(linearLayout);
+		    		 		alert.show();
                 		}
                 	}
                 });/*.setNegativeButton("Cancel", new OnClickListener(){
