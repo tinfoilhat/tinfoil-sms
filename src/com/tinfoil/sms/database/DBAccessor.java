@@ -24,8 +24,10 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.TinfoilSMS;
@@ -105,6 +107,7 @@ public class DBAccessor {
 	private SQLiteDatabase db;
 	private SQLitehelper contactDatabase;
 	
+	private SharedPreferences sharedPrefs;
 	private Context context;
 	
 	//private static int count = 0;
@@ -123,6 +126,8 @@ public class DBAccessor {
 		{
 			db = contactDatabase.getWritableDatabase();
 		}
+		
+		this.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);
 		
 		//ContentResolver a = c.getContentResolver();
 		
@@ -336,7 +341,7 @@ public class DBAccessor {
         Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
         		KEY_REFERENCE + " = " + reference, null, null, null, null);
         
-        if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(ConversationView.sharedPrefs.getString
+        if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(sharedPrefs.getString
         		(QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))))
         {
         	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
@@ -834,7 +839,7 @@ public class DBAccessor {
 		String reversed = "";
 		
 		/* Reverse the order of the list when loading. */
-		if (ConversationView.sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
+		if (sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
 		{
 			reversed = " DESC";
 		}	

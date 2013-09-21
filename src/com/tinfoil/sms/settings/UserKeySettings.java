@@ -39,8 +39,10 @@ import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
+import com.tinfoil.sms.crypto.KeyGenerator;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -61,6 +63,24 @@ public class UserKeySettings extends Activity {
 		setContentView(R.layout.user_key_settings);
 		
 		TextView keyView = (TextView)findViewById(R.id.public_key);
+		
+		// Check if the user is null
+		if(SMSUtility.user == null)
+		{
+			SMSUtility.user = MessageService.dba.getUserRow();
+		}
+		
+		//Check if the user is still null (never set in db)	
+		if(SMSUtility.user == null)
+		{
+			// Generate the user's public key
+			KeyGenerator keyGen = new KeyGenerator();
+	        
+	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
+	        
+	        //Set the user's 
+	        MessageService.dba.setUser(SMSUtility.user);
+		}
 		
 		keyView.setText(new String(SMSUtility.user.getPublicKey()));
 	}
@@ -120,6 +140,8 @@ public class UserKeySettings extends Activity {
                 			
                 			number.setInitiator(true);
                 			MessageService.dba.updateInitiator(number);
+                			
+                			//TODO add check for shared secrets
                 			String keyExchangeMessage = KeyExchange.sign(number);
 
 	            			writeToFile(contactInfo[1], keyExchangeMessage);
