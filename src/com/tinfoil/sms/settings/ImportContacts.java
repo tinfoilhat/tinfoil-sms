@@ -61,28 +61,38 @@ public class ImportContacts extends Activity {
 
     private ImportContactLoader runThread;
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.importcontacts);
         
         this.importList = (ListView) this.findViewById(R.id.import_contact_list);
         
-        runThread = new ImportContactLoader(this, false, inDb, tc, handler);
+        if(savedInstanceState == null)
+        {
+	        runThread = new ImportContactLoader(this, false, inDb, tc, handler);
+	        
+	        //final Thread thread = new Thread(this);
+	        this.dialog = ProgressDialog.show(this, this
+	        		.getString(R.string.searching_title), this
+	        		.getString(R.string.searching_message), true, true, 
+	        		new OnCancelListener() {
+	    		
+	        	public void onCancel(DialogInterface dialog) {
+	    			runThread.setStop(true);
+	    			dialog.dismiss();
+	    			ImportContacts.this.finish();
+	    		}
+	        });
+      	}
+        else
+        {
+        	tc = (ArrayList<TrustedContact>) savedInstanceState.getSerializable(ImportContacts.TRUSTED_CONTACTS);
+        	inDb = (ArrayList<Boolean>) savedInstanceState.getSerializable(ImportContacts.IN_DATABASE);
+        	setUpUI();
+        }
         
-        //final Thread thread = new Thread(this);
-        this.dialog = ProgressDialog.show(this, this
-        		.getString(R.string.searching_title), this
-        		.getString(R.string.searching_message), true, true, 
-        		new OnCancelListener() {
-    		
-        	public void onCancel(DialogInterface dialog) {
-    			runThread.setStop(true);
-    			dialog.dismiss();
-    			ImportContacts.this.finish();
-    		}
-        });
-                
         this.importList.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
@@ -93,6 +103,15 @@ public class ImportContacts extends Activity {
                 }
             }
         });
+        
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+    	outState.putSerializable(ImportContacts.TRUSTED_CONTACTS, tc);
+    	outState.putSerializable(ImportContacts.IN_DATABASE, inDb);
+    	super.onSaveInstanceState(outState);
     }
     
     /**
@@ -175,7 +194,11 @@ public class ImportContacts extends Activity {
     @Override
     protected void onDestroy()
     {
-	    runThread.setRunner(false);
+    	if(runThread != null){
+    		runThread.setRunner(false);
+    	}
+	    //tc = null;
+	    //dialog = null;
 	    super.onDestroy();
 	}
 
@@ -221,6 +244,27 @@ public class ImportContacts extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    public void setUpUI()
+    {
+    	Button button = (Button)ImportContacts.this.findViewById(R.id.confirm);
+    	if (tc != null && tc.size() > 0)
+        {
+        	button.setEnabled(true);
+            ImportContacts.this.disable = false;
+            ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
+                    android.R.layout.simple_list_item_multiple_choice, ImportContacts.this.getNames()));
+
+            ImportContacts.this.importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        }
+        else
+        {
+        	button.setEnabled(false);
+            ImportContacts.this.disable = true;
+            ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
+                    android.R.layout.simple_list_item_1, ImportContacts.this.getNames()));
+        }
+    }
 
     /*
      * Please note android.os.Message is needed because tinfoil-sms has another
@@ -237,24 +281,9 @@ public class ImportContacts extends Activity {
 		        	Bundle b = msg.getData();
 		        	tc = (ArrayList<TrustedContact>) b.getSerializable(ImportContacts.TRUSTED_CONTACTS);
 		        	inDb = (ArrayList<Boolean>) b.getSerializable(ImportContacts.IN_DATABASE);
-		        	Button button = (Button)ImportContacts.this.findViewById(R.id.confirm);
 		        	
-		            if (ImportContacts.this.tc != null && ImportContacts.this.tc.size() > 0)
-		            {
-		            	button.setEnabled(true);
-		                ImportContacts.this.disable = false;
-		                ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
-		                        android.R.layout.simple_list_item_multiple_choice, ImportContacts.this.getNames()));
-		
-		                ImportContacts.this.importList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		            }
-		            else
-		            {
-		            	button.setEnabled(false);
-		                ImportContacts.this.disable = true;
-		                ImportContacts.this.importList.setAdapter(new ArrayAdapter<String>(ImportContacts.this,
-		                        android.R.layout.simple_list_item_1, ImportContacts.this.getNames()));
-		            }
+		        	setUpUI();
+		            		            
 		            if (ImportContacts.this.dialog.isShowing())
 		            {
 		            	ImportContacts.this.dialog.dismiss();
