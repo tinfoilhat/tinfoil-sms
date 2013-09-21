@@ -71,7 +71,7 @@ public class ImportContacts extends Activity {
         
         if(savedInstanceState == null)
         {
-	        runThread = new ImportContactLoader(this, false, inDb, tc, handler);
+	        runThread = new ImportContactLoader(this, false, false, inDb, tc, handler);
 	        
 	        //final Thread thread = new Thread(this);
 	        this.dialog = ProgressDialog.show(this, this
@@ -90,6 +90,7 @@ public class ImportContacts extends Activity {
         {
         	tc = (ArrayList<TrustedContact>) savedInstanceState.getSerializable(ImportContacts.TRUSTED_CONTACTS);
         	inDb = (ArrayList<Boolean>) savedInstanceState.getSerializable(ImportContacts.IN_DATABASE);
+        	runThread = new ImportContactLoader(this, false, true, inDb, tc, handler);
         	setUpUI();
         }
         

@@ -44,6 +44,7 @@ public class ImportContactLoader extends Loader{
     private ArrayList<Boolean> inDb;
     private boolean clicked;   
     private boolean stop;
+    private boolean doNothing;
 
     /**
      * Create the object and start the thread 
@@ -52,12 +53,13 @@ public class ImportContactLoader extends Loader{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public ImportContactLoader(Activity activity, boolean clicked, 
+    public ImportContactLoader(Activity activity, boolean clicked, boolean doNothing, 
     		ArrayList<Boolean> inDb, ArrayList<TrustedContact> tc, Handler handler)
     {
     	super(activity.getBaseContext());
     	this.activity = activity;
     	this.handler = handler;
+    	this.doNothing = doNothing;
     	this.clicked = clicked;
     	this.inDb = inDb;
     	this.tc = tc;
@@ -82,251 +84,258 @@ public class ImportContactLoader extends Loader{
     	 * users phone.
     	 */
     	 
-        if (!this.clicked)
-        {
-            tc = new ArrayList<TrustedContact>();
-            ArrayList<Number> number;
-            String name;
-            String id;
-
-            final Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
-            final Cursor cur = activity.managedQuery(mContacts, new String[] { Contacts._ID,
-                    Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER },
-                    null, null, Contacts.DISPLAY_NAME);
-
-            this.inDb = new ArrayList<Boolean>();
-
-            if (cur != null && cur.moveToFirst()) {
-                do {
-                	
-                	//Check if the thread has been stopped
-                	if(getStop())
-                	{
-                		break;
-                	}
-                	
-                    number = new ArrayList<Number>();
-                    name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
-                    id = cur.getString(cur.getColumnIndex(Contacts._ID));
-
-                    if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
-                    {
-                    	Cursor mCur = null;
-                        final Cursor pCur = activity.getContentResolver().query(Phone.CONTENT_URI,
-                                new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?",
-                                new String[] { id }, null);
-
-                        if (pCur != null && pCur.moveToFirst())
-                        {
-                            do
-                            {
-                            	//Check if the thread has been stopped
-                            	if(getStop())
-                            	{
-                            		break;
-                            	}
-                            	
-                                final String numb = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
-                                final int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
-                                final Uri uriSMSURI = Uri.parse("content://sms/");
-
-                                number.add(new Number(SMSUtility.format(numb), type));
-
-                                //This now takes into account the different formats of the numbers. 
-                                mCur = activity.getContentResolver().query(uriSMSURI, new String[]
-                                { "body", "date", "type" }, "address = ? or address = ? or address = ?",
-                                        new String[] { SMSUtility.format(numb),
-                                                "+1" + SMSUtility.format(numb),
-                                                "1" + SMSUtility.format(numb) },
-                                        "date DESC LIMIT " +
-                                                Integer.valueOf(ConversationView.sharedPrefs.getString
-                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
-                                                String.valueOf(SMSUtility.LIMIT))));
-                                if (mCur != null && mCur.moveToFirst())
-                                {
-                                    do
-                                    {
-                                    	//Check if the thread has been stopped
-                                    	if(getStop())
-                                    	{
-                                    		break;
-                                    	}
-                                    	
-                                        //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
-                                        final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
-                                                mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
-                                        number.get(number.size() - 1).addMessage(myM);
-                                        
-                                        //Check if the thread has been stopped
-                                    	if(getStop())
-                                    	{
-                                    		break;
-                                    	}
-                                    } while (mCur.moveToNext());
-                                    
-                                }
-
-                                //Check if the thread has been stopped
-                            	if(getStop())
-                            	{
-                            		break;
-                            	}
-                                
-                            } while (pCur.moveToNext());
-                        }
-                        if(mCur != null)
-                        {
-                        	mCur.close();
-                        }                        
-                        pCur.close();
-                    }
-
-                    //Check if the thread has been stopped
-                	if(getStop())
-                	{
-                		break;
-                	}
-                	
-                    /*
-                     * Added a check to see if the number array is empty
-                     * if a contact has no number they can not be texted
-                     * therefore there is no point allowing them to be
-                     * added.
-                     */
-                    if (number != null && !number.isEmpty() &&
-                            !loader.inDatabase(number))
-                    {
-                        tc.add(new TrustedContact(name, number));
-                        this.inDb.add(false);
-                    }
-
-                    
-                    number = null;
-                } while (cur.moveToNext());
-            }
-            // cur.close();
-
-            final Uri uriSMSURI = Uri.parse("content://sms/conversations/");
-            final Cursor convCur = activity.getContentResolver().query(uriSMSURI,
-                    new String[] { "thread_id" }, null,
-                    null, "date DESC");
-            
-            Cursor nCur = null;
-            Cursor sCur = null;
-
-            Number newNumber = null;
-
-            //Check if the thread has been stopped
-            while (convCur.moveToNext() && !getStop())
-            {
-                id = convCur.getString(convCur.getColumnIndex("thread_id"));
-
-                nCur = activity.getContentResolver().query(Uri.parse("content://sms/inbox"),
-                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
-                        new String[] { id }, "date DESC LIMIT " +
-                                Integer.valueOf(ConversationView.sharedPrefs.getString
-                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
-
-                if (nCur != null && nCur.moveToFirst())
-                {
-                    newNumber = new Number(SMSUtility.format(
-                            nCur.getString(nCur.getColumnIndex("address"))));
-                    do
-                    {
-                    	//Check if the thread has been stopped
-                    	if(getStop())
-                    	{
-                    		break;
-                    	}
-                        
-                        newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
-                                nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
-                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
-                    } while (nCur.moveToNext());
-                }
-
-                sCur = activity.getContentResolver().query(Uri.parse("content://sms/sent"),
-                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
-                        new String[] { id }, "date DESC LIMIT " +
-                                Integer.valueOf(ConversationView.sharedPrefs.getString
-                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
-
-                if (sCur != null && sCur.moveToFirst())
-                {
-                    if (newNumber == null)
-                    {
-                        newNumber = new Number(SMSUtility.format(
-                                sCur.getString(sCur.getColumnIndex("address"))));
-                    }
-
-                    do
-                    {
-                    	//Check if the thread has been stopped
-                        if(getStop())
-                    	{
-                    		break;
-                    	}
-                        newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
-                                sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
-                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
-                    } while (sCur.moveToNext());
-                }
-                if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber())
-                        && !loader.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
-                {
-                    tc.add(new TrustedContact(newNumber));
-                    this.inDb.add(false);
-                }
-            }
-            if(nCur != null)
-            {
-            	nCur.close();
-            }
-            if(sCur != null)
-            {
-            	sCur.close();
-            }
-            convCur.close();
-        }
-        else
-        {
-            for (int i = 0; i < this.tc.size(); i++)
-            {
-                if (this.inDb.get(i))
-                {
-                    loader.addRow(tc.get(i));
-                }
-            }
-            
-            android.os.Message msg = new android.os.Message();
-        	Bundle b = new Bundle();
-        	msg.setData(b);
-        	msg.what = ImportContacts.FINISH;
-        	
-        	handler.sendMessage(msg);
-        }
-        
-        if(!getStop())
-        {
-        	android.os.Message msg = new android.os.Message();
-        	Bundle b = new Bundle();
-        	b.putSerializable(ImportContacts.TRUSTED_CONTACTS, (Serializable) tc);
-        	b.putSerializable(ImportContacts.IN_DATABASE, (Serializable) inDb);
-        	msg.setData(b);
-        	msg.what = ImportContacts.LOAD;
-        	
-        	handler.sendMessage(msg);
-        }
-        else
-        {
-        	setStop(false);
-        	android.os.Message msg = new android.os.Message();
-        	Bundle b = new Bundle();
-        	msg.setData(b);
-        	msg.what = ImportContacts.FINISH;
-        	
-        	handler.sendMessage(msg);
-        }
+		if (!doNothing)
+		{
+	        if (!this.clicked)
+	        {
+	            tc = new ArrayList<TrustedContact>();
+	            ArrayList<Number> number;
+	            String name;
+	            String id;
+	
+	            final Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
+	            final Cursor cur = activity.managedQuery(mContacts, new String[] { Contacts._ID,
+	                    Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER },
+	                    null, null, Contacts.DISPLAY_NAME);
+	
+	            this.inDb = new ArrayList<Boolean>();
+	
+	            if (cur != null && cur.moveToFirst()) {
+	                do {
+	                	
+	                	//Check if the thread has been stopped
+	                	if(getStop())
+	                	{
+	                		break;
+	                	}
+	                	
+	                    number = new ArrayList<Number>();
+	                    name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
+	                    id = cur.getString(cur.getColumnIndex(Contacts._ID));
+	
+	                    if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
+	                    {
+	                    	Cursor mCur = null;
+	                        final Cursor pCur = activity.getContentResolver().query(Phone.CONTENT_URI,
+	                                new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?",
+	                                new String[] { id }, null);
+	
+	                        if (pCur != null && pCur.moveToFirst())
+	                        {
+	                            do
+	                            {
+	                            	//Check if the thread has been stopped
+	                            	if(getStop())
+	                            	{
+	                            		break;
+	                            	}
+	                            	
+	                                final String numb = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
+	                                final int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
+	                                final Uri uriSMSURI = Uri.parse("content://sms/");
+	
+	                                number.add(new Number(SMSUtility.format(numb), type));
+	
+	                                //This now takes into account the different formats of the numbers. 
+	                                mCur = activity.getContentResolver().query(uriSMSURI, new String[]
+	                                { "body", "date", "type" }, "address = ? or address = ? or address = ?",
+	                                        new String[] { SMSUtility.format(numb),
+	                                                "+1" + SMSUtility.format(numb),
+	                                                "1" + SMSUtility.format(numb) },
+	                                        "date DESC LIMIT " +
+	                                                Integer.valueOf(ConversationView.sharedPrefs.getString
+	                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
+	                                                String.valueOf(SMSUtility.LIMIT))));
+	                                if (mCur != null && mCur.moveToFirst())
+	                                {
+	                                    do
+	                                    {
+	                                    	//Check if the thread has been stopped
+	                                    	if(getStop())
+	                                    	{
+	                                    		break;
+	                                    	}
+	                                    	
+	                                        //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
+	                                        final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
+	                                                mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
+	                                        number.get(number.size() - 1).addMessage(myM);
+	                                        
+	                                        //Check if the thread has been stopped
+	                                    	if(getStop())
+	                                    	{
+	                                    		break;
+	                                    	}
+	                                    } while (mCur.moveToNext());
+	                                    
+	                                }
+	
+	                                //Check if the thread has been stopped
+	                            	if(getStop())
+	                            	{
+	                            		break;
+	                            	}
+	                                
+	                            } while (pCur.moveToNext());
+	                        }
+	                        if(mCur != null)
+	                        {
+	                        	mCur.close();
+	                        }                        
+	                        pCur.close();
+	                    }
+	
+	                    //Check if the thread has been stopped
+	                	if(getStop())
+	                	{
+	                		break;
+	                	}
+	                	
+	                    /*
+	                     * Added a check to see if the number array is empty
+	                     * if a contact has no number they can not be texted
+	                     * therefore there is no point allowing them to be
+	                     * added.
+	                     */
+	                    if (number != null && !number.isEmpty() &&
+	                            !loader.inDatabase(number))
+	                    {
+	                        tc.add(new TrustedContact(name, number));
+	                        this.inDb.add(false);
+	                    }
+	
+	                    
+	                    number = null;
+	                } while (cur.moveToNext());
+	            }
+	            // cur.close();
+	
+	            final Uri uriSMSURI = Uri.parse("content://sms/conversations/");
+	            final Cursor convCur = activity.getContentResolver().query(uriSMSURI,
+	                    new String[] { "thread_id" }, null,
+	                    null, "date DESC");
+	            
+	            Cursor nCur = null;
+	            Cursor sCur = null;
+	
+	            Number newNumber = null;
+	
+	            //Check if the thread has been stopped
+	            while (convCur.moveToNext() && !getStop())
+	            {
+	                id = convCur.getString(convCur.getColumnIndex("thread_id"));
+	
+	                nCur = activity.getContentResolver().query(Uri.parse("content://sms/inbox"),
+	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
+	                        new String[] { id }, "date DESC LIMIT " +
+	                                Integer.valueOf(ConversationView.sharedPrefs.getString
+	                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
+	
+	                if (nCur != null && nCur.moveToFirst())
+	                {
+	                    newNumber = new Number(SMSUtility.format(
+	                            nCur.getString(nCur.getColumnIndex("address"))));
+	                    do
+	                    {
+	                    	//Check if the thread has been stopped
+	                    	if(getStop())
+	                    	{
+	                    		break;
+	                    	}
+	                        
+	                        newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
+	                                nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
+	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+	                    } while (nCur.moveToNext());
+	                }
+	
+	                sCur = activity.getContentResolver().query(Uri.parse("content://sms/sent"),
+	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
+	                        new String[] { id }, "date DESC LIMIT " +
+	                                Integer.valueOf(ConversationView.sharedPrefs.getString
+	                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
+	
+	                if (sCur != null && sCur.moveToFirst())
+	                {
+	                    if (newNumber == null)
+	                    {
+	                        newNumber = new Number(SMSUtility.format(
+	                                sCur.getString(sCur.getColumnIndex("address"))));
+	                    }
+	
+	                    do
+	                    {
+	                    	//Check if the thread has been stopped
+	                        if(getStop())
+	                    	{
+	                    		break;
+	                    	}
+	                        newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
+	                                sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
+	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+	                    } while (sCur.moveToNext());
+	                }
+	                if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber())
+	                        && !loader.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
+	                {
+	                    tc.add(new TrustedContact(newNumber));
+	                    this.inDb.add(false);
+	                }
+	            }
+	            if(nCur != null)
+	            {
+	            	nCur.close();
+	            }
+	            if(sCur != null)
+	            {
+	            	sCur.close();
+	            }
+	            convCur.close();
+	        }
+	        else
+	        {
+	            for (int i = 0; i < this.tc.size(); i++)
+	            {
+	                if (this.inDb.get(i))
+	                {
+	                    loader.addRow(tc.get(i));
+	                }
+	            }
+	            
+	            android.os.Message msg = new android.os.Message();
+	        	Bundle b = new Bundle();
+	        	msg.setData(b);
+	        	msg.what = ImportContacts.FINISH;
+	        	
+	        	handler.sendMessage(msg);
+	        }
+	        
+	        if(!getStop())
+	        {
+	        	android.os.Message msg = new android.os.Message();
+	        	Bundle b = new Bundle();
+	        	b.putSerializable(ImportContacts.TRUSTED_CONTACTS, (Serializable) tc);
+	        	b.putSerializable(ImportContacts.IN_DATABASE, (Serializable) inDb);
+	        	msg.setData(b);
+	        	msg.what = ImportContacts.LOAD;
+	        	
+	        	handler.sendMessage(msg);
+	        }
+	        else
+	        {
+	        	setStop(false);
+	        	android.os.Message msg = new android.os.Message();
+	        	Bundle b = new Bundle();
+	        	msg.setData(b);
+	        	msg.what = ImportContacts.FINISH;
+	        	
+	        	handler.sendMessage(msg);
+	        }
+		}
+		else
+		{
+			doNothing = false;
+		}
 	}
     
     /**
