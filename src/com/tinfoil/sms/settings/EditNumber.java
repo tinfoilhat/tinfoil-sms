@@ -84,6 +84,7 @@ public class EditNumber extends Activity{
 	private Number number;
 	private String originalNumber;
 	private static int position;
+	private String name;
 	
 	public static final int SHARED_INFO_MIN = 6;
 	public static final int SHARED_INFO_MAX = 128;
@@ -119,8 +120,10 @@ public class EditNumber extends Activity{
         	/*
         	 * Get the extra values in the intent.
         	 */
+        	name = intent.getStringExtra(AddContact.NAME);
         	originalNumber = intent.getStringExtra(AddContact.EDIT_NUMBER);
-        	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE);   	
+        	position = intent.getIntExtra(AddContact.POSITION, AddContact.NEW_NUMBER_CODE); 
+        	this.getIntent().removeExtra(AddContact.NAME);
             this.getIntent().removeExtra(AddContact.EDIT_NUMBER);
             this.getIntent().removeExtra(AddContact.POSITION);
         }
@@ -308,6 +311,7 @@ public class EditNumber extends Activity{
 				data.putExtra(EditNumber.NUMBER, number.getNumber());
 				data.putExtra(AddContact.POSITION, position);
 				data.putExtra(EditNumber.ADD, true);
+				data.putExtra(AddContact.NAME, name);
 				
 				/*
 				 * Set result code to identify that whether the list in
@@ -356,7 +360,6 @@ public class EditNumber extends Activity{
             		}
         			
         			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
-        			
         			
         			popup_builder.setTitle(R.string.export_number_title)
         				.setCancelable(true)

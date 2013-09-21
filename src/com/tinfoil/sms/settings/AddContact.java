@@ -50,6 +50,7 @@ public class AddContact extends Activity {
 	public static final int NEW_NUMBER_CODE = -1;
 	public static final int UPDATED_NUMBER = 2;
 	public static final int DELETED_NUMBER = 3;
+	public static final String NAME = "name";
 	
     public static TrustedContact editTc;
     public static boolean addContact;
@@ -157,6 +158,7 @@ public class AddContact extends Activity {
     {
     	Intent intent = new Intent(AddContact.this, EditNumber.class);
     	
+    	intent.putExtra(AddContact.NAME, contactName.getText().toString());
     	if(!contactEdit.isNumbersEmpty())
     	{
     		intent.putExtra(AddContact.EDIT_NUMBER, contactEdit.getANumber());
@@ -277,6 +279,7 @@ public class AddContact extends Activity {
     	boolean update = false;
     	String number = null;
     	int position = 0;
+    	String name = null;
     	boolean addNumber = false;
     	
     	if(requestCode == resultCode && resultCode == AddContact.REQUEST_CODE)
@@ -285,26 +288,28 @@ public class AddContact extends Activity {
     		number = data.getStringExtra(EditNumber.NUMBER);
     		position = data.getIntExtra(AddContact.POSITION, 0);
     		addNumber = data.getBooleanExtra(EditNumber.ADD, true);
+    		name = data.getStringExtra(AddContact.NAME);
     		
     		/*
     		 * Add the new number to the list of numbers
     		 */
 	    	if(update && number != null)
-	    	{    	
+	    	{
 	    		if(addNumber)
 	    		{
 	    			if(position == AddContact.NEW_NUMBER_CODE)
 	    			{
 	    				if(contactEdit.getNumbers().size() <= 1)
 	    				{
-	    					if(contactEdit.getName() == "")
+	    					if(name == null || name == "")
 	    					{
 	    						this.contactName.setText(number);
 	    						contactEdit.setName(number);
 	    					}
-	    					else if (contactName.getText().toString() != "")
+	    					else
 	    					{
-	    						contactEdit.setName(contactName.getText().toString());
+	    						contactEdit.setName(name);
+	    						contactName.setText(name);    						
 	    					}
 	    					contactEdit.addNumber(number);
 	    					MessageService.dba.updateContactInfo(contactEdit, number);
