@@ -365,7 +365,10 @@ public class AddContact extends Activity {
         switch (item.getItemId()) {
             case R.id.delete_contact: {
             
-            	MessageService.dba.removeRow(contactEdit.getANumber());
+            	if(contactEdit.getANumber() != null)
+            	{
+            		MessageService.dba.removeRow(contactEdit.getANumber());
+            	}
             	
             	finish();
             	
