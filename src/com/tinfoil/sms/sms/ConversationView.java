@@ -436,8 +436,17 @@ public class ConversationView extends Activity {
 		        	break;
 	        	case UPDATE:
 	        		//The list's data has changed and needs to be updated
-	        		conversations.clear();
-	                conversations.addData(msgList);
+	        		
+	        		if(conversations != null)
+	        		{
+		        		conversations.clear();
+		                conversations.addData(msgList);
+	        		}
+	        		else
+	        		{
+	        			conversations = new ConversationAdapter(ConversationView.this, R.layout.listview_item_row, msgList);
+		        		list.setAdapter(conversations);
+	        		}
 	        		break;
 	        	}
         	}

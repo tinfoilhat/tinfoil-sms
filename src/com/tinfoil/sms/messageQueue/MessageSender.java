@@ -41,7 +41,7 @@ public class MessageSender implements Runnable{
 	 */
 	public void startThread(Context c) {
 		this.c = c;
-		this.sender = new DBAccessor(c);
+		this.sender = DBAccessor.createNewConnection(c);
 		empty = true;
 		thread = new Thread(this);
 		thread.start();

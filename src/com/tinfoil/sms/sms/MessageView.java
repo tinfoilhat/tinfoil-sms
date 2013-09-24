@@ -27,8 +27,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,6 +72,7 @@ public class MessageView extends Activity {
     private ArrayList<TrustedContact> tc;
     private static AutoCompleteTextView phoneBox;
     private AlertDialog popup_alert;
+    public static SharedPreferences sharedPrefs;    
     //private ProgressDialog dialog;
     private static ExchangeKey keyThread = new ExchangeKey();
     
@@ -105,7 +108,9 @@ public class MessageView extends Activity {
         }
 
         this.setContentView(R.layout.messageviewer);
-        MessageService.dba = new DBAccessor(this);
+        
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        MessageService.dba = DBAccessor.createNewConnection(this);
         ConversationView.messageViewActive = true;
         
         /*
@@ -543,7 +548,7 @@ public class MessageView extends Activity {
 	             * Set the list to list from the bottom up and auto scroll to
 	             * the bottom of the list
 	             */
-	            if(!ConversationView.sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
+	            if(!sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
 	            {
 	            	list2.setStackFromBottom(true);
 	            	list2.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
