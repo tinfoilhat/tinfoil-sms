@@ -20,6 +20,7 @@ package com.tinfoil.sms.dataStructures;
 import java.util.ArrayList;
 
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.utility.SMSUtility;
 
 /**
  * A class used to store information from the numbers table
@@ -139,7 +140,7 @@ public class Number {
 	 * @return The number
 	 */
 	public String getNumber() {
-		return number;
+		return SMSUtility.format(number);
 	}
 
 	/**

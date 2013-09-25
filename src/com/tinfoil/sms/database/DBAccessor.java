@@ -20,8 +20,6 @@ package com.tinfoil.sms.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
