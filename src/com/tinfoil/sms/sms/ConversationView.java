@@ -55,7 +55,6 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
-import com.tinfoil.sms.crypto.KeyGenerator;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.messageQueue.MessageSender;
@@ -129,12 +128,11 @@ public class ConversationView extends Activity {
         {
         	//Toast.makeText(context, "New key pair is generating...", Toast.LENGTH_SHORT).show();
         	Log.v("First Launch", "keys are generating...");
-        	//Create the keyGenerator
-	        KeyGenerator keyGen = new KeyGenerator();
+        	
+	        // Create a default user with a new key pair
+        	SMSUtility.user = new User();
 	        
-	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
-	        
-	        //Set the user's 
+	        //Set the user's in the database
 	        MessageService.dba.setUser(SMSUtility.user);
         }
         Log.v("public key", new String(SMSUtility.user.getPublicKey()));

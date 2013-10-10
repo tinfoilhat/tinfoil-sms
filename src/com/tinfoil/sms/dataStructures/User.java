@@ -17,6 +17,8 @@
 
 package com.tinfoil.sms.dataStructures;
 
+import com.tinfoil.sms.crypto.KeyGenerator;
+
 /**
  * A class for holding information involving the user.
  */
@@ -24,6 +26,18 @@ public class User {
 	
 	private byte[] publicKey;
 	private byte[] privateKey;
+	
+	/**
+	 * Default constructor to create a new user with newly generated keys.
+	 */
+	public User()
+	{
+		//Create the keyGenerator
+		KeyGenerator keyGen = new KeyGenerator();
+        
+		this.publicKey = keyGen.generatePubKey();
+		this.privateKey = keyGen.generatePriKey();
+	}
 	
 	public User (byte[] publicKey, byte[] privateKey)
 	{

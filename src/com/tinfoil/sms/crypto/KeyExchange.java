@@ -27,9 +27,10 @@ import org.spongycastle.util.encoders.Hex;
 import android.util.Base64;
 import android.util.Log;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.database.InvalidDatabaseStateException;
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECGKeyExchange;
 import com.tinfoilsms.crypto.ECGKeyUtil;
@@ -135,6 +136,60 @@ public abstract class KeyExchange
         return Base64.encode(signature, Base64.DEFAULT);
     }
     
+    /**
+     * Ensure that the user's information is in memory.
+     * @param dba The database accessor to retrieve the user's key if necessary
+     * @param user The user stored in memory. 
+     * @return The user that is not null
+     * @throws InvalidDatabaseStateException If the user's keys are not found then they have
+     * been deleted thus making any key exchange prior invalid.
+     */
+    public static User getUser(DBAccessor dba, User user) throws InvalidDatabaseStateException
+    {
+    	if(user == null)
+    	{
+    		user = dba.getUserRow();
+    		if (user == null)
+    		{
+    			throw new InvalidDatabaseStateException("User's keys not set in database");
+    			//user = new User();
+    			//dba.setUser(user);
+    		}
+    	}
+    	return user;
+    }
+    
+    /**
+     * Wrapper method to sign a key exchange with the user's public key. This is used
+     * to ensure that the user's information is in memory (and if not it is retrieved)
+     * and catches and handles possible errors involving illegal database states.
+     * 
+     * Signs the current user's public key using the apriori information shared
+     * between the current user and the number provided. After signing the
+     * public key the CRC32 checksum is calculated and appended to the signed
+     * public key.
+     * 
+     *      -------------------------------------
+     *      | public key | signature | checksum |
+     *      -------------------------------------
+     * 
+     * @param number The contact's Number.
+     * @param dba The database interface.
+     * @param user The user's information.
+     * @return The current user's signed public key based on shared information
+     * the user has with the number given.
+     */
+    public static String sign(Number number, DBAccessor dba, User user)
+    {
+    	try {
+			user = getUser(dba, user);
+			return signWithUser(number, user);
+		} catch (InvalidDatabaseStateException e) {
+			//TODO create error message to tell user key exchange failed because of db issue
+			e.printStackTrace();
+		}
+    	return null;
+    }
     
     /**
      * Signs the current user's public key using the apriori information shared
@@ -147,15 +202,16 @@ public abstract class KeyExchange
      *      -------------------------------------
      * 
      * @param number The number that the key will be exchanged with
+     * @param user The user's information containing the user's public key.
      * 
      * @return The current user's signed public key based on shared information
      * the user has with the number given.
      */
-    public static String sign(Number number)
+    private static String signWithUser(Number number, User user)
     {
         /* Get the current user's public key and shared information */
         ECKeyParam param = new ECKeyParam();
-        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, SMSUtility.user.getPublicKey());
+        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, user.getPublicKey());
         APrioriInfo sharedInfo = new APrioriInfo(number.getSharedInfo1(), number.getSharedInfo2());
         
         /* Sign the public key using the shared information based on whether the

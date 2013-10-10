@@ -483,12 +483,14 @@ public class EditNumber extends Activity{
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	    		   MessageService.dba.addMessageToQueue(number.getNumber(),
-							KeyExchange.sign(number), true);
+							KeyExchange.sign(number, MessageService.dba,
+							SMSUtility.user), true);
 		    }})
 		    .setNegativeButton(R.string.export_option, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
-	    		   UserKeySettings.writeToFile(number.getNumber(), KeyExchange.sign(number));
+	    		   UserKeySettings.writeToFile(number.getNumber(), KeyExchange.sign(number, 
+	    				   MessageService.dba, SMSUtility.user));
 	    	   }
 		    });
 		

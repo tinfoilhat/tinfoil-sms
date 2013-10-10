@@ -199,7 +199,8 @@ public class KeyExchangeManager extends Activity {
 				{
 					Log.v("Key Exchange", "Not Initiator");
 					MessageService.dba.addMessageToQueue(number.getNumber(),
-							KeyExchange.sign(number), true);
+							KeyExchange.sign(number, MessageService.dba,
+							SMSUtility.user), true);
 				}
 				
 				if(MessageService.dba.getKeyExchangeMessageCount() == 0)

@@ -255,7 +255,8 @@ public class MessageReceiver extends BroadcastReceiver {
 											{
 												Log.v("Key Exchange", "Not Initiator");
 												MessageService.dba.addMessageToQueue(this.getNumber().getNumber(),
-														KeyExchange.sign(this.getNumber()), true);
+														KeyExchange.sign(this.getNumber(), MessageService.dba,
+														SMSUtility.user), true);
 											}
 											
 											ManageContactsActivity.updateList();

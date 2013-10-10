@@ -182,7 +182,8 @@ public class UserKeySettings extends Activity {
                 		    			   MessageService.dba.updateInitiator(number);
 	       		                			
                 		    			   //TODO add check for shared secrets
-                		    			   String keyExchangeMessage = KeyExchange.sign(number);
+                		    			   String keyExchangeMessage = KeyExchange.sign(number,
+                		    					   MessageService.dba, SMSUtility.user);
 	       		
                 		    			   writeToFile(number.getNumber(), keyExchangeMessage);
 	       			            			

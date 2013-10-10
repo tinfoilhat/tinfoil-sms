@@ -180,7 +180,8 @@ public class ExchangeKey implements Runnable {
 	                                
 	                MessageService.dba.updateInitiator(number);
 	                
-	                String keyExchangeMessage = KeyExchange.sign(number);
+	                String keyExchangeMessage = KeyExchange.sign(number,
+	                		MessageService.dba, SMSUtility.user);
 	                
 	                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
                 }
@@ -243,7 +244,8 @@ public class ExchangeKey implements Runnable {
        	                                
         	    			               MessageService.dba.updateInitiator(number);
         	    			                
-        	    			               String keyExchangeMessage = KeyExchange.sign(number);
+        	    			               String keyExchangeMessage = KeyExchange.sign(number,
+        	    			            		   MessageService.dba, SMSUtility.user);
         	    			                
         	    			               MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
         	    		    		   }
