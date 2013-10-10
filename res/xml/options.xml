@@ -32,7 +32,11 @@
             android:summary="@string/maximum_number_of_messages_saved" 
             android:persistent="true"
             android:defaultValue="50" />
-        <CheckBoxPreference android:defaultValue="false" android:title="Message Order" android:key="list_order" android:summary="Show lastest message at the top"/>
+        <CheckBoxPreference 
+            android:defaultValue="false"
+            android:title="@string/message_order_title"
+            android:key="list_order"
+            android:summary="@string/message_order_summary"/>
         
     </PreferenceCategory>
     

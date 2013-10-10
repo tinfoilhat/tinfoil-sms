@@ -84,7 +84,7 @@ public class DBAccessor {
 	
 	private static String USER_NAME = "Me";
 	
-	public static final int LENGTH = 21;
+	public static final int LENGTH = 20;
 	public static final int OTHER_INDEX = 7;
 	
 	public static String[] TYPES = new String[] {"Home", "Mobile", "Work", "Work Fax",
@@ -1376,7 +1376,7 @@ public class DBAccessor {
 	        
 	        open();
 	        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-	        		+ " AND " + KEY_NUMBER + " = " + number.get(i).getNumber(), null);
+	        		+ " AND " + KEY_NUMBER + " = ?", new String[]{number.get(i).getNumber()});
 			close();
 			
 			cv.clear();

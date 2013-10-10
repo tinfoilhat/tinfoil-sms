@@ -248,6 +248,8 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="donate_option_title">Donate</string>
     <string name="donate_option_summary">Support the developers</string>
 	<string name="ringtone_settings_title">Enable Ringtone</string>
+	<string name="message_order_title">Message Order</string>
+	<string name="message_order_summary">Show latest message at the top</string>
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">New Messages</string>
