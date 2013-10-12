@@ -31,6 +31,7 @@ import org.spongycastle.crypto.params.Nonce;
 import android.util.Base64;
 import android.util.Log;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tinfoilsms.crypto.APrioriInfo;
 import com.tinfoilsms.crypto.ECEngine;
 import com.tinfoilsms.crypto.ECGKeyUtil;
@@ -151,6 +152,11 @@ public class Encryption
         /* Remove the nonce counter from the message received */
         System.arraycopy(decodedMessage, COUNT_SIZE, encMessage, 0, encMessage.length);
         
+		/* Log the message data, before it's decrypted, in the event of a crash */
+        BugSenseHandler.addCrashExtraData("Original", message);
+        BugSenseHandler.addCrashExtraData("Decoded", new String(decodedMessage));
+        BugSenseHandler.addCrashExtraData("Encrypted", new String(encMessage));
+
         /* decrypt the message, increment and save the nonce counter */
         decMessage = decryptMap.get(number.getId()).processBlock(encMessage);
         number.setNonceDecrypt(number.getNonceDecrypt() + 1);
