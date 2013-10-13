@@ -16,8 +16,11 @@
  */
 package com.tinfoil.sms.crypto;
 
+import java.security.Security;
+
 import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import com.orwell.crypto.ECGKeyUtil;
 import com.orwell.crypto.ECKey;
@@ -36,6 +39,10 @@ public class KeyGenerator
     private final ECKeyParam param;
     private final ECKey key;
     
+    /* Register spongycastle as the most preferred security provider */
+    static {
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    }
     
     /**
      * Initialize the key generator, which creates the initial, unique

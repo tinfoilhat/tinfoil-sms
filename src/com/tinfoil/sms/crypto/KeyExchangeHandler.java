@@ -17,6 +17,10 @@
 
 package com.tinfoil.sms.crypto;
 
+import java.security.Security;
+
+import org.spongycastle.jce.provider.BouncyCastleProvider;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,6 +39,11 @@ public abstract class KeyExchangeHandler {
     
     private boolean showDialog;
 	
+    /* Register spongycastle as the most preferred security provider */
+    static {
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    }
+    
 	public KeyExchangeHandler(Context context, Number number, String signedPubKey, boolean showDialog)
 	{
 		this.context = context;

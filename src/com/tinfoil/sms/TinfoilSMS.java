@@ -17,11 +17,15 @@
 
 package com.tinfoil.sms;
 
+import java.security.Security;
+
 import android.app.Application;
 import android.preference.PreferenceManager;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
+
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 
 /**
@@ -31,6 +35,11 @@ import com.tinfoil.sms.settings.QuickPrefsActivity;
 public class TinfoilSMS extends Application
 {
 	public static boolean threadable = false;
+	
+    /* Register spongycastle as the most preferred security provider */
+    static {
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    }
 	
     @Override
     public void onCreate()

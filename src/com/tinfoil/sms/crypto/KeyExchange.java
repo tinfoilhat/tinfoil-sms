@@ -17,11 +17,13 @@
 package com.tinfoil.sms.crypto;
 
 import java.nio.ByteBuffer;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.util.encoders.Hex;
 
 import android.util.Base64;
@@ -52,6 +54,11 @@ public abstract class KeyExchange
     public static final int VALID_KEY_EXCHANGE = 0;
     public static final int VALID_KEY_REVERSE = 1;
     public static final int INVALID_KEY_EXCHANGE = 2;    
+    
+    /* Register spongycastle as the most preferred security provider */
+    static {
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    }
     
     /**
      * Attempts to identify if the message received is a key exchange by checking

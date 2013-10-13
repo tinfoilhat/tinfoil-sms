@@ -18,6 +18,7 @@ package com.tinfoil.sms.crypto;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.security.Security;
 import java.util.HashMap;
 
 import org.spongycastle.crypto.CipherParameters;
@@ -27,6 +28,7 @@ import org.spongycastle.crypto.engines.ISAACEngine;
 import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 import org.spongycastle.crypto.params.Nonce;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import android.util.Base64;
 import android.util.Log;
@@ -55,6 +57,11 @@ public class Encryption
     
     /* Size of the message counter in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
     private static final int COUNT_SIZE = 2;
+    
+    /* Register spongycastle as the most preferred security provider */
+    static {
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    }
     
     /**
      * The basic constructor, initializes the encrypt/decrypt hash maps.
