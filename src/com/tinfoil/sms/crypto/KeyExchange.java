@@ -31,10 +31,10 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.database.InvalidDatabaseStateException;
-import com.tinfoilsms.crypto.APrioriInfo;
-import com.tinfoilsms.crypto.ECGKeyExchange;
-import com.tinfoilsms.crypto.ECGKeyUtil;
-import com.tinfoilsms.crypto.ECKeyParam;
+import com.orwell.crypto.APrioriInfo;
+import com.orwell.crypto.ECGKeyExchange;
+import com.orwell.crypto.ECGKeyUtil;
+import com.orwell.crypto.ECKeyParam;
 
 
 /**

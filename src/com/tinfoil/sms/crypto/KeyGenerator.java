@@ -19,9 +19,9 @@ package com.tinfoil.sms.crypto;
 import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 
-import com.tinfoilsms.crypto.ECGKeyUtil;
-import com.tinfoilsms.crypto.ECKey;
-import com.tinfoilsms.crypto.ECKeyParam;
+import com.orwell.crypto.ECGKeyUtil;
+import com.orwell.crypto.ECKey;
+import com.orwell.crypto.ECKeyParam;
 
 
 /**

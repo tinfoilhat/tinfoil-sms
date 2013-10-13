@@ -32,13 +32,13 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.tinfoilsms.crypto.APrioriInfo;
-import com.tinfoilsms.crypto.ECEngine;
-import com.tinfoilsms.crypto.ECGKeyUtil;
-import com.tinfoilsms.crypto.ECKeyParam;
-import com.tinfoilsms.csprng.ISAACRandomGenerator;
-import com.tinfoilsms.csprng.SDFGenerator;
-import com.tinfoilsms.csprng.SDFParameters;
+import com.orwell.crypto.APrioriInfo;
+import com.orwell.crypto.ECEngine;
+import com.orwell.crypto.ECGKeyUtil;
+import com.orwell.crypto.ECKeyParam;
+import com.orwell.csprng.ISAACRandomGenerator;
+import com.orwell.csprng.SDFGenerator;
+import com.orwell.csprng.SDFParameters;
 
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.SMSUtility;
