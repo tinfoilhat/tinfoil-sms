@@ -134,40 +134,45 @@ public class ImportContactLoader extends Loader{
 	                                final int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
 	                                final Uri uriSMSURI = Uri.parse("content://sms/");
 	
-	                                number.add(new Number(SMSUtility.format(numb), type));
-	
-	                                //This now takes into account the different formats of the numbers. 
-	                                mCur = activity.getContentResolver().query(uriSMSURI, new String[]
-	                                { "body", "date", "type" }, "address = ? or address = ? or address = ?",
-	                                        new String[] { SMSUtility.format(numb),
-	                                                "+1" + SMSUtility.format(numb),
-	                                                "1" + SMSUtility.format(numb) },
-	                                        "date DESC LIMIT " +
-	                                                Integer.valueOf(ConversationView.sharedPrefs.getString
-	                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
-	                                                String.valueOf(SMSUtility.LIMIT))));
-	                                if (mCur != null && mCur.moveToFirst())
+	                                // Ensure that the number retrieved is not null
+	                                if(numb != null)
 	                                {
-	                                    do
-	                                    {
-	                                    	//Check if the thread has been stopped
-	                                    	if(getStop())
-	                                    	{
-	                                    		break;
-	                                    	}
-	                                    	
-	                                        //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
-	                                        final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
-	                                                mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
-	                                        number.get(number.size() - 1).addMessage(myM);
-	                                        
-	                                        //Check if the thread has been stopped
-	                                    	if(getStop())
-	                                    	{
-	                                    		break;
-	                                    	}
-	                                    } while (mCur.moveToNext());
-	                                    
+	                                	number.add(new Number(SMSUtility.format(numb), type));
+	                                
+	
+		                                //This now takes into account the different formats of the numbers. 
+		                                mCur = activity.getContentResolver().query(uriSMSURI, new String[]
+		                                { "body", "date", "type" }, "address = ? or address = ? or address = ?",
+		                                        new String[] { SMSUtility.format(numb),
+		                                                "+1" + SMSUtility.format(numb),
+		                                                "1" + SMSUtility.format(numb) },
+		                                        "date DESC LIMIT " +
+		                                                Integer.valueOf(ConversationView.sharedPrefs.getString
+		                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
+		                                                String.valueOf(SMSUtility.LIMIT))));
+		                                if (mCur != null && mCur.moveToFirst())
+		                                {
+		                                    do
+		                                    {
+		                                    	//Check if the thread has been stopped
+		                                    	if(getStop())
+		                                    	{
+		                                    		break;
+		                                    	}
+		                                    	
+		                                        //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
+		                                        final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
+		                                                mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
+		                                        number.get(number.size() - 1).addMessage(myM);
+		                                        
+		                                        //Check if the thread has been stopped
+		                                    	if(getStop())
+		                                    	{
+		                                    		break;
+		                                    	}
+		                                    } while (mCur.moveToNext());
+		                                    
+		                                }
 	                                }
 	
 	                                //Check if the thread has been stopped
