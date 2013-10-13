@@ -19,6 +19,7 @@ package com.tinfoil.sms.sms;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -205,6 +206,13 @@ public class KeyExchangeManager extends Activity {
 				
 				if(MessageService.dba.getKeyExchangeMessageCount() == 0)
 			    {
+					// Added this check and instantiation to ensure the notification
+					// service is able to dismiss notifications
+					if(MessageService.mNotificationManager == null)
+					{
+						MessageService.mNotificationManager = (NotificationManager) context
+								.getSystemService(NOTIFICATION_SERVICE);
+					}
 					MessageService.mNotificationManager.cancel(MessageService.KEY);
 			    }
 				if (runThread != null && runThread.getEntries() != null)
