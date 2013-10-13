@@ -253,7 +253,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">Nové zprávy</string>
-    <string name="unread_email_message">Nepřeètené zprávy</string>
+    <string name="unread_email_message">Nepřečtené zprávy</string>
     <string name="pending_key_exchange_notification">Nevyřízené výměny klíčů</string>
     <string name="pending_key_exchange_message">Klikni pro vyřešení</string>
     
