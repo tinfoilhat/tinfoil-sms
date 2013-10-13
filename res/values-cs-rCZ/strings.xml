@@ -8,36 +8,36 @@
     <string name="okay">OK</string>
     <string name="cancel">Storno</string>
     <string name="no">Ne</string>
-    <string name="tell_me_more">Dozvìdìt se více</string>
+    <string name="tell_me_more">Dozvědět se více</string>
     <string name="save">Uložit</string>
-    <string name="accept">Pøijmout</string>
+    <string name="accept">Přijmout</string>
     <string name="refuse">Odmítnout</string>
     
     <string name="key_exchange_failed_to_decrypt">DEŠIFROVÁNÍ SELHALO</string>
     <string name="possible_man_in_the_middle_attack_warning">Možný útok typu Man In The Middle Position</string>
-    <string name="key_exchange_received">Zpráva obsahující klíc obdržena</string>
+    <string name="key_exchange_received">Zpráva obsahující klíč obdržena</string>
     
     <!-- ConversationView Activity strings -->
-    <string name="add_contacts_list">Pøidat kontakt</string>
+    <string name="add_contacts_list">Přidat kontakt</string>
     <string name="import_contacts_list">Importovat kontakt</string>
-    <string name="eula_title">Tinfoil-SMS Licenèní Ujednání</string>
-    <string name="eula_message">"PROSÍM VÌNUJTE ÈAS PREÈTENÍ TOHOTO LICENÈNÍHO UJEDNÁNÍ KONCOVÉHO UŽIVATELE (EULA - End User License Agreement) PØED INSTALACÍ NEBO POUŽÍVÁNÍM TOHOTO SOFTWARU.\n
-Tato distribuce 	obsahuje kryptografický software. Zemì, ve které se nyní nacházíte muže mít omezení zakazující import, držení, používání a/nebo šírení kryptografického softwaru do jiné zemì. PØED používáním tohoto softwaru si prosím zkontrolujte, zda zákony, vyhlášky a naøízení vaší zemì neomezují import, držení, používání a/nebo šírení kryptografického softwaru. Pro více informací se podívejte na http://www.wassenaar.org \n
-KLIKNUTÍM NA "PØIJMOUT" POTVRZUJETE, ŽE ROZUMÍTE ZÁKONUM PRO IMPORT A EXPORT KRYPTOGRAFICKÝCH SOFTWARU VE VAŠÍ ZEMI A JSTE PLNÌ ZODPOVÌDNÍ ZA ZAJIŠTENÍ TOHO, ŽE MUŽETE LEGÁLNÌ IMPOROTVAT A EXPORTOVAT TENTO SOFTWARE. KLIKNUTÍM NA "PØIJMOUT" ROVNÌŽ SOUHLASÍTE S TÍM, ŽE AUTOØI TÉTO APLIKACE NEJSOU ZODPOVÌDNI ZA ŽÁDNÉ PRÁVNÍ NÁSLEDKY, KTERÉ BY MOHLY VZNIKNOUT POUŽÍVÁNÍM TOHOTO SOFTWARU. ROVNEŽ POTVRZUJETE, ŽE AUTOØI NENESOU ŽÁDNOU ODPOVÌDNOST ZA ŠKODY, VÈETNÌ NÁHODNÝCH, ZVLÁŠTNÍCH NEBO NÁSLEDNÝCH ŠKOD VYPLÝVAJÍCÍCH Z POUŽÍVÁNÍ NEBO NEMOŽNOSTI POUŽÍVÁNÍ TOHOTO SOFTWARU.\n
-KONEÈNÌ, TENTO SOFTWARE JE VYVÍJEN JAKO OPEN SOURCE A JE LICENCOVÁN PON LICENCÍ GNU V3 (GPLv3). KLIKNUTÍM NA "PØIJMOUT" TAKÉ MUSÍTE SOUHLASIT S PODMÍNKAMI LICENCE GNU V3 (GPLv3), PROSÍM PODÍVEJTE SE NA http://www.gnu.org/licenses/gpl.html PRO ÚPLNÉ ZNÌNÍ LICENCE. NAVÍC, VZHLEDEM K TOMU, ŽE JE TENTO SOFTWARE OPEN SOURCE, BUÏTE ZVLÁŠTÌ OPATRNÍ PØI IMPORTU TOHOTO SOFTWARU NEBO JEHO ZDROJOVÉHO KÓDU A PØI JEHO DALŠÍ DISTRIBUCI DOKONCE I PØI ODESLÁNÍ TECHNICKÉ PØIPOMÍNKY ÈI ZDROJOVÉHO KÓDU PATCHE AUTORUM. DÙRAZNÌ DOPORUÈUJEME PROSTUDOVAT ZÁKONY VAŠÍ ZEMÌ, KTERÉ BY SE TOHOTO MOHLY TÝKAT.\n
-KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICENÈNÍM UJEDNÁNÍM KONCOVÉHO UŽIVATELE."</string>
+    <string name="eula_title">Tinfoil-SMS Licenční Ujednání</string>
+    <string name="eula_message">"PROSÍM VĚNUJTE ČAS PREČTENÍ TOHOTO LICENČNÍHO UJEDNÁNÍ KONCOVÉHO UŽIVATELE (EULA - End User License Agreement) PŘED INSTALACÍ NEBO POUŽÍVÁNÍM TOHOTO SOFTWARU.\n
+Tato distribuce 	obsahuje kryptografický software. Země, ve které se nyní nacházíte muže mít omezení zakazující import, držení, používání a/nebo šírení kryptografického softwaru do jiné země. PŘED používáním tohoto softwaru si prosím zkontrolujte, zda zákony, vyhlášky a nařízení vaší země neomezují import, držení, používání a/nebo šírení kryptografického softwaru. Pro více informací se podívejte na http://www.wassenaar.org \n
+KLIKNUTÍM NA "PŘIJMOUT" POTVRZUJETE, ŽE ROZUMÍTE ZÁKONUM PRO IMPORT A EXPORT KRYPTOGRAFICKÝCH SOFTWARU VE VAŠÍ ZEMI A JSTE PLNĚ ZODPOVĚDNÍ ZA ZAJIŠTENÍ TOHO, ŽE MUŽETE LEGÁLNĚ IMPORTOVAT A EXPORTOVAT TENTO SOFTWARE. KLIKNUTÍM NA "PŘIJMOUT" ROVNĚŽ SOUHLASÍTE S TÍM, ŽE AUTOŘI TÉTO APLIKACE NEJSOU ZODPOVĚDNI ZA ŽÁDNÉ PRÁVNÍ NÁSLEDKY, KTERÉ BY MOHLY VZNIKNOUT POUŽÍVÁNÍM TOHOTO SOFTWARU. ROVNĚŽ POTVRZUJETE, ŽE AUTOŘI NENESOU ŽÁDNOU ODPOVĚDNOST ZA ŠKODY, VČETNÌ NÁHODNÝCH, ZVLÁŠTNÍCH NEBO NÁSLEDNÝCH ŠKOD VYPLÝVAJÍCÍCH Z POUŽÍVÁNÍ NEBO NEMOŽNOSTI POUŽÍVÁNÍ TOHOTO SOFTWARU.\n
+KONEČNĚ, TENTO SOFTWARE JE VYVÍJEN JAKO OPEN SOURCE A JE LICENCOVÁN PON LICENCÍ GNU V3 (GPLv3). KLIKNUTÍM NA "PŘIJMOUT" TAKÉ MUSÍTE SOUHLASIT S PODMÍNKAMI LICENCE GNU V3 (GPLv3), PROSÍM PODÍVEJTE SE NA http://www.gnu.org/licenses/gpl.html PRO ÚPLNÉ ZNĚNÍ LICENCE. NAVÍC, VZHLEDEM K TOMU, ŽE JE TENTO SOFTWARE OPEN SOURCE, BUĎTE ZVLÁŠTĚ OPATRNÍ PŘI IMPORTU TOHOTO SOFTWARU NEBO JEHO ZDROJOVÉHO KÓDU A PŘI JEHO DALŠÍ DISTRIBUCI DOKONCE I PŘI ODESLÁNÍ TECHNICKÉ PŘIPOMÍNKY ČI ZDROJOVÉHO KÓDU PATCHE AUTORŮM. DŮRAZNĚ DOPORUČUJEME PROSTUDOVAT ZÁKONY VAŠÍ ZEMĚ, KTERÉ BY SE TOHOTO MOHLY TÝKAT.\n
+KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICENČNÍM UJEDNÁNÍM KONCOVÉHO UŽIVATELE."</string>
     <string name="compose_menu">Napsat zprávu</string>
     <string name="settings_menu">Nastavení</string>
-    <string name="pending_key_exchange_menu">Nevyøízené výmìny klíèù</string>
-    <string name="pending_key_exchange_menu_condensed">Vymìnit klíè</string>
+    <string name="pending_key_exchange_menu">Nevyřízené výměny klíčů</string>
+    <string name="pending_key_exchange_menu_condensed">Vyměnit klíč</string>
     
     <!-- Database Accessor strings -->
-    <string name="duplicate_key_exchange">Zpráva obsahující jiný klíè byla odeslána</string>
-    <string name="duplicate_key_exchange_warning_1">Varování: Klíè v obdržené zprávì se neshoduje s døíve obdrženým klíèem.</string>
+    <string name="duplicate_key_exchange">Zpráva obsahující jiný klíč byla odeslána</string>
+    <string name="duplicate_key_exchange_warning_1">Varování: Klíč v obdržené zprávě se neshoduje s dříve obdrženým klíčem.</string>
 	<string name="duplicate_key_exchange_warning_2">Toto je dost možná útok typu Man In The Middle Position.</string>
     <string name="user">Já</string>
     <string-array name="phone_types">
-        <item>Domù</item>
+        <item>Domů</item>
         <item>Mobil</item>
         <item>Práce</item>
         <item>Pracovní Fax</item>
@@ -45,7 +45,7 @@ KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
         <item>Pager</item>
         <item>Jiné</item>
 		<item>Vlastní</item>
-		<item>Zpìtné Volání</item>
+		<item>Zpětné Volání</item>
 		<item>Auto</item>
 		<item>Hlavní firemní</item>
 		<item>ISDN</item>
@@ -60,18 +60,18 @@ KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     </string-array>
 
     <!-- KeyExchangeManager Activity strings -->
-    <string name="key_exchange_manager">Manažer vymìnìných klíèu</string>
-    <string name="empty_key_exchange_list">Žádné výmìny klíèù èekající na vyøízení</string>
-    <string name="key_exchange_error_title">Varování výmìny klíèù!</string>
-    <string name="key_exchange_error_message_1">Výmìna klíèù s kontaktem</string>
-    <string name="key_exchange_error_message_2">byla neúspešná. Muže se jednat o útok typu Man In The Middle Position.\nProsím ujistìte se, že jsou vaše Ovìøovací vìty správnì zadané.</string>
+    <string name="key_exchange_manager">Manažer vyměněných klíčů</string>
+    <string name="empty_key_exchange_list">Žádné výměny klíčů čekající na vyřízení</string>
+    <string name="key_exchange_error_title">Varování výměny klíčů</string>
+    <string name="key_exchange_error_message_1">Výměna klíčů s kontaktem</string>
+    <string name="key_exchange_error_message_2">byla neúspešná. Muže se jednat o útok typu Man In The Middle Position.\nProsím ujistěte se, že jsou vaše Ověřovací věty správně zadané.</string>
     <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
-    <string name="invalid_secrets">Neplatné ovìøovací vìty</string>
-	<string name="shared_secret_hint_1">Ovìøovací vìta 1</string>
-	<string name="shared_secret_hint_2">Ovìøovací vìta 2</string>
+    <string name="invalid_secrets">Neplatné ověřovací věty</string>
+	<string name="shared_secret_hint_1">Ověřovací věta 1</string>
+	<string name="shared_secret_hint_2">Ověřovací věta 2</string>
 
-	<string name="set_shared_secrets">Nastavte si Ovìøovací vìty pro kontakt</string>
-	<string name="set_shared_secrets_title">Výmìna klíèù</string>
+	<string name="set_shared_secrets">Nastavte si Ověřovací věty pro kontakt</string>
+	<string name="set_shared_secrets_title">Výměna klíčů</string>
 	
 	<!--RemoveContactsActivity strings  -->
 	<string name="select_all_menu_condensed">Vše</string>
@@ -83,47 +83,47 @@ KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
 
     <!-- activity_key_exchange_manager strings -->
     <string name="reject_button">Odmítnout</string>
-    <string name="user_key_settings">Uživatelská nastavení Klíèù</string>
-    <string name="exchange_button">Výmìna</string>
+    <string name="user_key_settings">Uživatelská nastavení Klíčů</string>
+    <string name="exchange_button">Výměna</string>
 
     <!-- AddContact strings -->
     <string name="add_contact_activity">Upravit kontakt</string>
-    <string name="number">Èíslo</string>
-    <string name="add_number">Pøidat èíslo</string>
+    <string name="number">Číslo</string>
+    <string name="add_number">Přidat číslo</string>
     <string name="phone_type_title">Telefon:</string>
-    <string name="insufficent_message">Poskytnuty nedostateèné informace</string>
+    <string name="insufficent_message">Poskytnuty nedostatečné informace</string>
     <string name="delete_contact_menu">Smazat kontakt</string>
     <string name="delete_contact_menu_condensed">Smazat</string>
 
     <!-- ManageContactsActivity strings -->
-    <string name="exchange_keys">Vymìnit klíèe</string>
+    <string name="exchange_keys">Vyměnit klíče</string>
     <string name="manage_contacts">Spravovat kontakty</string>
-    <string name="untrust_button_name">Nedùvìøovat</string>
+    <string name="untrust_button_name">Nedůvěřovat</string>
     <string name="empty_list_value">Prázdný seznam</string>
     <string name="empty_loader_value">Žádné kontakty</string>
-    <string name="empty_loader_trusted_value">Žádné duvìryhodné kontakty</string>
+    <string name="empty_loader_trusted_value">Žádné duvěryhodné kontakty</string>
 
     <!-- EditNumber strings -->
-    <string name="shared_secret_1">Ovìøovací vìta</string>
-    <string name="shared_secret_2">Ovìøovací vìta</string>
+    <string name="shared_secret_1">Ověřovací věta</string>
+    <string name="shared_secret_2">Ověřovací věta</string>
     <string name="book_path_text">Book Path</string>
     <string name="book_path">výchozí</string>
     <string name="book_inverse_text">Book Inverse Path</string>
     <string name="book_inverse">Výchozí</string>
-    <string name="contact_public_key">Kontaktùv Veøejný Klíè</string>
-    <string name="public_key">Veøejný klíè</string>
-    <string name="key_exchange_settings">Nastavení výmìny klíèù</string>
-    <string name="auto_key_exchange">Vymìnit automaticky</string>
-    <string name="manual_key_exchange">Manuální výmìna</string>
-    <string name="ignore_key_exchange">Ignorovat všechny výmìny</string>
-    <string name="edit_number">Upravit èíslo</string>
-    <string name="import_contact_key_menu">Importovat klíè kontaktu</string>
-    <string name="import_contact_key_menu_condensed">Importovat klíè</string>
-    <string name="delete_number_menu">Smazat èíslo</string>
+    <string name="contact_public_key">Kontaktův Veřejný Klíč</string>
+    <string name="public_key">Veřejný klíč</string>
+    <string name="key_exchange_settings">Nastavení výměny klíčů</string>
+    <string name="auto_key_exchange">Vyměnit automaticky</string>
+    <string name="manual_key_exchange">Manuální výměna</string>
+    <string name="ignore_key_exchange">Ignorovat všechny výměny</string>
+    <string name="edit_number">Upravit číslo</string>
+    <string name="import_contact_key_menu">Importovat klíč kontaktu</string>
+    <string name="import_contact_key_menu_condensed">Importovat klíč</string>
+    <string name="delete_number_menu">Smazat číslo</string>
     <string name="delete_number_menu_condensed">Smazat</string>
 
     <!-- Shared between EditNumber and -->
-    <string name="phone_text">Telefonní èíslo</string>
+    <string name="phone_text">Telefonní číslo</string>
 
     <!-- ImportContacts strings -->
     <string name="import_contacts">Importovat kontakty</string>
@@ -132,45 +132,45 @@ KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="importing_title">Importování</string>
     <string name="importing_message">Ukládání kontaktu&#8230;</string>
     <string name="empty_import_list">Žádné kontakty k importu</string>
-    <string name="select_all_menu">Oznaèit vše</string>
-    <string name="deselect_all_menu">Odznaèit vše</string>
+    <string name="select_all_menu">Označit vše</string>
+    <string name="deselect_all_menu">Odznačit vše</string>
 
     <!-- MessageView strings -->
     <string name="message">Zprávy</string>
-    <string name="forward_title">Zadejte èíslo kontaktu</string>
+    <string name="forward_title">Zadejte číslo kontaktu</string>
     <string name="forward_positive_button">OK</string>
-    <string name="invalid_number_message">Neplatné èíslo</string>
-    <string name="untrust_contact_menu_full">Nedùvìryhodný kontakt</string>
-    <string name="untrust_contact_menu_short">Neduvìryhodný</string>
-    <string name="resolve_key_exchange_full">Resolve Key Exchange\n Vyøeštì výmìnu klíèù</string>
-    <string name="resolve_key_exchange_short">Resolve\n Vyøešte</string>
-    <string name="exchange_key_full">Vymìnit klíèe</string>
-    <string name="exchange_key_short">Vymìnit klíèe</string>
+    <string name="invalid_number_message">Neplatné číslo</string>
+    <string name="untrust_contact_menu_full">Nedůvěryhodný kontakt</string>
+    <string name="untrust_contact_menu_short">Neduvěryhodný</string>
+    <string name="resolve_key_exchange_full">Vyřešte výměnu klíčů</string>
+    <string name="resolve_key_exchange_short">Resolve\n Vyřešte</string>
+    <string name="exchange_key_full">Vyměnit klíče</string>
+    <string name="exchange_key_short">Vyměnit klíče</string>
     <string-array name="sms_options">
         <item>Smazat zprávu</item>
         <item>Kopírovat zprávu</item>
-        <item>Pøeposlat zprávu</item>
+        <item>Přeposlat zprávu</item>
     </string-array>
-    <string name="key_exchange_dialog_message">Chcete vymìnit klíè s kontaktem</string>
+    <string name="key_exchange_dialog_message">Chcete vyměnit klíč s kontaktem</string>
     <string name="key_exchange_dialog_pos_button">Ano</string>
     <string name="key_exchange_dialog_neg_button">Ne</string>
-    <string name="shared_secret">Ovìøovací vìty musí být delší než</string>
-    <string name="export_number_title">Vložit Kontaktovo èíslo</string>
-    <string name="key_exchange_import">Import výmìny klíèe</string>
-    <string name="key_exchange_respond">Chcete exportovat nebo odeslat prostøednictvím SMS výmenu klíèú pro kontakt</string>
+    <string name="shared_secret">Ověřovací věty musí být delší než</string>
+    <string name="export_number_title">Vložit Kontaktovo číslo</string>
+    <string name="key_exchange_import">Import výměny klíče</string>
+    <string name="key_exchange_respond">Chcete exportovat nebo odeslat prostřednictvím SMS výměnu klíčů pro kontakt</string>
     <string name="sms_option">SMS</string>
     <string name="export_option">Export</string>
-    <string name="delete_thread_menu">Smazat koverzaci</string>
-    <string name="exchange_keys_menu">Vymìnit klíèe</string>
+    <string name="delete_thread_menu">Smazat konverzaci</string>
+    <string name="exchange_keys_menu">Vyměnit klíče</string>
     <string name="edit_contact_menu">Upravit kontakt</string>
 
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Odeslat</string>
 
     <!-- SendMessageActivity strings -->
-    <string name="to">Pøíjemce</string>
+    <string name="to">Příjemce</string>
     <string name="send_message">Odeslat zprávu</string>
-    <string name="insufficent_information_provided">Neuvedli jste dostateèné informace</string>
+    <string name="insufficent_information_provided">Neuvedli jste dostatečné informace</string>
 
     <!-- DeleteContacts strings -->
     <string name="delete_contacts">Smazat kontakty</string>
@@ -178,39 +178,39 @@ KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <!-- SMSUtility strings -->
     <string name="encrypted_message_sent">Šifrovaná zpráva odeslána</string>
     <string name="message_sent">Zpráva odeslána</string>
-    <string name="failed_to_encrypt">NEPODAØILO SE ZAŠIFROVAT</string>
-    <string name="failed_to_sent">NEPODAØILO SE ODESLAT</string>
+    <string name="failed_to_encrypt">NEPODAŘILO SE ZAŠIFROVAT</string>
+    <string name="failed_to_sent">NEPODAŘILO SE ODESLAT</string>
     
     <!-- Tabbed activity -->
     <string name="contacts_tab">Kontakty</string>
-    <string name="trusted_contact_tab">Dùvìryhodné kontakty</string>
-    <string name="pending_key_exchange_tab">Nevyøízené výmìny klíèù</string>
+    <string name="trusted_contact_tab">Důvěryhodné kontakty</string>
+    <string name="pending_key_exchange_tab">Nevyřízené výměny klíčů</string>
 
     <!-- UserKeySettings strings -->
-    <string name="user_public_key">Váš veøejný klíè:</string>
-    <string name="export_public_key">Exportovat Veøejný Klíè</string>
-    <string name="import_contacts_title">Vložte Kontaktovo èíslo</string>
-    <string name="written_path">Uloženo na vaši pamìovou kartu jako</string>
+    <string name="user_public_key">Váš veřejný klíč:</string>
+    <string name="export_public_key">Exportovat Veřejný Klíč</string>
+    <string name="import_contacts_title">Vložte Kontaktovo číslo</string>
+    <string name="written_path">Uloženo na vaši paměťovou kartu jako</string>
     
     <!-- Exchange Key -->
-    <string name="unsuccessful_key_exchanges">Ne všechna èísla mohou být vymìnìna, musí obsahovat ovìøovací vìty</string>
-    <string name="key_exchange_cancelled">Výmìna klíèù zrušena</string>
+    <string name="unsuccessful_key_exchanges">Ne všechna čísla mohou být vyměněna, musí obsahovat ověřovací věty</string>
+    <string name="key_exchange_cancelled">Výměna klíčů zrušena</string>
     
     <!-- KeyExchangeHandler strings -->
-    <string name="key_exchange_double_message">Odeslán požadavek na výmìnu klíèù krátce po vámi odeslaném požadavku na výmìnu klíèù. Toto je možný útok typu Man In The Middle Position. Chcete pøesto pokraèovat ve výmìnì klíèù?</string>
-    <string name="key_exchange_double_title">Varování výmìny klíèù</string>
+    <string name="key_exchange_double_message">Odeslán požadavek na výměnu klíčů krátce po vámi odeslaném požadavku na výměnu klíčů. Toto je možný útok typu Man In The Middle Position. Chcete přesto pokračovat ve výměně klíčů?</string>
+    <string name="key_exchange_double_title">Varování výměny klíčů</string>
 
     <!-- Application crash reporting -->
     <string name="pref_enable_bugsense">Povolit Bugsense</string>
     <string name="pref_bugsense_enabled">Zakázat hlášení chyb</string>
     <string name="pref_bugsense_disabled">Povolit hlášení chyb</string>
     <string name="title_activity_tab_selection">Spravovat kontakty</string>
-    <string name="add_contact">Pøidat kontakt</string>
-    <string name="title_activity_donations">Podpoøit</string>
+    <string name="add_contact">Přidat kontakt</string>
+    <string name="title_activity_donations">Podpořit</string>
 	
     <!-- The Donation strings -->
-    <string name="donate">Podpoøit</string>
-    <string name="donate_dialog_message">Chcete finanènì podpoøit Tinfoil-SMS?</string>
+    <string name="donate">Podpořit</string>
+    <string name="donate_dialog_message">Chcete finančně podpořit Tinfoil-SMS?</string>
     <string name="flattr_option">Flattr</string>
     <string name="paypal_option">PayPal</string>
     
@@ -226,36 +226,36 @@ KLIKNÌTE NA "PØIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="enable_tinfoil_sms_option_summary">Povolit nebo zakázat šifrování SMS</string>
     <string name="enable_tinfoil_sms_option_title">Povolit Tinfoil-SMS</string>
     <string name="message_settings_option_title">Nastavení zpráv</string>
-    <string name="native_save_option_title">Pøirozené ukládání</string>
-    <string name="native_save_option_summary">Uložit zprávy do základní aplikace pro zprávy SMS</string>
+    <string name="native_save_option_title">Přirozené ukládání</string>
+    <string name="native_save_option_summary">Uložit zprávy do nativní aplikace pro zprávy SMS</string>
     <string name="message_limit_option_title">Limit zpráv</string>
     <string name="maximum_number_of_messages_saved">Limit ukládaných zpráv v konverzaci</string>
     <string name="contact_settings_option_title">Nastavení kontaktu</string>
     <string name="import_contacts_option_title">Importovat kontakty</string>
-    <string name="import_contacts_option_summary">Importovat dùvìryhodné kontakty z telefonu</string>
+    <string name="import_contacts_option_summary">Importovat důvěryhodné kontakty z telefonu</string>
     <string name="manage_contacts_option_title">Spravovat kontakty</string>
     <string name="encryption_option_title">Nastavení šifrování</string>
-    <string name="encryption_message_option_title">Šiforvané zprávy</string>
+    <string name="encryption_message_option_title">Šifrované zprávy</string>
     <string name="encrypted_message_option_summary">Zobrazit originální šifrovanou zprávu</string>
-    <string name="public_key_option_title">Mùj veøejný klíè</string>
-    <string name="public_key_option_summary">Spravovat váš veøejný klíè</string>
-    <string name="notifications_option_title">Nastavení upozornìní</string>
-    <string name="enable_notification_option_title">Povolit upozornìní</string>
-    <string name="vibrate_option_title">Vibrovat</string>
-    <string name="vibrate_length_option_title">Vibrovat dlouze</string>
-    <string name="vibrate_length_option_summary">Zvolte délku vibraèních upozornìní</string>
-    <string name="feedback_options">Zpìtná vazba</string>
-    <string name="donate_option_title">Podpoøit</string>
-    <string name="donate_option_summary">Podpoøte vývojáøe</string>
-	<string name="ringtone_settings_title">Povolit vyzvánìní</string>
+    <string name="public_key_option_title">Můj veřejný klíč</string>
+    <string name="public_key_option_summary">Spravovat váš veřejný klíč</string>
+    <string name="notifications_option_title">Nastavení upozornění</string>
+    <string name="enable_notification_option_title">Povolit upozornění</string>
+    <string name="vibrate_option_title">Vibrace</string>
+    <string name="vibrate_length_option_title">Délka vibrací</string>
+    <string name="vibrate_length_option_summary">Zvolte délku vibračních upozornění</string>
+    <string name="feedback_options">Zpětná vazba</string>
+    <string name="donate_option_title">Podpořit</string>
+    <string name="donate_option_summary">Podpořte vývojáře</string>
+	<string name="ringtone_settings_title">Povolit vyzvánění</string>
     <string name="message_order_title">Pořadí zpráv</string>
     <string name="message_order_summary">Zobrazit poslední zprávu nahoře</string>
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">Nové zprávy</string>
-    <string name="unread_email_message">Nepøeètené zprávy</string>
-    <string name="pending_key_exchange_notification">Nevyøízené výmìny klíèù</string>
-    <string name="pending_key_exchange_message">Klikni pro vyøešení</string>
+    <string name="unread_email_message">Nepřeètené zprávy</string>
+    <string name="pending_key_exchange_notification">Nevyřízené výměny klíčů</string>
+    <string name="pending_key_exchange_message">Klikni pro vyřešení</string>
     
 
     
