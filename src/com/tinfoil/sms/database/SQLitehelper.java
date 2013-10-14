@@ -46,9 +46,11 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String QUEUE_TABLE_NAME = "queue";
     public static final String EXCHANGE_TABLE_NAME = "exchange_messages";
     
+    public static final String EXISTS_CLAUSE = "IF NOT EXISTS";
+    
     /* Create statements */
     private static final String SHARED_INFO_TABLE_CREATE =
-            "CREATE TABLE " + SHARED_INFO_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + SHARED_INFO_TABLE_NAME + 
             " ("+ DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
@@ -56,7 +58,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_SHARED_INFO_2 + " TEXT);";
     
     private static final String BOOK_PATHS_TABLE_CREATE =
-            "CREATE TABLE " + BOOK_PATHS_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + BOOK_PATHS_TABLE_NAME + 
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
@@ -64,17 +66,17 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_BOOK_INVERSE_PATH + " TEXT);";
     
     private static final String USER_TABLE_CREATE =
-            "CREATE TABLE " + USER_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + USER_TABLE_NAME + 
             " (" + DBAccessor.KEY_PUBLIC_KEY + " BLOB," +
             " " + DBAccessor.KEY_PRIVATE_KEY + " BLOB);";
     
     private static final String TRUSTED_TABLE_CREATE =
-            "CREATE TABLE " + TRUSTED_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + TRUSTED_TABLE_NAME + 
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_NAME + " TEXT );";
     
     private static final String NUMBERS_TABLE_CREATE =
-            "CREATE TABLE " + NUMBERS_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + NUMBERS_TABLE_NAME + 
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
@@ -89,7 +91,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_EXCHANGE_SETTING + " INTEGER);";
     
     private static final String MESSAGES_TABLE_CREATE =
-            "CREATE TABLE " + MESSAGES_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + MESSAGES_TABLE_NAME + 
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE," +
@@ -98,7 +100,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_SENT + " INTEGER);";
     
     private static final String QUEUE_TABLE_CREATE =
-            "CREATE TABLE " + QUEUE_TABLE_NAME + 
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + QUEUE_TABLE_NAME + 
             " (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
             " " + DBAccessor.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE," +
@@ -106,7 +108,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + DBAccessor.KEY_EXCHANGE + " INTEGER);";
     
     private static final String EXCHANGE_TABLE_CREATE =
-    		"CREATE TABLE " + EXCHANGE_TABLE_NAME + 
+    		"CREATE TABLE " + EXISTS_CLAUSE + " " + EXCHANGE_TABLE_NAME + 
     		" (" + DBAccessor.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
     		" " + DBAccessor.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
     		" ON DELETE CASCADE ON UPDATE CASCADE," +
