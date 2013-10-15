@@ -17,6 +17,7 @@
 
 package com.tinfoil.sms.dataStructures;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.tinfoil.sms.database.DBAccessor;
@@ -26,8 +27,17 @@ import com.tinfoil.sms.utility.SMSUtility;
  * A class used to store information from the numbers table
  *
  */
-public class Number {
+public class Number implements Serializable {
 	
+	/**
+	 * Determines if a de-serialized file is compatible with this class.
+     *
+     * Maintainers must change this value if and only if the new version
+     * of this class is not compatible with old versions. See Sun docs
+     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide
+     * /serialization/spec/version.doc.html> details. </a>
+	 */
+	private static final long serialVersionUID = 1513790618853529593L;
 	public static final int AUTO = 0;
 	public static final int MANUAL = 1;
 	public static final int IGNORE = 2;

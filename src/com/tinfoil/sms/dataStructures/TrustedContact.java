@@ -17,6 +17,7 @@
 
 package com.tinfoil.sms.dataStructures;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.tinfoil.sms.utility.SMSUtility;
@@ -30,8 +31,17 @@ import com.tinfoil.sms.utility.SMSUtility;
  * A TrustedContact != Trusted Contact but a TrustedContact can be a
  * Trusted Contact, if key != null
  */
-public class TrustedContact {
+public class TrustedContact implements Serializable{
 	
+	/**
+	 * Determines if a de-serialized file is compatible with this class.
+     *
+     * Maintainers must change this value if and only if the new version
+     * of this class is not compatible with old versions. See Sun docs
+     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide
+     * /serialization/spec/version.doc.html> details. </a>
+	 */
+	private static final long serialVersionUID = 942625807839551193L;
 	private String name;
 	private ArrayList<Number> numbers;	
 	
