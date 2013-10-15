@@ -140,7 +140,7 @@ public class EditNumber extends Activity{
         	/*
         	 * Initialize the values to be adjusted
         	 */
-        	number = MessageService.dba.getNumber(originalNumber);
+        	number = MessageService.dba.getNumber(SMSUtility.format(originalNumber));
         
 	        phoneNumber.setText(originalNumber);        
 	        
