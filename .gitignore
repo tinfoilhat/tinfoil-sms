@@ -22,3 +22,6 @@ message.git
 *.*~
 *~
 *.swp
+
+# Ignore Eclipse files
+.classpath
