@@ -98,7 +98,16 @@ public class SendMessageActivity extends Activity {
         if (uri != null)
         {
         	//Toast.makeText(this, uri.toString().split(":")[1], Toast.LENGTH_LONG).show();
-        	this.phoneBox.setText(uri.toString().split(":")[1]);
+        	String[] value = uri.toString().split(":");
+        	if(value.length == 2)
+        	{
+        		this.phoneBox.setText(value[1]);
+        	}
+        	else
+        	{
+        		this.phoneBox.setText(value[0]);
+        	}
+        	
         	//Toast.makeText(this, , Toast.LENGTH_LONG).show();
         }
         
