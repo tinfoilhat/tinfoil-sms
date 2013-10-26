@@ -22,6 +22,12 @@
   margin-bottom: 0px;
 }
 
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 60px;
+    padding-bottom: 20px;
+}
+
 /* The main image */
 .bgimg {
     background: url(../img/header-img.jpg) no-repeat center center;
@@ -31,11 +37,6 @@
     -o-background-size: cover;
     background-size: cover;
     margin-bottom: 25px;
-}
-
-/* Move down content because we have a fixed navbar that is 50px tall */
-body {
-    padding-bottom: 20px;
 }
 
 .donate {
@@ -96,14 +97,15 @@ html, body {
 .footer {
  position: relative;
  margin-top: 25px;
+ height: 80px;
  padding: 20px;
 }
 
 #copyright, #license {
-  padding: 1px 0px;
+  padding: 0px;
   margin: 0px 0px;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 #license {
