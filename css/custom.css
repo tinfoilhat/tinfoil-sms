@@ -17,6 +17,11 @@
   margin: 0 5px;
 }
 
+/* Overide the default margin for navbar */
+#navbar {
+  margin-bottom: 0px;
+}
+
 /* The main image */
 .bgimg {
     background: url(../img/header-img.jpg) no-repeat center center;
@@ -30,14 +35,17 @@
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-    padding-top: 50px;
     padding-bottom: 20px;
 }
 
 .donate {
   text-align: center;
-  /*margin-top: -15px;
-  margin-bottom: 15px;*/
+}
+
+div.donate#donate span {
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
 }
 
 span .FlattrButton {
@@ -55,6 +63,7 @@ span .PayPalButton {
   top: 9px;
   right: 2px;
 }
+
 
 .downloads {
   clear: both;
@@ -78,6 +87,25 @@ span .PayPalButton {
   padding: 0;
 }
 
-#main_content_wrap {
-  padding-top: 25px;
+/* Sticky footer styles
+-------------------------------------------------- */
+html, body {
+    height: 100%;
+}
+
+.footer {
+ position: relative;
+ margin-top: 25px;
+ padding: 25px;
+}
+
+#copyright, #license {
+  padding: 1px 0px;
+  margin: 0px 0px;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+#license {
+  clear: left;
 }
