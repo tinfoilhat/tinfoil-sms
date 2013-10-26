@@ -1,46 +1,45 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)http://getbootstrap.com/examples/jumbotron/# -->
-<html lang="en">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="http://getbootstrap.com/assets/ico/favicon.png">
+  <meta charset='utf-8' />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="description" content="Tinfoil-SMS : Texting for the paranoid." />
+  <meta name="author" content="Jonathan Gillett &amp; Zach Jordan">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Jumbotron Template for Bootstrap</title>
+  <title>Tinfoil-SMS</title>
+  
+  <!-- Favicons and CSS -->
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+  <![endif]-->
 
-    <!-- Custom styles for this template -->
-    <link href="css/jumbotron.css" rel="stylesheet">
+  <!-- FLATTR BUTTON JAVASCRIPT -->
+  <script type="text/javascript">
+  /* <![CDATA[ */
+      (function() {
+          var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+          s.type = 'text/javascript';
+          s.async = true;
+          s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+          t.parentNode.insertBefore(s, t);
+      })();
+  /* ]]> */</script>
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="../.js/html5shiv.js"></script>
-      <script src="../.js/respond.min.js"></script>
-    <![endif]-->
-    <style type="text/css">
-    .bgimg {
-        background: url(img/header-img.jpg) no-repeat center center;
-        height: 600px;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-        margin-bottom: 25px;
-    }
-    /* Move down content because we have a fixed navbar that is 50px tall */
-    body {
-      padding-top: 50px;
-      padding-bottom: 20px;
-    }
-    </style>
+  <!-- SHARING BUTTONS JAVASCRIPT -->
+  <script type="text/javascript">var switchTo5x=true;</script>
+  <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+  <script type="text/javascript">stLight.options({publisher: "6c6b31c1-4f48-47ef-a6d5-02ea4b836e5e", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 </head>
-  <body style="">
-
+  <body>
+    <!-- HEADER NAV BAR -->
     <div class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -54,22 +53,23 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="dropdown closed">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Where To Get Tinfoil-SMS <b class="caret"></b></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="https://play.google.com/store/apps/details?id=com.tinfoil.sms&hl=en">Goggle Play Store</a></li>
-                    <li><a href="https://github.com/tinfoilhat/tinfoil-sms">Get it on Github</a></li>
-                    <li><a href="https://github.com/tinfoilhat/tinfoil-sms/zipball/master">Download .zip</a></li>
-                    <li><a href="https://github.com/tinfoilhat/tinfoil-sms/tarball/master">Download tar.gz</a></li>
-                  </ul>
-                </li>
-            <li><a href="mailto:tinfoil.sms@gmail.com"</a>Contact</a></li>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Where To Get Tinfoil-SMS <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="https://play.google.com/store/apps/details?id=com.tinfoil.sms&hl=en">Goggle Play Store</a></li>
+                <li><a href="https://github.com/tinfoilhat/tinfoil-sms">Get it on Github</a></li>
+                <li><a href="https://github.com/tinfoilhat/tinfoil-sms/zipball/master">Download .zip</a></li>
+                <li><a href="https://github.com/tinfoilhat/tinfoil-sms/tarball/master">Download tar.gz</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="mailto:tinfoil.sms@gmail.com"</a>Contact</a></li>
             </li>
           </ul>
-        </div><!--/.navbar-collapse -->
+        </div>
       </div>
     </div>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <!-- The main image, the primary marketing message or call to action -->
     <div class="splash bgimg">
       <div class="container">
         <div class="row">
@@ -80,6 +80,7 @@
       </div>
     </div>
     
+    <!-- My favourite quote about the right to privacy! -->
     <div class="row-narrow">
     <center>
       <img class="img-circle" src="img/richelieu.jpg">
@@ -89,38 +90,38 @@
     </center>
   </div>
 
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="jumbotron">
-        <div class="row">
-          <div class="col-lg-4">
-            <center>
+  <!-- The main selling points -->
+  <div class="container">
+    <div class="jumbotron">
+      <div class="row">
+        <div class="col-lg-4">
+          <center>
             <h2>How Secure?</h2>
             <p>Tinfoil-SMS uses 256 bit ECC public keys as well as a unique signed key exchange to prevent any “man-in-the-middle” attacks.</p>
           </center>
-          </div>
-          <div class="col-lg-4">
-            <center>
+        </div>
+        <div class="col-lg-4">
+          <center>
             <h2>Open Source!</h2>
             <p>Still iffy on our security? Take a peak at the source code then. We're opening the trench coat here and exposing it all.</p>
             <p><a class="btn btn-primary" href="./tinfoilsms_files/tinfoilsms.html">View Source Code »</a></p>
-          </center>
-         </div>
-          <div class="col-lg-4">
-            <center>
+        </center>
+       </div>
+        <div class="col-lg-4">
+          <center>
             <h2>100% Free!</h2>
-            <p>Oh and that doesnt mean we loaded this thing up with ads either. 100% ad free for life gaurenteed.</p>
-          </center>
-          </div>
+            <p>Oh and that doesn't mean we loaded this thing up with ads either. 100% ad free for life guaranteed.</p>
+        </center>
         </div>
       </div>
-      <hr>
+    </div>
+    <hr>
 
 <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">Security Features</h2>
-          <p class="lead">
-          <p>
+  <div class="col-md-7">
+    <h2 class="featurette-heading">Security Features</h2>
+    <p class="lead">
+      <p>
         • Always free for anyone to use and with no limitations<br>
         • Released as Open Source software under the GNU General Public License Version 3<br>
         • Simple to use and understand UI<br>
@@ -130,83 +131,88 @@
         • AES-256 block cipher in CTR mode<br>
         • SHA-256 message HMAC<br>
         • CSPRNG based on ISAAC<br>
-          </p>
-          </p>
-        </div>
-        <div class="col-md-5">
-          <img class="img-rounded" src="img/feature3.jpg" alt="?">
-        </div>
-      </div>
-
-      <hr>
-
-      <!-- SCREENSHOTS -->
-      <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Screenshots</h3>
-
-      <div class="screenshots">
-        <center>
-        <img src="img/conversation.jpg" alt="Conversation">
-        <img src="img/shared_secrets.jpg" alt="Shared Secrets">
-        <img src="img/key_exchange.jpg" alt="Key Exchange">
-        <img src="img/manage_contacts.jpg" alt="Manage Contacts">
-        <center>
-      </div>
-      <hr>
-
-      <!-- TUTORIAL -->
-      <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Tutorial</h3>
-
-      <p>Tinfoil-SMS requires both parties to set up shared secrets and exchange keys before messages can be securely sent. This process is explained when you first open the application, however there is also a<a href="https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough" target="_blank" class="user-mention"> detailed walkthrough</a> that can guide you through it as well.</p>
-      <hr>
-
-      <!-- CONTACT AND SUPPORT -->
-      <h3><a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Contact &amp; Support</h3>
-      <p>Having trouble with Tinfoil-SMS? All in app bugs for beta releases are automatically reported, however if you have any questions, comments or concerns; check out the documentation on our <a href="https://github.com/tinfoilhat/tinfoil-sms/wiki" target="_blank">Wiki</a> or email us at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> and we’ll try to respond as soon as possible.</p>
-      <hr>
-
-      <!-- REPORTING BUGS AND ISSUES -->
-      <h3><a name="bugs-issues" class="anchor" href="#bugs-issues"><span class="octicon octicon-link"></span></a>Bugs &amp; Feature Requests</h3>
-      <p>We are always looking for users who can provide feedback on bugs or issues they've discovered or make feature requests. We are especially looking for contributors who would like to audit the source code for vulnerabilities. Your feedback is much appreciated, you can either contact us by email at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> or submit an issue on <a href="https://github.com/tinfoilhat/tinfoil-sms/issues" target="_blank">Github</a>.
-      <hr>
-
-      <!-- DONATE -->
-      </p><h3><a name="donate" class="anchor" href="#donate"><span class="octicon octicon-link"></span></a>Donate to Tinfoil-SMS</h3>
-      <p>We always appreciate a nice shout out or a shiny dollar or two. You can donate through <a href="http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid" target="_blank">Flattr</a>, or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY" target="_blank">PayPal</a>. If you can't do either, give our URL a shout out on your favorite social media platform, we'll be just as thankful.</p>
-      <hr>
-
-      <!-- SHARE, DONATE BUTTONS -->
-
-      <div class="donate">
-        <center>
-        <span><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY" target="_blank"><img class="PayPalButton" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="Donate with PayPal!" title="Donate with PayPal!" border="0"></a></span>
-        <span><iframe src="http://api.flattr.com/button/view/?url=http%3A%2F%2Ftinfoilhat.github.io%2Ftinfoil-sms&amp;button=compact&amp;" class="FlattrButton" width="110" height="20" frameborder="0" scrolling="no" title="Flattr" border="0" marginheight="0" marginwidth="0" allowtransparency="true"></iframe></span>
-        <span class="st_googleplus_hcount" displaytext="Google +" st_processed="yes"><span style="text-decoration:none;color:#000000;display:inline-block;cursor:pointer;" class="stButton"><span><span class="stButton_gradient"><span class="chicklets googleplus">Google +</span><img src="http://w.sharethis.com/images/check-big.png" style="position: absolute; top: -7px; right: -7px; width: 19px; height: 19px; max-width: 19px; max-height: 19px; display: none;"></span><span class="stArrow"><span class="stButton_gradient stHBubble" style="display: inline-block;"><span class="stBubble_hcount">11</span></span></span></span></span></span>
-        <span class="st_facebook_hcount" displaytext="Facebook" st_processed="yes"><span style="text-decoration:none;color:#000000;display:inline-block;cursor:pointer;" class="stButton"><span><span class="stMainServices st-facebook-counter" style="background-image: url(http://w.sharethis.com/images/facebook_counter.png);">&nbsp;<img src="http://w.sharethis.com/images/check-big.png" style="position: absolute; top: -7px; right: -7px; width: 19px; height: 19px; max-width: 19px; max-height: 19px; display: none;"></span><span class="stArrow"><span class="stButton_gradient stHBubble" style="display: inline-block;"><span class="stBubble_hcount">0</span></span></span></span></span></span>
-        <span class="st_twitter_hcount" displaytext="Tweet" st_processed="yes"><span style="text-decoration:none;color:#000000;display:inline-block;cursor:pointer;" class="stButton"><span><span class="stMainServices st-twitter-counter" style="background-image: url(http://w.sharethis.com/images/twitter_counter.png);">&nbsp;<img src="http://w.sharethis.com/images/check-big.png" style="position: absolute; top: -7px; right: -7px; width: 19px; height: 19px; max-width: 19px; max-height: 19px; display: none;"></span><span class="stArrow"><span class="stButton_gradient stHBubble" style="display: inline-block;"><span class="stBubble_hcount">40</span></span></span></span></span></span>
-      </center>
-      </div>
-
-<hr>
-      
-      <!-- AUTHORS -->
-      <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors &amp; Contributors</h3>
-      <p>Cryptography library and security by Jonathan G. <a href="https://github.com/gnu-user" target="_blank" class="user-mention">@gnu-user</a><br>
-          Android development and App UI by Joseph H. <a href="https://github.com/dataBaseError" target="_blank" class="user-mention">@dataBaseError</a><br>
-          Web copy, icons, and images by Zach J. <a href="http://zachjordan.me/" target="_blank" class="user-mention">@TheZachJordan</a><br>
       </p>
-    </section>
+    </p>
+  </div>
+  <div class="col-md-5">
+    <img class="img-rounded" src="img/feature3.jpg" alt="?">
+  </div>
+  </div>
 
-      <footer>
-        <p>© Company 2013</p>
-      </footer>
-    </div> <!-- /container -->
+  <hr>
 
+  <!-- SCREENSHOTS -->
+  <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Screenshots</h3>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./tinfoilsms_files/jquery.js"></script>
-    <script src="./tinfoilsms_files/bootstrap.min.js"></script>
+  <div class="screenshots">
+    <center>
+    <img src="img/conversation.jpg" alt="Conversation">
+    <img src="img/shared_secrets.jpg" alt="Shared Secrets">
+    <img src="img/key_exchange.jpg" alt="Key Exchange">
+    <img src="img/manage_contacts.jpg" alt="Manage Contacts">
+    <center>
+  </div>
+  <hr>
+
+  <!-- TUTORIAL -->
+  <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Tutorial</h3>
+
+  <p>Tinfoil-SMS requires both parties to set up shared secrets and exchange keys before messages can be securely sent. This process is explained when you first open the application, however there is also a<a href="https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough" target="_blank" class="user-mention"> detailed walkthrough</a> that can guide you through it as well.</p>
+  <hr>
+
+  <!-- CONTACT AND SUPPORT -->
+  <h3><a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Contact &amp; Support</h3>
+  <p>Having trouble with Tinfoil-SMS? All in app bugs for beta releases are automatically reported, however if you have any questions, comments or concerns; check out the documentation on our <a href="https://github.com/tinfoilhat/tinfoil-sms/wiki" target="_blank">Wiki</a> or email us at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> and we’ll try to respond as soon as possible.</p>
+  <hr>
+
+  <!-- REPORTING BUGS AND ISSUES -->
+  <h3><a name="bugs-issues" class="anchor" href="#bugs-issues"><span class="octicon octicon-link"></span></a>Bugs &amp; Feature Requests</h3>
+  <p>We are always looking for users who can provide feedback on bugs or issues they've discovered or make feature requests. We are especially looking for contributors who would like to audit the source code for vulnerabilities. Your feedback is much appreciated, you can either contact us by email at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> or submit an issue on <a href="https://github.com/tinfoilhat/tinfoil-sms/issues" target="_blank">Github</a>.
+  <hr>
+
+  <!-- DONATE -->
+  </p><h3><a name="donate" class="anchor" href="#donate"><span class="octicon octicon-link"></span></a>Donate to Tinfoil-SMS</h3>
+  <p>We always appreciate a nice shout out or a shiny dollar or two. You can donate through <a href="http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid" target="_blank">Flattr</a>, or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY" target="_blank">PayPal</a>. If you can't do either, give our URL a shout out on your favorite social media platform, we'll be just as thankful.</p>
+
+  <!-- SHARE, DONATE BUTTONS -->
+  <div class="donate">
+    <span><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZP8ZHVFATTTY" target="_blank"><img class="PayPalButton" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="Donate with PayPal!" title="Donate with PayPal!" border="0" /></a></span>
+    <span><a class="FlattrButton" rev="flattr;button:compact;" href="http://tinfoilhat.github.io/tinfoil-sms"></a></span>
+    <span class='st_googleplus_hcount' displayText='Google +'></span>
+    <span class='st_facebook_hcount' displayText='Facebook'></span>
+    <span class='st_twitter_hcount' displayText='Tweet'></span>
+  </div>
+
+  <hr>
   
+  <!-- AUTHORS -->
+  <h3><a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors &amp; Contributors</h3>
+  <p>Cryptography library and security by Jonathan G. <a href="https://github.com/gnu-user" target="_blank" class="user-mention">@gnu-user</a><br>
+      Android development and App UI by Joseph H. <a href="https://github.com/dataBaseError" target="_blank" class="user-mention">@dataBaseError</a><br>
+      Web copy, icons, and images by Zach J. <a href="http://zachjordan.me/" target="_blank" class="user-mention">@TheZachJordan</a><br>
+  </p>
 
-</body></html>
+  <!-- FOOTER  -->
+  <div id="footer_wrap" class="outer">
+    <footer class="inner"
+      <p class="copyright">Tinfoil-SMS maintained by <a href="https://github.com/tinfoilhat" target="_blank">tinfoilhat</a><br/>
+    </footer>
+  </div>
+
+  <!-- JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/holder.min.js"></script>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-44184712-1', 'tinfoilhat.github.io');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>

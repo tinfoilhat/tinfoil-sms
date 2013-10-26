@@ -1,0 +1,83 @@
+/*******************************************************************************
+* 
+* Custom CSS Syling
+*
+*******************************************************************************/
+.title {
+  float: left;
+}
+.logo {
+  float: right;
+}
+
+.logo img {
+  width: 160px;
+  border: none;
+  box-shadow: none;
+  margin: 0 5px;
+}
+
+/* The main image */
+.bgimg {
+    background: url(../img/header-img.jpg) no-repeat center center;
+    height: 600px;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin-bottom: 25px;
+}
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.donate {
+  text-align: center;
+  /*margin-top: -15px;
+  margin-bottom: 15px;*/
+}
+
+span .FlattrButton {
+  position: relative;
+  top: 5px;
+  left: -5px;
+}
+
+span .PayPalButton {
+  width: 74px;
+  height: 21px;
+  border: none;
+  box-shadow: none;
+  margin: 0 5px;
+  top: 9px;
+  right: 2px;
+}
+
+.downloads {
+  clear: both;
+}
+
+.googleplay {
+    background: url("../images/en_generic_rgb_wo_60.png") no-repeat scroll right bottom transparent;
+    display: block;
+    float: left;
+    height: 70px;
+    margin-left: 0;
+    overflow: hidden;
+    text-indent: -5000px;
+    width: 172px;
+}
+
+.screenshots img {
+  border: none;
+  box-shadow: none;
+  margin: 5px;
+  padding: 0;
+}
+
+#main_content_wrap {
+  padding-top: 25px;
+}
