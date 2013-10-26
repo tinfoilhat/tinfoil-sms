@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <!-- saved from url=(0044)http://getbootstrap.com/examples/jumbotron/# -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -20,11 +22,21 @@
       <script src="../../assets/js/html5shiv.js"></script>
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
-  <style type="text/css"></style></head>
-
+    <style type="text/css">
+    .bgimg {
+        background: url(assets/img/header-img.jpg) no-repeat center center;
+        height: 600px;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        margin-bottom: 25px;
+    }
+    </style>
+</head>
   <body style="">
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -53,9 +65,13 @@
     </div>
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="h1">
-        <h1>Secure Text Messaging For The Masses</h1>
+    <div class="splash bgimg">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+              <h1>Secure Text Messaging For The Masses</h1>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -70,28 +86,29 @@
 
     <div class="container">
       <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-lg-4">
-          <center>
-          <h2>How Secure?</h2>
-          <p>Tinfoil-SMS uses 256 bit ECC public keys as well as a unique signed key exchange to prevent any “man-in-the-middle” attacks.</p>
-        </center>
-        </div>
-        <div class="col-lg-4">
-          <center>
-          <h2>Open Source!</h2>
-          <p>Still iffy on our security? Take a peak at the source code then. We're opening the trench coat here and exposing it all.</p>
-          <p><a class="btn btn-primary" href="./tinfoilsms_files/tinfoilsms.html">View Source Code »</a></p>
-        </center>
-       </div>
-        <div class="col-lg-4">
-          <center>
-          <h2>100% Free!</h2>
-          <p>Oh and that doesnt mean we loaded this thing up with ads either. 100% ad free for life gaurenteed.</p>
-        </center>
+      <div class="jumbotron">
+        <div class="row">
+          <div class="col-lg-4">
+            <center>
+            <h2>How Secure?</h2>
+            <p>Tinfoil-SMS uses 256 bit ECC public keys as well as a unique signed key exchange to prevent any “man-in-the-middle” attacks.</p>
+          </center>
+          </div>
+          <div class="col-lg-4">
+            <center>
+            <h2>Open Source!</h2>
+            <p>Still iffy on our security? Take a peak at the source code then. We're opening the trench coat here and exposing it all.</p>
+            <p><a class="btn btn-primary" href="./tinfoilsms_files/tinfoilsms.html">View Source Code »</a></p>
+          </center>
+         </div>
+          <div class="col-lg-4">
+            <center>
+            <h2>100% Free!</h2>
+            <p>Oh and that doesnt mean we loaded this thing up with ads either. 100% ad free for life gaurenteed.</p>
+          </center>
+          </div>
         </div>
       </div>
-
       <hr>
 
 <div class="row featurette">
