@@ -25,7 +25,7 @@
 /* The main image */
 .bgimg {
     background: url(../img/header-img.jpg) no-repeat center center;
-    height: 600px;
+    height: 400px;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -96,14 +96,14 @@ html, body {
 .footer {
  position: relative;
  margin-top: 25px;
- padding: 25px;
+ padding: 20px;
 }
 
 #copyright, #license {
   padding: 1px 0px;
   margin: 0px 0px;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 #license {
