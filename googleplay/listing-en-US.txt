@@ -1,0 +1,62 @@
+DESCRIPTION
+----------------------------------------
+
+*This is a BETA release of the application, please use Tinfoil-SMS at your own discretion.*
+
+You can never be sure who or what is viewing your messages or what they’re going to do with them if they should get them. Tinfoil-SMS is an encrypted messaging application so your texts don’t fall into the wrong hands. Tinfoil-SMS uses 256 bit ECC public keys as well as a unique signed key exchange to prevent any “man-in-the-middle” attacks.
+
+The only way an unwanted party will see your messages is if they know your secret passphrases and trick you into accepting a key exchange from them. If you think we’re bluffing or you need to see it to believe it, feel free to poke around the source code. It’s open source and we’ve got nothing to hide.
+
+
+Key Features
+
+* Always free for anyone to use and with no limitations
+* Released as Open Source software under the GNU General Public License Version 3
+* Simple to use and understand UI
+* Can natively be used with or without encryption enabled
+* Public key cryptography using Elliptic Curve Cryptography (ECC)
+* Public key signing scheme using shared secrets to prevent “man-in-the-middle” attacks
+* AES-256 block cipher in CTR mode
+* SHA-256 message HMAC
+* CSPRNG based on ISAAC
+
+
+Permissions
+
+* It needs SMS access to perform normal SMS activities.
+* It needs notification access to create notifications when a message is received.
+* It needs full access to native contacts for the import contacts to Tinfoil-SMS feature.
+* It needs full network access to anonymously report bugs, since this is a beta your support and feedback is greatly appreciated. However, if you wish to not report bugs you can easily disable it in the settings.
+* It needs full External Storage access for an alternative key exchange method.
+
+
+More Information
+
+You can find more information about the project, including the Wiki and introductory tutorial on our Github page at http://tinfoilhat.github.io/tinfoil-sms/
+
+
+
+
+Secure SMS, Encrypted SMS, Private SMS, Secure Messaging, Private Messaging, Security, Privacy, Censorship, Cryptography, Encryption, Text Messaging, SMS, MMS, BBM, Secure Chat, Privacy Chat, Private Chat, Secret Message, Hidden Message, WhatsApp, iMessage, Blackberry, RIM
+
+
+
+
+PROMO TEXT
+----------------------------------------
+
+Tinfoil-SMS - Texting for the paranoid.
+
+
+
+
+RECENT CHANGES
+----------------------------------------
+
+Beta Release version 1.2.6
+
+* Fixed manual user key exchange with invalid number
+* Fixed database creation schema
+* Fixed parsing telephone number error
+* Fixed edit number retrieval
+* Fixed loading issues

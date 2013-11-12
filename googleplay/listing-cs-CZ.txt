@@ -1,0 +1,61 @@
+DESCRIPTION
+----------------------------------------
+
+*Toto je BETA verze této aplikace, prosím používejte na vlastní uvážení*
+
+Nikdy si nemůžete být jisti, kdo nebo co si prohlíží vaše zprávy nebo co by s nimi dělali, kdyby se k nim dostali. Tinfoil-SMS je aplikace, která vaše zprávy šifruje, aby se nedostaly do špatných rukou. Tinfoil-SMS používá 256 bitový ECC veřejný klíč spolu s unikátně podepsanou výměnou klíčů pro dosáhnutí maximální bezpečnosti a předejití jakýmkoliv útokům typu Man In The Middle Position (MITM).
+
+Jediný způsob jak by se kdokoliv zvenčí mohl dostat k vašim zprávám je zjistit vaše ověřovací věty a zmanipulovat vás k výměně klíčů. Pokud si myslíte, že blafujeme, nebo neuvěříte dokud neuvidíte, ciťte se svobodni k analýze zdrojového kódu. Jsme open source a nemáme co skrývat.
+
+
+Klíčové vlastnosti
+
+* Vždy zdarma pro všechny, bez jakýchkoli omezení
+* Uvolněno jako software s Otevřeným Kódem pod licencí GNU GPLv3
+* Jednoduché intuitivní uživatelské prostředí
+* Může být bez problémů používáno s vypnutým i zapntutým šifrováním
+* Šiforvání pomocí veřejného klíče metodou kryptografie eliptických křivek (ECC)
+* Kombinace veřejného klíče a ověřovacích vět pro maximální bezpečnost a předcházení útoků typu MITM
+* AES-256 bloková šifra v módu CTR
+* SHA-256 zprávy s HMAC
+* CSPRNG založený na ISAAC
+
+
+Povolení
+
+* Potřebuje přístup k SMS zprávám pro výkon běžných operací s SMS zprávami
+* Potřebuje přístup k notifikacím pro upozornění na nové zprávy
+* Potřebuje plný přístup ke kontaktům pro import kontaktů
+* Potřebuje plný přístup k internetu pro anonymní nahlašování chyb, jelikož se stále jedná o beta verzi a velmi bychom ocenili vaši zpětnou vazbu. Každopádně, Pokud si nepřejete nahlašovat chyby, můžete to snadno vypnout v nastavení.
+* Potřebuje plný přístup k externí paměti (SD karta) pro alternativní výměnu klíčů
+
+
+Více informací
+
+Pro další informace o projektu, včetně tutoriálu, a Wiki navštivte stránky projektu na Githubu http://tinfoilhat.github.io/tinfoil-sms/
+
+
+
+
+Bezpečné SMS, Šifrované SMS, Soukromé SMS, Bezpečné SMSkování, Bezpečná komunikace, Soukromé SMSkování, Soukromá komunikace, Bezpečnost, Soukromí, Cenzura,  Kryptografie, Šifrování, Textové zprávy, SMS, MMS, BBM, Bezpečný Chat, Soukromý Chat, Tajná zpráva, Skrytá zpráva, WhatsApp, iMessage, Blackberry, RIM
+
+
+
+
+PROMO TEXT
+----------------------------------------
+
+Tinfoil-SMS - SMSkování pro paranoidní.
+
+
+
+
+RECENT CHANGES
+----------------------------------------
+
+Beta Release verze 1.2.5
+
+* Přidána Čeština BETA
+* Opraven problém s bugem při výměně klíčů
+* Přesunut zbytek textových řetězců do souboru strings.xml pro podporu různých jazykových verzí
+
