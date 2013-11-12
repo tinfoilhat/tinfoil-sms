@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tinfoil-SMS</string>
+    <string name="vibration_default_length">500</string>
+    <string name="contact_name">nome</string>
+    
+    <string name="okay">Ok</string>
+    <string name="cancel">Cancelar</string>
+    <string name="no">Não</string>
+    <string name="tell_me_more">Diz-me Mais</string>
+    <string name="save">Guardar</string>
+    <string name="accept">Aceitar</string>
+    <string name="refuse">Recusar</string>
+    
+    <string name="key_exchange_failed_to_decrypt">FALHA AO DECIFRAR</string>
+    <string name="possible_man_in_the_middle_attack_warning">Possível Ataque de Man In The Middle</string>
+    <string name="key_exchange_received">Mensagem de Troca de Chave Recebida</string>
+    
+    <!-- ConversationView Activity strings -->
+    <string name="add_contacts_list">Adicionar Contacto</string>
+    <string name="import_contacts_list">Importar Contacto</string>
+    <string name="eula_title">Tinfoil-SMS EULA</string>
+    <string name="eula_message">"PLEASE READ THE TERMS AND CONDITIONS OF THIS END USER LICENSE AGREEMENT (EULA) CAREFULLY BEFORE INSTALLING OR USING THIS SOFTWARE.\n
+This distribution includes cryptographic software. The country in which you currently reside may have restrictions on the import, possession, use, and/or re-export to another country, of encryption software. BEFORE using any encryption software, please check your country's laws, regulations and policies concerning the import, possession, or use, and re-export of encryption software, to see if this is permitted. See http://www.wassenaar.org for more information.\n
+BY CLICKING ACCEPT YOU ACKNOWLEDGE THAT YOU UNDERSTAND THE CRYPTOGRAPHIC IMPORT/EXPORT LAWS OF YOUR COUNTRY AND ARE FULLY RESPONSIBLE FOR ENSURING THAT YOU ARE LEGALLY PERMITTED TO IMPORT/EXPORT THIS SOFTWARE. BY CLICKING ACCEPT YOU AGREE THAT YOU MAY NOT HOLD THE AUTHORS LIABLE FOR ANY LEGAL RAMIFICATIONS AS A RESULT OF THIS SOFTWARE, NOR MAY THE AUTHORS BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THIS SOFTWARE.\n
+LASTLY, THIS SOFTWARE IS OPEN SOURCE AND IS LICENSED UNDER THE GNU GENERAL PUBLIC LICENSE V3 (GPLv3). BY CLICKING ACCEPT YOU MUST ALSO AGREE TO THE TERMS OF THE GNU GENERAL PUBLIC LICENSE V3, PLEASE SEE http://www.gnu.org/licenses/gpl.html FOR THE COMPLETE LICENSE. FURTHERMORE, DUE TO THE OPEN SOURCE NATURE OF THIS SOFTWARE, WHEN YOU IMPORT THIS SOFTWARE OR SOURCE CODE TO YOUR COUNTRY, REDISTRIBUTE IT FROM THERE OR EVEN JUST EMAIL TECHNICAL SUGGESTIONS OR SOURCE PATCHES TO THE AUTHORS YOU ARE STRONGLY ADVISED TO PAY CLOSE ATTENTION TO ANY IMPORT/EXPORT AND/OR USE LAWS WHICH MAY APPLY TO YOU.\n
+ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USER LICENSE AGREEMENT (EULA)."</string>
+    <string name="compose_menu">Compor</string>
+    <string name="settings_menu">Definições</string>
+    <string name="pending_key_exchange_menu">Em Espera pela Troca de Chaves</string>
+    <string name="pending_key_exchange_menu_condensed">Troca</string>
+    
+    <!-- Database Accessor strings -->
+    <string name="duplicate_key_exchange">enviou outra mensagem de troca de chaves</string>
+    <string name="duplicate_key_exchange_warning_1">Aviso: A mensagem recebida foi identificada como tendo uma chave diferente da anterior.</string>
+	<string name="duplicate_key_exchange_warning_2">Possível Ataque de Man In The Middle.</string>
+    <string name="user">Eu</string>
+    <string-array name="phone_types">
+        <item>Casa</item>
+        <item>Telemóvel</item>
+        <item>Trabalho</item>
+        <item>Trabalho Fax</item>
+        <item>Casa Fax</item>
+        <item>Pager</item>
+        <item>Outros</item>
+		<item>Personalizado</item>
+		<item>Retorno</item>
+		<item>Carro</item>
+		<item>Empresa Principal</item>
+		<item>ISDN</item>
+		<item>Principal</item>
+		<item>Outro Fax</item>
+		<item>Telex</item>
+		<item>TTY TTD</item>
+		<item>Telemóvel Trabalho</item>
+		<item>Pager Trabalho</item>
+		<item>Assistente</item> 
+    	<item>MMS</item>
+    </string-array>
+
+    <!-- KeyExchangeManager Activity strings -->
+    <string name="key_exchange_manager">Gestor Troca de Chaves</string>
+    <string name="empty_key_exchange_list">Sem Troca de Chaves em Espera</string>
+    <string name="key_exchange_error_title">Aviso Troca de Chaves!</string>
+    <string name="key_exchange_error_message_1">A Troca de Chaves com</string>
+    <string name="key_exchange_error_message_2">sem sucesso. Possível Ataque de Man In The Middle.\nPor favor confirme os seus segredos partilhados.</string>
+    <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
+    <string name="invalid_secrets">Segredo Inválido</string>
+	<string name="shared_secret_hint_1">Segredo Partilhado 1</string>
+	<string name="shared_secret_hint_2">Segredo Partilhado 2</string>
+
+	<string name="set_shared_secrets">Definir o segredo partilhado para</string>
+	<string name="set_shared_secrets_title">Troca de Chave</string>
+	
+	<!--RemoveContactsActivity strings  -->
+	<string name="select_all_menu_condensed">Todos</string>
+	<string name="remove_all_menu">Remover Todos</string>
+	<string name="remove_all_menu_condensed">Remover</string>
+
+    <!-- Settings strings -->
+    <string name="settings">Definições</string>
+
+    <!-- activity_key_exchange_manager strings -->
+    <string name="reject_button">Rejeitar</string>
+    <string name="user_key_settings">Definições Chaves do Utilizador</string>
+    <string name="exchange_button">Troca</string>
+
+    <!-- AddContact strings -->
+    <string name="add_contact_activity">Editar Contacto</string>
+    <string name="number">Número</string>
+    <string name="add_number">Adicionar Número</string>
+    <string name="phone_type_title">Tipo Telefone:</string>
+    <string name="insufficent_message">Informação Insuficiente</string>
+    <string name="delete_contact_menu">Apagar Contacto</string>
+    <string name="delete_contact_menu_condensed">Apagar</string>
+
+    <!-- ManageContactsActivity strings -->
+    <string name="exchange_keys">Troca de Chaves</string>
+    <string name="manage_contacts">Gestor Contactos</string>
+    <string name="untrust_button_name">Não Confiável</string>
+    <string name="empty_list_value">Lista Vazia</string>
+    <string name="empty_loader_value">Sem Contactos</string>
+    <string name="empty_loader_trusted_value">Sem Contactos Confiáveis</string>
+
+    <!-- EditNumber strings -->
+    <string name="shared_secret_1">Mensagem Secreta</string>
+    <string name="shared_secret_2">Mensagem Secreta</string>
+    <string name="book_path_text">Caminho de Reserva</string>
+    <string name="book_path">padrão</string>
+    <string name="book_inverse_text">Caminho de Reserva Inverso</string>
+    <string name="book_inverse">padrão</string>
+    <string name="contact_public_key">Chave Pública do Contacto</string>
+    <string name="public_key">Chave Pública</string>
+    <string name="key_exchange_settings">Definições de Troca de Chave</string>
+    <string name="auto_key_exchange">Troca Automática</string>
+    <string name="manual_key_exchange">Troca Manual</string>
+    <string name="ignore_key_exchange">Ignorar Todas as Trocas</string>
+    <string name="edit_number">Editar Numero</string>
+    <string name="import_contact_key_menu">Importar Chave do Contacto</string>
+    <string name="import_contact_key_menu_condensed">Importar Chave</string>
+    <string name="delete_number_menu">Apagar Número</string>
+    <string name="delete_number_menu_condensed">Apagar</string>
+
+    <!-- Shared between EditNumber and -->
+    <string name="phone_text">Número de Telefone</string>
+
+    <!-- ImportContacts strings -->
+    <string name="import_contacts">Importar Contactos</string>
+    <string name="searching_title">A Pesquisar</string>
+    <string name="searching_message">A Localizar Contactos&#8230;</string>
+    <string name="importing_title">A Importar</string>
+    <string name="importing_message">A Guardar Contactos&#8230;</string>
+    <string name="empty_import_list">Sem Contactos para Importar</string>
+    <string name="select_all_menu">Seleccionar Todos</string>
+    <string name="deselect_all_menu">Desseleccionar Todos</string>
+
+    <!-- MessageView strings -->
+    <string name="message">Mensagens</string>
+    <string name="forward_title">Introduzir Número de Contacto</string>
+    <string name="forward_positive_button">OK</string>
+    <string name="invalid_number_message">Número Inválido</string>
+    <string name="untrust_contact_menu_full">Desconfiar Contacto</string>
+    <string name="untrust_contact_menu_short">Desconfiar</string>
+    <string name="resolve_key_exchange_full">Esclarecer Troca de Chave</string>
+    <string name="resolve_key_exchange_short">Esclarecer</string>
+    <string name="exchange_key_full">Troca de Chaves</string>
+    <string name="exchange_key_short">Troca de Chaves</string>
+    <string-array name="sms_options">
+        <item>Apagar Mensagem</item>
+        <item>Copiar Mensagem</item>
+        <item>Reencaminhar Mensagem</item>
+    </string-array>
+    <string name="key_exchange_dialog_message">Gostaria de trocar chaves com</string>
+    <string name="key_exchange_dialog_pos_button">OK</string>
+    <string name="key_exchange_dialog_neg_button">Não</string>
+    <string name="shared_secret">Os Segredos Partilhados tem de ser maiores do que</string>
+    <string name="export_number_title">Introduzir Número de Contacto</string>
+    <string name="key_exchange_import">Importar Troca de Chave</string>
+    <string name="key_exchange_respond">Gostaria de exportar ou enviar via SMS a troca de chave para</string>
+    <string name="sms_option">SMS</string>
+    <string name="export_option">Exportar</string>
+    <string name="delete_thread_menu">Apagar Conversação</string>
+    <string name="exchange_keys_menu">Trocar Chaves</string>
+    <string name="edit_contact_menu">Editar Contacto</string>
+
+    <!-- Shared between MessageView and SendMessageActivity strings -->
+    <string name="send">Enviar</string>
+
+    <!-- SendMessageActivity strings -->
+    <string name="to">Para</string>
+    <string name="send_message">Enviar Mensagem</string>
+    <string name="insufficent_information_provided">Não têm informações suficientes</string>
+
+    <!-- DeleteContacts strings -->
+    <string name="delete_contacts">Apagar Contactos</string>
+    
+    <!-- SMSUtility strings -->
+    <string name="encrypted_message_sent">Mensagem Enviada Cifrada</string>
+    <string name="message_sent">Mensagem Enviada</string>
+    <string name="failed_to_encrypt">FALHOU NA CIFRA</string>
+    <string name="failed_to_sent">FALHOU O ENVIO</string>
+    
+    <!-- Tabbed activity -->
+    <string name="contacts_tab">Contactos</string>
+    <string name="trusted_contact_tab">Contactos de Confiança</string>
+    <string name="pending_key_exchange_tab">Em Espera pela Troca de Chaves</string>
+
+    <!-- UserKeySettings strings -->
+    <string name="user_public_key">Chave Publica:</string>
+    <string name="export_public_key">Exportar Chave Pública</string>
+    <string name="import_contacts_title">Introduzir Números de Contactos</string>
+    <string name="written_path">Escrever no cartão de memória (SD card) sobre</string>
+    
+    <!-- Exchange Key -->
+    <string name="unsuccessful_key_exchanges">Nem todos os números podem ser trocados, eles tem de conter os Segredos Partilhados</string>
+    <string name="key_exchange_cancelled">Troca de Chaves Cancelado</string>
+    
+    <!-- KeyExchangeHandler strings -->
+    <string name="key_exchange_double_message">foi iniciado uma troca de chaves após a sua. Possível Ataque de Man In The Middle. Gostaria de trocar as chaves de qualquer forma?</string>
+    <string name="key_exchange_double_title">Aviso Troca de Chaves!</string>
+
+    <!-- Application crash reporting -->
+    <string name="pref_enable_bugsense">Activar Bugsense</string>
+    <string name="pref_bugsense_enabled">Desactivar Reporte de Erros</string>
+    <string name="pref_bugsense_disabled">Activar Reporte de Erros</string>
+    <string name="title_activity_tab_selection">Gerir Contactos</string>
+    <string name="add_contact">Adicionar Contacto</string>
+    <string name="title_activity_donations">Doar</string>
+	
+    <!-- The Donation strings -->
+    <string name="donate">Doar</string>
+    <string name="donate_dialog_message">Gostaria de doar para o projecto Tinfoil-SMS?</string>
+    <string name="flattr_option">Flattr</string>
+    <string name="paypal_option">PayPal</string>
+    
+    <!-- Urls -->
+    <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
+    <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
+    <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
+    
+    <!-- Settings string keys -->    
+    <string name="source_code_title">Obter Código Fonte do projecto Tinfoil-SMS</string>
+    <string name="source_code_sub_title">Contribuir para o projecto Tinfoil-SMS</string>
+    <string name="application_settings_options">Definições da Aplicação</string>
+    <string name="enable_tinfoil_sms_option_summary">Activar ou Desactivar cifra de SMS</string>
+    <string name="enable_tinfoil_sms_option_title">Activar Tinfoil-SMS</string>
+    <string name="message_settings_option_title">Definições de Mensagem</string>
+    <string name="native_save_option_title">Guardar Nativamente</string>
+    <string name="native_save_option_summary">Guardar mensagens para a aplicação nativa de SMS</string>
+    <string name="message_limit_option_title">Limite da Mensagem</string>
+    <string name="maximum_number_of_messages_saved">Número máximo de mensagens guardadas por contacto</string>
+    <string name="contact_settings_option_title">Definições do Contacto</string>
+    <string name="import_contacts_option_title">Importar Contactos</string>
+    <string name="import_contacts_option_summary">Importar Contactos Confiáveis do Telemóvel</string>
+    <string name="manage_contacts_option_title">Gerir Contactos</string>
+    <string name="encryption_option_title">Definições de Cifra</string>
+    <string name="encryption_message_option_title">Mensagens Cifradas</string>
+    <string name="encrypted_message_option_summary">Mostrar a mensagem cifrada original</string>
+    <string name="public_key_option_title">A Minha Chave Pública</string>
+    <string name="public_key_option_summary">Gerir a minha chave pública</string>
+    <string name="notifications_option_title">Definições de Notificações</string>
+    <string name="enable_notification_option_title">Activar Notificações</string>
+    <string name="vibrate_option_title">Vibrar</string>
+    <string name="vibrate_length_option_title">Duração Vibração</string>
+    <string name="vibrate_length_option_summary">Seleccione a duração da vibração (notificação)</string>
+    <string name="feedback_options">Feedback</string>
+    <string name="donate_option_title">Doar</string>
+    <string name="donate_option_summary">Ajude os Programadores</string>
+    <string name="ringtone_settings_title">Activar Toque</string>
+    <string name="message_order_title">Ordem das Mensagens</string>
+    <string name="message_order_summary">Mostrar últimas mensagens no topo</string>
+    
+    <!-- Notification strings -->
+    <string name="new_message_notification_title">Nova Mensagem</string>
+    <string name="unread_email_message">Mensagens Por Ler</string>
+    <string name="pending_key_exchange_notification">Em Espera pela Troca de Chaves</string>
+    <string name="pending_key_exchange_message">Carregue aqui para resolver</string>
+    
+</resources>
