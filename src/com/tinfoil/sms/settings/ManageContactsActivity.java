@@ -25,6 +25,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -54,6 +57,9 @@ import com.tinfoil.sms.utility.MessageService;
  */
 public class ManageContactsActivity extends Activity {
 
+	public static final int ADDED_SUCCESS = 100;
+	public static final int DELETE_SUCCESS = 101;
+	
 	public static final int UPDATE = 1;
 	
 	public static final int POP = 1;
@@ -233,6 +239,56 @@ public class ManageContactsActivity extends Activity {
         	runThread.setStart(false);
         }
     }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	super.onActivityResult(requestCode, resultCode, data);
+
+    	if(resultCode != Activity.RESULT_CANCELED)
+    	{
+	    	if(requestCode == ADDED_SUCCESS)
+	    	{
+                //TODO refresh tab
+	    	}
+	    	else if (requestCode == DELETE_SUCCESS)
+	    	{
+                //TODO refresh tab
+	    	}
+    	}
+    }
+    
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.manage_contacts_menu, menu);
+        return true;
+    }
+
+    @Override //TODO move this to ManageContactsActivity
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add: {
+                AddContact.addContact = true;
+                AddContact.editTc = null;
+                //TODO make activity handle request code
+                this.startActivityForResult(new Intent(this, AddContact.class), ADDED_SUCCESS);
+                return true;
+            }
+            case R.id.delete: {
+                //TODO make activity handle request code
+                this.startActivityForResult(new Intent(this.getApplicationContext(),
+                		RemoveContactsActivity.class), DELETE_SUCCESS);
+
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
 
     /**
      * The handler class for clean up after the loader thread has finished.

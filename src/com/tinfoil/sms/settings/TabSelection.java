@@ -71,32 +71,4 @@ public class TabSelection extends TabActivity {
         
         tabHost.addTab(spec3);
 	}
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-
-        final MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.manage_contacts_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add: {
-                AddContact.addContact = true;
-                AddContact.editTc = null;
-                this.startActivity(new Intent(this, AddContact.class));
-
-                return true;
-            }
-            case R.id.delete: {
-                this.startActivity(new Intent(this.getApplicationContext(), RemoveContactsActivity.class));
-                return true;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 }
