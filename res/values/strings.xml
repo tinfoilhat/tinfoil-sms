@@ -102,6 +102,8 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="empty_list_value">Empty List</string>
     <string name="empty_loader_value">No Contacts</string>
     <string name="empty_loader_trusted_value">No Trusted Contacts</string>
+    <string name="loading_dialog_header">Load Contacts</string>
+    <string name="loading_dialog_body">Loading Contacts&#8230;</string>
 
     <!-- EditNumber strings -->
     <string name="shared_secret_1">Secret Message</string>
@@ -256,6 +258,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="unread_email_message">Unread Messages</string>
     <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
     <string name="pending_key_exchange_message">Click here to resolve</string>
+    
     
 
     

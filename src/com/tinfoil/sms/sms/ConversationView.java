@@ -87,7 +87,7 @@ public class ConversationView extends Activity {
     public static List<String[]> msgList;
     private static ListView list;
     private static DefaultListAdapter ap;
-    private final MessageReceiver boot = new MessageReceiver();
+    public static final MessageReceiver boot = new MessageReceiver();
     private final SignalListener pSL = new SignalListener();
     public static boolean messageViewActive = false;
     

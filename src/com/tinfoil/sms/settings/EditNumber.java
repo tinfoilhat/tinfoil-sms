@@ -89,7 +89,7 @@ public class EditNumber extends Activity{
 	public static final int SHARED_INFO_MIN = 6;
 	public static final int SHARED_INFO_MAX = 128;
 	
-	private ArrayList<RadioButton> keyExchangeSetting;
+	private ArrayList<RadioButton> keyExchangeSetting;	
 	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -422,7 +422,7 @@ public class EditNumber extends Activity{
 	    											exportOrSend(EditNumber.this, number);
 	    										}
 	    										
-	    										ManageContactsActivity.updateList();
+	                							EditNumber.this.setResult(AddContact.UPDATED_NUMBER);
 	                						}
 	                            		}
 	        	            			

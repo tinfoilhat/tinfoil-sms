@@ -20,10 +20,11 @@ package com.tinfoil.sms.settings;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +45,10 @@ import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.ContactChild;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.loader.OnFinishedTaskListener;
+import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.utility.OnKeyExchangeResolvedListener;
 
 /**
  * ManageContactActivity is an activity that allows the user to exchange keys,
@@ -55,7 +59,7 @@ import com.tinfoil.sms.utility.MessageService;
  * be deleted from tinfoil-sms's database by clicking 'Delete Contact' in the
  * menu which will start RemoveContactActivity.
  */
-public class ManageContactsActivity extends Activity {
+public class ManageContactsActivity extends Activity implements OnFinishedTaskListener, OnKeyExchangeResolvedListener {
 
 	public static final int ADDED_SUCCESS = 100;
 	public static final int DELETE_SUCCESS = 101;
@@ -68,14 +72,14 @@ public class ManageContactsActivity extends Activity {
     private ExpandableListView extendableList;
     private ListView listView;
     public static ArrayList<TrustedContact> tc;
-    //private ProgressDialog loadingDialog;
-    private ArrayAdapter<String> arrayAp;
+    private ProgressDialog dialog;
+    public static ArrayAdapter<String> arrayAp;
 
     public static ArrayList<ContactParent> contacts;
     public static ArrayList<ContactChild> contactNumbers;
-    private static ManageContactAdapter adapter;
+    public static ManageContactAdapter adapter;
     
-    public boolean exchange = true;
+    public static boolean exchange = true;
     
     private static ManageContactsLoader runThread;
 
@@ -89,6 +93,8 @@ public class ManageContactsActivity extends Activity {
         exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
        
         this.setContentView(R.layout.contact);
+        
+        ConversationView.boot.setOnKeyExchangeResolvedListener(this);
         
         if (!exchange)
         {
@@ -121,7 +127,7 @@ public class ManageContactsActivity extends Activity {
                     		AddContact.class);
                     
                     ManageContactsActivity.this.startActivityForResult(intent,
-                    		UPDATE);
+                    		AddContact.UPDATED_NUMBER);
                     
                     /*
                      * This stops other on click effects from happening after
@@ -167,9 +173,10 @@ public class ManageContactsActivity extends Activity {
     	/*
          * Launch Exchange Keys thread.
          */
-        /*ExchangeKey.keyDialog = ProgressDialog.show(ManageContactsActivity.this,
+    	/*dialog = ProgressDialog.show(ManageContactsActivity.this,
         		"Exchanging Keys", "Exchanging. Please wait...", true, false);*/
 
+    	keyThread.setOnFinishedTaskListener(this);
         keyThread.startThread(this, adapter.getContacts());
 
         /*ExchangeKey.keyDialog.setOnDismissListener(new OnDismissListener() {
@@ -179,6 +186,16 @@ public class ManageContactsActivity extends Activity {
             }
         });*/
     }
+
+    @Override
+	public void onKeyExchangeResolved() {
+		updateList();
+	}
+    
+	@Override
+	public void onFinishedTaskListener() {
+		update();
+	}
     
     /**
      * Updates the list of contacts
@@ -193,7 +210,7 @@ public class ManageContactsActivity extends Activity {
         }
         else
         {
-            this.listView.setAdapter(this.arrayAp);
+            this.listView.setAdapter(arrayAp);
             this.extendableList.setVisibility(ListView.INVISIBLE);
             this.listView.setVisibility(ListView.VISIBLE);
         }
@@ -215,28 +232,57 @@ public class ManageContactsActivity extends Activity {
      */
     private void startThread()
     {
-        /*this.loadingDialog = ProgressDialog.show(this, "Loading Contacts",
-                "Loading. Please wait...", true, false);*/
-        runThread = new ManageContactsLoader(this, handler, exchange);
+        runThread = new ManageContactsLoader();
+        runThread.setOnFinshedTaskListener(this);
+        runThread.execute(this);
         super.onResume();
     }
 
     @Override
     protected void onDestroy()
-    {	  
-    	runThread.setRunner(false);
+    {
+    	runThread = null;
+    	//runThread.setRunner(false);
     	super.onDestroy();
 	}
+    
+    
+    /**
+     * showProgress Displays the progress dialog.
+     * 
+     * @param show Shows the progress dialog if true. If false, don't show it.
+     */
+    public void showProgress(boolean show)
+    {
+        if (show)
+        {
+            dialog = ProgressDialog.show(this, getString(R.string.loading_dialog_header),
+                    getString(R.string.loading_dialog_body), true, true,
+                    new OnCancelListener()
+                    {
+                        public void onCancel(DialogInterface dialog)
+                        {
+
+                        }
+                    });
+        }
+        else
+        {
+            dialog.dismiss();
+        }
+
+    }
     
     /**
      * Update the list of contacts
      */
-    public static void updateList()
+    public void updateList()
     {
         if(runThread != null)
         {
         	Log.v("Run Thread", "Running");
-        	runThread.setStart(false);
+        	
+        	//runThread.setStart(false);
         }
     }
     
@@ -247,13 +293,13 @@ public class ManageContactsActivity extends Activity {
 
     	if(resultCode != Activity.RESULT_CANCELED)
     	{
-	    	if(requestCode == ADDED_SUCCESS)
+	    	if(requestCode == AddContact.UPDATED_NUMBER || requestCode == AddContact.NEW_NUMBER_CODE)
 	    	{
-                //TODO refresh tab
+	    		updateList();
 	    	}
 	    	else if (requestCode == DELETE_SUCCESS)
 	    	{
-                //TODO refresh tab
+	    		updateList();
 	    	}
     	}
     }
@@ -267,14 +313,14 @@ public class ManageContactsActivity extends Activity {
         return true;
     }
 
-    @Override //TODO move this to ManageContactsActivity
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add: {
                 AddContact.addContact = true;
                 AddContact.editTc = null;
                 //TODO make activity handle request code
-                this.startActivityForResult(new Intent(this, AddContact.class), ADDED_SUCCESS);
+                this.startActivityForResult(new Intent(this, AddContact.class), AddContact.NEW_NUMBER_CODE);
                 return true;
             }
             case R.id.delete: {
@@ -288,47 +334,4 @@ public class ManageContactsActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
-
-    /**
-     * The handler class for clean up after the loader thread has finished.
-     */
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg)
-        {
-        	//TODO disable the key exchange button until an item is actually selected.
-        	Button encry = (Button)ManageContactsActivity.this.findViewById(R.id.exchange_keys);
-        	
-        	/* Handle UI update once the thread has finished querying the data */ 
-        	switch (msg.what){
-        		case POP:
-
-        			encry.setEnabled(true);
-        			adapter = new ManageContactAdapter(ManageContactsActivity.this, ManageContactsActivity.contacts);
-     	            adapter.notifyDataSetChanged();
-		            break;
-        		case EMPTY:
-        			
-        			encry.setEnabled(false);
-        			String emptyListValue = msg.getData().getString(ManageContactsLoader.EMPTYLIST);
-        			if (emptyListValue == null)
-        			{
-        				emptyListValue = ManageContactsActivity.this.getString(R.string.empty_list_value);
-        			}
-        			arrayAp = new ArrayAdapter<String>(ManageContactsActivity.this, android.R.layout.simple_list_item_1,
-    	                    new String[] { emptyListValue });
-    	        	
-    	        	arrayAp.notifyDataSetChanged();
-        			break;
-        	}
-        	
-            ManageContactsActivity.this.update();
-            /*if(ManageContactsActivity.this.loadingDialog.isShowing())
-            {
-            	ManageContactsActivity.this.loadingDialog.dismiss();
-            }*/
-        }
-    };
-
 }

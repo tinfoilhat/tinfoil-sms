@@ -36,6 +36,7 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.loader.OnFinishedTaskListener;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -57,6 +58,8 @@ public class ExchangeKey implements Runnable {
     
     private Activity activity;
     private TrustedContact trustedContact;
+    
+    private OnFinishedTaskListener listener;
     
     private boolean multiNumber = false;
 
@@ -290,8 +293,21 @@ public class ExchangeKey implements Runnable {
         	});
         }
 
+        if(listener != null)
+        {
+        	listener.onFinishedTaskListener();
+        }
         //Dismisses the load dialog since the load is finished
         //keyDialog.dismiss();
     }
+    
+    public void setOnFinishedTaskListener(OnFinishedTaskListener listener)
+    {
+    	this.listener = listener;
+    }
 
+    public void removeOnFinishedTaskListener()
+    {
+    	this.listener = null;
+    }
 }

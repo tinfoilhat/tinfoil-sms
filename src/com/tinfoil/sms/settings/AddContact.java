@@ -369,7 +369,7 @@ public class AddContact extends Activity {
             	{
             		MessageService.dba.removeRow(contactEdit.getANumber());
             	}
-            	
+            	 AddContact.this.setResult(AddContact.DELETED_NUMBER);
             	finish();
             	
             	return true;
