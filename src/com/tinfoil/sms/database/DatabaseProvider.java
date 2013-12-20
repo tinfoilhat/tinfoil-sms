@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-public class TinfoilSMSprovider extends ContentProvider {
+public class DatabaseProvider extends ContentProvider {
 	
 	/**
      * The fully qualified name of the authority.
@@ -53,6 +53,8 @@ public class TinfoilSMSprovider extends ContentProvider {
             + SQLitehelper.MESSAGES_TABLE_NAME);
     public static final Uri QUEUE_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
             + SQLitehelper.QUEUE_TABLE_NAME);
+    public static final Uri EXCHANGE_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
+            + SQLitehelper.EXCHANGE_TABLE_NAME);
     
 
     public static final Uri TN_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
@@ -113,7 +115,7 @@ public class TinfoilSMSprovider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_QUERY_PATH, QUERY);
     }
 	
-	public TinfoilSMSprovider() {
+	public DatabaseProvider() {
 	}
 
 	@Override

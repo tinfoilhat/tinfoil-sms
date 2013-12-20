@@ -131,11 +131,11 @@ public class DBAccessor {
 	{
 		long id = this.getNumberId(SMSUtility.format(number));
 		
-		open();
+		//open();
 		
-		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.EXCHANGE_CONTENT_URI, new String[]{
 				SQLitehelper.KEY_ID, SQLitehelper.KEY_EXCHANGE_MESSAGE}, SQLitehelper.KEY_NUMBER_REFERENCE + " = " + id,
-				null, null, null, null);
+				null, null);
 		
 		if(cur.moveToFirst())
 		{
@@ -143,7 +143,7 @@ public class DBAccessor {
 					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_EXCHANGE_MESSAGE)),
 					cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)), TRUE);
 			
-			close(cur);
+			cur.close();
 			return exchangeMessage;
 		}
 		return null;
@@ -154,14 +154,15 @@ public class DBAccessor {
 	 */
 	public ArrayList<Entry> getAllKeyExchangeMessages()
 	{
-		open();
-		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER_REFERENCE, SQLitehelper.KEY_EXCHANGE_MESSAGE}, null,
-				null, null, null, null);
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.EXCHANGE_CONTENT_URI,
+				new String[]{ SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER_REFERENCE,
+				SQLitehelper.KEY_EXCHANGE_MESSAGE}, null, null, null);
+		
+		ArrayList<Entry> exchangeMessage = null;
 		
 		if(cur.moveToFirst())
 		{
-			ArrayList<Entry> exchangeMessage = new ArrayList<Entry>();
+			exchangeMessage = new ArrayList<Entry>();
 			do
 			exchangeMessage.add(new Entry(
 					getNumber(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_NUMBER_REFERENCE))),
@@ -170,11 +171,9 @@ public class DBAccessor {
 			
 			
 			while(cur.moveToNext());
-			close(cur);
-			return exchangeMessage;
 		}
-		close(cur);
-		return null;
+		cur.close();
+		return exchangeMessage;
 	}
 	
 	/**
@@ -184,18 +183,16 @@ public class DBAccessor {
 	public int getKeyExchangeMessageCount()
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				SQLitehelper.KEY_ID}, null,
-				null, null, null, null);
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.EXCHANGE_CONTENT_URI,
+				new String[]{ SQLitehelper.KEY_ID}, null, null, null);
 		
+		int count = 0;
 		if(cur.moveToFirst())
 		{
-			int count = cur.getCount();
-			close(cur);
-			return count;
+			count =  cur.getCount();		
 		}
-		close(cur);
-		return 0;
+		cur.close();
+		return count;
 	}
 	
 	/**
@@ -214,7 +211,7 @@ public class DBAccessor {
 			cv.put(SQLitehelper.KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
 			
 			open();
-			db.insert(SQLitehelper.EXCHANGE_TABLE_NAME, null, cv);
+			context.getContentResolver().insert(DatabaseProvider.EXCHANGE_CONTENT_URI, cv);
 			close();
 			
 			return null;

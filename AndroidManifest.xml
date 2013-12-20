@@ -112,7 +112,7 @@
         </activity>
 
         <provider
-            android:name="com.tinfoil.sms.database.TinfoilSMSprovider"
+            android:name="com.tinfoil.sms.database.DatabaseProvider"
             android:authorities="com.tinfoil.sms.database.provider"
             android:enabled="true"
             android:exported="false" >
