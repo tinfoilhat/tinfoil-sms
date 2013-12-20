@@ -81,7 +81,7 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
     
     public static boolean exchange = true;
     
-    private static ManageContactsLoader runThread;
+    public static ManageContactsLoader runThread;
 
     private static ExchangeKey keyThread = new ExchangeKey();
 
@@ -90,7 +90,7 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
+        
        
         this.setContentView(R.layout.contact);
         
@@ -101,7 +101,7 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
         	((Button)this.findViewById(R.id.exchange_keys)).setText(R.string.untrust_button_name);
         }
         
-        ManageContactsActivity.this.startThread();
+        //ManageContactsActivity.this.startThread();
         
         this.extendableList = (ExpandableListView) this.findViewById(R.id.contacts_list);
         this.listView = (ListView) this.findViewById(R.id.empty_list);
@@ -202,28 +202,37 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
      */
     private void update()
     {
-        if (tc != null)
-        {
-            this.extendableList.setAdapter(adapter);
-            this.listView.setVisibility(ListView.INVISIBLE);
-            this.extendableList.setVisibility(ListView.VISIBLE);
-        }
-        else
-        {
-            this.listView.setAdapter(arrayAp);
-            this.extendableList.setVisibility(ListView.INVISIBLE);
-            this.listView.setVisibility(ListView.VISIBLE);
-        }
+    	this.runOnUiThread(new Runnable(){
+    		
 
-        if (tc != null)
-        {
-            this.extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        }
+			@Override
+			public void run() {
+				if (tc != null)
+	            {
+	                ManageContactsActivity.this.extendableList.setAdapter(adapter);
+	                ManageContactsActivity.this.listView.setVisibility(ListView.INVISIBLE);
+	                ManageContactsActivity.this.extendableList.setVisibility(ListView.VISIBLE);
+	            }
+	            else
+	            {
+	            	ManageContactsActivity.this.listView.setAdapter(arrayAp);
+	            	ManageContactsActivity.this.extendableList.setVisibility(ListView.INVISIBLE);
+	            	ManageContactsActivity.this.listView.setVisibility(ListView.VISIBLE);
+	            }
+
+	            if (tc != null)
+	            {
+	            	ManageContactsActivity.this.extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+	            }
+			}
+    	});
+        
     }
     
     protected void onResume()
     {
     	super.onResume();
+    	exchange = this.getIntent().getExtras().getBoolean(TabSelection.EXCHANGE, true);
     	updateList();
     }
 
@@ -281,8 +290,12 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
         if(runThread != null)
         {
         	Log.v("Run Thread", "Running");
-        	
+        	runThread.execute(this);
         	//runThread.setStart(false);
+        }
+        else
+        {
+        	startThread();
         }
     }
     

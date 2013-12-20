@@ -117,6 +117,8 @@ public class ManageContactsLoader extends AsyncTask<Activity, Void, Boolean> {
 
 			ManageContactsActivity.arrayAp.notifyDataSetChanged();
 		}
+		
+		ManageContactsActivity.runThread = null;
 
 		if(listener != null)
 		{
