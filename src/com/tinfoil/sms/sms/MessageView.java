@@ -110,7 +110,7 @@ public class MessageView extends Activity {
         this.setContentView(R.layout.messageviewer);
         
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        MessageService.dba = DBAccessor.createNewConnection(this);
+        MessageService.dba = new DBAccessor(this);
         ConversationView.messageViewActive = true;
         
         /*

@@ -24,11 +24,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
@@ -36,7 +34,6 @@ import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -69,9 +66,6 @@ public class DBAccessor {
 	public static final int TRUSTED = 1;
 	public static final int UNTRUSTED = 2;
 	
-	private SQLiteDatabase db;
-	private SQLitehelper contactDatabase;
-	
 	private SharedPreferences sharedPrefs;
 	private Context context;
 	
@@ -85,32 +79,8 @@ public class DBAccessor {
 	{
 		this.context = c;
 		localizeStrings(c);
-		contactDatabase = new SQLitehelper(c);		
 		
-		if(!TinfoilSMS.threadable)
-		{
-			db = contactDatabase.getWritableDatabase();
-		}
-		
-		this.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);
-		
-		//ContentResolver a = c.getContentResolver();
-		
-	}
-	
-	public static DBAccessor createNewConnection(Context c)
-	{
-		localizeStrings(c);
-		if(TinfoilSMS.threadable)
-		{
-			return new DBAccessor(c);
-		}
-		
-		if(MessageService.dba == null)
-		{
-			MessageService.dba = new DBAccessor(c);
-		}
-		return MessageService.dba;
+		this.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);		
 	}
 	
 	public static void localizeStrings(Context c)
@@ -322,7 +292,7 @@ public class DBAccessor {
         }
         else
         {
-        	db.insert(SQLitehelper.MESSAGES_TABLE_NAME, null, cv);
+        	context.getContentResolver().insert(DatabaseProvider.MESSAGE_CONTENT_URI, cv);
         }
         cur.close();
 	}
@@ -1426,7 +1396,8 @@ public class DBAccessor {
 	 */
 	public void deleteQueueEntry (long id)
 	{
-		db.delete(SQLitehelper.QUEUE_TABLE_NAME, SQLitehelper.KEY_ID + " = " + id, null);
+		context.getContentResolver().delete(DatabaseProvider.QUEUE_CONTENT_URI,
+				SQLitehelper.KEY_ID + " = " + id, null);
 	}
 	
 	/**
@@ -1434,7 +1405,8 @@ public class DBAccessor {
 	 */
 	public synchronized void deleteFirstQueueEntry()
 	{
-		db.delete(SQLitehelper.QUEUE_TABLE_NAME, SQLitehelper.KEY_ID + " = (SELECT MIN(" + SQLitehelper.KEY_ID + ") FROM " + 
+		context.getContentResolver().delete(DatabaseProvider.QUEUE_CONTENT_URI,
+				SQLitehelper.KEY_ID + " = (SELECT MIN(" + SQLitehelper.KEY_ID + ") FROM " + 
 				SQLitehelper.QUEUE_TABLE_NAME +")", null);
 	}
 	
