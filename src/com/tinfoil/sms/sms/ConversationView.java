@@ -279,7 +279,6 @@ public class ConversationView extends Activity {
     @Override
     protected void onPause()
     {
-    	 MessageService.dba.close();
     	 super.onPause();
     }
     

@@ -335,8 +335,12 @@ public class DatabaseProvider extends ContentProvider {
         	//Select special inner query data
         	qBuilder.setTables(QUERY_STRING);
 
-            c = qBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs, "",
-                    "", sortOrder);
+        	/* This groups by SQLitehelper.KEY_REFERENCE, since it is only used in 1 place
+        	 * If this query is used in more than 1 place than it will also use group by so
+        	 * be wary.
+        	 */
+            c = qBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs,
+            		SQLitehelper.KEY_REFERENCE, "", sortOrder);
             c.setNotificationUri(getContext().getContentResolver(), uri);
             return c;
         default:
