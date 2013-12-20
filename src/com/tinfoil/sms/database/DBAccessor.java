@@ -241,10 +241,8 @@ public class DBAccessor {
 	public void deleteKeyExchangeMessage(String number)
 	{
 		long id = getNumberId(number);
-		open();
-		db.delete(SQLitehelper.EXCHANGE_TABLE_NAME, SQLitehelper.KEY_NUMBER_REFERENCE + " = "
-				+ id, null);
-		close();
+		context.getContentResolver().delete(DatabaseProvider.EXCHANGE_CONTENT_URI,
+				SQLitehelper.KEY_NUMBER_REFERENCE + " = " + id, null);
 	}
 	
 	/**
@@ -269,9 +267,9 @@ public class DBAccessor {
         cv.put(SQLitehelper.KEY_EXCHANGE_SETTING, number.getKeyExchangeFlag());
 
         //Insert the row into the database
-        open();
-        long id = db.insert(SQLitehelper.NUMBERS_TABLE_NAME, null, cv);
-        close();
+
+        long id = Long.valueOf(context.getContentResolver().insert(DatabaseProvider
+        		.NUMBER_CONTENT_URI, cv).getLastPathSegment());
         
         updateBookPaths(id, number.getBookPath(), number.getBookInversePath());
         addSharedInfo(id, number.getSharedInfo1(), number.getSharedInfo2());
@@ -299,24 +297,27 @@ public class DBAccessor {
         cv.put(SQLitehelper.KEY_SENT, message.getSent());
 
         //Insert the row into the database
-        open();
-        Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+SQLitehelper.KEY_MESSAGE+")"},
-        		SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
+        Cursor cur = context.getContentResolver().query(DatabaseProvider.MESSAGE_CONTENT_URI,
+        		new String[]{SQLitehelper.KEY_ID}, SQLitehelper.KEY_REFERENCE
+        		+ " = " + reference, null, null);
         
-        if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(sharedPrefs.getString
+        if (cur.moveToFirst() && cur.getCount() >= Integer.valueOf(sharedPrefs.getString
         		(QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))))
         {
-        	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+SQLitehelper.KEY_DATE+")"},
-            		null, null, null, null, null);
+        	Cursor date_cur = context.getContentResolver().query(
+        			DatabaseProvider.MESSAGE_CONTENT_URI, new String[]
+        			{"MIN("+SQLitehelper.KEY_DATE+")"},
+            		null, null, null);
         	
         	if (date_cur.moveToFirst() && date_cur.getLong(0) < message.getDate())
         	{
         		/*
 		    	 * Updated the update db sql command to account for messages having the exact same date
 		    	 */
-		    	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, SQLitehelper.KEY_ID + " = " + 
-		        		"(SELECT id FROM " + SQLitehelper.MESSAGES_TABLE_NAME + 
-		        		" WHERE "+ SQLitehelper.KEY_DATE + " = " + "(SELECT MIN("+SQLitehelper.KEY_DATE+") FROM " 
+        		context.getContentResolver().update(DatabaseProvider.MESSAGE_CONTENT_URI,
+        				cv, SQLitehelper.KEY_ID + " = " + "(SELECT id FROM " +
+        				SQLitehelper.MESSAGES_TABLE_NAME + " WHERE "+ SQLitehelper.KEY_DATE
+        				+ " = " + "(SELECT MIN("+SQLitehelper.KEY_DATE+") FROM " 
 		        		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
         		
         	}
@@ -337,7 +338,8 @@ public class DBAccessor {
 	public boolean deleteMessage(long id)
 	{
 		open();
-		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, SQLitehelper.KEY_ID + " = " + id, null);
+		int num = context.getContentResolver().delete(DatabaseProvider.MESSAGE_CONTENT_URI,
+				SQLitehelper.KEY_ID + " = " + id, null);
 		close();
 		if(num == 0)
 		{
@@ -356,15 +358,7 @@ public class DBAccessor {
 		number = SMSUtility.format(number);
 		long id = getNumberId(number);
 		
-		open();
-		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, SQLitehelper.KEY_REFERENCE + " = " + id, null);
-		close();
-		
-		if(num > 0)
-		{
-			return true;
-		}
-		return false;
+		return deleteMessage(id);
 	}
 	
 	/**
@@ -378,7 +372,8 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 		cv.put(SQLitehelper.KEY_UNREAD, unreadMessageCount);
 		open();
-        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, "number = ?", new String[] {number});
+		context.getContentResolver().update(DatabaseProvider.NUMBER_CONTENT_URI,
+				cv, "number = ?", new String[] {number});
         close();
 	}
 	
@@ -418,7 +413,8 @@ public class DBAccessor {
         
         //Insert the row into the database
         open();
-        db.insert(SQLitehelper.SHARED_INFO_TABLE_NAME, null, cv);
+        context.getContentResolver().insert(
+        		DatabaseProvider.SHARED_INFO_CONTENT_URI, cv);
         close();
 	}
 	
@@ -439,7 +435,8 @@ public class DBAccessor {
         
         //Insert the row into the database
         open();
-        db.update(SQLitehelper.SHARED_INFO_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + reference, null);
+        context.getContentResolver().update(DatabaseProvider.SHARED_INFO_CONTENT_URI,
+        		cv, SQLitehelper.KEY_REFERENCE + " = " + reference, null);
         close();
 	}
 	
@@ -456,15 +453,16 @@ public class DBAccessor {
 			open = false;
 			open();
 		}
-		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.SHARED_INFO_CONTENT_URI, 
 				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_SHARED_INFO_1, SQLitehelper.KEY_SHARED_INFO_2},
-				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
+				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null);
 		
 		if (cur.moveToFirst())
 		{
 			//Found the reference number in the database
-			String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(SQLitehelper.KEY_SHARED_INFO_1)),
-					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_SHARED_INFO_2))};
+			String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex
+					(SQLitehelper.KEY_SHARED_INFO_1)), cur.getString(cur.
+					getColumnIndex(SQLitehelper.KEY_SHARED_INFO_2))};
 			if (open)
 			{
 				cur.close();
@@ -509,7 +507,7 @@ public class DBAccessor {
         
         //Insert the row into the database
         open();
-        db.insert(SQLitehelper.BOOK_PATHS_TABLE_NAME, null, cv);
+        context.getContentResolver().insert(DatabaseProvider.BOOK_PATHS_CONTENT_URI, cv);
         close();
 	}
 	
@@ -522,7 +520,8 @@ public class DBAccessor {
 		if (!bookIsDefault(reference))
 		{
 			open();
-			db.delete(SQLitehelper.BOOK_PATHS_TABLE_NAME, SQLitehelper.KEY_REFERENCE + " = " + reference, null);
+			context.getContentResolver().delete(DatabaseProvider.BOOK_PATHS_CONTENT_URI,
+					SQLitehelper.KEY_REFERENCE + " = " + reference, null);
 			close();
 		}
 	}
@@ -555,9 +554,10 @@ public class DBAccessor {
 	private boolean bookIsDefault(long reference)
 	{
 		open();
-		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_BOOK_PATH, SQLitehelper.KEY_BOOK_INVERSE_PATH},
-				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.BOOK_PATHS_CONTENT_URI, 
+				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_BOOK_PATH,
+				SQLitehelper.KEY_BOOK_INVERSE_PATH}, SQLitehelper.KEY_REFERENCE
+				+ " = " + reference, null, null);
 		if (cur.moveToFirst())
 		{
 			close(cur);
@@ -580,9 +580,10 @@ public class DBAccessor {
 			open = false;
 			open();
 		}
-		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_BOOK_PATH, SQLitehelper.KEY_BOOK_INVERSE_PATH}, 
-				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.BOOK_PATHS_CONTENT_URI, 
+				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_BOOK_PATH,
+				SQLitehelper.KEY_BOOK_INVERSE_PATH}, SQLitehelper.KEY_REFERENCE
+				+ " = " + reference, null, null);
 		
 		if (cur.moveToFirst())
 		{
@@ -620,7 +621,8 @@ public class DBAccessor {
 
 	        //Insert the row into the database
 	        open();
-	        long id = db.insert(SQLitehelper.TRUSTED_TABLE_NAME, null, cv);
+	        long id = Long.valueOf(context.getContentResolver().insert(DatabaseProvider
+	        		.TRUSTED_CONTENT_URI, cv).getLastPathSegment());
 	        close();
 	        if (!tc.isNumbersEmpty())
 	        {
@@ -645,8 +647,9 @@ public class DBAccessor {
 	private long getId(String number)
 	{
 		open();
-		Cursor cur = db.rawQuery("SELECT " + SQLitehelper.KEY_REFERENCE + " FROM " + 
-		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + SQLitehelper.KEY_NUMBER + " = ?", new String[] {number});
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
+				new String[]{SQLitehelper.KEY_REFERENCE}, SQLitehelper.KEY_NUMBER
+				+ " = ?", new String[] {number}, null);
 
 		if (cur.moveToFirst())
 		{
@@ -667,8 +670,9 @@ public class DBAccessor {
 	private long getNumberId(String number)
 	{
 		open();
-		Cursor cur = db.rawQuery("SELECT " + SQLitehelper.KEY_ID + " FROM " + 
-		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + SQLitehelper.KEY_NUMBER + " = ?", new String[] {number});
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
+				new String[]{SQLitehelper.KEY_ID}, SQLitehelper.KEY_NUMBER + " = ?",
+				new String[] {number}, null);
 
 		if (cur.moveToFirst())
 		{

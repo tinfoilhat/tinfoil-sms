@@ -50,72 +50,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     
     public static final String EXISTS_CLAUSE = "IF NOT EXISTS";
     
-    /* Create statements */
-    private static final String SHARED_INFO_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + SHARED_INFO_TABLE_NAME + 
-            " ("+ SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " " + SQLitehelper.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
-            " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " " + SQLitehelper.KEY_SHARED_INFO_1 + " TEXT," + 
-            " " + SQLitehelper.KEY_SHARED_INFO_2 + " TEXT);";
-    
-    private static final String BOOK_PATHS_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + BOOK_PATHS_TABLE_NAME + 
-            " (" + SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " " + SQLitehelper.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
-            " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " " + SQLitehelper.KEY_BOOK_PATH + " TEXT," +
-            " " + SQLitehelper.KEY_BOOK_INVERSE_PATH + " TEXT);";
-    
-    private static final String USER_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + USER_TABLE_NAME + 
-            " (" + SQLitehelper.KEY_PUBLIC_KEY + " BLOB," +
-            " " + SQLitehelper.KEY_PRIVATE_KEY + " BLOB);";
-    
-    private static final String TRUSTED_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + TRUSTED_TABLE_NAME + 
-            " (" + SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " " + SQLitehelper.KEY_NAME + " TEXT );";
-    
-    private static final String NUMBERS_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + NUMBERS_TABLE_NAME + 
-            " (" + SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " " + SQLitehelper.KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
-            " ON DELETE CASCADE ON UPDATE CASCADE, " +
-            " " + SQLitehelper.KEY_NUMBER + " TEXT UNIQUE," +
-            " " + SQLitehelper.KEY_TYPE + " INTEGER," +
-            " " + SQLitehelper.KEY_UNREAD + " INTEGER," +
-            " " + SQLitehelper.KEY_PUBLIC_KEY + " BLOB," +
-            " " + SQLitehelper.KEY_SIGNATURE + " BLOB," +
-            " " + SQLitehelper.KEY_NONCE_ENCRYPT + " BLOB," +
-            " " + SQLitehelper.KEY_NONCE_DECRYPT + " BLOB," +
-            " " + SQLitehelper.KEY_INITIATOR + " INTEGER," +
-            " " + SQLitehelper.KEY_EXCHANGE_SETTING + " INTEGER);";
-    
-    private static final String MESSAGES_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + MESSAGES_TABLE_NAME + 
-            " (" + SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " " + SQLitehelper.KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
-            " ON DELETE CASCADE ON UPDATE CASCADE," +
-            " " + SQLitehelper.KEY_MESSAGE + " TEXT," +
-            " " + SQLitehelper.KEY_DATE + " INTEGER," +
-            " " + SQLitehelper.KEY_SENT + " INTEGER);";
-    
-    private static final String QUEUE_TABLE_CREATE =
-            "CREATE TABLE " + EXISTS_CLAUSE + " " + QUEUE_TABLE_NAME + 
-            " (" + SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-            " " + SQLitehelper.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
-            " ON DELETE CASCADE ON UPDATE CASCADE," +
-            " " + SQLitehelper.KEY_MESSAGE + " TEXT," +
-            " " + SQLitehelper.KEY_EXCHANGE + " INTEGER);";
-    
-    private static final String EXCHANGE_TABLE_CREATE =
-    		"CREATE TABLE " + EXISTS_CLAUSE + " " + EXCHANGE_TABLE_NAME + 
-    		" (" + SQLitehelper.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
-    		" " + SQLitehelper.KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
-    		" ON DELETE CASCADE ON UPDATE CASCADE," +
-    		" " + SQLitehelper.KEY_EXCHANGE_MESSAGE + " TEXT);";
-
+    /* Column Names */
 	public static final String KEY_ID = "id";
 	public static final String KEY_NAME = "name";
 	public static final String KEY_PUBLIC_KEY = "public_key";
@@ -146,7 +81,73 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	public static final String KEY_EXCHANGE_SETTING = "exchange_setting";
 	
 	public static final String KEY_EXCHANGE = "exchange";
-	public static final String KEY_EXCHANGE_MESSAGE = "key_message";
+	public static final String KEY_EXCHANGE_MESSAGE = "key_message";    
+    
+    /* Create statements */
+    private static final String SHARED_INFO_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + SHARED_INFO_TABLE_NAME + 
+            " ("+ KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE, " +
+            " " + KEY_SHARED_INFO_1 + " TEXT," + 
+            " " + KEY_SHARED_INFO_2 + " TEXT);";
+    
+    private static final String BOOK_PATHS_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + BOOK_PATHS_TABLE_NAME + 
+            " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE, " +
+            " " + KEY_BOOK_PATH + " TEXT," +
+            " " + KEY_BOOK_INVERSE_PATH + " TEXT);";
+    
+    private static final String USER_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + USER_TABLE_NAME + 
+            " (" + KEY_PUBLIC_KEY + " BLOB," +
+            " " + KEY_PRIVATE_KEY + " BLOB);";
+    
+    private static final String TRUSTED_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + TRUSTED_TABLE_NAME + 
+            " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + KEY_NAME + " TEXT );";
+    
+    private static final String NUMBERS_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + NUMBERS_TABLE_NAME + 
+            " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE, " +
+            " " + KEY_NUMBER + " TEXT UNIQUE," +
+            " " + KEY_TYPE + " INTEGER," +
+            " " + KEY_UNREAD + " INTEGER," +
+            " " + KEY_PUBLIC_KEY + " BLOB," +
+            " " + KEY_SIGNATURE + " BLOB," +
+            " " + KEY_NONCE_ENCRYPT + " BLOB," +
+            " " + KEY_NONCE_DECRYPT + " BLOB," +
+            " " + KEY_INITIATOR + " INTEGER," +
+            " " + KEY_EXCHANGE_SETTING + " INTEGER);";
+    
+    private static final String MESSAGES_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + MESSAGES_TABLE_NAME + 
+            " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + KEY_REFERENCE + " INTEGER REFERENCES numbers (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE," +
+            " " + KEY_MESSAGE + " TEXT," +
+            " " + KEY_DATE + " INTEGER," +
+            " " + KEY_SENT + " INTEGER);";
+    
+    private static final String QUEUE_TABLE_CREATE =
+            "CREATE TABLE " + EXISTS_CLAUSE + " " + QUEUE_TABLE_NAME + 
+            " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+            " " + KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
+            " ON DELETE CASCADE ON UPDATE CASCADE," +
+            " " + KEY_MESSAGE + " TEXT," +
+            " " + KEY_EXCHANGE + " INTEGER);";
+    
+    private static final String EXCHANGE_TABLE_CREATE =
+    		"CREATE TABLE " + EXISTS_CLAUSE + " " + EXCHANGE_TABLE_NAME + 
+    		" (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+    		" " + KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
+    		" ON DELETE CASCADE ON UPDATE CASCADE," +
+    		" " + KEY_EXCHANGE_MESSAGE + " TEXT);";
 
 	public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
