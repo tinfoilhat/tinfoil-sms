@@ -110,6 +110,13 @@
             android:name="com.tinfoil.sms.settings.DonationsActivity"
             android:label="@string/title_activity_donations" >
         </activity>
+
+        <provider
+            android:name="com.tinfoil.sms.database.TinfoilSMSprovider"
+            android:authorities="com.tinfoil.sms.database.provider"
+            android:enabled="true"
+            android:exported="false" >
+        </provider>
     </application>
 
 </manifest>

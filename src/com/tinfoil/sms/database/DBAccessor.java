@@ -46,39 +46,6 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class DBAccessor {
 	
-	public static final String KEY_ID = "id";
-	public static final String KEY_NAME = "name";
-	public static final String KEY_PUBLIC_KEY = "public_key";
-	public static final String KEY_PRIVATE_KEY = "private_key";
-	public static final String KEY_SIGNATURE = "signature";
-	
-	public static final String KEY_SHARED_INFO_1 = "shared_info_1";
-	public static final String KEY_SHARED_INFO_2 = "shared_info_2";
-
-	public static final String KEY_BOOK_PATH = "book_path";
-	public static final String KEY_BOOK_INVERSE_PATH = "book_inverse_path";
-
-	public static final String KEY_REFERENCE = "reference";
-	public static final String KEY_NUMBER = "number";
-	public static final String KEY_TYPE = "type";
-	public static final String KEY_UNREAD = "unread";
-	
-	public static final String KEY_MESSAGE = "message";
-	public static final String KEY_DATE = "date";
-	public static final String KEY_SENT = "sent";
-	
-	public static final String KEY_NUMBER_REFERENCE = "number_reference";
-	
-	public static final String KEY_NONCE_ENCRYPT = "nonce_encrypt";
-	public static final String KEY_NONCE_DECRYPT = "nonce_decrypt";
-	
-	public static final String KEY_INITIATOR = "initiator";
-	public static final String KEY_EXCHANGE_SETTING = "exchange_setting";
-
-	public static final String KEY_EXCHANGE = "exchange";
-	
-	public static final String KEY_EXCHANGE_MESSAGE = "key_message";
-	
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;
 	
@@ -167,14 +134,14 @@ public class DBAccessor {
 		open();
 		
 		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				KEY_ID, KEY_EXCHANGE_MESSAGE}, KEY_NUMBER_REFERENCE + " = " + id,
+				SQLitehelper.KEY_ID, SQLitehelper.KEY_EXCHANGE_MESSAGE}, SQLitehelper.KEY_NUMBER_REFERENCE + " = " + id,
 				null, null, null, null);
 		
 		if(cur.moveToFirst())
 		{
 			Entry exchangeMessage = new Entry(number,
-					cur.getString(cur.getColumnIndex(KEY_EXCHANGE_MESSAGE)),
-					cur.getLong(cur.getColumnIndex(KEY_ID)), TRUE);
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_EXCHANGE_MESSAGE)),
+					cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)), TRUE);
 			
 			close(cur);
 			return exchangeMessage;
@@ -189,7 +156,7 @@ public class DBAccessor {
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				KEY_ID, KEY_NUMBER_REFERENCE, KEY_EXCHANGE_MESSAGE}, null,
+				SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER_REFERENCE, SQLitehelper.KEY_EXCHANGE_MESSAGE}, null,
 				null, null, null, null);
 		
 		if(cur.moveToFirst())
@@ -197,9 +164,9 @@ public class DBAccessor {
 			ArrayList<Entry> exchangeMessage = new ArrayList<Entry>();
 			do
 			exchangeMessage.add(new Entry(
-					getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE))),
-					cur.getString(cur.getColumnIndex(KEY_EXCHANGE_MESSAGE)),
-					cur.getLong(cur.getColumnIndex(KEY_ID)), TRUE));
+					getNumber(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_NUMBER_REFERENCE))),
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_EXCHANGE_MESSAGE)),
+					cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)), TRUE));
 			
 			
 			while(cur.moveToNext());
@@ -218,7 +185,7 @@ public class DBAccessor {
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.EXCHANGE_TABLE_NAME, new String[]{
-				KEY_ID}, null,
+				SQLitehelper.KEY_ID}, null,
 				null, null, null, null);
 		
 		if(cur.moveToFirst())
@@ -243,8 +210,8 @@ public class DBAccessor {
 		{
 			ContentValues cv = new ContentValues();
 			
-			cv.put(KEY_NUMBER_REFERENCE, getNumberId(SMSUtility.format(keyExchange.getNumber())));
-			cv.put(KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
+			cv.put(SQLitehelper.KEY_NUMBER_REFERENCE, getNumberId(SMSUtility.format(keyExchange.getNumber())));
+			cv.put(SQLitehelper.KEY_EXCHANGE_MESSAGE, keyExchange.getMessage());
 			
 			open();
 			db.insert(SQLitehelper.EXCHANGE_TABLE_NAME, null, cv);
@@ -278,7 +245,7 @@ public class DBAccessor {
 	{
 		long id = getNumberId(number);
 		open();
-		db.delete(SQLitehelper.EXCHANGE_TABLE_NAME, KEY_NUMBER_REFERENCE + " = "
+		db.delete(SQLitehelper.EXCHANGE_TABLE_NAME, SQLitehelper.KEY_NUMBER_REFERENCE + " = "
 				+ id, null);
 		close();
 	}
@@ -293,16 +260,16 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
-        cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_NUMBER, SMSUtility.format(number.getNumber()));
-        cv.put(KEY_TYPE, number.getType());
-        cv.put(KEY_UNREAD, number.getUnreadMessageCount());
-        cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
-        cv.put(KEY_SIGNATURE, number.getSignature());
-        cv.put(KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
-        cv.put(KEY_NONCE_DECRYPT, number.getNonceDecrypt());
-        cv.put(KEY_INITIATOR, number.getInitiatorInt());
-        cv.put(KEY_EXCHANGE_SETTING, number.getKeyExchangeFlag());
+        cv.put(SQLitehelper.KEY_REFERENCE, reference);
+        cv.put(SQLitehelper.KEY_NUMBER, SMSUtility.format(number.getNumber()));
+        cv.put(SQLitehelper.KEY_TYPE, number.getType());
+        cv.put(SQLitehelper.KEY_UNREAD, number.getUnreadMessageCount());
+        cv.put(SQLitehelper.KEY_PUBLIC_KEY, number.getPublicKey());
+        cv.put(SQLitehelper.KEY_SIGNATURE, number.getSignature());
+        cv.put(SQLitehelper.KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
+        cv.put(SQLitehelper.KEY_NONCE_DECRYPT, number.getNonceDecrypt());
+        cv.put(SQLitehelper.KEY_INITIATOR, number.getInitiatorInt());
+        cv.put(SQLitehelper.KEY_EXCHANGE_SETTING, number.getKeyExchangeFlag());
 
         //Insert the row into the database
         open();
@@ -329,20 +296,20 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
-        cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_MESSAGE, message.getMessage());
-        cv.put(KEY_DATE, message.getDate());
-        cv.put(KEY_SENT, message.getSent());
+        cv.put(SQLitehelper.KEY_REFERENCE, reference);
+        cv.put(SQLitehelper.KEY_MESSAGE, message.getMessage());
+        cv.put(SQLitehelper.KEY_DATE, message.getDate());
+        cv.put(SQLitehelper.KEY_SENT, message.getSent());
 
         //Insert the row into the database
         open();
-        Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+KEY_MESSAGE+")"},
-        		KEY_REFERENCE + " = " + reference, null, null, null, null);
+        Cursor cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"COUNT("+SQLitehelper.KEY_MESSAGE+")"},
+        		SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
         
         if (cur.moveToFirst() && cur.getInt(0) >= Integer.valueOf(sharedPrefs.getString
         		(QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))))
         {
-        	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+KEY_DATE+")"},
+        	Cursor date_cur = db.query(SQLitehelper.MESSAGES_TABLE_NAME, new String[]{"MIN("+SQLitehelper.KEY_DATE+")"},
             		null, null, null, null, null);
         	
         	if (date_cur.moveToFirst() && date_cur.getLong(0) < message.getDate())
@@ -350,9 +317,9 @@ public class DBAccessor {
         		/*
 		    	 * Updated the update db sql command to account for messages having the exact same date
 		    	 */
-		    	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, KEY_ID + " = " + 
+		    	db.update(SQLitehelper.MESSAGES_TABLE_NAME, cv, SQLitehelper.KEY_ID + " = " + 
 		        		"(SELECT id FROM " + SQLitehelper.MESSAGES_TABLE_NAME + 
-		        		" WHERE "+ KEY_DATE + " = " + "(SELECT MIN("+KEY_DATE+") FROM " 
+		        		" WHERE "+ SQLitehelper.KEY_DATE + " = " + "(SELECT MIN("+SQLitehelper.KEY_DATE+") FROM " 
 		        		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
         		
         	}
@@ -373,7 +340,7 @@ public class DBAccessor {
 	public boolean deleteMessage(long id)
 	{
 		open();
-		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, KEY_ID + " = " + id, null);
+		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, SQLitehelper.KEY_ID + " = " + id, null);
 		close();
 		if(num == 0)
 		{
@@ -393,7 +360,7 @@ public class DBAccessor {
 		long id = getNumberId(number);
 		
 		open();
-		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, KEY_REFERENCE + " = " + id, null);
+		int num = db.delete(SQLitehelper.MESSAGES_TABLE_NAME, SQLitehelper.KEY_REFERENCE + " = " + id, null);
 		close();
 		
 		if(num > 0)
@@ -412,7 +379,7 @@ public class DBAccessor {
 	public void updateMessageCount(String number, int unreadMessageCount)
 	{
 		ContentValues cv = new ContentValues();
-		cv.put(KEY_UNREAD, unreadMessageCount);
+		cv.put(SQLitehelper.KEY_UNREAD, unreadMessageCount);
 		open();
         db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, "number = ?", new String[] {number});
         close();
@@ -448,9 +415,9 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
-        cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_SHARED_INFO_1, s1);
-        cv.put(KEY_SHARED_INFO_2, s2);
+        cv.put(SQLitehelper.KEY_REFERENCE, reference);
+        cv.put(SQLitehelper.KEY_SHARED_INFO_1, s1);
+        cv.put(SQLitehelper.KEY_SHARED_INFO_2, s2);
         
         //Insert the row into the database
         open();
@@ -459,7 +426,7 @@ public class DBAccessor {
 	}
 	
 	/** 
-	 * Used for updating the shared information, will not delete the default row
+	 * Used for updating the shared information
 	 * @param reference : int the id of the contact
 	 * @param s1 The first shared information
 	 * @param s2 The second shared information
@@ -469,13 +436,13 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 		
 		//add given values to a row
-        cv.put(KEY_REFERENCE, reference);
-        cv.put(KEY_SHARED_INFO_1, s1);
-        cv.put(KEY_SHARED_INFO_2, s2);
+        cv.put(SQLitehelper.KEY_REFERENCE, reference);
+        cv.put(SQLitehelper.KEY_SHARED_INFO_1, s1);
+        cv.put(SQLitehelper.KEY_SHARED_INFO_2, s2);
         
         //Insert the row into the database
         open();
-        db.update(SQLitehelper.SHARED_INFO_TABLE_NAME, cv, KEY_REFERENCE + " = " + reference, null);
+        db.update(SQLitehelper.SHARED_INFO_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + reference, null);
         close();
 	}
 	
@@ -493,14 +460,14 @@ public class DBAccessor {
 			open();
 		}
 		Cursor cur = db.query(SQLitehelper.SHARED_INFO_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_SHARED_INFO_1, KEY_SHARED_INFO_2},
-				KEY_REFERENCE + " = " + reference, null, null, null, null);
+				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_SHARED_INFO_1, SQLitehelper.KEY_SHARED_INFO_2},
+				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
 		
 		if (cur.moveToFirst())
 		{
 			//Found the reference number in the database
-			String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_1)),
-					cur.getString(cur.getColumnIndex(KEY_SHARED_INFO_2))};
+			String sharedInfo[] = new String[] {cur.getString(cur.getColumnIndex(SQLitehelper.KEY_SHARED_INFO_1)),
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_SHARED_INFO_2))};
 			if (open)
 			{
 				cur.close();
@@ -526,14 +493,14 @@ public class DBAccessor {
 		ContentValues cv = new ContentValues();
 			
 		//add given values to a row
-        cv.put(KEY_REFERENCE, reference);
+        cv.put(SQLitehelper.KEY_REFERENCE, reference);
         
         if(bookPath.equalsIgnoreCase("") || 
         		bookPath.equalsIgnoreCase(DEFAULT_BOOK_PATH))
         {
         	bookPath = DBAccessor.DEFAULT_BOOK_PATH;
         }
-        cv.put(KEY_BOOK_PATH, bookPath);
+        cv.put(SQLitehelper.KEY_BOOK_PATH, bookPath);
         
         if(bookInversePath.equalsIgnoreCase("") ||
         		bookInversePath.equalsIgnoreCase(DEFAULT_BOOK_INVERSE_PATH))
@@ -541,7 +508,7 @@ public class DBAccessor {
         	bookInversePath = DBAccessor.DEFAULT_BOOK_INVERSE_PATH;
         }
 
-        cv.put(KEY_BOOK_INVERSE_PATH, bookInversePath);
+        cv.put(SQLitehelper.KEY_BOOK_INVERSE_PATH, bookInversePath);
         
         //Insert the row into the database
         open();
@@ -558,13 +525,13 @@ public class DBAccessor {
 		if (!bookIsDefault(reference))
 		{
 			open();
-			db.delete(SQLitehelper.BOOK_PATHS_TABLE_NAME, KEY_REFERENCE + " = " + reference, null);
+			db.delete(SQLitehelper.BOOK_PATHS_TABLE_NAME, SQLitehelper.KEY_REFERENCE + " = " + reference, null);
 			close();
 		}
 	}
 	
 	/** 
-	 * Used for updating the book paths, will not delete the default row.
+	 * Used for updating the book paths.
 	 * @param reference The id of the contact.
 	 * @param bookPath The path for looking up the book source.
 	 * @param bookInversePath The path for looking up the inverse book source.
@@ -592,8 +559,8 @@ public class DBAccessor {
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH},
-				KEY_REFERENCE + " = " + reference, null, null, null, null);
+				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_BOOK_PATH, SQLitehelper.KEY_BOOK_INVERSE_PATH},
+				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
 		if (cur.moveToFirst())
 		{
 			close(cur);
@@ -617,14 +584,14 @@ public class DBAccessor {
 			open();
 		}
 		Cursor cur = db.query(SQLitehelper.BOOK_PATHS_TABLE_NAME, 
-				new String[] {KEY_REFERENCE, KEY_BOOK_PATH, KEY_BOOK_INVERSE_PATH}, 
-				KEY_REFERENCE + " = " + reference, null, null, null, null);
+				new String[] {SQLitehelper.KEY_REFERENCE, SQLitehelper.KEY_BOOK_PATH, SQLitehelper.KEY_BOOK_INVERSE_PATH}, 
+				SQLitehelper.KEY_REFERENCE + " = " + reference, null, null, null, null);
 		
 		if (cur.moveToFirst())
 		{
 			//Found the reference number in the database
-			String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(KEY_BOOK_PATH)),
-					cur.getString(cur.getColumnIndex(KEY_BOOK_INVERSE_PATH))};
+			String bookPaths[] = new String[] {cur.getString(cur.getColumnIndex(SQLitehelper.KEY_BOOK_PATH)),
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_BOOK_INVERSE_PATH))};
 			if (open)
 			{
 				cur.close();
@@ -652,7 +619,7 @@ public class DBAccessor {
 			ContentValues cv = new ContentValues();
 			
 			//add given values to a row
-	        cv.put(KEY_NAME, tc.getName());
+	        cv.put(SQLitehelper.KEY_NAME, tc.getName());
 
 	        //Insert the row into the database
 	        open();
@@ -681,12 +648,12 @@ public class DBAccessor {
 	private long getId(String number)
 	{
 		open();
-		Cursor cur = db.rawQuery("SELECT " + KEY_REFERENCE + " FROM " + 
-		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
+		Cursor cur = db.rawQuery("SELECT " + SQLitehelper.KEY_REFERENCE + " FROM " + 
+		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + SQLitehelper.KEY_NUMBER + " = ?", new String[] {number});
 
 		if (cur.moveToFirst())
 		{
-			long id = cur.getInt(cur.getColumnIndex((KEY_REFERENCE)));
+			long id = cur.getInt(cur.getColumnIndex((SQLitehelper.KEY_REFERENCE)));
 			close(cur);
 			return id;
 		}
@@ -703,12 +670,12 @@ public class DBAccessor {
 	private long getNumberId(String number)
 	{
 		open();
-		Cursor cur = db.rawQuery("SELECT " + KEY_ID + " FROM " + 
-		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
+		Cursor cur = db.rawQuery("SELECT " + SQLitehelper.KEY_ID + " FROM " + 
+		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + SQLitehelper.KEY_NUMBER + " = ?", new String[] {number});
 
 		if (cur.moveToFirst())
 		{
-			long id = cur.getInt(cur.getColumnIndex((KEY_ID)));
+			long id = cur.getInt(cur.getColumnIndex((SQLitehelper.KEY_ID)));
 			close(cur);
 			return id;
 		}
@@ -724,13 +691,13 @@ public class DBAccessor {
 	private String getNumber(long id)
 	{
 		open();
-		Cursor cur = db.rawQuery("SELECT " + KEY_NUMBER + " FROM " + 
-		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + KEY_ID + " = " + id, null);
+		Cursor cur = db.rawQuery("SELECT " + SQLitehelper.KEY_NUMBER + " FROM " + 
+		SQLitehelper.NUMBERS_TABLE_NAME  + " WHERE " + SQLitehelper.KEY_ID + " = " + id, null);
 
 		if (cur.moveToFirst())
 		{
 			//long id = cur.getInt(cur.getColumnIndex((KEY_ID)));
-			String number = cur.getString(cur.getColumnIndex(KEY_NUMBER));
+			String number = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER));
 			close(cur);
 			return number;
 		}
@@ -764,18 +731,18 @@ public class DBAccessor {
 	public boolean inDatabase(String number)
 	{
 		open();
-		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + ", " + KEY_NUMBER + " FROM "
-				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", 
+		Cursor idCur = db.rawQuery("SELECT " + SQLitehelper.KEY_REFERENCE + ", " + SQLitehelper.KEY_NUMBER + " FROM "
+				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + SQLitehelper.KEY_NUMBER + " = ?", 
 				new String[] {SMSUtility.format(number)});
 		
 		long id = 0;
 		if (idCur.moveToFirst())
 		{
-			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
+			id = idCur.getInt(idCur.getColumnIndex(SQLitehelper.KEY_REFERENCE));
 		}
 		idCur.close();
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[]
-				{KEY_NAME}, KEY_ID +" = " + id, null, null, null, null);
+				{SQLitehelper.KEY_NAME}, SQLitehelper.KEY_ID +" = " + id, null, null, null, null);
 
 			if (cur.moveToFirst())
 		{
@@ -845,33 +812,33 @@ public class DBAccessor {
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + ", " +
 				SQLitehelper.MESSAGES_TABLE_NAME, new String[]{
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_SENT, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE,
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_ID},
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE + " IS NOT NULL AND " +
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER + " = ?", new String[]{
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_NAME, 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_MESSAGE, 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_SENT, 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_DATE,
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_ID},
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + " AND " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " +
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + " AND " + 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_MESSAGE + " IS NOT NULL AND " +
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_NUMBER + " = ?", new String[]{
 				SMSUtility.format(number)}, null, null, 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE + reversed);
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_DATE + reversed);
 		
 		if (cur.moveToFirst())
 		{
 			do
 			{
 				String name = USER_NAME;
-				int sentFlag = cur.getInt(cur.getColumnIndex(KEY_SENT)); 
+				int sentFlag = cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SENT)); 
 				if (sentFlag >= Message.RECEIVED_DEFAULT && sentFlag <= Message.RECEIVED_ENC_OBF_FAIL)
 				{
-					name = cur.getString(cur.getColumnIndex(KEY_NAME));
+					name = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME));
 				}
-				String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
-				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(KEY_DATE)));
-				String id = String.valueOf(cur.getLong(cur.getColumnIndex(KEY_ID)));
+				String message = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_MESSAGE));
+				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_DATE)));
+				String id = String.valueOf(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)));
 				String sent = String.valueOf(sentFlag);
 				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
 				smsList.add(new String[]{name, message, date, id, sent});
@@ -888,34 +855,34 @@ public class DBAccessor {
 	public List<String[]>  getConversations()
 	{
 		String orderQuery = "(SELECT " + 
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_NAME + ", " +
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER + ", " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_UNREAD + ", " + 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE + ", " + 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_REFERENCE + ", " + 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE + " FROM " + 
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_NAME + ", " +
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_NUMBER + ", " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_UNREAD + ", " + 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_MESSAGE + ", " + 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + ", " + 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_DATE + " FROM " + 
 				SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 				SQLitehelper.NUMBERS_TABLE_NAME + ", " + 
 				SQLitehelper.MESSAGES_TABLE_NAME + " WHERE " + 
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_ID + " = " +
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-				SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_MESSAGE + " IS NOT NULL " +
-				"ORDER BY " + SQLitehelper.MESSAGES_TABLE_NAME + "." + KEY_DATE + ")";
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + " AND " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " +
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + " AND " + 
+				SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_MESSAGE + " IS NOT NULL " +
+				"ORDER BY " + SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_DATE + ")";
 		open();
 		Cursor cur = db.query(orderQuery, new String[]{
-				KEY_NAME, KEY_NUMBER, KEY_UNREAD, KEY_MESSAGE},
-				null, null, KEY_REFERENCE, null, KEY_DATE + " DESC");
+				SQLitehelper.KEY_NAME, SQLitehelper.KEY_NUMBER, SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_MESSAGE},
+				null, null, SQLitehelper.KEY_REFERENCE, null, SQLitehelper.KEY_DATE + " DESC");
 		
 		List<String[]> sms = new ArrayList<String[]>();
 		
 		while (cur.moveToNext())
 		{
-			String address = cur.getString(cur.getColumnIndex(KEY_NUMBER));
-			String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
-			String name = cur.getString(cur.getColumnIndex(KEY_NAME));
-			String message = cur.getString(cur.getColumnIndex(KEY_MESSAGE));
+			String address = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER));
+			String count = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_UNREAD));
+			String name = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME));
+			String message = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_MESSAGE));
 			sms.add(new String[] {address, name, message, count});
 		}
 		close(cur);
@@ -935,23 +902,23 @@ public class DBAccessor {
 		open();
 		
 		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME,
-				new String[]{KEY_ID, KEY_NUMBER, KEY_TYPE, KEY_UNREAD,
-				KEY_PUBLIC_KEY, KEY_SIGNATURE, KEY_NONCE_ENCRYPT,
-				KEY_NONCE_DECRYPT, KEY_INITIATOR, KEY_EXCHANGE_SETTING},
-				KEY_NUMBER + " = ?", new String[]{number}, null, null, null);
+				new String[]{SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER, SQLitehelper.KEY_TYPE, SQLitehelper.KEY_UNREAD,
+				SQLitehelper.KEY_PUBLIC_KEY, SQLitehelper.KEY_SIGNATURE, SQLitehelper.KEY_NONCE_ENCRYPT,
+				SQLitehelper.KEY_NONCE_DECRYPT, SQLitehelper.KEY_INITIATOR, SQLitehelper.KEY_EXCHANGE_SETTING},
+				SQLitehelper.KEY_NUMBER + " = ?", new String[]{number}, null, null, null);
 		
 		if(cur.moveToFirst())
 		{
-			Number returnNumber = new Number(cur.getLong(cur.getColumnIndex(KEY_ID)),
-					cur.getString(cur.getColumnIndex(KEY_NUMBER)),
-					cur.getInt(cur.getColumnIndex(KEY_TYPE)),
-					cur.getInt(cur.getColumnIndex(KEY_UNREAD)),
-					cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
-					cur.getBlob(cur.getColumnIndex(KEY_SIGNATURE)),
-					cur.getInt(cur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-					cur.getInt(cur.getColumnIndex(KEY_NONCE_DECRYPT)),
-					cur.getInt(cur.getColumnIndex(KEY_INITIATOR)),
-					cur.getInt(cur.getColumnIndex(KEY_EXCHANGE_SETTING)));
+			Number returnNumber = new Number(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)),
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_TYPE)),
+					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_UNREAD)),
+					cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
+					cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_SIGNATURE)),
+					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_NONCE_ENCRYPT)),
+					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_NONCE_DECRYPT)),
+					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_INITIATOR)),
+					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_EXCHANGE_SETTING)));
 			
 			//Retrieve the book paths
 			returnNumber.setBookPaths(getBookPath(returnNumber.getId()));
@@ -980,33 +947,33 @@ public class DBAccessor {
 	{
 		// Get the id of the number to look up the contact.
 		open();
-		Cursor idCur = db.rawQuery("SELECT " + KEY_REFERENCE + " FROM "
-				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + KEY_NUMBER + " = ?", new String[] {number});
+		Cursor idCur = db.rawQuery("SELECT " + SQLitehelper.KEY_REFERENCE + " FROM "
+				+ SQLitehelper.NUMBERS_TABLE_NAME + " WHERE " + SQLitehelper.KEY_NUMBER + " = ?", new String[] {number});
 
 		long id = 0;
 		long num_id = 0;
 		int i = 0;
 		if (idCur.moveToFirst())
 		{
-			id = idCur.getInt(idCur.getColumnIndex(KEY_REFERENCE));
+			id = idCur.getInt(idCur.getColumnIndex(SQLitehelper.KEY_REFERENCE));
 		}
 		idCur.close();
 		
 		// Find the contact from the TrustedContact table
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME, new String[]
-				{KEY_NAME}, KEY_ID +" = " + id, null, null, null, null);
+				{SQLitehelper.KEY_NAME}, SQLitehelper.KEY_ID +" = " + id, null, null, null, null);
 		
 		if (cur.moveToFirst())
         { 	
-			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME)));
+			TrustedContact tc = new TrustedContact (cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME)));
 			cur.close();
 			
 			// Query the number table to access the number information.
 			Cursor pCur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", "
 					+ SQLitehelper.NUMBERS_TABLE_NAME,
-					null, SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-					SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE + " AND " + 
-					SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + id,
+					null, SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " + 
+					SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + " AND " + 
+					SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " + id,
 					null, null, null, null);
 
 			if (pCur.moveToFirst())
@@ -1014,16 +981,16 @@ public class DBAccessor {
 				i = 0;
 				do
 				{
-					num_id = pCur.getLong(pCur.getColumnIndex(KEY_ID));
-					tc.addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(KEY_NUMBER)),
-							pCur.getInt(pCur.getColumnIndex(KEY_TYPE)),
-							pCur.getInt(pCur.getColumnIndex(KEY_UNREAD)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_PUBLIC_KEY)),
-							pCur.getBlob(pCur.getColumnIndex(KEY_SIGNATURE)),
-							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_ENCRYPT)),
-							pCur.getInt(pCur.getColumnIndex(KEY_NONCE_DECRYPT)),
-							pCur.getInt(pCur.getColumnIndex(KEY_INITIATOR)),
-							pCur.getInt(pCur.getColumnIndex(KEY_EXCHANGE_SETTING))));
+					num_id = pCur.getLong(pCur.getColumnIndex(SQLitehelper.KEY_ID));
+					tc.addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_TYPE)),
+							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_UNREAD)),
+							pCur.getBlob(pCur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
+							pCur.getBlob(pCur.getColumnIndex(SQLitehelper.KEY_SIGNATURE)),
+							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_NONCE_ENCRYPT)),
+							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_NONCE_DECRYPT)),
+							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_INITIATOR)),
+							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_EXCHANGE_SETTING))));
 
 					//Retrieve the book paths
 					tc.getNumber().get(i).setBookPaths(getBookPath(num_id));
@@ -1055,22 +1022,22 @@ public class DBAccessor {
 		String selectString = "";
 		if (select == TRUSTED)
 		{
-			selectString = " AND " + SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY + " NOT NULL";
+			selectString = " AND " + SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_PUBLIC_KEY + " NOT NULL";
 		}
 		else if (select == UNTRUSTED)
 		{
-			selectString = " AND " + SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY + " IS NULL";
+			selectString = " AND " + SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_PUBLIC_KEY + " IS NULL";
 		}
 		
 		Cursor cur = db.query(SQLitehelper.TRUSTED_TABLE_NAME + ", " +
 				SQLitehelper.NUMBERS_TABLE_NAME, new String[]{ 
 				SQLitehelper.TRUSTED_TABLE_NAME + ".*",
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_NUMBER,
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_PUBLIC_KEY},
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID + " = " + 
-				SQLitehelper.NUMBERS_TABLE_NAME + "." + KEY_REFERENCE +
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_NUMBER,
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_PUBLIC_KEY},
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_ID + " = " + 
+				SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE +
 				selectString, null, null, null,
-				SQLitehelper.TRUSTED_TABLE_NAME + "." + KEY_ID);
+				SQLitehelper.TRUSTED_TABLE_NAME + "." + SQLitehelper.KEY_ID);
 		
 		ArrayList<TrustedContact> tc = new ArrayList<TrustedContact>();
 		
@@ -1083,18 +1050,18 @@ public class DBAccessor {
 			int i = -1;
 			do
 			{
-				long curContId = cur.getLong(cur.getColumnIndex(KEY_ID));
+				long curContId = cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID));
 				
 				// Only add the contact as a new trusted contact if they are not already in the database.
 				if (prevContId != curContId)
 				{
-					tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(KEY_NAME))));
+					tc.add(new TrustedContact (cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME))));
 					prevContId = curContId;
 					i++;
 				}
 				
-				tc.get(i).addNumber(new Number (cur.getString(cur.getColumnIndex(KEY_NUMBER)),
-						cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY))));
+				tc.get(i).addNumber(new Number (cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+						cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY))));
 
 			}while (cur.moveToNext());
 			
@@ -1111,8 +1078,8 @@ public class DBAccessor {
 	 */
 	public int getUnreadMessageCount() {
 		open();
-		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{"SUM("+KEY_UNREAD+")"},
-				null, null, null, null, KEY_ID);
+		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{"SUM("+SQLitehelper.KEY_UNREAD+")"},
+				null, null, null, null, SQLitehelper.KEY_ID);
 		int count = 0;
 		if (cur.moveToFirst())
 		{
@@ -1129,12 +1096,12 @@ public class DBAccessor {
 	 */
 	public int getUnreadMessageCount(String number) {
 		open();
-		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{KEY_UNREAD},
-				KEY_NUMBER + " = ?", new String[]{SMSUtility.format(number)}, null, null, KEY_ID);
+		Cursor cur = db.query(SQLitehelper.NUMBERS_TABLE_NAME, new String[]{SQLitehelper.KEY_UNREAD},
+				SQLitehelper.KEY_NUMBER + " = ?", new String[]{SMSUtility.format(number)}, null, null, SQLitehelper.KEY_ID);
 		int count = 0;
 		if (cur != null && cur.moveToFirst())
 		{
-			count = cur.getInt(cur.getColumnIndex(KEY_UNREAD));
+			count = cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_UNREAD));
 		}
 		close(cur);
 		return count;
@@ -1152,8 +1119,8 @@ public class DBAccessor {
 			ContentValues cv = new ContentValues();
 			
 			//add given values to a row
-	        cv.put(KEY_PUBLIC_KEY, user.getPublicKey());
-	        cv.put(KEY_PRIVATE_KEY, user.getPrivateKey());       
+	        cv.put(SQLitehelper.KEY_PUBLIC_KEY, user.getPublicKey());
+	        cv.put(SQLitehelper.KEY_PRIVATE_KEY, user.getPrivateKey());       
 	        
 	        //Insert the row into the database
 	        open();
@@ -1171,12 +1138,12 @@ public class DBAccessor {
 	{
 		open();
 		Cursor cur = db.query(SQLitehelper.USER_TABLE_NAME, 
-				new String[] {KEY_PUBLIC_KEY, KEY_PRIVATE_KEY},
+				new String[] {SQLitehelper.KEY_PUBLIC_KEY, SQLitehelper.KEY_PRIVATE_KEY},
 				null, null, null, null, null);
 		if (cur.moveToFirst())
 		{
-			User user = new User(cur.getBlob(cur.getColumnIndex(KEY_PUBLIC_KEY)),
-					cur.getBlob(cur.getColumnIndex(KEY_PRIVATE_KEY)));
+			User user = new User(cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
+					cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PRIVATE_KEY)));
 			close(cur);
 			return user;
 		}
@@ -1228,10 +1195,10 @@ public class DBAccessor {
 		}
 		
 		//Trusted Table
-        cv.put(KEY_NAME, tc.getName());
+        cv.put(SQLitehelper.KEY_NAME, tc.getName());
         
         open();
-		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, KEY_ID + " = " + id, null);
+		db.update(SQLitehelper.TRUSTED_TABLE_NAME, cv, SQLitehelper.KEY_ID + " = " + id, null);
 		close();
 	}
 	
@@ -1245,15 +1212,15 @@ public class DBAccessor {
 		
 		long id = getId(number.getNumber());
 		
-        cv.put(KEY_PUBLIC_KEY, number.getPublicKey());
-        cv.put(KEY_SIGNATURE, number.getSignature());
-        cv.put(KEY_INITIATOR, number.getInitiatorInt());
-        cv.put(KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
-        cv.put(KEY_NONCE_DECRYPT, number.getNonceDecrypt());
+        cv.put(SQLitehelper.KEY_PUBLIC_KEY, number.getPublicKey());
+        cv.put(SQLitehelper.KEY_SIGNATURE, number.getSignature());
+        cv.put(SQLitehelper.KEY_INITIATOR, number.getInitiatorInt());
+        cv.put(SQLitehelper.KEY_NONCE_ENCRYPT, number.getNonceEncrypt());
+        cv.put(SQLitehelper.KEY_NONCE_DECRYPT, number.getNonceDecrypt());
         
         open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + id 
+				+ " AND " + SQLitehelper.KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
 		close();
 	}
 	
@@ -1267,11 +1234,11 @@ public class DBAccessor {
 		
 		long id = getId(number.getNumber());
 		
-        cv.put(KEY_INITIATOR, number.getInitiatorInt());
+        cv.put(SQLitehelper.KEY_INITIATOR, number.getInitiatorInt());
         
         open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + id 
+				+ " AND " + SQLitehelper.KEY_NUMBER + " LIKE ?" , new String[]{number.getNumber()});
 		close();
 	}
 	
@@ -1284,10 +1251,10 @@ public class DBAccessor {
 	{
 		ContentValues cv = new ContentValues();
 		
-		cv.put(KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
+		cv.put(SQLitehelper.KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
 		
 		open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ? ",
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_NUMBER + " LIKE ? ",
 				new String[]{SMSUtility.format(numb.getNumber())});
 		close();
 	}
@@ -1301,10 +1268,10 @@ public class DBAccessor {
 	{
 		ContentValues cv = new ContentValues();
 		
-		cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
+		cv.put(SQLitehelper.KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
 		
 		open();
-		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_NUMBER + " LIKE ?",
+		db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_NUMBER + " LIKE ?",
 				new String[]{SMSUtility.format(numb.getNumber())});
 		close();
 	}
@@ -1312,7 +1279,7 @@ public class DBAccessor {
 	public boolean deleteNumber(String number)
 	{
 		open();
-		int count = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, KEY_NUMBER + " LIKE ?",
+		int count = db.delete(SQLitehelper.NUMBERS_TABLE_NAME, SQLitehelper.KEY_NUMBER + " LIKE ?",
 				new String[]{number});
 		close();
 		
@@ -1340,20 +1307,20 @@ public class DBAccessor {
 		}
 		long num_id = getNumberId(number);
 		
-		cv.put(KEY_REFERENCE, id);
-        cv.put(KEY_NUMBER, numb.getNumber());
-        cv.put(KEY_TYPE, numb.getType());
-        cv.put(KEY_UNREAD, numb.getUnreadMessageCount());
-        cv.put(KEY_PUBLIC_KEY, numb.getPublicKey());
-        cv.put(KEY_SIGNATURE, numb.getSignature());
-        cv.put(KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
-        cv.put(KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
-        cv.put(KEY_INITIATOR, numb.getInitiatorInt());
-        cv.put(KEY_EXCHANGE_SETTING, numb.getKeyExchangeFlag());
+		cv.put(SQLitehelper.KEY_REFERENCE, id);
+        cv.put(SQLitehelper.KEY_NUMBER, numb.getNumber());
+        cv.put(SQLitehelper.KEY_TYPE, numb.getType());
+        cv.put(SQLitehelper.KEY_UNREAD, numb.getUnreadMessageCount());
+        cv.put(SQLitehelper.KEY_PUBLIC_KEY, numb.getPublicKey());
+        cv.put(SQLitehelper.KEY_SIGNATURE, numb.getSignature());
+        cv.put(SQLitehelper.KEY_NONCE_ENCRYPT, numb.getNonceEncrypt());
+        cv.put(SQLitehelper.KEY_NONCE_DECRYPT, numb.getNonceDecrypt());
+        cv.put(SQLitehelper.KEY_INITIATOR, numb.getInitiatorInt());
+        cv.put(SQLitehelper.KEY_EXCHANGE_SETTING, numb.getKeyExchangeFlag());
         
         open();
-        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-				+ " AND " + KEY_NUMBER + " LIKE ?" , new String[]{number});
+        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + id 
+				+ " AND " + SQLitehelper.KEY_NUMBER + " LIKE ?" , new String[]{number});
 		close();
 		
 		updateBookPaths(num_id, numb.getBookPath(), numb.getBookInversePath());
@@ -1372,11 +1339,11 @@ public class DBAccessor {
 	
 		for(int i = 0; i < number.size(); i++)
 		{	
-	        cv.put(KEY_TYPE, number.get(i).getType());
+	        cv.put(SQLitehelper.KEY_TYPE, number.get(i).getType());
 	        
 	        open();
-	        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-	        		+ " AND " + KEY_NUMBER + " = ?", new String[]{number.get(i).getNumber()});
+	        db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + id 
+	        		+ " AND " + SQLitehelper.KEY_NUMBER + " = ?", new String[]{number.get(i).getNumber()});
 			close();
 			
 			cv.clear();
@@ -1396,20 +1363,20 @@ public class DBAccessor {
 	
 		for(int i = 0; i < number.size(); i++)
 		{
-			cv.put(KEY_REFERENCE, id);
-	        cv.put(KEY_NUMBER, number.get(i).getNumber());
-	        cv.put(KEY_TYPE, number.get(i).getType());
-	        cv.put(KEY_UNREAD, number.get(i).getUnreadMessageCount());
-	        cv.put(KEY_PUBLIC_KEY, number.get(i).getPublicKey());
-	        cv.put(KEY_SIGNATURE, number.get(i).getSignature());
-	        cv.put(KEY_NONCE_ENCRYPT, number.get(i).getNonceEncrypt());
-	        cv.put(KEY_NONCE_DECRYPT, number.get(i).getNonceDecrypt());
-	        cv.put(KEY_INITIATOR, number.get(i).getInitiatorInt());
-	        cv.put(KEY_EXCHANGE_SETTING, number.get(i).getKeyExchangeFlag());
+			cv.put(SQLitehelper.KEY_REFERENCE, id);
+	        cv.put(SQLitehelper.KEY_NUMBER, number.get(i).getNumber());
+	        cv.put(SQLitehelper.KEY_TYPE, number.get(i).getType());
+	        cv.put(SQLitehelper.KEY_UNREAD, number.get(i).getUnreadMessageCount());
+	        cv.put(SQLitehelper.KEY_PUBLIC_KEY, number.get(i).getPublicKey());
+	        cv.put(SQLitehelper.KEY_SIGNATURE, number.get(i).getSignature());
+	        cv.put(SQLitehelper.KEY_NONCE_ENCRYPT, number.get(i).getNonceEncrypt());
+	        cv.put(SQLitehelper.KEY_NONCE_DECRYPT, number.get(i).getNonceDecrypt());
+	        cv.put(SQLitehelper.KEY_INITIATOR, number.get(i).getInitiatorInt());
+	        cv.put(SQLitehelper.KEY_EXCHANGE_SETTING, number.get(i).getKeyExchangeFlag());
 	        
 	        open();
-	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, KEY_REFERENCE + " = " + id 
-	        		+ " AND " + KEY_ID + " = " + number.get(i).getId(), null);
+	        int num = db.update(SQLitehelper.NUMBERS_TABLE_NAME, cv, SQLitehelper.KEY_REFERENCE + " = " + id 
+	        		+ " AND " + SQLitehelper.KEY_ID + " = " + number.get(i).getId(), null);
 			close();
 			
 			cv.clear();
@@ -1433,7 +1400,7 @@ public class DBAccessor {
 		
 		int num = 0;
 		open();
-		num = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, KEY_ID + " = " + id, null);
+		num = db.delete(SQLitehelper.TRUSTED_TABLE_NAME, SQLitehelper.KEY_ID + " = " + id, null);
 		close();
 		
 		if (num == 0)
@@ -1511,16 +1478,16 @@ public class DBAccessor {
 		long numberReference = getNumberId(number);
 		ContentValues cv = new ContentValues();
 
-        cv.put(KEY_NUMBER_REFERENCE, numberReference);
-        cv.put(KEY_MESSAGE, message);
+        cv.put(SQLitehelper.KEY_NUMBER_REFERENCE, numberReference);
+        cv.put(SQLitehelper.KEY_MESSAGE, message);
         
         if(keyExchange)
         {
-        	cv.put(KEY_EXCHANGE, TRUE);
+        	cv.put(SQLitehelper.KEY_EXCHANGE, TRUE);
         }
         else
         {
-        	cv.put(KEY_EXCHANGE, FALSE);
+        	cv.put(SQLitehelper.KEY_EXCHANGE, FALSE);
         }
         
         open();
@@ -1540,21 +1507,21 @@ public class DBAccessor {
 	{
 		open();
 	
-		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{KEY_ID, 
-				KEY_NUMBER_REFERENCE, KEY_MESSAGE, KEY_EXCHANGE}, KEY_ID + 
-				" = (SELECT MIN(" + KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
+		Cursor cur = db.query(SQLitehelper.QUEUE_TABLE_NAME, new String[]{SQLitehelper.KEY_ID, 
+				SQLitehelper.KEY_NUMBER_REFERENCE, SQLitehelper.KEY_MESSAGE, SQLitehelper.KEY_EXCHANGE}, SQLitehelper.KEY_ID + 
+				" = (SELECT MIN(" + SQLitehelper.KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
 				null, null, null, null);
 		
 		if (cur.moveToFirst())
 		{
-			long id = cur.getLong(cur.getColumnIndex(KEY_ID));
-			String number = getNumber(cur.getLong(cur.getColumnIndex(KEY_NUMBER_REFERENCE)));
+			long id = cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID));
+			String number = getNumber(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_NUMBER_REFERENCE)));
 
 			if(number != null)
 			{
 				Entry entry = new Entry(number,
-						cur.getString(cur.getColumnIndex(KEY_MESSAGE)),
-						id, cur.getInt(cur.getColumnIndex(KEY_EXCHANGE)));
+						cur.getString(cur.getColumnIndex(SQLitehelper.KEY_MESSAGE)),
+						id, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_EXCHANGE)));
 				close(cur);
 				
 				deleteQueueEntry(id);
@@ -1572,7 +1539,7 @@ public class DBAccessor {
 	public void deleteQueueEntry (long id)
 	{
 		open();
-		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = " + id, null);
+		db.delete(SQLitehelper.QUEUE_TABLE_NAME, SQLitehelper.KEY_ID + " = " + id, null);
 		close();
 	}
 	
@@ -1582,7 +1549,7 @@ public class DBAccessor {
 	public synchronized void deleteFirstQueueEntry()
 	{
 		open();
-		db.delete(SQLitehelper.QUEUE_TABLE_NAME, KEY_ID + " = (SELECT MIN(" + KEY_ID + ") FROM " + 
+		db.delete(SQLitehelper.QUEUE_TABLE_NAME, SQLitehelper.KEY_ID + " = (SELECT MIN(" + SQLitehelper.KEY_ID + ") FROM " + 
 				SQLitehelper.QUEUE_TABLE_NAME +")", null);
 		close();
 	}
