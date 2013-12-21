@@ -2,18 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/White">
-    
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/White" >
 
     <ListView
         android:id="@+id/message_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/linearLayout3"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignParentTop="true"
         android:divider="@color/DividerColor"
-		android:dividerHeight="1px"
-        android:layout_alignParentTop="true">
-
+        android:dividerHeight="1px" >
     </ListView>
 
     <LinearLayout
@@ -22,46 +24,41 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/Black" >
+        android:layout_alignParentRight="true" >
 
-         
         <EditText
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_weight="1"
-       		android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-            android:maxLines="4" >
-	            <requestFocus />
-        </EditText>
+            android:ems="10"
+            android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+            android:maxLines="3" />
 
-        <Button
-            android:id="@+id/send"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:onClick="sendMessage">
-        </Button>
-        
+            android:layout_gravity="bottom"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/word_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:onClick="sendMessage"
+                android:src="@android:drawable/ic_menu_send" >
+            </ImageButton>
+        </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/Black" >
-
-        <TextView
-            android:id="@+id/word_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textSize="12sp" />
-
-	</RelativeLayout>
-    
 </RelativeLayout>
