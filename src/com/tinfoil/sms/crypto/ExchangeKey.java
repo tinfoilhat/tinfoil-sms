@@ -293,8 +293,9 @@ public class ExchangeKey implements Runnable {
         	});
         }
 
-        if(listener != null)
+        if((trusted == null || trusted.size() == 0) && listener != null)
         {
+        	Log.v("onKeyExchangeResolved", "TRUE");
         	listener.onKeyExchangeResolved();
         }
         //Dismisses the load dialog since the load is finished

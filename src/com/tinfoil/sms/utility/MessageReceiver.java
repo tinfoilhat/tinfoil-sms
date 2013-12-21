@@ -51,15 +51,15 @@ public class MessageReceiver extends BroadcastReceiver {
 	public static boolean keyExchange = false;
 	public static boolean invalidKeyExchange = false;
 	public static final String VIBRATOR_LENTH = "500";
-	private OnKeyExchangeResolvedListener listener;
+	private static OnKeyExchangeResolvedListener listener;
 
 	public void setOnKeyExchangeResolvedListener(
-			OnKeyExchangeResolvedListener listener) {
-		this.listener = listener;
+			OnKeyExchangeResolvedListener newListener) {
+		listener = newListener;
 	}
 
 	public void removeOnKeyExchangeResolvedListener() {
-		this.listener = null;
+		listener = null;
 	}
 
 	@Override
@@ -183,13 +183,11 @@ public class MessageReceiver extends BroadcastReceiver {
 								Number contactNumber = MessageService.dba
 										.getNumber(SMSUtility.format(address));
 
-								secretMessage = CryptoEngine.decrypt(
-										contactNumber, fullMessage);
+								secretMessage = CryptoEngine.decrypt(contactNumber, fullMessage);
 
 								Log.v("After Decryption", secretMessage);
 
-								MessageService.dba
-										.updateDecryptNonce(contactNumber);
+								MessageService.dba.updateDecryptNonce(contactNumber);
 
 								/*
 								 * secretMessage = Encryption.aes_decrypt(new
@@ -228,20 +226,15 @@ public class MessageReceiver extends BroadcastReceiver {
 								MessageService.dba.addNewMessage(encryMessage,
 										address, true);
 
-								Toast.makeText(
-										context,
+								Toast.makeText(context,
 										R.string.key_exchange_failed_to_decrypt,
 										Toast.LENGTH_LONG).show();
-								Toast.makeText(
-										context,
+								Toast.makeText(context,
 										R.string.possible_man_in_the_middle_attack_warning,
 										Toast.LENGTH_LONG).show();
 								e.printStackTrace();
-								BugSenseHandler
-										.sendExceptionMessage(
-												"Type",
-												"Decrypt Message Error or Man In The Middle Attack",
-												e);
+								BugSenseHandler.sendExceptionMessage("Type",
+										"Decrypt Message Error or Man In The Middle Attack", e);
 							} catch (Exception e) {
 								e.printStackTrace();
 								BugSenseHandler.sendExceptionMessage("Type",
@@ -266,66 +259,45 @@ public class MessageReceiver extends BroadcastReceiver {
 								// MessageService.dba.getNumber(SMSUtility.format(address));
 								// if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange",
 								// true))
-								if ((number.getKeyExchangeFlag() == Number.AUTO || (number
-										.getKeyExchangeFlag() == Number.MANUAL && number
-										.isInitiator()))
-										&& SMSUtility.checksharedSecret(number
-												.getSharedInfo1())
-										&& SMSUtility.checksharedSecret(number
-												.getSharedInfo2())) {
+								if ((number.getKeyExchangeFlag() == Number.AUTO ||
+										(number.getKeyExchangeFlag() == Number.MANUAL && number.isInitiator()))
+										&& SMSUtility.checksharedSecret(number.getSharedInfo1())
+										&& SMSUtility.checksharedSecret(number.getSharedInfo2())) {
 									// Handle the key exchange received
-									new KeyExchangeHandler(context, number,
-											fullMessage, false) {
+									new KeyExchangeHandler(context, number, fullMessage, false) {
 
 										@Override
 										public void accept() {
 											keyExchange = true;
 
-											Toast.makeText(
-													this.getContext(),
-													R.string.key_exchange_received,
+											Toast.makeText(this.getContext(), R.string.key_exchange_received,
 													Toast.LENGTH_SHORT).show();
-											Log.v("Key Exchange",
-													"Exchange Key Message Received");
+											Log.v("Key Exchange", "Exchange Key Message Received");
 
-											Log.v("S1", this.getNumber()
-													.getSharedInfo1());
-											Log.v("S2", this.getNumber()
-													.getSharedInfo2());
+											Log.v("S1", this.getNumber().getSharedInfo1());
+											Log.v("S2", this.getNumber().getSharedInfo2());
 
-											this.getNumber()
-													.setPublicKey(
-															KeyExchange
-																	.encodedPubKey(this
-																			.getSignedPubKey()));
-											this.getNumber()
-													.setSignature(
-															KeyExchange
-																	.encodedSignature(this
-																			.getSignedPubKey()));
+											this.getNumber().setPublicKey(KeyExchange.encodedPubKey(this
+													.getSignedPubKey()));
+											this.getNumber().setSignature(KeyExchange.encodedSignature(this
+													.getSignedPubKey()));
 
-											MessageService.dba.updateNumberRow(
-													this.getNumber(), this
-															.getNumber()
-															.getNumber(), 0);
+											MessageService.dba.updateNumberRow(this.getNumber(), this
+													.getNumber().getNumber(), 0);
 
 											if (!this.getNumber().isInitiator()) {
 												Log.v("Key Exchange",
 														"Not Initiator");
-												MessageService.dba
-														.addMessageToQueue(
-																this.getNumber()
-																		.getNumber(),
-																KeyExchange
-																		.sign(this
-																				.getNumber(),
-																				MessageService.dba,
-																				SMSUtility.user),
-																true);
+												MessageService.dba.addMessageToQueue(
+														this.getNumber().getNumber(),
+														KeyExchange.sign(this.getNumber(),
+														MessageService.dba,	SMSUtility.user),
+														true);
 											}
 
 											if(listener != null)
 											{
+												Log.v("onKeyExchangeResolved", "TRUE, RECEIVED");
 												listener.onKeyExchangeResolved();
 											}
 											super.accept();
@@ -343,23 +315,13 @@ public class MessageReceiver extends BroadcastReceiver {
 
 										public void cancel() {
 											keyExchangeManual = true;
-											Toast.makeText(
-													this.getContext(),
-													R.string.key_exchange_received,
-													Toast.LENGTH_SHORT).show();
+											Toast.makeText(this.getContext(), R.string.key_exchange_received, Toast.LENGTH_SHORT).show();
 
 											Log.v("Key Exchange", "Manual");
-											String result = MessageService.dba
-													.addKeyExchangeMessage(new Entry(
-															address,
-															this.getSignedPubKey()));
+											String result = MessageService.dba.addKeyExchangeMessage(new Entry(address, this.getSignedPubKey()));
 
 											if (result != null) {
-												Toast.makeText(
-														this.getContext(),
-														result,
-														Toast.LENGTH_LONG)
-														.show();
+												Toast.makeText(this.getContext(), result, Toast.LENGTH_LONG).show();
 											}
 
 											KeyExchangeManager.updateList();
@@ -367,11 +329,8 @@ public class MessageReceiver extends BroadcastReceiver {
 											MessageService.contentTitle = null;
 											MessageService.contentText = null;
 
-											Intent serviceIntent = new Intent(
-													this.getContext(),
-													MessageService.class);
-											this.getContext().startService(
-													serviceIntent);
+											Intent serviceIntent = new Intent(this.getContext(), MessageService.class);
+											this.getContext().startService(serviceIntent);
 											super.cancel();
 										}
 
@@ -389,18 +348,13 @@ public class MessageReceiver extends BroadcastReceiver {
 									 */
 								} else {
 									keyExchangeManual = true;
-									Toast.makeText(context,
-											R.string.key_exchange_received,
-											Toast.LENGTH_SHORT).show();
+									Toast.makeText(context,	R.string.key_exchange_received, Toast.LENGTH_SHORT).show();
 
 									Log.v("Key Exchange", "Manual");
-									String result = MessageService.dba
-											.addKeyExchangeMessage(new Entry(
-													address, fullMessage));
+									String result = MessageService.dba.addKeyExchangeMessage(new Entry(address, fullMessage));
 
 									if (result != null) {
-										Toast.makeText(context, result,
-												Toast.LENGTH_LONG).show();
+										Toast.makeText(context, result, Toast.LENGTH_LONG).show();
 									}
 
 									KeyExchangeManager.updateList();

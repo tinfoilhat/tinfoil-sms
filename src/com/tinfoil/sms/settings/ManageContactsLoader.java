@@ -102,7 +102,7 @@ public class ManageContactsLoader extends AsyncTask<Activity, Void, Boolean> {
 			encry.setEnabled(true);
 			ManageContactsActivity.adapter = new ManageContactAdapter(context,
 					ManageContactsActivity.contacts);
-			ManageContactsActivity.adapter.notifyDataSetChanged();
+			
 		}
 		else {
 
@@ -115,7 +115,7 @@ public class ManageContactsLoader extends AsyncTask<Activity, Void, Boolean> {
 					android.R.layout.simple_list_item_1,
 					new String[] { emptyListValue });
 
-			ManageContactsActivity.arrayAp.notifyDataSetChanged();
+			
 		}
 		
 		ManageContactsActivity.runThread = null;

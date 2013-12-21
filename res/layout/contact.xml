@@ -32,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:onClick="keyExchange"
         android:text="@string/exchange_keys" />
 
 </RelativeLayout>

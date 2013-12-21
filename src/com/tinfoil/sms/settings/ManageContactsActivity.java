@@ -25,11 +25,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
@@ -38,6 +38,7 @@ import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ManageContactAdapter;
@@ -84,21 +85,32 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
     public static ManageContactsLoader runThread;
 
     private static ExchangeKey keyThread = new ExchangeKey();
+    private static Button encry;
+    private static RelativeLayout rl;
 
     /** Called when the activity is first created. */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        
-       
         this.setContentView(R.layout.contact);
         
         ConversationView.boot.setOnKeyExchangeResolvedListener(this);
         
+        encry = (Button) ManageContactsActivity.this.findViewById(R.id.exchange_keys);
+        rl = (RelativeLayout)this.findViewById(R.id.layout);
+        
+        encry.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				keyExchange(v);				
+			}        	
+        });
+        
         if (!exchange)
         {
-        	((Button)this.findViewById(R.id.exchange_keys)).setText(R.string.untrust_button_name);
+        	encry.setText(R.string.untrust_button_name);
         }
         
         //ManageContactsActivity.this.startThread();
@@ -189,7 +201,7 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
 
     @Override
 	public void onKeyExchangeResolved() {
-		updateList();
+    	updateList();
 	}
     
 	@Override
@@ -204,22 +216,25 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
     {
     	this.runOnUiThread(new Runnable(){
     		
-
-			@Override
+    		@Override
 			public void run() {
+				
+				
 				if (tc != null)
 	            {
 	                ManageContactsActivity.this.extendableList.setAdapter(adapter);
 	                ManageContactsActivity.this.listView.setVisibility(ListView.INVISIBLE);
-	                ManageContactsActivity.this.extendableList.setVisibility(ListView.VISIBLE);
+	                ManageContactsActivity.this.extendableList.setVisibility(ExpandableListView.VISIBLE);
 	            }
 	            else
 	            {
 	            	ManageContactsActivity.this.listView.setAdapter(arrayAp);
-	            	ManageContactsActivity.this.extendableList.setVisibility(ListView.INVISIBLE);
+	            	ManageContactsActivity.this.extendableList.setVisibility(ExpandableListView.INVISIBLE);	            	
 	            	ManageContactsActivity.this.listView.setVisibility(ListView.VISIBLE);
+	            	((RelativeLayout)listView.getParent()).invalidate();
 	            }
-
+				
+				
 	            if (tc != null)
 	            {
 	            	ManageContactsActivity.this.extendableList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -287,14 +302,10 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
      */
     public void updateList()
     {
-        if(runThread != null)
+        if(runThread == null)
         {
-        	Log.v("Run Thread", "Running");
-        	runThread.execute(this);
-        	//runThread.setStart(false);
-        }
-        else
-        {
+        	//runThread.cancel(true);
+        	//runThread = null;
         	startThread();
         }
     }
