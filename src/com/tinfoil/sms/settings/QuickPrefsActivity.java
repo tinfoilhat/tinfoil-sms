@@ -83,12 +83,20 @@ public class QuickPrefsActivity extends PreferenceActivity {
         {
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
+				boolean ret = false;
 				
-				if(SMSUtility.isANumber(newValue.toString()) && Integer.valueOf(newValue.toString()) >0)
-				{
-					return true;
+				try{
+					if(SMSUtility.isASmallNumber(newValue.toString())
+							&& Integer.valueOf(newValue.toString()) > 0)
+					{
+						ret = true;
+					}
 				}
-				return false;
+				catch(NumberFormatException e)
+				{
+					e.printStackTrace();
+				}
+				return ret;
 			}        
         });
     }

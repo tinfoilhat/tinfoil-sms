@@ -55,7 +55,8 @@ import com.tinfoil.sms.sms.ConversationView;
 public abstract class SMSUtility {
     private static final Pattern phoneNumber = Pattern.compile("^[+]1.{10}");
     private static final Pattern numOnly = Pattern.compile("\\W");
-    private static final String numberPattern = "\\d*";
+    private static final String numberPattern = "\\d+";
+    private static final String smallNumberPattern = "\\d{1,9}";
     private static final SmsManager sms = SmsManager.getDefault();
     public static final String SENT = "content://sms/sent";
 
@@ -276,6 +277,15 @@ public abstract class SMSUtility {
     public static boolean isANumber(final String number)
     {
     	if(number.matches(numberPattern))
+    	{
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public static boolean isASmallNumber(final String number)
+    {
+    	if(number.matches(smallNumberPattern))
     	{
     		return true;
     	}
