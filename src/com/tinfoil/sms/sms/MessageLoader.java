@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.Loader;
 
 public class MessageLoader extends Loader{
@@ -58,18 +59,28 @@ public class MessageLoader extends Loader{
 			final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
 
 	        //Retrieve the name of the contact from the database
-	        String contact_name = loader.getRow(ConversationView.selectedNumber).getName();
 			
-	        Message msg = new Message();
-        	Bundle b = new Bundle();
-        	b.putString(MessageView.CONTACT_NAME, contact_name);
-        	b.putBoolean(MessageView.IS_TRUSTED, isTrusted);
-        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
-        	b.putInt(MessageView.UNREAD_COUNT, unreadCount);
-        	msg.setData(b);
-        	msg.what = MessageView.LOAD;
-	        
-	        this.handler.sendMessage(msg);
+			TrustedContact tc = loader.getRow(ConversationView.selectedNumber);
+			
+			if(tc != null)
+			{
+		        String contact_name = tc.getName();
+				
+		        Message msg = new Message();
+	        	Bundle b = new Bundle();
+	        	b.putString(MessageView.CONTACT_NAME, contact_name);
+	        	b.putBoolean(MessageView.IS_TRUSTED, isTrusted);
+	        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
+	        	b.putInt(MessageView.UNREAD_COUNT, unreadCount);
+	        	msg.setData(b);
+	        	msg.what = MessageView.LOAD;
+		        
+		        this.handler.sendMessage(msg);
+			}
+			else
+			{
+				this.handler.sendEmptyMessage(MessageView.FINISH);
+			}
 		}
 		else
 		{

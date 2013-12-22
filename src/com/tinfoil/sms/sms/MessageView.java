@@ -80,11 +80,13 @@ public class MessageView extends Activity {
 
     public static final int LOAD = 0;
     public static final int UPDATE = 1;
+    public static final int FINISH = -1;
     
     public static final String CONTACT_NAME = "contact_name";
     public static final String MESSAGE_LIST = "message_list";
     public static final String UNREAD_COUNT = "unread_count";
     public static final String IS_TRUSTED = "is_trusted"; 
+    
 
     /** Called when the activity is first created. */
     @Override
@@ -559,6 +561,11 @@ public class MessageView extends Activity {
         		messages.clear();
         		messages.addData((List<String[]>) b.get(MessageView.MESSAGE_LIST));
         		messages.notifyDataSetChanged();
+        		break;
+        		
+        	case FINISH:
+        		messages.clear();
+        		finish();
         		break;
         	}
         }
