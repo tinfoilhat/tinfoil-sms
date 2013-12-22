@@ -351,7 +351,7 @@ public class ConversationView extends Activity {
     		textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
 
     		textBox.setMovementMethod(LinkMovementMethod.getInstance());
-    		textBox.setTextColor(this.getResources().getColor(R.color.White));
+    		//textBox.setTextColor(this.getResources().getColor(R.color.White));
     		textBox.setTextSize(18);
     		textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
     		
