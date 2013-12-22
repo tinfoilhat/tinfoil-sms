@@ -43,6 +43,7 @@ import com.tinfoil.sms.crypto.KeyExchangeHandler;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -59,6 +60,8 @@ public class KeyExchangeManager extends Activity {
 	public static final String ENTRIES = "entries";
 	public static final int FULL = 0;
 	public static final int EMPTY = 1;
+
+	private DBAccessor dba;
 	
 	public static KeyExchangeLoader runThread;
 	
@@ -68,6 +71,8 @@ public class KeyExchangeManager extends Activity {
 		setContentView(R.layout.activity_key_exchange_manager);
 		// Show the Up button in the action bar.
 		//setupActionBar();
+		dba = new DBAccessor(this);
+		
 		
 		runThread = new KeyExchangeLoader(this, handler);
 	}
@@ -90,7 +95,7 @@ public class KeyExchangeManager extends Activity {
 				if(sba.get(i))
 				{
 					
-					TrustedContact tc = MessageService.dba.getRow(SMSUtility.
+					TrustedContact tc = dba.getRow(SMSUtility.
 							format(runThread.getEntries().get(0).getNumber()));
 					
 					final Number number = tc.getNumber(SMSUtility.
@@ -121,6 +126,7 @@ public class KeyExchangeManager extends Activity {
 	 */
 	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
 	{
+		final DBAccessor dba = new DBAccessor(context);
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		LinearLayout linearLayout = new LinearLayout(context);
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -152,7 +158,7 @@ public class KeyExchangeManager extends Activity {
 	    		   {
 	    			   number.setSharedInfo1(s1);
 	    			   number.setSharedInfo2(s2);
-	    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+	    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
 
 		               respondMessage(context, number, entry);
 	    		   }
@@ -183,28 +189,29 @@ public class KeyExchangeManager extends Activity {
 	{
 		// Handles the key exchange received.
 		new KeyExchangeHandler(context, number, entry.getMessage(), true){
-			
+			private DBAccessor dba = new DBAccessor(context);
 			@Override
 			public void accept(){
+				
 				Log.v("Key Exchange", "Exchange Key Message Received");
 				
 				number.setPublicKey(KeyExchange.encodedPubKey(entry.getMessage()));
 				number.setSignature(KeyExchange.encodedSignature(entry.getMessage()));
 				
-				MessageService.dba.deleteKeyExchangeMessage(entry.getNumber());
+				dba.deleteKeyExchangeMessage(entry.getNumber());
 				
-				MessageService.dba.updateNumberRow(number,
+				dba.updateNumberRow(number,
 						number.getNumber(), 0);
 				
 				if(!number.isInitiator())
 				{
 					Log.v("Key Exchange", "Not Initiator");
-					MessageService.dba.addMessageToQueue(number.getNumber(),
-							KeyExchange.sign(number, MessageService.dba,
+					dba.addMessageToQueue(number.getNumber(),
+							KeyExchange.sign(number, dba,
 							SMSUtility.user), true);
 				}
 				
-				if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+				if(dba.getKeyExchangeMessageCount() == 0)
 			    {
 					// Added this check and instantiation to ensure the notification
 					// service is able to dismiss notifications
@@ -226,7 +233,7 @@ public class KeyExchangeManager extends Activity {
 			public void invalid(){
 				Log.v("Key Exchange", "Invalid key exchange");
 				 
-				 String name = MessageService.dba.getRow(number.getNumber()).getName();
+				 String name = dba.getRow(number.getNumber()).getName();
 				 
 				 final String text = name + ", " + number.getNumber();
 				 
@@ -288,7 +295,7 @@ public class KeyExchangeManager extends Activity {
 			{
 				if(sba.get(i))
 				{
-					MessageService.dba.deleteKeyExchangeMessage(runThread.getEntries().get(i).getNumber());
+					dba.deleteKeyExchangeMessage(runThread.getEntries().get(i).getNumber());
 				
 					runThread.getEntries().remove(runThread.getEntries().get(i));
 					

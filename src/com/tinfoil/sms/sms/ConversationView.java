@@ -120,9 +120,9 @@ public class ConversationView extends Activity {
         
         messageSender.startThread(getApplicationContext());
         
-        MessageService.dba = new DBAccessor(this);
+        DBAccessor dba = new DBAccessor(this);
         
-        SMSUtility.user = MessageService.dba.getUserRow();
+        SMSUtility.user = dba.getUserRow();
         
         if(SMSUtility.user == null)
         {
@@ -133,7 +133,7 @@ public class ConversationView extends Activity {
         	SMSUtility.user = new User();
 	        
 	        //Set the user's in the database
-	        MessageService.dba.setUser(SMSUtility.user);
+	        dba.setUser(SMSUtility.user);
         }
         Log.v("public key", new String(SMSUtility.user.getPublicKey()));
         Log.v("private key", new String(SMSUtility.user.getPrivateKey()));

@@ -52,6 +52,8 @@ public class MessageReceiver extends BroadcastReceiver {
 	public static boolean invalidKeyExchange = false;
 	public static final String VIBRATOR_LENTH = "500";
 	private static OnKeyExchangeResolvedListener listener;
+	
+	private DBAccessor dba;
 
 	public void setOnKeyExchangeResolvedListener(
 			OnKeyExchangeResolvedListener newListener) {
@@ -65,6 +67,8 @@ public class MessageReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
+		dba = new DBAccessor(context);
+		
 		Bundle bundle = intent.getExtras();
 		if (bundle != null) {
 
@@ -105,9 +109,9 @@ public class MessageReceiver extends BroadcastReceiver {
 					 * Checks if the database interface has been initialized and
 					 * if tinfoil-sms's preference interface has been dealt with
 					 */
-					if (MessageService.dba == null
+					if (dba == null
 							|| ConversationView.sharedPrefs == null) {
-						MessageService.dba = new DBAccessor(context);
+						dba = new DBAccessor(context);
 						ConversationView.sharedPrefs = PreferenceManager
 								.getDefaultSharedPreferences(context);
 					}
@@ -118,7 +122,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Checks if the contact is in the database
 					 */
-					if (MessageService.dba.inDatabase(address)) {
+					if (dba.inDatabase(address)) {
 
 						/*
 						 * Checks if the user has enabled the vibration option
@@ -150,7 +154,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						 * Checks if the user is a trusted contact and if
 						 * tinfoil-sms encryption is enabled.
 						 */
-						if (MessageService.dba.isTrustedContact((address))
+						if (dba.isTrustedContact((address))
 								&& ConversationView.sharedPrefs.getBoolean(
 										QuickPrefsActivity.ENABLE_SETTING_KEY,
 										true)) {
@@ -180,18 +184,18 @@ public class MessageReceiver extends BroadcastReceiver {
 
 								Encryption CryptoEngine = new Encryption();
 
-								Number contactNumber = MessageService.dba
-										.getNumber(SMSUtility.format(address));
+								Number contactNumber = dba.getNumber(
+										SMSUtility.format(address));
 
 								secretMessage = CryptoEngine.decrypt(contactNumber, fullMessage);
 
 								Log.v("After Decryption", secretMessage);
 
-								MessageService.dba.updateDecryptNonce(contactNumber);
+								dba.updateDecryptNonce(contactNumber);
 
 								/*
 								 * secretMessage = Encryption.aes_decrypt(new
-								 * String (MessageService.dba.getNumber
+								 * String (dba.getNumber
 								 * (SMSUtility.format(address)).getPublicKey()),
 								 * messages[0].getMessageBody());
 								 */
@@ -206,8 +210,7 @@ public class MessageReceiver extends BroadcastReceiver {
 												false)) {
 									encryMessage = new Message(fullMessage,
 											true, Message.RECEIVED_ENCRYPTED);
-									MessageService.dba.addNewMessage(
-											encryMessage, address, true);
+									dba.addNewMessage(encryMessage, address, true);
 								}
 
 								SMSUtility.sendToSelf(context, address,
@@ -218,13 +221,11 @@ public class MessageReceiver extends BroadcastReceiver {
 								 */
 								newMessage = new Message(secretMessage, true,
 										Message.RECEIVED_ENCRYPTED);
-								MessageService.dba.addNewMessage(newMessage,
-										address, true);
+								dba.addNewMessage(newMessage, address, true);
 							} catch (InvalidCipherTextException e) {
 								encryMessage = new Message(fullMessage, true,
 										Message.RECEIVED_ENCRYPT_FAIL);
-								MessageService.dba.addNewMessage(encryMessage,
-										address, true);
+								dba.addNewMessage(encryMessage, address, true);
 
 								Toast.makeText(context,
 										R.string.key_exchange_failed_to_decrypt,
@@ -250,13 +251,12 @@ public class MessageReceiver extends BroadcastReceiver {
 							 * exchange message Only once it fails is the
 							 * message considered plain text.
 							 */
-							Number number = MessageService.dba
-									.getNumber(SMSUtility.format(address));
+							Number number = dba.getNumber(SMSUtility.format(address));
 
 							if (number.getKeyExchangeFlag() != Number.IGNORE
 									&& KeyExchange.isKeyExchange(fullMessage)) {
 								// /Number number =
-								// MessageService.dba.getNumber(SMSUtility.format(address));
+								// dba.getNumber(SMSUtility.format(address));
 								// if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange",
 								// true))
 								if ((number.getKeyExchangeFlag() == Number.AUTO ||
@@ -282,17 +282,15 @@ public class MessageReceiver extends BroadcastReceiver {
 											this.getNumber().setSignature(KeyExchange.encodedSignature(this
 													.getSignedPubKey()));
 
-											MessageService.dba.updateNumberRow(this.getNumber(), this
+											dba.updateNumberRow(this.getNumber(), this
 													.getNumber().getNumber(), 0);
 
 											if (!this.getNumber().isInitiator()) {
 												Log.v("Key Exchange",
 														"Not Initiator");
-												MessageService.dba.addMessageToQueue(
-														this.getNumber().getNumber(),
+												dba.addMessageToQueue(getNumber().getNumber(),
 														KeyExchange.sign(this.getNumber(),
-														MessageService.dba,	SMSUtility.user),
-														true);
+														dba, SMSUtility.user), true);
 											}
 
 											if(listener != null)
@@ -318,7 +316,7 @@ public class MessageReceiver extends BroadcastReceiver {
 											Toast.makeText(this.getContext(), R.string.key_exchange_received, Toast.LENGTH_SHORT).show();
 
 											Log.v("Key Exchange", "Manual");
-											String result = MessageService.dba.addKeyExchangeMessage(new Entry(address, this.getSignedPubKey()));
+											String result = dba.addKeyExchangeMessage(new Entry(address, this.getSignedPubKey()));
 
 											if (result != null) {
 												Toast.makeText(this.getContext(), result, Toast.LENGTH_LONG).show();
@@ -351,7 +349,7 @@ public class MessageReceiver extends BroadcastReceiver {
 									Toast.makeText(context,	R.string.key_exchange_received, Toast.LENGTH_SHORT).show();
 
 									Log.v("Key Exchange", "Manual");
-									String result = MessageService.dba.addKeyExchangeMessage(new Entry(address, fullMessage));
+									String result = dba.addKeyExchangeMessage(new Entry(address, fullMessage));
 
 									if (result != null) {
 										Toast.makeText(context, result, Toast.LENGTH_LONG).show();
@@ -369,8 +367,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
 								Message newMessage = new Message(fullMessage,
 										true, Message.RECEIVED_DEFAULT);
-								MessageService.dba.addNewMessage(newMessage,
-										address, true);
+								dba.addNewMessage(newMessage, address, true);
 							}
 						}
 

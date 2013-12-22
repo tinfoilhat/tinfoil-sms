@@ -41,7 +41,6 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -59,6 +58,8 @@ public class SendMessageActivity extends Activity {
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
+    
+    private DBAccessor dba;
 
     /** Called when the activity is first created. */
     @Override
@@ -68,13 +69,13 @@ public class SendMessageActivity extends Activity {
 
         //String a = null;
         //Toast.makeText(this, a.length(), Toast.LENGTH_LONG).show();
-        MessageService.dba = new DBAccessor(this);
+        dba = new DBAccessor(this);
 
         ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.newCont = new TrustedContact();
         
         //Do in thread.
-        this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
+        this.tc = dba.getAllRows(DBAccessor.ALL);
 
         //Since the number is being entered cant really set a limit on the size...
         //Defaults to a trusted contact just to be safe
@@ -197,23 +198,23 @@ public class SendMessageActivity extends Activity {
                  */
             	
             	//Add contact to the database
-            	if(!MessageService.dba.inDatabase(number))
+            	if(!dba.inDatabase(number))
             	{
-            		MessageService.dba.addRow(new TrustedContact(new Number(number)));
+            		dba.addRow(new TrustedContact(new Number(number)));
             	}
             	
             	//Add the message to the database
-            	if(MessageService.dba.isTrustedContact(number))
+            	if(dba.isTrustedContact(number))
             	{
-            		MessageService.dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
+            		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
             	}
             	else
             	{
-            		MessageService.dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
+            		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
             	}
 
                 //Add the message to the queue to send it
-                MessageService.dba.addMessageToQueue(number, text, false);         
+                dba.addMessageToQueue(number, text, false);         
                 
                 SendMessageActivity.this.messageBox.setText("");
                 SendMessageActivity.this.phoneBox.setText("");

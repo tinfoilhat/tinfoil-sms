@@ -29,7 +29,7 @@ import android.net.Uri;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.database.DBAccessor;
 
 public abstract class KeyExchangeHandler {
 	
@@ -58,6 +58,7 @@ public abstract class KeyExchangeHandler {
 	public void handleVerification()
 	{
 
+		final DBAccessor dba = new DBAccessor(context);
 		int result = KeyExchange.validateKeyExchange(number, signedPubKey);
 		
 		if(result == KeyExchange.VALID_KEY_EXCHANGE)
@@ -68,7 +69,7 @@ public abstract class KeyExchangeHandler {
 		{	
 			if(showDialog)
 			{
-				String name = MessageService.dba.getRow(number.getNumber()).getName();
+				String name = dba.getRow(number.getNumber()).getName();
 				 
 				final String text = name + ", " + number.getNumber();
 				
@@ -103,7 +104,7 @@ public abstract class KeyExchangeHandler {
 					   @Override
 					   public void onClick(DialogInterface arg0, int which) {
 						   	// Delete the key exchange message that was received
-						   	MessageService.dba.deleteKeyExchangeMessage(number.getNumber());
+						   	dba.deleteKeyExchangeMessage(number.getNumber());
 						   	invalid();
 					   }
 				});

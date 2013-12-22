@@ -35,7 +35,7 @@ import com.tinfoil.sms.sms.KeyExchangeManager;
 import com.tinfoil.sms.sms.MessageView;
 
 public class MessageService extends Service {
-    public static DBAccessor dba;
+    private static DBAccessor dba;
     public static NotificationManager mNotificationManager;
     //private int SIMPLE_NOTFICATION_ID =1;
     public static final String notificationIntent = "com.tinfoil.sms.Notifications";

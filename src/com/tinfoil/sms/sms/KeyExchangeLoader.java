@@ -25,8 +25,8 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.Loader;
-import com.tinfoil.sms.utility.MessageService;
 
 public class KeyExchangeLoader extends Loader{
 
@@ -49,16 +49,18 @@ public class KeyExchangeLoader extends Loader{
 	
 	@Override
 	public void execution() {
-		entries = MessageService.dba.getAllKeyExchangeMessages();
+		
+		DBAccessor dba = new DBAccessor(context);
+		
+		entries = dba.getAllKeyExchangeMessages();
 		if(entries != null)
 		{
 			String[] numbers = new String[entries.size()];
 			
 			for(int i = 0; i < entries.size(); i++)
 			{
-				numbers[i] = MessageService.dba.getRow(
-						entries.get(i).getNumber()).getName() 
-						+ ", " + entries.get(i).getNumber();
+				numbers[i] = dba.getRow(entries.get(i).getNumber())
+						.getName() + ", " + entries.get(i).getNumber();
 			}			
 
 			Message msg = new Message();

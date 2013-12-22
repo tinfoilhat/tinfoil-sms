@@ -46,9 +46,9 @@ import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.ContactChild;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.OnFinishedTaskListener;
 import com.tinfoil.sms.sms.ConversationView;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.OnKeyExchangeResolvedListener;
 
 /**
@@ -87,6 +87,8 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
     private static ExchangeKey keyThread = new ExchangeKey();
     private static Button encry;
     private static RelativeLayout rl;
+    
+    private DBAccessor dba;
 
     /** Called when the activity is first created. */
     @Override
@@ -96,6 +98,7 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
         this.setContentView(R.layout.contact);
         
         ConversationView.boot.setOnKeyExchangeResolvedListener(this);
+        dba = new DBAccessor(this);
         
         encry = (Button) ManageContactsActivity.this.findViewById(R.id.exchange_keys);
         rl = (RelativeLayout)this.findViewById(R.id.layout);
@@ -132,7 +135,7 @@ public class ManageContactsActivity extends Activity implements OnFinishedTaskLi
                    
                 	
                     AddContact.addContact = false;
-                    AddContact.editTc = MessageService.dba.getRow(ManageContactsActivity.tc.get(
+                    AddContact.editTc = dba.getRow(ManageContactsActivity.tc.get(
                     		ExpandableListView.getPackedPositionGroup(id)).getANumber());
 
                     Intent intent = new Intent(ManageContactsActivity.this,

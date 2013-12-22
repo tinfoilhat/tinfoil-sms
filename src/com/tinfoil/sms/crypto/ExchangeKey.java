@@ -36,8 +36,8 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.OnKeyExchangeResolvedListener;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -62,6 +62,8 @@ public class ExchangeKey implements Runnable {
     private OnKeyExchangeResolvedListener listener;
     
     private boolean multiNumber = false;
+    private DBAccessor dba;
+    
 
     /* Register spongycastle as the most preferred security provider */
     static {
@@ -81,6 +83,7 @@ public class ExchangeKey implements Runnable {
         this.untrusted = null;
         
         multiNumber = true;
+        dba = new DBAccessor(activity);
         /*
          * Start the thread from the constructor
          */
@@ -112,6 +115,7 @@ public class ExchangeKey implements Runnable {
         	this.untrusted.add(untrusted);
         }
         multiNumber = false;
+        dba = new DBAccessor(activity);
         Thread thread = new Thread(this);
         thread.start();
     }
@@ -157,12 +161,12 @@ public class ExchangeKey implements Runnable {
             for (int i = 0; i < this.untrusted.size(); i++)
             {
                 //untrusted.get(i).clearPublicKey();
-                this.number = MessageService.dba.getNumber(this.untrusted.get(i));
+                this.number = dba.getNumber(this.untrusted.get(i));
                 this.number.clearPublicKey();
                 
                 //set the initiator flag to false
                 this.number.setInitiator(false);
-                MessageService.dba.updateKey(this.number);
+                dba.updateKey(this.number);
             }
         }
 
@@ -176,7 +180,7 @@ public class ExchangeKey implements Runnable {
         {
             for (int i = 0; i < this.trusted.size(); i++)
             {
-                number = MessageService.dba.getNumber(trusted.get(i));
+                number = dba.getNumber(trusted.get(i));
                 
                 if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
                 		SMSUtility.checksharedSecret(number.getSharedInfo2()))
@@ -189,12 +193,12 @@ public class ExchangeKey implements Runnable {
 	                 */
 	                number.setInitiator(true);					
 	                                
-	                MessageService.dba.updateInitiator(number);
+	                dba.updateInitiator(number);
 	                
 	                String keyExchangeMessage = KeyExchange.sign(number,
-	                		MessageService.dba, SMSUtility.user);
+	                		dba, SMSUtility.user);
 	                
-	                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+	                dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
                 }
                 else
                 {
@@ -207,7 +211,7 @@ public class ExchangeKey implements Runnable {
         
         if (invalid)
         {
-        	trustedContact = MessageService.dba.getRow(number.getNumber());
+        	trustedContact = dba.getRow(number.getNumber());
         	
         	/*
         	 * Get the shared secrets from the user.
@@ -250,15 +254,15 @@ public class ExchangeKey implements Runnable {
         	    		    			   //Toast.makeText(activity, "Valid secrets", Toast.LENGTH_LONG).show();
         	    		    			   number.setSharedInfo1(s1);
         	    		    			   number.setSharedInfo2(s2);
-        	    		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+        	    		    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
         	    		    			   number.setInitiator(true);					
        	                                
-        	    			               MessageService.dba.updateInitiator(number);
+        	    			               dba.updateInitiator(number);
         	    			                
         	    			               String keyExchangeMessage = KeyExchange.sign(number,
-        	    			            		   MessageService.dba, SMSUtility.user);
+        	    			            		   dba, SMSUtility.user);
         	    			                
-        	    			               MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+        	    			               dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
         	    		    		   }
         	    		    		   else
         	    		    		   {

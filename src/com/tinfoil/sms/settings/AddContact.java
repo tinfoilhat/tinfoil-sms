@@ -37,7 +37,6 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ContactAdapter;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 
 /**
  * Add or Edit contacts of the user.
@@ -59,6 +58,8 @@ public class AddContact extends Activity {
     private ListView listView;
     private EditText contactName;
     private static AlertDialog alert;
+    
+    private DBAccessor dba;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class AddContact extends Activity {
         //Sets the keyboard to not pop-up until a text area is selected 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        dba = new DBAccessor(this);
 
         this.listView = (ListView) this.findViewById(R.id.contact_numbers);
         //this.addNumber = (Button) this.findViewById(R.id.add_new_number);
@@ -197,11 +199,11 @@ public class AddContact extends Activity {
         {
             if (addContact)
             {
-            	MessageService.dba.updateContactInfo(AddContact.this.contactEdit, contactEdit.getANumber());
+            	dba.updateContactInfo(AddContact.this.contactEdit, contactEdit.getANumber());
             }
             else
             {
-                MessageService.dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
+                dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
             }
             
             if (AddContact.this.originalNumber != null && AddContact.this.contactEdit.getNumber(AddContact.this.originalNumber) == null)
@@ -312,7 +314,7 @@ public class AddContact extends Activity {
 	    						contactName.setText(name);    						
 	    					}
 	    					contactEdit.addNumber(number);
-	    					MessageService.dba.updateContactInfo(contactEdit, number);
+	    					dba.updateContactInfo(contactEdit, number);
 	    					update(null);
 	    				}
 	    				else
@@ -344,7 +346,7 @@ public class AddContact extends Activity {
 	    		}
 	    		else
 	    		{
-	    			MessageService.dba.removeRow(temp);
+	    			dba.removeRow(temp);
 	    			AddContact.this.setResult(AddContact.DELETED_NUMBER);
 	    			finish();
 	    		}
@@ -367,7 +369,7 @@ public class AddContact extends Activity {
             
             	if(contactEdit.getANumber() != null)
             	{
-            		MessageService.dba.removeRow(contactEdit.getANumber());
+            		dba.removeRow(contactEdit.getANumber());
             	}
             	 AddContact.this.setResult(AddContact.DELETED_NUMBER);
             	finish();

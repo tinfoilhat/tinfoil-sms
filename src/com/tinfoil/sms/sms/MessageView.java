@@ -87,6 +87,7 @@ public class MessageView extends Activity {
     public static final String UNREAD_COUNT = "unread_count";
     public static final String IS_TRUSTED = "is_trusted"; 
     
+    private DBAccessor dba;
 
     /** Called when the activity is first created. */
     @Override
@@ -112,7 +113,7 @@ public class MessageView extends Activity {
         this.setContentView(R.layout.messageviewer);
         
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        MessageService.dba = new DBAccessor(this);
+        dba = new DBAccessor(this);
         ConversationView.messageViewActive = true;
         
         /*
@@ -155,7 +156,7 @@ public class MessageView extends Activity {
                                 if (which == 0)
                                 {
                                     //option = Delete
-                                    MessageService.dba.deleteMessage(Long.valueOf(messageValue[3]));
+                                    dba.deleteMessage(Long.valueOf(messageValue[3]));
                                     updateList();
                                 }
                                 else if (which == 1)
@@ -186,7 +187,7 @@ public class MessageView extends Activity {
                                     if (MessageView.this.tc == null)
                                     {
                                     	//TODO Do in thread.
-                                        MessageView.this.tc = MessageService.dba.getAllRows(DBAccessor.ALL);
+                                        MessageView.this.tc = dba.getAllRows(DBAccessor.ALL);
                                     }
 
                                     if (MessageView.this.tc != null)
@@ -200,7 +201,9 @@ public class MessageView extends Activity {
                                     {
                                         contact = null;
                                     }
-                                    final ArrayAdapter<String> adapter = new ArrayAdapter<String>(MessageView.this.getBaseContext(), R.layout.auto_complete_list_item, contact);
+                                    final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                    		MessageView.this.getBaseContext(), 
+                                    		R.layout.auto_complete_list_item, contact);
 
                                     phoneBox.setAdapter(adapter);
 
@@ -234,10 +237,10 @@ public class MessageView extends Activity {
         /*
          * Reset the number of unread messages for the contact to 0
          */
-        if (MessageService.dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
+        if (dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
         {
             //All messages are now read since the user has entered the conversation.
-            MessageService.dba.updateMessageCount(ConversationView.selectedNumber, 0);
+            dba.updateMessageCount(ConversationView.selectedNumber, 0);
             if (MessageService.mNotificationManager != null)
             {
                 MessageService.mNotificationManager.cancel(MessageService.SINGLE);
@@ -281,22 +284,22 @@ public class MessageView extends Activity {
         }
         else
         {
-        	if(!MessageService.dba.inDatabase(num))
+        	if(!dba.inDatabase(num))
         	{
-        		MessageService.dba.addRow(new TrustedContact(new Number(num)));
+        		dba.addRow(new TrustedContact(new Number(num)));
         	}
         	
-        	if(MessageService.dba.isTrustedContact(num))
+        	if(dba.isTrustedContact(num))
         	{
-        		MessageService.dba.addNewMessage(new Message(message, true, Message.SENT_ENCRYPTED), num, true);
+        		dba.addNewMessage(new Message(message, true, Message.SENT_ENCRYPTED), num, true);
         	}
         	else
         	{
-        		MessageService.dba.addNewMessage(new Message(message, true, Message.SENT_DEFAULT), num, true);
+        		dba.addNewMessage(new Message(message, true, Message.SENT_DEFAULT), num, true);
         	}
 
             //Add the message to the queue to send it
-            MessageService.dba.addMessageToQueue(num, message, false);      
+            dba.addMessageToQueue(num, message, false);      
         }
     }
 
@@ -327,16 +330,16 @@ public class MessageView extends Activity {
             messages.setCount(0);
             this.messageBox.setText("");
             messageEvent.resetCount();
-            MessageService.dba.addMessageToQueue(number, text, false);
+            dba.addMessageToQueue(number, text, false);
 
-            if(MessageService.dba.isTrustedContact(number))
+            if(dba.isTrustedContact(number))
             {
-            	MessageService.dba.addNewMessage(new Message(text, true, 
+            	dba.addNewMessage(new Message(text, true, 
                 		Message.SENT_ENCRYPTED), number, false);
             }
             else
             {
-            	MessageService.dba.addNewMessage(new Message(text, true, 
+            	dba.addNewMessage(new Message(text, true, 
                 		Message.SENT_DEFAULT), number, false);
             }
             
@@ -375,7 +378,7 @@ public class MessageView extends Activity {
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if(MessageService.dba.isTrustedContact(ConversationView.selectedNumber))
+        if(dba.isTrustedContact(ConversationView.selectedNumber))
         {
         	menu.findItem(R.id.exchange)
         		.setTitle(R.string.untrust_contact_menu_full)
@@ -383,7 +386,7 @@ public class MessageView extends Activity {
         }
         else
         {
-        	if(MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber) != null)
+        	if(dba.getKeyExchangeMessage(ConversationView.selectedNumber) != null)
         	{
         		menu.findItem(R.id.exchange)
         			.setTitle(R.string.resolve_key_exchange_full)
@@ -416,14 +419,14 @@ public class MessageView extends Activity {
             	/*ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
                         "Exchanging. Please wait...", true, false);*/
 
-                if (!MessageService.dba.isTrustedContact(SMSUtility.format
+                if (!dba.isTrustedContact(SMSUtility.format
                         (ConversationView.selectedNumber)))
                 {
-                	final Entry entry = MessageService.dba.getKeyExchangeMessage(ConversationView.selectedNumber);
+                	final Entry entry = dba.getKeyExchangeMessage(ConversationView.selectedNumber);
                 	
                 	if (entry != null)
                 	{
-                		final TrustedContact tc = MessageService.dba.getRow(ConversationView.selectedNumber);
+                		final TrustedContact tc = dba.getRow(ConversationView.selectedNumber);
                 		final Number number = tc.getNumber(ConversationView.selectedNumber);
                 		
                 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -455,9 +458,9 @@ public class MessageView extends Activity {
          		    				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
          		    		   
          		    		   // Delete key exchange
-         		    		   MessageService.dba.deleteKeyExchangeMessage(number.getNumber());
+         		    		   dba.deleteKeyExchangeMessage(number.getNumber());
          		    		   
-         		    		  if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+         		    		  if(dba.getKeyExchangeMessageCount() == 0)
          		    		  {
       							  MessageService.mNotificationManager.cancel(MessageService.KEY);
          		    		  }
@@ -481,7 +484,7 @@ public class MessageView extends Activity {
                 return true;
             case R.id.delete:
             	
-                if(MessageService.dba.deleteMessage(ConversationView.selectedNumber))
+                if(dba.deleteMessage(ConversationView.selectedNumber))
                 {
                 	finish();
                 }
@@ -490,7 +493,7 @@ public class MessageView extends Activity {
             case R.id.edit:
             	
             	AddContact.addContact = false;
-                AddContact.editTc = MessageService.dba.getRow(ConversationView.selectedNumber);
+                AddContact.editTc = dba.getRow(ConversationView.selectedNumber);
 
                 Intent intent = new Intent(MessageView.this, AddContact.class);
                 

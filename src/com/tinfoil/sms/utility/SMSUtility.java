@@ -220,7 +220,7 @@ public abstract class SMSUtility {
                 sendSMS(context, new Entry(message.getNumber(), encrypted,
                 		message.getId(), message.getExchange()));
                 
-                MessageService.dba.updateEncryptNonce(number);
+                dba.updateEncryptNonce(number);
 
                 if(ConversationView.sharedPrefs.getBoolean(
                 		QuickPrefsActivity.SHOW_ENCRYPT_SETTING_KEY, false))

@@ -59,18 +59,21 @@ public class UserKeySettings extends Activity {
 	public static final String path = "/keys";
 	public static final String file = "exchange.txt";
 	
+	private DBAccessor dba;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_key_settings);
 		
+		dba = new DBAccessor(this);
 		TextView keyView = (TextView)findViewById(R.id.public_key);
 		
 		// Check if the user is null
 		if(SMSUtility.user == null)
 		{
-			SMSUtility.user = MessageService.dba.getUserRow();
+			SMSUtility.user = dba.getUserRow();
 		}
 		
 		//Check if the user is still null (never set in db)	
@@ -82,7 +85,7 @@ public class UserKeySettings extends Activity {
 	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
 	        
 	        //Set the user's 
-	        MessageService.dba.setUser(SMSUtility.user);
+	        dba.setUser(SMSUtility.user);
 		}
 		
 		keyView.setText(new String(SMSUtility.user.getPublicKey()));
@@ -104,7 +107,7 @@ public class UserKeySettings extends Activity {
             if (tc == null)
             {
             	//Do in thread.
-                tc = MessageService.dba.getAllRows(DBAccessor.ALL);
+                tc = dba.getAllRows(DBAccessor.ALL);
             }
 
             if (tc != null)
@@ -142,7 +145,7 @@ public class UserKeySettings extends Activity {
                 				contactInfo[0] = contactInfo[1];
                 			}
                 			
-                			final Number number = MessageService.dba.getNumber(contactInfo[1]);
+                			final Number number = dba.getNumber(contactInfo[1]);
                 			
                 			if(number != null)
                 			{                			
@@ -178,14 +181,14 @@ public class UserKeySettings extends Activity {
 	                		    		   {
 	                		    			   number.setSharedInfo1(s1);
 	                		    			   number.setSharedInfo2(s2);
-	                		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+	                		    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
 	
 	                		    			   number.setInitiator(true);
-	                		    			   MessageService.dba.updateInitiator(number);
+	                		    			   dba.updateInitiator(number);
 		       		                			
 	                		    			   //TODO add check for shared secrets
 	                		    			   String keyExchangeMessage = KeyExchange.sign(number,
-	                		    					   MessageService.dba, SMSUtility.user);
+	                		    					   dba, SMSUtility.user);
 		       		
 	                		    			   writeToFile(number.getNumber(), keyExchangeMessage);
 		       			            			
