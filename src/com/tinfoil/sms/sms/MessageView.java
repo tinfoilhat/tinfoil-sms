@@ -111,7 +111,7 @@ public class MessageView extends Activity {
         }
         
         // No number is provided
-        if(ConversationView.selectedNumber != null)
+        if(ConversationView.selectedNumber == null)
         {
         	finish();
         }
@@ -240,7 +240,7 @@ public class MessageView extends Activity {
 			}
         });
 
-        /*
+        /*	
          * Reset the number of unread messages for the contact to 0
          */
         if (dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
