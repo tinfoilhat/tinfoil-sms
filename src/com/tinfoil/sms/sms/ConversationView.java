@@ -80,8 +80,7 @@ public class ConversationView extends Activity {
 	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
     public static final String SENT = "content://sms/sent";
-    public static SharedPreferences sharedPrefs;
-    public static String selectedNumber;
+    public static SharedPreferences sharedPrefs;    
     public static final String selectedNumberIntent = "com.tinfoil.sms.Selected";
     private static ConversationAdapter conversations;
     public static List<String[]> msgList;

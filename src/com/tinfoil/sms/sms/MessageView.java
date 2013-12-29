@@ -68,6 +68,8 @@ public class MessageView extends Activity {
     private static ListView list2;
     private static MessageAdapter messages;
     private static MessageBoxWatcher messageEvent;
+    
+    public static String selectedNumber;
     private static String contact_name;
     private ArrayList<TrustedContact> tc;
     private static AutoCompleteTextView phoneBox;
@@ -97,12 +99,12 @@ public class MessageView extends Activity {
         //Finds the number of the recently sent message attached to the notification
         if (this.getIntent().hasExtra(MessageService.notificationIntent))
         {
-            ConversationView.selectedNumber = this.getIntent().getStringExtra
+            selectedNumber = this.getIntent().getStringExtra
             		(MessageService.notificationIntent);
         }
         else if (this.getIntent().hasExtra(ConversationView.selectedNumberIntent))
         {
-            ConversationView.selectedNumber = this.getIntent().getStringExtra
+            selectedNumber = this.getIntent().getStringExtra
             		(ConversationView.selectedNumberIntent);
         }
         else 
@@ -111,7 +113,7 @@ public class MessageView extends Activity {
         }
         
         // No number is provided
-        if(ConversationView.selectedNumber == null)
+        if(selectedNumber == null)
         {
         	finish();
         }
@@ -243,10 +245,10 @@ public class MessageView extends Activity {
         /*	
          * Reset the number of unread messages for the contact to 0
          */
-        if (dba.getUnreadMessageCount(ConversationView.selectedNumber) > 0)
+        if (dba.getUnreadMessageCount(selectedNumber) > 0)
         {
             //All messages are now read since the user has entered the conversation.
-            dba.updateMessageCount(ConversationView.selectedNumber, 0);
+            dba.updateMessageCount(selectedNumber, 0);
             if (MessageService.mNotificationManager != null)
             {
                 MessageService.mNotificationManager.cancel(MessageService.SINGLE);
@@ -319,7 +321,7 @@ public class MessageView extends Activity {
     	
     	if(text != null && text.length() > 0)
         {
-            sendMessage(ConversationView.selectedNumber, text);
+            sendMessage(selectedNumber, text);
         }
     }
     
@@ -373,7 +375,7 @@ public class MessageView extends Activity {
      */
     public static void updateList()
     {
-        if (ConversationView.selectedNumber != null)
+        if (selectedNumber != null)
         {        	
         	runThread.setUpdate(true);
         	runThread.setStart(false);
@@ -384,7 +386,7 @@ public class MessageView extends Activity {
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if(dba.isTrustedContact(ConversationView.selectedNumber))
+        if(dba.isTrustedContact(selectedNumber))
         {
         	menu.findItem(R.id.exchange)
         		.setTitle(R.string.untrust_contact_menu_full)
@@ -392,7 +394,7 @@ public class MessageView extends Activity {
         }
         else
         {
-        	if(dba.getKeyExchangeMessage(ConversationView.selectedNumber) != null)
+        	if(dba.getKeyExchangeMessage(selectedNumber) != null)
         	{
         		menu.findItem(R.id.exchange)
         			.setTitle(R.string.resolve_key_exchange_full)
@@ -426,14 +428,14 @@ public class MessageView extends Activity {
                         "Exchanging. Please wait...", true, false);*/
 
                 if (!dba.isTrustedContact(SMSUtility.format
-                        (ConversationView.selectedNumber)))
+                        (selectedNumber)))
                 {
-                	final Entry entry = dba.getKeyExchangeMessage(ConversationView.selectedNumber);
+                	final Entry entry = dba.getKeyExchangeMessage(selectedNumber);
                 	
                 	if (entry != null)
                 	{
-                		final TrustedContact tc = dba.getRow(ConversationView.selectedNumber);
-                		final Number number = tc.getNumber(ConversationView.selectedNumber);
+                		final TrustedContact tc = dba.getRow(selectedNumber);
+                		final Number number = tc.getNumber(selectedNumber);
                 		
                 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 		
@@ -479,18 +481,18 @@ public class MessageView extends Activity {
                 	}
                 	else 
                 	{
-                		keyThread.startThread(this, SMSUtility.format(ConversationView.selectedNumber), null);
+                		keyThread.startThread(this, SMSUtility.format(selectedNumber), null);
                 	}
                 }
                 else
                 {
-                	keyThread.startThread(this, null, SMSUtility.format(ConversationView.selectedNumber));
+                	keyThread.startThread(this, null, SMSUtility.format(selectedNumber));
                 }
 
                 return true;
             case R.id.delete:
             	
-                if(dba.deleteMessage(ConversationView.selectedNumber))
+                if(dba.deleteMessage(selectedNumber))
                 {
                 	finish();
                 }
@@ -499,7 +501,7 @@ public class MessageView extends Activity {
             case R.id.edit:
             	
             	AddContact.addContact = false;
-                AddContact.editTc = dba.getRow(ConversationView.selectedNumber);
+                AddContact.editTc = dba.getRow(selectedNumber);
 
                 Intent intent = new Intent(MessageView.this, AddContact.class);
                 

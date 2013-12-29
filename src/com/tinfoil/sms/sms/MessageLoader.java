@@ -52,15 +52,15 @@ public class MessageLoader extends Loader{
 	public void execution() {
     	
 		if(!update)
-		{				
-	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
+		{
+	        final boolean isTrusted = loader.isTrustedContact(MessageView.selectedNumber);
 	        
-			List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-			final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
+			List<String[]> msgList2 = loader.getSMSList(MessageView.selectedNumber);
+			final int unreadCount = loader.getUnreadMessageCount(MessageView.selectedNumber);
 
 	        //Retrieve the name of the contact from the database
 			
-			TrustedContact tc = loader.getRow(ConversationView.selectedNumber);
+			TrustedContact tc = loader.getRow(MessageView.selectedNumber);
 			
 			if(tc != null)
 			{
@@ -84,8 +84,8 @@ public class MessageLoader extends Loader{
 		}
 		else
 		{
-			List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-			loader.updateMessageCount(ConversationView.selectedNumber, 0);
+			List<String[]> msgList2 = loader.getSMSList(MessageView.selectedNumber);
+			loader.updateMessageCount(MessageView.selectedNumber, 0);
 			setUpdate(false);
 			
 			Message msg = new Message();
