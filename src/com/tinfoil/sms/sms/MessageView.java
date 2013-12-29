@@ -107,7 +107,13 @@ public class MessageView extends Activity {
         }
         else 
         {
-            this.finish();
+            finish();
+        }
+        
+        // No number is provided
+        if(ConversationView.selectedNumber != null)
+        {
+        	finish();
         }
 
         this.setContentView(R.layout.messageviewer);

@@ -970,16 +970,20 @@ public class DBAccessor {
 	 * @return The number of unread messages
 	 */
 	public int getUnreadMessageCount(String number) {
-		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
-				new String[]{SQLitehelper.KEY_UNREAD}, SQLitehelper.KEY_NUMBER + " = ?",
-				new String[]{SMSUtility.format(number)}, SQLitehelper.KEY_ID);
-		int count = 0;
-		if (cur != null && cur.moveToFirst())
+		if(number != null)
 		{
-			count = cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_UNREAD));
+			Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
+					new String[]{SQLitehelper.KEY_UNREAD}, SQLitehelper.KEY_NUMBER + " = ?",
+					new String[]{SMSUtility.format(number)}, SQLitehelper.KEY_ID);
+			int count = 0;
+			if (cur != null && cur.moveToFirst())
+			{
+				count = cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_UNREAD));
+			}
+			cur.close();
+			return count;
 		}
-		cur.close();
-		return count;
+		return -1;
 	}
 	
 	/**
