@@ -24,7 +24,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Entry;
@@ -35,7 +37,7 @@ import com.tinfoil.sms.sms.KeyExchangeManager;
 import com.tinfoil.sms.sms.MessageView;
 
 public class MessageService extends Service {
-    private static DBAccessor dba;
+    private DBAccessor dba;
     public static NotificationManager mNotificationManager;
     //private int SIMPLE_NOTFICATION_ID =1;
     public static final String notificationIntent = "com.tinfoil.sms.Notifications";
@@ -45,6 +47,8 @@ public class MessageService extends Service {
     public static final int SINGLE = 1;
     public static final int MULTI = 2;
     public static final int KEY = 3;
+    
+    private SharedPreferences sharedPrefs;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -54,6 +58,8 @@ public class MessageService extends Service {
     @Override
     public void onCreate() {
         mNotificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
+        dba = new DBAccessor(this);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -64,7 +70,7 @@ public class MessageService extends Service {
          * to allow notifications
          */
         if (contentTitle != null && contentText != null &&
-                ConversationView.sharedPrefs.getBoolean(
+                sharedPrefs.getBoolean(
                 QuickPrefsActivity.NOTIFICATION_BAR_SETTING_KEY, true))
         {
             Intent notifyIntent = null;
@@ -123,10 +129,10 @@ public class MessageService extends Service {
             		0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
         }
         
-        if(ConversationView.sharedPrefs.getBoolean(
+        if(sharedPrefs.getBoolean(
         		QuickPrefsActivity.NOTIFICATION_BAR_SETTING_KEY, true))
         {
-        	ArrayList<Entry> keyMessage = MessageService.dba.getAllKeyExchangeMessages();
+        	ArrayList<Entry> keyMessage = dba.getAllKeyExchangeMessages();
 	        if(keyMessage != null && keyMessage.size() > 0)
 	        {
 	            Intent notifyIntent = null;
