@@ -17,9 +17,6 @@
 
 package com.tinfoil.sms.settings;
 
-import com.tinfoil.sms.R;
-import com.tinfoil.sms.utility.SMSUtility;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +27,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.utility.SMSUtility;
 
 public class QuickPrefsActivity extends PreferenceActivity {
     
@@ -77,13 +77,37 @@ public class QuickPrefsActivity extends PreferenceActivity {
         	
         });
         
+        EditTextPreference vibrateLength = (EditTextPreference)findPreference(VIBRATE_LENGTH_SETTING_KEY);
+        vibrateLength.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+
+			@Override
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				boolean ret = false;
+								
+				try{
+					if(SMSUtility.isASmallNumber(newValue.toString())
+							&& Integer.valueOf(newValue.toString()) > 0)
+					{
+						ret = true;
+					}
+				}
+				catch(NumberFormatException e)
+				{
+					e.printStackTrace();
+				}
+				return ret;
+			}
+        	
+        });
+        
         //TODO implement the OnPreferenceChangeListener for the other preferences that use numbers only
         EditTextPreference messageLimit = (EditTextPreference)findPreference(MESSAGE_LIMIT_SETTING_KEY);
         messageLimit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
         {
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
-				boolean ret = false;
+				boolean ret = false;	
 				
 				try{
 					if(SMSUtility.isASmallNumber(newValue.toString())
