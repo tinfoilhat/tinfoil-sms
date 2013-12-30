@@ -93,15 +93,10 @@ public class ImportContactLoader extends Loader{
 	            String name;
 	            String id;
 	
-	            //activity.
 	            final Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
-	            
-	            /*final Cursor cur = activity.managedQuery(mContacts, new String[] { Contacts._ID,
-	                    Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER },
+	            final Cursor cur = activity.getContentResolver().query(mContacts, new String[] 
+	            		{ Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER }, 
 	                    null, null, Contacts.DISPLAY_NAME);
-	            */
-	            final Cursor cur = activity.getContentResolver().query(mContacts, new String[] { Contacts._ID,
-	                    Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER }, null, null, Contacts.DISPLAY_NAME);
 	
 	            this.inDb = new ArrayList<Boolean>();
 	
@@ -262,8 +257,8 @@ public class ImportContactLoader extends Loader{
 	                sCur = activity.getContentResolver().query(Uri.parse("content://sms/sent"),
 	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
 	                        new String[] { id }, "date DESC LIMIT " +
-	                                Integer.valueOf(ConversationView.sharedPrefs.getString
-	                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
+	                        Integer.valueOf(ConversationView.sharedPrefs.getString
+	                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
 	
 	                if (sCur != null && sCur.moveToFirst())
 	                {
@@ -285,7 +280,7 @@ public class ImportContactLoader extends Loader{
 	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 	                    } while (sCur.moveToNext());
 	                }
-	                if (!TrustedContact.isNumberUsed(tc, newNumber.getNumber())
+	                if (newNumber != null && !TrustedContact.isNumberUsed(tc, newNumber.getNumber())
 	                        && !loader.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
 	                {
 	                    tc.add(new TrustedContact(newNumber));
