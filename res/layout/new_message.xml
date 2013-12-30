@@ -16,6 +16,7 @@
         android:cursorVisible="true"
         android:hint="@string/to"
         android:textColor="@color/Black" >
+        <!-- TODO look into solution to this bug -->
 
         <requestFocus />
     </AutoCompleteTextView>

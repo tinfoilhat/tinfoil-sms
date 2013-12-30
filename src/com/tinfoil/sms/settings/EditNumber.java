@@ -89,12 +89,13 @@ public class EditNumber extends Activity{
 	public static final int SHARED_INFO_MAX = 128;
 	
 	private ArrayList<RadioButton> keyExchangeSetting;
-	private DBAccessor dba = new DBAccessor(this);
+	private DBAccessor dba;
 	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
+        dba = new DBAccessor(this);
 
         keyExchangeSetting = new ArrayList<RadioButton>();
         
