@@ -171,7 +171,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
 
     <!-- SendMessageActivity strings -->
     <string name="to">To</string>
-    <string name="send_message">Send Message</string>
+    <string name="send_message">New message</string>
     <string name="insufficent_information_provided">You have failed to provide sufficient information</string>
 
     <!-- DeleteContacts strings -->

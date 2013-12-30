@@ -80,7 +80,7 @@ public class SendMessageActivity extends Activity {
 
         //Since the number is being entered cant really set a limit on the size...
         //Defaults to a trusted contact just to be safe
-        final boolean isTrusted = true;//MessageService.dba.isTrustedContact(Prephase3Activity.selectedNumber);
+        final boolean isTrusted = true;
 
         messageEvent = new MessageBoxWatcher(this, R.id.send_word_count, isTrusted);
         

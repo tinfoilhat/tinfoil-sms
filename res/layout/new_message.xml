@@ -1,67 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/White" >
-            
-	 <AutoCompleteTextView
-         android:id="@+id/new_message_number"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentRight="true"
-         android:layout_alignParentTop="true"
-         android:layout_marginTop="5dp"
-         android:textColorHint="@color/Black"
-         android:textColor="@color/Black"
-         android:cursorVisible="true"
-         android:hint="@string/to" >
+    tools:context=".sms.SendMessageActivity" >
 
-         <requestFocus />
-     </AutoCompleteTextView>
-     
+    <AutoCompleteTextView
+        android:id="@+id/new_message_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:cursorVisible="true"
+        android:hint="@string/to"
+        android:textColor="@color/Black" >
+
+        <requestFocus />
+    </AutoCompleteTextView>
+
     <LinearLayout
         android:id="@+id/new_message_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/Black" >
+        android:layout_alignParentRight="true" >
 
         <EditText
             android:id="@+id/new_message_message"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_weight="1.00"
             android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-            android:maxLines="4" />
+            android:maxLines="3" />
 
-        <Button
-            android:id="@+id/new_message_send"
+        <LinearLayout
+            android:id="@+id/counter_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:onClick="sendMessage"/>
+            android:layout_gravity="bottom"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/send_word_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp" />
+            <!--  -->
+
+            <ImageButton
+                android:id="@+id/new_message_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:onClick="sendMessage"
+                android:src="@android:drawable/ic_menu_send" />
+        </LinearLayout>
     </LinearLayout>
-    
-     <RelativeLayout
-        android:id="@+id/counter_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/new_message_field"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/Black" >
 
-        <TextView
-            android:id="@+id/send_word_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textSize="12sp"
-            android:textColor="@color/White" />
-            <!-- android:text="122" --> 
-
-	</RelativeLayout>
 </RelativeLayout>
