@@ -60,7 +60,8 @@
             android:label="@string/add_contact_activity" />
         <activity
             android:name="com.tinfoil.sms.settings.QuickPrefsActivity"
-            android:label="@string/settings" />
+            android:label="@string/settings"
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name="com.tinfoil.sms.settings.ManageContactsActivity"
             android:configChanges="orientation"
@@ -74,7 +75,8 @@
         <activity
             android:name="com.tinfoil.sms.settings.ImportContacts"
             android:configChanges="orientation"
-            android:label="@string/import_contacts" />
+            android:label="@string/import_contacts"
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name="com.tinfoil.sms.settings.EditNumber"
             android:configChanges="orientation"
@@ -103,7 +105,8 @@
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.UserKeySettings"
-            android:label="@string/user_key_settings" >
+            android:label="@string/user_key_settings"
+            android:theme="@style/MyAppTheme" >
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.TabSelection"
@@ -111,7 +114,8 @@
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.DonationsActivity"
-            android:label="@string/title_activity_donations" >
+            android:label="@string/title_activity_donations"
+            android:theme="@style/MyAppTheme" >
         </activity>
 
         <provider
