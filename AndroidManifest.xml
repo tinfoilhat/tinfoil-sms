@@ -112,11 +112,6 @@
             android:name="com.tinfoil.sms.settings.TabSelection"
             android:label="@string/title_activity_tab_selection" >
         </activity>
-        <activity
-            android:name="com.tinfoil.sms.settings.DonationsActivity"
-            android:label="@string/title_activity_donations"
-            android:theme="@style/MyAppTheme" >
-        </activity>
 
         <provider
             android:name="com.tinfoil.sms.database.DatabaseProvider"

@@ -148,17 +148,11 @@
             android:summary="@string/source_code_sub_title">	
           </PreferenceScreen>
           
-          
-          <PreferenceScreen 
-            android:title="@string/donate_option_title"
-            android:key="donate"
-            android:summary="@string/donate_option_summary">
-			
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:targetPackage="com.tinfoil.sms"
-				android:targetClass="com.tinfoil.sms.settings.DonationsActivity" />	
-        </PreferenceScreen>
+          <com.tinfoil.sms.settings.DonationPreferenceDialog
+              android:key="donate"
+              android:title="@string/donate_option_title"
+              android:summary="@string/donate_option_summary">
+          </com.tinfoil.sms.settings.DonationPreferenceDialog>
             
 	</PreferenceCategory>
     
