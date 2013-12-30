@@ -21,10 +21,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
@@ -33,7 +35,6 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.Loader;
-import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.SMSUtility;
 
 public class ImportContactLoader extends Loader{
@@ -45,6 +46,8 @@ public class ImportContactLoader extends Loader{
     private boolean clicked;   
     private boolean stop;
     private boolean doNothing;
+    
+    private SharedPreferences sharedPrefs;
 
     /**
      * Create the object and start the thread 
@@ -83,6 +86,7 @@ public class ImportContactLoader extends Loader{
     	 * number of contacts increases, of course this also has to do with the
     	 * users phone.
     	 */
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
     	 
 		if (!doNothing)
 		{
@@ -147,9 +151,9 @@ public class ImportContactLoader extends Loader{
 		                                                "+1" + SMSUtility.format(numb),
 		                                                "1" + SMSUtility.format(numb) },
 		                                        "date DESC LIMIT " +
-		                                                Integer.valueOf(ConversationView.sharedPrefs.getString
-		                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
-		                                                String.valueOf(SMSUtility.LIMIT))));
+                                                Integer.valueOf(sharedPrefs.getString
+                                                (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY,
+                                                String.valueOf(SMSUtility.LIMIT))));
 		                                if (mCur != null && mCur.moveToFirst())
 		                                {
 		                                    do
@@ -226,14 +230,14 @@ public class ImportContactLoader extends Loader{
 	            Number newNumber = null;
 	
 	            //Check if the thread has been stopped
-	            while (convCur.moveToNext() && !getStop())
+	            while (convCur != null && convCur.moveToNext() && !getStop())
 	            {
 	                id = convCur.getString(convCur.getColumnIndex("thread_id"));
 	
 	                nCur = activity.getContentResolver().query(Uri.parse("content://sms/inbox"),
 	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
 	                        new String[] { id }, "date DESC LIMIT " +
-	                                Integer.valueOf(ConversationView.sharedPrefs.getString
+	                                Integer.valueOf(sharedPrefs.getString
 	                                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
 	
 	                if (nCur != null && nCur.moveToFirst())
@@ -257,7 +261,7 @@ public class ImportContactLoader extends Loader{
 	                sCur = activity.getContentResolver().query(Uri.parse("content://sms/sent"),
 	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
 	                        new String[] { id }, "date DESC LIMIT " +
-	                        Integer.valueOf(ConversationView.sharedPrefs.getString
+	                        Integer.valueOf(sharedPrefs.getString
 	                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
 	
 	                if (sCur != null && sCur.moveToFirst())

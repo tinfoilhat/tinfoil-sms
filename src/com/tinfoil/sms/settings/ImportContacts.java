@@ -282,13 +282,20 @@ public class ImportContacts extends Activity {
 		        	Bundle b = msg.getData();
 		        	tc = (ArrayList<TrustedContact>) b.getSerializable(ImportContacts.TRUSTED_CONTACTS);
 		        	inDb = (ArrayList<Boolean>) b.getSerializable(ImportContacts.IN_DATABASE);
-		        	
-		        	setUpUI();
-		            		            
-		            if (ImportContacts.this.dialog.isShowing())
-		            {
-		            	ImportContacts.this.dialog.dismiss();
-		            }
+
+		        	ImportContacts.this.runOnUiThread(new Runnable(){
+
+						@Override
+						public void run() {
+							setUpUI();
+							if (ImportContacts.this.dialog.isShowing())
+				            {
+				            	ImportContacts.this.dialog.dismiss();
+				            }
+						}
+		        		
+		        	});
+		            
 		            break;
 	    		case FINISH:
 	    			ImportContacts.this.finish();
