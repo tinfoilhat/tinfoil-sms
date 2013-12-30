@@ -93,10 +93,15 @@ public class ImportContactLoader extends Loader{
 	            String name;
 	            String id;
 	
+	            //activity.
 	            final Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
-	            final Cursor cur = activity.managedQuery(mContacts, new String[] { Contacts._ID,
+	            
+	            /*final Cursor cur = activity.managedQuery(mContacts, new String[] { Contacts._ID,
 	                    Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER },
 	                    null, null, Contacts.DISPLAY_NAME);
+	            */
+	            final Cursor cur = activity.getContentResolver().query(mContacts, new String[] { Contacts._ID,
+	                    Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER }, null, null, Contacts.DISPLAY_NAME);
 	
 	            this.inDb = new ArrayList<Boolean>();
 	
