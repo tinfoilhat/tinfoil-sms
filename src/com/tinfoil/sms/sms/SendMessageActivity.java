@@ -44,6 +44,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
+ * TODO update the ui
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact (a
  * contact that has exchanged their key with the user) then it will be
@@ -128,8 +129,6 @@ public class SendMessageActivity extends Activity {
                     }
                     else
                     {
-                        //**Warning this could be a word, there is nothing protected it from them
-                        //entering a name that is not in the database. (message will not send)
                         if (SMSUtility.isANumber(info[0].trim()))
                         {
                             if (SendMessageActivity.this.newCont.isNumbersEmpty())
@@ -140,12 +139,6 @@ public class SendMessageActivity extends Activity {
                             {
                                 SendMessageActivity.this.newCont.setNumber(info[0].trim());
                             }
-                        }
-                        else
-                        {
-                        	
-                        	//TODO make this reminder part of the onClick action rather then in the text box listener onChange.
-                            Toast.makeText(SendMessageActivity.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -233,6 +226,10 @@ public class SendMessageActivity extends Activity {
             }
 
         }
+    	else
+    	{
+    		Toast.makeText(SendMessageActivity.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
+    	}
     }
 
     /*public boolean onCreateOptionsMenu(Menu menu) {

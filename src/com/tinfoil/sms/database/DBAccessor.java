@@ -68,8 +68,6 @@ public class DBAccessor {
 	
 	private SharedPreferences sharedPrefs;
 	private Context context;
-	
-	//private static int count = 0;
 
 	/**
 	 * Creates a database that is read and write
