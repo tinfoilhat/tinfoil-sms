@@ -189,10 +189,10 @@ public class KeyExchangeManager extends Activity {
 	{
 		// Handles the key exchange received.
 		new KeyExchangeHandler(context, number, entry.getMessage(), true){
-			private DBAccessor dba = new DBAccessor(context);
 			@Override
 			public void accept(){
 				
+				DBAccessor dba = new DBAccessor(context);
 				Log.v("Key Exchange", "Exchange Key Message Received");
 				
 				number.setPublicKey(KeyExchange.encodedPubKey(entry.getMessage()));
@@ -233,6 +233,7 @@ public class KeyExchangeManager extends Activity {
 			public void invalid(){
 				Log.v("Key Exchange", "Invalid key exchange");
 				 
+				 DBAccessor dba = new DBAccessor(context);
 				 String name = dba.getRow(number.getNumber()).getName();
 				 
 				 final String text = name + ", " + number.getNumber();
