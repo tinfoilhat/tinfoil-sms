@@ -229,7 +229,8 @@ public class SendMessageActivity extends Activity {
 	        {
 	        	menu.findItem(R.id.exchange)
 	        		.setTitle(R.string.untrust_contact_menu_full)
-	        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short));
+	        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short))
+	        		.setEnabled(true);
 	        }
 	        else
 	        {
@@ -237,19 +238,22 @@ public class SendMessageActivity extends Activity {
 	        	{
 	        		menu.findItem(R.id.exchange)
 	        			.setTitle(R.string.resolve_key_exchange_full)
-	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short));
+	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
+	        			.setEnabled(true);
 	        	}
 	        	else
 	        	{
 	        		menu.findItem(R.id.exchange)
 	        			.setTitle(R.string.exchange_key_full)
-	        			.setTitleCondensed(this.getString(R.string.exchange_key_short));
+	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
+	        			.setEnabled(true);
 	        	}
 	        }
         }
         else
         {
-        	return false;
+        	menu.findItem(R.id.exchange).setEnabled(false);
+        	//return true;
         }
         return true;
     }
