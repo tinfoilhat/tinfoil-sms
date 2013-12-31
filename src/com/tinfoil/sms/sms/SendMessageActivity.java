@@ -29,6 +29,9 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
+import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
@@ -44,7 +48,6 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
- * TODO update the ui
  * SendMessageActivity is an activity that allows a user to create a new or
  * continue an old conversation. If the message is sent to a Trusted Contact (a
  * contact that has exchanged their key with the user) then it will be
@@ -61,6 +64,8 @@ public class SendMessageActivity extends Activity {
     private TrustedContact newCont;
     
     private DBAccessor dba;
+    private static ExchangeKey keyThread = new ExchangeKey();
+    
 
     /** Called when the activity is first created. */
     @Override
@@ -99,7 +104,6 @@ public class SendMessageActivity extends Activity {
         Uri uri = this.getIntent().getData();
         if (uri != null)
         {
-        	//Toast.makeText(this, uri.toString().split(":")[1], Toast.LENGTH_LONG).show();
         	String[] value = uri.toString().split(":");
         	if(value.length == 2)
         	{
@@ -110,7 +114,6 @@ public class SendMessageActivity extends Activity {
         		this.phoneBox.setText(value[0]);
         	}
         	
-        	//Toast.makeText(this, , Toast.LENGTH_LONG).show();
         }
         
         this.phoneBox.setAdapter(adapter);
@@ -166,53 +169,82 @@ public class SendMessageActivity extends Activity {
         }
 
         this.messageBox.addTextChangedListener(messageEvent);
-
-        /*this.sendSMS.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(final View v)
-            {
-                
-            }
-        });*/
     }
     
     public void sendMessage (View view)
+    {
+    	String[] temp = checkValidNumber(true, true);
+    	
+    	if(temp != null)
+    	{
+    		String number = temp[0];
+    		String text = temp[1];
+    		/*
+             * Numbers are now automatically added upon sending a message to
+             * them (if they are not already in the database). The user can
+             * then go and edit their information as they please.
+             */
+        	
+        	//Add contact to the database
+        	if(!dba.inDatabase(number))
+        	{
+        		dba.addRow(new TrustedContact(new Number(number)));
+        	}
+        	
+        	//Add the message to the database
+        	if(dba.isTrustedContact(number))
+        	{
+        		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
+        	}
+        	else
+        	{
+        		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
+        	}
+
+            //Add the message to the queue to send it
+            dba.addMessageToQueue(number, text, false);         
+            
+            SendMessageActivity.this.messageBox.setText("");
+            SendMessageActivity.this.phoneBox.setText("");
+    	}
+    	       	
+            
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.new_message_menu, menu);
+        return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+            case R.id.exchange:
+            	
+            	String[] value = checkValidNumber(false, false);
+            	if(value!= null) {
+            		SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
+            	}
+            	
+            	return true;
+            default:
+            return super.onOptionsItemSelected(item);
+    	}
+    }
+    
+    private String[] checkValidNumber(boolean checkText, boolean showError)
     {
     	if (!SendMessageActivity.this.newCont.getNumber().isEmpty()) {
             final String number = SendMessageActivity.this.newCont.getNumber(0);
             final String text = SendMessageActivity.this.messageBox.getText().toString();
 
-            if (number.length() > 0 && text.length() > 0)
+            if (number.length() > 0 && (!checkText || text.length() > 0))
             {
-            	/*
-                 * Numbers are now automatically added upon sending a message to
-                 * them (if they are not already in the database). The user can
-                 * then go and edit their information as they please.
-                 */
-            	
-            	//Add contact to the database
-            	if(!dba.inDatabase(number))
-            	{
-            		dba.addRow(new TrustedContact(new Number(number)));
-            	}
-            	
-            	//Add the message to the database
-            	if(dba.isTrustedContact(number))
-            	{
-            		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
-            	}
-            	else
-            	{
-            		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
-            	}
+            	return new String[]{number, text};
 
-                //Add the message to the queue to send it
-                dba.addMessageToQueue(number, text, false);         
-                
-                SendMessageActivity.this.messageBox.setText("");
-                SendMessageActivity.this.phoneBox.setText("");
             }
-            else
+            else if(showError)
             {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
                 builder.setMessage(R.string.insufficent_information_provided)
@@ -226,26 +258,10 @@ public class SendMessageActivity extends Activity {
             }
 
         }
-    	else
+    	else if(showError)
     	{
     		Toast.makeText(SendMessageActivity.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
     	}
+    	return null;
     }
-
-    /*public boolean onCreateOptionsMenu(Menu menu) {
-    	 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.texting_menu, menu);
-        return true;
-    }
-    
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-            case R.id.add:
-            startActivity(new Intent(this, AddContact.class));
-            return true;
-            default:
-            return super.onOptionsItemSelected(item);
-    	}
-    }*/
 }

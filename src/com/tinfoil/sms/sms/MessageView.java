@@ -47,7 +47,6 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
 import com.tinfoil.sms.crypto.ExchangeKey;
-import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
@@ -424,70 +423,7 @@ public class MessageView extends Activity {
         switch (item.getItemId()) {
             case R.id.exchange:
 
-            	/*ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
-                        "Exchanging. Please wait...", true, false);*/
-
-                if (!dba.isTrustedContact(SMSUtility.format
-                        (selectedNumber)))
-                {
-                	final Entry entry = dba.getKeyExchangeMessage(selectedNumber);
-                	
-                	if (entry != null)
-                	{
-                		final TrustedContact tc = dba.getRow(selectedNumber);
-                		final Number number = tc.getNumber(selectedNumber);
-                		
-                		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                		
-                		builder.setMessage(this.getString(R.string.key_exchange_dialog_message)
-                			+ " " + tc.getName() + ", " + number.getNumber() + "?")
-                			.setCancelable(true)
-                			.setPositiveButton(R.string.key_exchange_dialog_pos_button,
-	         		    		new DialogInterface.OnClickListener() {
-         		    	   @Override
-         		    	   public void onClick(DialogInterface dialog, int id) {
-         		            //Save the shared secrets
-         		    		if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
-          							SMSUtility.checksharedSecret(number.getSharedInfo2()))
-          					{
-                      			KeyExchangeManager.respondMessage(MessageView.this, number, entry);
-          					}
-                      		else
-                      		{
-                      			KeyExchangeManager.setAndSend(MessageView.this, number, tc.getName(), entry);
-                      		}
-	         		    }})
-	         		    .setNegativeButton(R.string.key_exchange_dialog_neg_button,
-	         		    		new DialogInterface.OnClickListener() {
-         		    	   @Override
-         		    	   public void onClick(DialogInterface arg0, int arg1) {
-         		    		   // Cancel the key exchange
-         		    		   Toast.makeText(MessageView.this, MessageView.this
-         		    				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
-         		    		   
-         		    		   // Delete key exchange
-         		    		   dba.deleteKeyExchangeMessage(number.getNumber());
-         		    		   
-         		    		  if(dba.getKeyExchangeMessageCount() == 0)
-         		    		  {
-      							  MessageService.mNotificationManager.cancel(MessageService.KEY);
-         		    		  }
-         		    	   }
-	         		    });
-                		
-		         		AlertDialog alert = builder.create();
-		         		//ExchangeKey.keyDialog.dismiss();
-		         		alert.show();
-                	}
-                	else 
-                	{
-                		keyThread.startThread(this, SMSUtility.format(selectedNumber), null);
-                	}
-                }
-                else
-                {
-                	keyThread.startThread(this, null, SMSUtility.format(selectedNumber));
-                }
+            	SMSUtility.handleKeyExchange(keyThread, dba, this, selectedNumber);
 
                 return true;
             case R.id.delete:
@@ -581,4 +517,7 @@ public class MessageView extends Activity {
         	}
         }
     };
+    
+    
+    
 }

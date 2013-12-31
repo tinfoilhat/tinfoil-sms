@@ -23,9 +23,12 @@ import java.util.regex.Pattern;
 
 import org.spongycastle.crypto.InvalidCipherTextException;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.Encryption;
+import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
@@ -47,6 +51,7 @@ import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.sms.KeyExchangeManager;
 
 /**
  * An abstract class used to retrieve contacts information from the native
@@ -114,6 +119,73 @@ public abstract class SMSUtility {
         number = number.replaceAll(numOnly.pattern(), "");
 
         return number;
+    }
+    
+    public static void handleKeyExchange(ExchangeKey keyThread, final DBAccessor dba,
+    		final Activity activity, String number)
+    {
+    	/*ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
+        "Exchanging. Please wait...", true, false);*/
+
+	    if (!dba.isTrustedContact(SMSUtility.format
+	        (number)))
+	    {
+	    final Entry entry = dba.getKeyExchangeMessage(number);
+	
+	    if (entry != null)
+	    {
+	    	final TrustedContact tc = dba.getRow(number);
+	    	final Number numberO = tc.getNumber(number);
+	    	
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+	    	
+	    	builder.setMessage(activity.getString(R.string.key_exchange_dialog_message)
+	    		+ " " + tc.getName() + ", " + numberO.getNumber() + "?")
+	    		.setCancelable(true)
+	    		.setPositiveButton(R.string.key_exchange_dialog_pos_button,
+	    	    		new DialogInterface.OnClickListener() {
+	     	   @Override
+	     	   public void onClick(DialogInterface dialog, int id) {
+	             //Save the shared secrets
+	     		if(SMSUtility.checksharedSecret(numberO.getSharedInfo1()) &&
+	    					SMSUtility.checksharedSecret(numberO.getSharedInfo2()))
+	    			{
+	      			KeyExchangeManager.respondMessage(activity, numberO, entry);
+	    			}
+	      		else
+	      		{
+	      			KeyExchangeManager.setAndSend(activity, numberO, tc.getName(), entry);
+	      		}}})
+	    	    .setNegativeButton(R.string.key_exchange_dialog_neg_button,
+	    	    		new DialogInterface.OnClickListener() {
+	     	   @Override
+	     	   public void onClick(DialogInterface arg0, int arg1) {
+	     		   // Cancel the key exchange
+	     		   Toast.makeText(activity, activity
+	     				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
+	     		   
+	     		   // Delete key exchange
+	     		   dba.deleteKeyExchangeMessage(numberO.getNumber());
+	     		   
+	     		  if(dba.getKeyExchangeMessageCount() == 0)
+	     		  {
+	    				  MessageService.mNotificationManager.cancel(MessageService.KEY);
+	     		  }
+	     	   	}});
+	    	
+	    		AlertDialog alert = builder.create();
+	    		//ExchangeKey.keyDialog.dismiss();
+	    		alert.show();
+		    }
+		    else 
+		    {
+		    	keyThread.startThread(activity, SMSUtility.format(number), null);
+		    }
+	    }
+	    else
+	    {
+	    	keyThread.startThread(activity, null, SMSUtility.format(number));
+	    }
     }
 
     /**

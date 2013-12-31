@@ -170,11 +170,11 @@ public class ExchangeKey implements Runnable {
             }
         }
 
+        //TODO give a status update for each person sent and received
         /*
          * Start Key exchanges 1 by 1, messages are prepared and then placed in
          * the messaging queue.
          */       
-
         boolean invalid = false;
         if (this.trusted != null)
         {
@@ -182,29 +182,36 @@ public class ExchangeKey implements Runnable {
             {
                 number = dba.getNumber(trusted.get(i));
                 
-                if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
-                		SMSUtility.checksharedSecret(number.getSharedInfo2()))
+                if(number != null)
                 {
-                	Log.v("S1", number.getSharedInfo1());
-                    Log.v("S2", number.getSharedInfo2());
-                	
-	                /*
-	                 * Set the initiator flag since this user is starting the key exchange.
-	                 */
-	                number.setInitiator(true);					
-	                                
-	                dba.updateInitiator(number);
-	                
-	                String keyExchangeMessage = KeyExchange.sign(number,
-	                		dba, SMSUtility.user);
-	                
-	                dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+	                if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+	                		SMSUtility.checksharedSecret(number.getSharedInfo2()))
+	                {
+                		Log.v("S1", number.getSharedInfo1());
+                		Log.v("S2", number.getSharedInfo2());
+	                	
+		                /*
+		                 * Set the initiator flag since this user is starting the key exchange.
+		                 */
+		                number.setInitiator(true);					
+		                                
+		                dba.updateInitiator(number);
+		                
+		                String keyExchangeMessage = KeyExchange.sign(number,
+		                		dba, SMSUtility.user);
+		                
+		                dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+	                }
+	                else
+	                {
+	                	invalid = true;
+	                	//Toast.makeText(c, "Invalid shared secrets", Toast.LENGTH_LONG).show();
+	                	Log.v("Shared Secret", "Invalid shared secrets");
+	                }
                 }
                 else
                 {
-                	invalid = true;
-                	//Toast.makeText(c, "Invalid shared secrets", Toast.LENGTH_LONG).show();
-                	Log.v("Shared Secret", "Invalid shared secrets");
+                	//TODO give error message
                 }
             }
         }
