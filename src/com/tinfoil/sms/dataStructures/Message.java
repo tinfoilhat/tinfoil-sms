@@ -54,6 +54,10 @@ public class Message implements Serializable {
 	 * 7. Received (de-obfuscation failed (not sure if this is possible))
 	 * 8. Received (de-obfuscated and failed to decrypt, Hash-Mac failed after
 	 * de-obfuscation (not sure about this one either))
+	 * 9. Sent a key exchange to the contact and was the initiator
+	 * 10. Sent a key exchange to the contact and was not the initiator
+	 * 11. Received a key exchange from the contact and was the initiator
+	 * 12. Received a key exchange from the contact and was not the initiator
 	 */
 	public static final int SENT_DEFAULT = 0; 
 	public static final int SENT_ENCRYPTED = 1;
@@ -64,6 +68,11 @@ public class Message implements Serializable {
 	public static final int RECEIVED_ENC_OBF = 6; 
 	public static final int RECEIVED_OBF_FAIL = 7;
 	public static final int RECEIVED_ENC_OBF_FAIL = 8;
+	public static final int SENT_KEY_EXCHANGE_INIT = 9;
+	public static final int SENT_KEY_EXCHANGE_RESP = 10;
+	public static final int RECEIVED_KEY_EXCHANGE_INIT = 11;
+	public static final int RECEIVED_KEY_EXCHANGE_RESP = 12;
+	
 	
 	/**
 	 * A class for storing messages retrieved or to be stored in the database. 
@@ -159,6 +168,7 @@ public class Message implements Serializable {
 	}
 	
 	/**
+	 * TODO update this to use locale
 	 * Convert the current time in milliseconds to the current time formated as:
 	 * YYYY/MM/DD HH:MM AM/PM
 	 * @param currentTime The current time in milliseconds

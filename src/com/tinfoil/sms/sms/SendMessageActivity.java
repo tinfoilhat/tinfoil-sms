@@ -253,7 +253,6 @@ public class SendMessageActivity extends Activity {
         else
         {
         	menu.findItem(R.id.exchange).setEnabled(false);
-        	//return true;
         }
         return true;
     }

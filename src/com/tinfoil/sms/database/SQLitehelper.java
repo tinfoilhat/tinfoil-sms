@@ -28,8 +28,6 @@ import android.util.Log;
  */
 public class SQLitehelper extends SQLiteOpenHelper {
 	
-	
-	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	
 	/*
