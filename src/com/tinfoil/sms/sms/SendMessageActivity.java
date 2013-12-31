@@ -218,13 +218,57 @@ public class SendMessageActivity extends Activity {
         return true;
     }
     
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        
+        String[] values = checkValidNumber(false, false);
+        if(values != null)
+        {
+	        if(dba.isTrustedContact(values[0]))
+	        {
+	        	menu.findItem(R.id.exchange)
+	        		.setTitle(R.string.untrust_contact_menu_full)
+	        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short));
+	        }
+	        else
+	        {
+	        	if(dba.getKeyExchangeMessage(values[0]) != null)
+	        	{
+	        		menu.findItem(R.id.exchange)
+	        			.setTitle(R.string.resolve_key_exchange_full)
+	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short));
+	        	}
+	        	else
+	        	{
+	        		menu.findItem(R.id.exchange)
+	        			.setTitle(R.string.exchange_key_full)
+	        			.setTitleCondensed(this.getString(R.string.exchange_key_short));
+	        	}
+	        }
+        }
+        else
+        {
+        	return false;
+        }
+        return true;
+    }
+
+    
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
             case R.id.exchange:
             	
             	String[] value = checkValidNumber(false, false);
             	if(value!= null) {
-            		SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
+            		
+            		//Add contact to the database
+                	if(!dba.inDatabase(value[0]))
+                	{
+                		dba.addRow(new TrustedContact(new Number(value[0])));
+                	}
+                	                	
+                	SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
             	}
             	
             	return true;
