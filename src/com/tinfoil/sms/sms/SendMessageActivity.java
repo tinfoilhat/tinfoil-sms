@@ -259,6 +259,7 @@ public class SendMessageActivity extends Activity {
     	switch (item.getItemId()) {
             case R.id.exchange:
             	
+            	//This is a bit of a redundant check
             	String[] value = checkValidNumber(false, false);
             	if(value!= null) {
             		
