@@ -126,7 +126,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
 							/*
 							 * Since the user is not trusted, the message could
-							 * be a key exchange Assume it is check for key
+							 * be a key exchange. Assume it is check for key
 							 * exchange message Only once it fails is the
 							 * message considered plain text.
 							 */
@@ -185,10 +185,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		Number number = dba.getNumber(SMSUtility.format(address));
 		if (number.getKeyExchangeFlag() != Number.IGNORE
 				&& KeyExchange.isKeyExchange(fullMessage)) {
-			// /Number number =
-			// dba.getNumber(SMSUtility.format(address));
-			// if(ConversationView.sharedPrefs.getBoolean("auto_key_exchange",
-			// true))
+
 			if ((number.getKeyExchangeFlag() == Number.AUTO ||
 					(number.getKeyExchangeFlag() == Number.MANUAL && number.isInitiator()))
 					&& SMSUtility.checksharedSecret(number.getSharedInfo1())
@@ -220,6 +217,21 @@ public class MessageReceiver extends BroadcastReceiver {
 							dba.addMessageToQueue(getNumber().getNumber(),
 									KeyExchange.sign(this.getNumber(),
 									dba, SMSUtility.user), true);
+							
+							//Store the key exchange in message list (received key exchange, not initiator)
+							//TODO ensure the type of the key exchange
+							Message newMessage = new Message(fullMessage,
+									true, Message.RECEIVED_KEY_EXCHANGE_RESP);
+							dba.addNewMessage(newMessage, address, true);
+							
+							
+						}
+						else
+						{
+							//Store the key exchange in message list (received key exchange, initiator)
+							Message newMessage = new Message(fullMessage,
+									true, Message.RECEIVED_KEY_EXCHANGE_INIT);
+							dba.addNewMessage(newMessage, address, true);
 						}
 
 						if(listener != null)
@@ -241,11 +253,17 @@ public class MessageReceiver extends BroadcastReceiver {
 					}
 
 					public void cancel() {
+						//Handle a key exchange that was initiated by contact however user has already initiated one.
 						keyExchangeManual = true;
 						Toast.makeText(this.getContext(), R.string.key_exchange_received, Toast.LENGTH_SHORT).show();
 
 						Log.v("Key Exchange", "Manual");
 						String result = dba.addKeyExchangeMessage(new Entry(address, this.getSignedPubKey()));
+						
+						//Store the key exchange in message list
+						Message newMessage = new Message(fullMessage,
+								true, Message.RECEIVED_KEY_EXCHANGE_INIT_RESP);
+						dba.addNewMessage(newMessage, address, true);
 
 						if (result != null) {
 							Toast.makeText(this.getContext(), result, Toast.LENGTH_LONG).show();
@@ -279,6 +297,11 @@ public class MessageReceiver extends BroadcastReceiver {
 
 				Log.v("Key Exchange", "Manual");
 				String result = dba.addKeyExchangeMessage(new Entry(address, fullMessage));
+				
+				//TODO determine which type of key exchange it is
+				Message newMessage = new Message(fullMessage,
+						true, Message.RECEIVED_KEY_EXCHANGE_INIT);
+				dba.addNewMessage(newMessage, address, true);
 
 				if (result != null) {
 					Toast.makeText(context, result, Toast.LENGTH_LONG).show();

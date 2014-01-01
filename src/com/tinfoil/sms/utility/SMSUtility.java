@@ -130,60 +130,64 @@ public abstract class SMSUtility {
 	    if (!dba.isTrustedContact(SMSUtility.format
 	        (number)))
 	    {
-	    final Entry entry = dba.getKeyExchangeMessage(number);
-	
-	    if (entry != null)
-	    {
-	    	final TrustedContact tc = dba.getRow(number);
-	    	final Number numberO = tc.getNumber(number);
-	    	
-	    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-	    	
-	    	builder.setMessage(activity.getString(R.string.key_exchange_dialog_message)
-	    		+ " " + tc.getName() + ", " + numberO.getNumber() + "?")
-	    		.setCancelable(true)
-	    		.setPositiveButton(R.string.key_exchange_dialog_pos_button,
-	    	    		new DialogInterface.OnClickListener() {
-	     	   @Override
-	     	   public void onClick(DialogInterface dialog, int id) {
-	             //Save the shared secrets
-	     		if(SMSUtility.checksharedSecret(numberO.getSharedInfo1()) &&
-	    					SMSUtility.checksharedSecret(numberO.getSharedInfo2()))
-	    			{
-	      			KeyExchangeManager.respondMessage(activity, numberO, entry);
-	    			}
-	      		else
-	      		{
-	      			KeyExchangeManager.setAndSend(activity, numberO, tc.getName(), entry);
-	      		}}})
-	    	    .setNegativeButton(R.string.key_exchange_dialog_neg_button,
-	    	    		new DialogInterface.OnClickListener() {
-	     	   @Override
-	     	   public void onClick(DialogInterface arg0, int arg1) {
-	     		   // Cancel the key exchange
-	     		   Toast.makeText(activity, activity
-	     				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
-	     		   
-	     		   // Delete key exchange
-	     		   dba.deleteKeyExchangeMessage(numberO.getNumber());
-	     		   
-	     		  if(dba.getKeyExchangeMessageCount() == 0)
-	     		  {
-	    				  MessageService.mNotificationManager.cancel(MessageService.KEY);
-	     		  }
-	     	   	}});
-	    	
-	    		AlertDialog alert = builder.create();
-	    		//ExchangeKey.keyDialog.dismiss();
-	    		alert.show();
-		    }
-		    else 
+		    final Entry entry = dba.getKeyExchangeMessage(number);
+		
+		    //Resolving a key exchange
+		    if (entry != null)
 		    {
-		    	keyThread.startThread(activity, SMSUtility.format(number), null);
-		    }
+		    	final TrustedContact tc = dba.getRow(number);
+		    	final Number numberO = tc.getNumber(number);
+		    	
+		    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		    	
+		    	builder.setMessage(activity.getString(R.string.key_exchange_dialog_message)
+		    		+ " " + tc.getName() + ", " + numberO.getNumber() + "?")
+		    		.setCancelable(true)
+		    		.setPositiveButton(R.string.key_exchange_dialog_pos_button,
+		    	    		new DialogInterface.OnClickListener() {
+			     	   @Override
+			     	   public void onClick(DialogInterface dialog, int id) {
+			     		   //Save the shared secrets
+			     		   if(SMSUtility.checksharedSecret(numberO.getSharedInfo1()) &&
+			    					SMSUtility.checksharedSecret(numberO.getSharedInfo2()))
+			    			{
+			     			   KeyExchangeManager.respondKeyExchangeMessage(activity, numberO, entry);
+			    			}
+			     		   else
+			     		   {
+			     			   KeyExchangeManager.setAndSend(activity, numberO, tc.getName(), entry);
+			      		}}})
+		    	    .setNegativeButton(R.string.key_exchange_dialog_neg_button,
+		    	    		new DialogInterface.OnClickListener() {
+			     	   @Override
+			     	   public void onClick(DialogInterface arg0, int arg1) {
+			     		   // Cancel the key exchange
+			     		   Toast.makeText(activity, activity
+			     				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
+			     		   
+			     		   // Delete key exchange
+			     		   dba.deleteKeyExchangeMessage(numberO.getNumber());
+			     		   
+			     		  if(dba.getKeyExchangeMessageCount() == 0)
+			     		  {
+			    				  MessageService.mNotificationManager.cancel(MessageService.KEY);
+			     		  }
+			     	   	}
+			     	});
+		    	
+		    		AlertDialog alert = builder.create();
+		    		//ExchangeKey.keyDialog.dismiss();
+		    		alert.show();
+			    }
+			    else 
+			    {
+			    	//Initiate the key exchange with the contact. 
+			    	keyThread.startThread(activity, SMSUtility.format(number), null);
+			    }
 	    }
 	    else
 	    {
+	    	//Untrust the contact.
 	    	keyThread.startThread(activity, null, SMSUtility.format(number));
 	    }
     }

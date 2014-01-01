@@ -41,6 +41,7 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.crypto.KeyExchangeHandler;
 import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
@@ -104,7 +105,7 @@ public class KeyExchangeManager extends Activity {
 					if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
-						respondMessage(this, number, runThread.getEntries().get(i));
+						respondKeyExchangeMessage(this, number, runThread.getEntries().get(i));
 					}
 					else
 					{
@@ -160,7 +161,7 @@ public class KeyExchangeManager extends Activity {
 	    			   number.setSharedInfo2(s2);
 	    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
 
-		               respondMessage(context, number, entry);
+		               respondKeyExchangeMessage(context, number, entry);
 	    		   }
 	    		   else
 	    		   {
@@ -185,7 +186,7 @@ public class KeyExchangeManager extends Activity {
 	 * @param number The number of the contact for the key exchange
 	 * @param entry The key exchange entry received.
 	 */
-	public static void respondMessage(final Context context, final Number number, final Entry entry)
+	public static void respondKeyExchangeMessage(final Context context, final Number number, final Entry entry)
 	{
 		// Handles the key exchange received.
 		new KeyExchangeHandler(context, number, entry.getMessage(), true){
@@ -206,9 +207,20 @@ public class KeyExchangeManager extends Activity {
 				if(!number.isInitiator())
 				{
 					Log.v("Key Exchange", "Not Initiator");
-					dba.addMessageToQueue(number.getNumber(),
-							KeyExchange.sign(number, dba,
+					dba.addMessageToQueue(number.getNumber(), KeyExchange.sign(number, dba,
 							SMSUtility.user), true);
+					
+					//Store the key exchange in message list (received key exchange, not initiator)
+					Message newMessage = new Message(entry.getMessage(),
+							true, Message.SENT_KEY_EXCHANGE_RESP);
+					dba.addNewMessage(newMessage, entry.getNumber(), true);
+				}
+				else
+				{
+					//Store the key exchange in message list (received key exchange, initiator)
+					Message newMessage = new Message(entry.getNumber(),
+							true, Message.SENT_KEY_EXCHANGE_INIT);
+					dba.addNewMessage(newMessage, entry.getMessage(), true);
 				}
 				
 				if(dba.getKeyExchangeMessageCount() == 0)

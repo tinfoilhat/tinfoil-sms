@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.ContactParent;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
@@ -190,17 +191,7 @@ public class ExchangeKey implements Runnable {
                 		Log.v("S1", number.getSharedInfo1());
                 		Log.v("S2", number.getSharedInfo2());
 	                	
-		                /*
-		                 * Set the initiator flag since this user is starting the key exchange.
-		                 */
-		                number.setInitiator(true);					
-		                                
-		                dba.updateInitiator(number);
-		                
-		                String keyExchangeMessage = KeyExchange.sign(number,
-		                		dba, SMSUtility.user);
-		                
-		                dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+                		sendKeyExchange(dba, number, true);
 	                }
 	                else
 	                {
@@ -254,22 +245,10 @@ public class ExchangeKey implements Runnable {
         	    		                //Save the shared secrets
         	    		    		   String s1 = sharedSecret1.getText().toString();
         	    		    		   String s2 = sharedSecret2.getText().toString();
-        	    		    		   if(s1 != null && s2 != null &&
-        	    		    				   s1.length() >= EditNumber.SHARED_INFO_MIN &&
-        	    		    				   s2.length() >= EditNumber.SHARED_INFO_MIN)
-        	    		    		   {
-        	    		    			   //Toast.makeText(activity, "Valid secrets", Toast.LENGTH_LONG).show();
-        	    		    			   number.setSharedInfo1(s1);
-        	    		    			   number.setSharedInfo2(s2);
-        	    		    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
-        	    		    			   number.setInitiator(true);					
-       	                                
-        	    			               dba.updateInitiator(number);
-        	    			                
-        	    			               String keyExchangeMessage = KeyExchange.sign(number,
-        	    			            		   dba, SMSUtility.user);
-        	    			                
-        	    			               dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+        	    		    		   if (SMSUtility.checksharedSecret(s1) &&
+        	    		                		SMSUtility.checksharedSecret(s2))
+        	    		               {     	    		    			   
+        	    		    			   sendKeyExchange(dba, number, s1, s2, true);
         	    		    		   }
         	    		    		   else
         	    		    		   {
@@ -321,5 +300,47 @@ public class ExchangeKey implements Runnable {
     public void removeOnFinishedTaskListener()
     {
     	this.listener = null;
+    }
+    
+    /**
+     * Set the share and then make the key exchange. Note you must check whether the
+     * share secrets are valid first.
+     * @param dba The database interface.
+     * @param number The number in use
+     * @param s1 The first new shared secret 
+     * @param s2 The second new shared secret
+     * @param initiator Whether the user is the key exchange initiator.
+     */
+    public static void sendKeyExchange(DBAccessor dba, Number number, String s1, String s2, boolean initiator)
+    {
+    	number.setSharedInfo1(s1);
+		number.setSharedInfo2(s2);
+		dba.updateNumberRow(number, number.getNumber(), number.getId());
+		sendKeyExchange(dba, number, initiator);
+    }
+    
+    /**
+     * Make the key exchange. Note you must check whether the share secrets are valid first.
+     * @param dba The database interface.
+     * @param number The number in use
+     * @param initiator Whether the user is the key exchange initiator.
+     */	
+    public static void sendKeyExchange(DBAccessor dba, Number number, boolean initiator)
+    {
+    	/*
+         * Set the initiator flag since this user is starting the key exchange.
+         */
+		number.setInitiator(initiator);					
+        
+        dba.updateInitiator(number);
+         
+        String keyExchangeMessage = KeyExchange.sign(number,
+     		   dba, SMSUtility.user);
+         
+        dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+        
+        Message newMessage = new Message(keyExchangeMessage,
+					true, Message.SENT_KEY_EXCHANGE_INIT);
+		dba.addNewMessage(newMessage, number.getNumber(), false);
     }
 }
