@@ -724,7 +724,9 @@ public class DBAccessor {
 			{
 				String name = USER_NAME;
 				int sentFlag = cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SENT)); 
-				if (sentFlag >= Message.RECEIVED_DEFAULT && sentFlag <= Message.RECEIVED_ENC_OBF_FAIL)
+				if (sentFlag >= Message.RECEIVED_DEFAULT && sentFlag <= Message.RECEIVED_ENC_OBF_FAIL
+						|| (sentFlag >= Message.RECEIVED_KEY_EXCHANGE_INIT 
+						&& sentFlag <= Message.RECEIVED_KEY_EXCHANGE_INIT_RESP))
 				{
 					name = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME));
 				}

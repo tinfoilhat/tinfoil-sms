@@ -151,6 +151,11 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         	holder.indicator.setImageResource(R.drawable.not_encrypted);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
+        else if (sentValue >= Message.SENT_KEY_EXCHANGE_INIT)
+        {
+        	holder.indicator.setImageResource(R.drawable.key_exchange);
+        	holder.indicator.setVisibility(ImageView.VISIBLE);
+        }
 
         return row;
     }

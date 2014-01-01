@@ -58,6 +58,7 @@ public class Message implements Serializable {
 	 * 10. Sent a key exchange to the contact and was not the initiator
 	 * 11. Received a key exchange from the contact and was the initiator
 	 * 12. Received a key exchange from the contact and was not the initiator
+	 * 13. Received a key exchange from the contact and was not the initiator with a incomplete key exchange were they were the initiator
 	 */
 	public static final int SENT_DEFAULT = 0; 
 	public static final int SENT_ENCRYPTED = 1;
@@ -72,6 +73,7 @@ public class Message implements Serializable {
 	public static final int SENT_KEY_EXCHANGE_RESP = 10;
 	public static final int RECEIVED_KEY_EXCHANGE_INIT = 11;
 	public static final int RECEIVED_KEY_EXCHANGE_RESP = 12;
+	public static final int RECEIVED_KEY_EXCHANGE_INIT_RESP = 13;
 	
 	
 	/**
