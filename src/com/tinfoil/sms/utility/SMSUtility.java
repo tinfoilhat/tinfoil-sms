@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.spongycastle.crypto.InvalidCipherTextException;
+import org.strippedcastle.crypto.InvalidCipherTextException;
 
 import android.app.Activity;
 import android.app.AlertDialog;

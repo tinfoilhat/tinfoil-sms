@@ -17,7 +17,7 @@
 
 package com.tinfoil.sms.utility;
 
-import org.spongycastle.crypto.InvalidCipherTextException;
+import org.strippedcastle.crypto.InvalidCipherTextException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

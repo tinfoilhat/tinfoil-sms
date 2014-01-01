@@ -21,14 +21,13 @@ import java.nio.ByteOrder;
 import java.security.Security;
 import java.util.HashMap;
 
-import org.spongycastle.crypto.CipherParameters;
-import org.spongycastle.crypto.InvalidCipherTextException;
-import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.engines.ISAACEngine;
-import org.spongycastle.crypto.params.ECPrivateKeyParameters;
-import org.spongycastle.crypto.params.ECPublicKeyParameters;
-import org.spongycastle.crypto.params.Nonce;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.crypto.InvalidCipherTextException;
+import org.strippedcastle.crypto.digests.SHA256Digest;
+import org.strippedcastle.crypto.engines.ISAACEngine;
+import org.strippedcastle.crypto.params.ECPrivateKeyParameters;
+import org.strippedcastle.crypto.params.ECPublicKeyParameters;
+import org.strippedcastle.crypto.prng.RandomGenerator;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.util.Base64;
 import android.util.Log;
@@ -37,11 +36,11 @@ import com.bugsense.trace.BugSenseHandler;
 import com.orwell.crypto.APrioriInfo;
 import com.orwell.crypto.ECEngine;
 import com.orwell.crypto.ECGKeyUtil;
-import com.orwell.crypto.ECKeyParam;
 import com.orwell.csprng.ISAACRandomGenerator;
 import com.orwell.csprng.SDFGenerator;
-import com.orwell.csprng.SDFParameters;
-
+import com.orwell.params.ECKeyParam;
+import com.orwell.params.Nonce;
+import com.orwell.params.SDFParameters;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -212,7 +211,7 @@ public class Encryption
         Log.v("SharedInfo 2", sharedInfo2);
         
         /* Setup apriori info, generator, and nonce used by the block cipher to generate IVs */
-        CipherParameters nonce;
+        RandomGenerator nonce;
         ISAACRandomGenerator CSPRNG = new ISAACRandomGenerator(new ISAACEngine());
         if (mode)
         {

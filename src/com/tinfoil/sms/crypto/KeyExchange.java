@@ -21,22 +21,22 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
-import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.params.ECPublicKeyParameters;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.util.encoders.Hex;
+import org.strippedcastle.crypto.digests.SHA256Digest;
+import org.strippedcastle.crypto.params.ECPublicKeyParameters;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.util.encoders.Hex;
 
 import android.util.Base64;
 import android.util.Log;
 
+import com.orwell.crypto.APrioriInfo;
+import com.orwell.crypto.ECGKeyExchange;
+import com.orwell.crypto.ECGKeyUtil;
+import com.orwell.params.ECKeyParam;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.database.InvalidDatabaseStateException;
-import com.orwell.crypto.APrioriInfo;
-import com.orwell.crypto.ECGKeyExchange;
-import com.orwell.crypto.ECGKeyUtil;
-import com.orwell.crypto.ECKeyParam;
 
 
 /**

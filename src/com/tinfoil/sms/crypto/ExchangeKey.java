@@ -20,7 +20,7 @@ package com.tinfoil.sms.crypto;
 import java.security.Security;
 import java.util.ArrayList;
 
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;

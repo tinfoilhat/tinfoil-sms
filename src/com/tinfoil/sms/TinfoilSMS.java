@@ -19,13 +19,13 @@ package com.tinfoil.sms;
 
 import java.security.Security;
 
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
+
 import android.app.Application;
 import android.preference.PreferenceManager;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
-
-import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 
 /**
