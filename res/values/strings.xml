@@ -235,7 +235,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="contact_settings_option_title">Contact Settings</string>
     <string name="import_contacts_option_title">Import Contacts</string>
     <string name="import_contacts_option_summary">Import Trusted Contacts from phone</string>
-    <string name="manage_contacts_option_title">Manage Contacts</string>
+    <string name="manage_contacts_option_title">Remove Contacts</string>
     <string name="encryption_option_title">Encryption Settings</string>
     <string name="encryption_message_option_title">Encrypted Messages</string>
     <string name="encrypted_message_option_summary">Display the original encrypted message</string>
