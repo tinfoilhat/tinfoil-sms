@@ -123,7 +123,7 @@ public class DatabaseProvider extends ContentProvider {
 		
 		int choose = sURIMatcher.match(uri);
 
-		dba = db.getWritableDatabase();
+		dba = db.getDB();
 		
         // Delete either user data, or booking data.
         switch (choose)
@@ -178,7 +178,7 @@ public class DatabaseProvider extends ContentProvider {
 	public Uri insert(Uri uri, ContentValues values) {
 		int choose = sURIMatcher.match(uri);
 
-		dba = db.getWritableDatabase();
+		dba = db.getDB();;
 		
         // Delete either user data, or booking data.
         switch (choose)
@@ -245,7 +245,12 @@ public class DatabaseProvider extends ContentProvider {
 		
 		int choose = sURIMatcher.match(uri);
 
-		dba = db.getWritableDatabase();
+		//SQLiteDatabase.NO_LOCALIZED_COLLATORS;// | SQLiteDatabase.OPEN_READWRITE);
+		
+		//dba.
+		
+		dba = db.getDB();
+		
 		
         // Delete either user data, or booking data.
         switch (choose)
@@ -353,7 +358,7 @@ public class DatabaseProvider extends ContentProvider {
 			String[] selectionArgs) {
 		int choose = sURIMatcher.match(uri);
 
-		dba = db.getWritableDatabase();
+		dba = db.getDB();
 		
         // Delete either user data, or booking data.
         switch (choose)

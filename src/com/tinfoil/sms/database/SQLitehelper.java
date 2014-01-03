@@ -30,6 +30,8 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	
+	private static final String PATH = "/data/data/com.tinfoil.sms/databases/" + DATABASE_NAME;
+	
 	/*
 	 * Upgraded the version of the database since signature was removed from the
 	 * user database.
@@ -149,7 +151,14 @@ public class SQLitehelper extends SQLiteOpenHelper {
 
 	public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        
     }
+	
+	public SQLiteDatabase getDB()
+	{
+		return SQLiteDatabase.openDatabase(PATH, null, SQLiteDatabase.CREATE_IF_NECESSARY
+				| SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+	}
 
     @Override
     public void onCreate(SQLiteDatabase db) {
