@@ -42,7 +42,7 @@ import com.orwell.params.ECKeyParam;
 import com.orwell.params.Nonce;
 import com.orwell.params.SDFParameters;
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.dataStructures.User;
 
 /**
  * A class which operates as a facade to greatly simplify the underlying
@@ -53,6 +53,8 @@ public class Encryption
 {
     private HashMap<Long, ECEngine> encryptMap;
     private HashMap<Long, ECEngine> decryptMap;
+    
+    private User user;
     
     /* Size of the message counter in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
     private static final int COUNT_SIZE = 2;
@@ -65,10 +67,11 @@ public class Encryption
     /**
      * The basic constructor, initializes the encrypt/decrypt hash maps.
      */
-    public Encryption()
+    public Encryption(User user)
     {
         this.encryptMap = new HashMap<Long, ECEngine>();
         this.decryptMap = new HashMap<Long, ECEngine>();
+        this.user = user;
     }
     
     
@@ -238,10 +241,10 @@ public class Encryption
         
         /* Initialize the keypair using the current user's private key and the number's public key */
         ECKeyParam param = new ECKeyParam();
-        ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, SMSUtility.user.getPrivateKey());
+        ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, user.getPrivateKey());
         ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, number.getPublicKey());
         
-        Log.v("My private key", new String(SMSUtility.user.getPrivateKey()));
+        Log.v("My private key", new String(user.getPrivateKey()));
         Log.v("Number's public key", new String(number.getPublicKey()));
         
         /* Finally initialize the encryption engine */

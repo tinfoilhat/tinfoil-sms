@@ -47,6 +47,7 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.database.InvalidDatabaseStateException;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
@@ -74,6 +75,8 @@ public abstract class SMSUtility {
     public static final int LIMIT = 50;
     public static final boolean saveMessage = false;
     
+    /* The encryption engine used to process messages */
+    public static Encryption cryptoEngine;
     
     public static User user;
 
@@ -119,6 +122,29 @@ public abstract class SMSUtility {
         number = number.replaceAll(numOnly.pattern(), "");
 
         return number;
+    }
+    
+    /**
+     * Ensure that the user's information is in memory.
+     * @param dba The database accessor to retrieve the user's key if necessary
+     * @param user The user stored in memory. 
+     * @return The user that is not null
+     * @throws InvalidDatabaseStateException If the user's keys are not found then they have
+     * been deleted thus making any key exchange prior invalid.
+     */
+    public static User getUser(DBAccessor dba, User user) throws InvalidDatabaseStateException
+    {
+        if(user == null)
+        {
+            user = dba.getUserRow();
+            if (user == null)
+            {
+                throw new InvalidDatabaseStateException("User's keys not set in database");
+                //user = new User();
+                //dba.setUser(user);
+            }
+        }
+        return user;
     }
     
     public static void handleKeyExchange(ExchangeKey keyThread, final DBAccessor dba,
@@ -283,13 +309,17 @@ public abstract class SMSUtility {
                     QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, true) &&
                     !message.isExchange())
             {
-            	Encryption CryptoEngine = new Encryption();
+                // Initialize the cryptographic engine if null
+                if (SMSUtility.cryptoEngine == null)
+                {
+                    SMSUtility.cryptoEngine = new Encryption(SMSUtility.getUser(dba, null));
+                }
             	
             	Number number = dba.getNumber(format(message.getNumber()));
             	
             	Log.v("Before Encryption", message.getMessage());
                 //Create the an encrypted message
-            	final String encrypted = CryptoEngine.encrypt(number, message.getMessage());
+            	final String encrypted = SMSUtility.cryptoEngine.encrypt(number, message.getMessage());
             	
             	Log.v("After Encrypted", encrypted);
 

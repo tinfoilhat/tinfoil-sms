@@ -364,11 +364,15 @@ public class MessageReceiver extends BroadcastReceiver {
 
 				Log.v("Before Decryption", fullMessage);
 
-				Encryption CryptoEngine = new Encryption();
+				// Initialize the cryptographic engine if null
+				if (SMSUtility.cryptoEngine == null)
+				{
+				    SMSUtility.cryptoEngine = new Encryption(SMSUtility.getUser(dba, null));
+				}
 
 				Number contactNumber = dba.getNumber(SMSUtility.format(address));
 
-				secretMessage = CryptoEngine.decrypt(contactNumber, fullMessage);
+				secretMessage = SMSUtility.cryptoEngine.decrypt(contactNumber, fullMessage);
 
 				Log.v("After Decryption", secretMessage);
 
