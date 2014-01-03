@@ -33,7 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.dataStructures.ContactParent;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
@@ -54,7 +53,6 @@ public class ExchangeKey implements Runnable {
     //public static ProgressDialog keyDialog;
     private ArrayList<String> untrusted;
     private ArrayList<String> trusted;
-    private ArrayList<ContactParent> contacts;
     private Number number;
     
     private Activity activity;
@@ -71,27 +69,6 @@ public class ExchangeKey implements Runnable {
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
     
-    /**
-     * Used by the ManageContactsActivity to set up the key exchange thread
-     * 
-     * @param contacts The list of contacts
-     */
-    public void startThread(Activity activity, final ArrayList<ContactParent> contacts)
-    {
-        this.activity = activity;
-        this.contacts = contacts;
-        this.trusted = null;
-        this.untrusted = null;
-        
-        multiNumber = true;
-        dba = new DBAccessor(activity);
-        /*
-         * Start the thread from the constructor
-         */
-        Thread thread = new Thread(this);
-        thread.start();
-    }
-
     /**
      * Used to setup the a key exchange for a single contact or to untrust a
      * single contact.
@@ -122,36 +99,7 @@ public class ExchangeKey implements Runnable {
     }
 
     public void run() {
-
-        /* 
-         * Used by ManageContacts Activity to determine from the 
-         * contacts that have been selected need to exchange keys or
-         * stop sending secure messages
-         */
-        if (this.trusted == null && this.untrusted == null)
-        {
-            this.trusted = new ArrayList<String>();
-            this.untrusted = new ArrayList<String>();
-
-            for (int i = 0; i < this.contacts.size(); i++)
-            {
-                for (int j = 0; j < this.contacts.get(i).getNumbers().size(); j++)
-                {
-                    if (this.contacts.get(i).getNumber(j).isSelected())
-                    {
-                        if (!this.contacts.get(i).getNumber(j).isTrusted())
-                        {
-                            this.trusted.add(this.contacts.get(i).getNumber(j).getNumber());
-                        }
-                        else
-                        {
-                            this.untrusted.add(this.contacts.get(i).getNumber(j).getNumber());
-                        }
-                    }
-                }
-            }
-        }
-
+    	
         /*
          * This is actually how removing contacts from trusted should look since it is just a
          * deletion of keys. We don't care if the contact will now fail to decrypt messages that
