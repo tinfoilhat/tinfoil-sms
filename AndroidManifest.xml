@@ -45,6 +45,9 @@
             android:name="com.tinfoil.sms.sms.SendMessageActivity"
             android:label="@string/send_message"
             android:windowSoftInputMode="adjustResize" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tinfoil.sms.sms.ConversationView" />
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,7 +66,11 @@
             android:name="com.tinfoil.sms.sms.MessageView"
             android:configChanges="orientation"
             android:label="@string/message"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tinfoil.sms.sms.ConversationView" />
+		</activity>
         <activity
             android:name="com.tinfoil.sms.settings.ImportContacts"
             android:configChanges="orientation"

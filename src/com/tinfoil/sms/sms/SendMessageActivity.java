@@ -20,13 +20,15 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -68,6 +70,8 @@ public class SendMessageActivity extends Activity {
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
     
+    //private SharedPreferences sharedPrefs;
+    
     private DBAccessor dba;
     private static ExchangeKey keyThread = new ExchangeKey();
     
@@ -83,7 +87,7 @@ public class SendMessageActivity extends Activity {
         dba = new DBAccessor(this);
         
         //TODO make local sharedPrefs
-        ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.newCont = new TrustedContact();
         
         //Do in thread.
@@ -161,6 +165,8 @@ public class SendMessageActivity extends Activity {
 
 
         this.messageBox.addTextChangedListener(messageEvent);
+        
+        setupActionBar();
     }
     
     public void sendMessage (View view)
@@ -248,32 +254,6 @@ public class SendMessageActivity extends Activity {
         }
         return true;
     }
-
-    
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-            case R.id.exchange:
-            	
-            	//This is a bit of a redundant check
-            	
-            	String text =  SendMessageActivity.this.messageBox.getText().toString();
-            	String[] value = checkValidNumber(this, newCont, text, false, false);
-            	if(value!= null) {
-            		
-            		//Add contact to the database
-                	if(!dba.inDatabase(value[0]))
-                	{
-                		dba.addRow(new TrustedContact(new Number(value[0])));
-                	}
-                	                	
-                	SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
-            	}
-            	
-            	return true;
-            default:
-            return super.onOptionsItemSelected(item);
-    	}
-    }
     
     public static String[] checkValidNumber(Context context, TrustedContact newCont,
     		String text, boolean checkText, boolean showError)
@@ -324,5 +304,51 @@ public class SendMessageActivity extends Activity {
         		return UNTRUSTED;
         	}
         }
+    }
+    
+    /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    		case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+            case R.id.exchange:
+            	
+            	//This is a bit of a redundant check
+            	
+            	String text =  SendMessageActivity.this.messageBox.getText().toString();
+            	String[] value = checkValidNumber(this, newCont, text, false, false);
+            	if(value!= null) {
+            		
+            		//Add contact to the database
+                	if(!dba.inDatabase(value[0]))
+                	{
+                		dba.addRow(new TrustedContact(new Number(value[0])));
+                	}
+                	                	
+                	SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
+            	}
+            	
+            	return true;
+            default:
+            return super.onOptionsItemSelected(item);
+    	}
     }
 }
