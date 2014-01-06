@@ -23,6 +23,17 @@
 
         <requestFocus />
     </AutoCompleteTextView>
+    
+    <ListView
+        android:id="@+id/message_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/new_message_field"
+        android:layout_alignParentTop="true"
+        android:divider="@color/DividerColor"
+        android:dividerHeight="1px"
+        android:visibility="invisible">
+    </ListView>
 
     <LinearLayout
         android:id="@+id/new_message_field"

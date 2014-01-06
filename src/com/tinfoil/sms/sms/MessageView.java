@@ -20,7 +20,6 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -66,7 +65,7 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class MessageView extends Activity {
     private EditText messageBox;
-    private static ListView list2;
+    private static ListView messageList;
     private static MessageAdapter messages;
     private static MessageBoxWatcher messageEvent;
     
@@ -90,6 +89,8 @@ public class MessageView extends Activity {
     public static final String UNREAD_COUNT = "unread_count";
     public static final String IS_TRUSTED = "is_trusted"; 
     
+    public static final String MESSAGE_LABEL = "Message";
+    
     private DBAccessor dba;
     
     //TODO merge MessageView and SendMessageActivity
@@ -98,6 +99,31 @@ public class MessageView extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.setContentView(R.layout.new_message);
+        
+        setupActionBar();
+        
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        dba = new DBAccessor(this);
+        
+        setupInterface();
+        
+        handleNumberIntent();
+        
+        setupMessageViewUI();
+        
+        handleNotifications();
+       
+    }
+    
+	public void setupInterface() 
+	{
+		AutoCompleteTextView phone_box = (AutoCompleteTextView)findViewById(R.id.new_message_number);
+		phone_box.setVisibility(AutoCompleteTextView.INVISIBLE);
+	}
+
+    private void handleNumberIntent()
+    {
         //Finds the number of the recently sent message attached to the notification
         if (this.getIntent().hasExtra(MessageService.notificationIntent))
         {
@@ -119,134 +145,11 @@ public class MessageView extends Activity {
         {
         	finish();
         }
-
-        this.setContentView(R.layout.messageviewer);
-        
-        setupActionBar();
-        
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        dba = new DBAccessor(this);
-        ConversationView.messageViewActive = true;
-        
-        /*
-         * Create a list of messages sent between the user and the contact
-         */
-        list2 = (ListView) this.findViewById(R.id.message_list);
-
-        //This allows for the loading to be cancelled
-        /*this.dialog = ProgressDialog.show(this, "Loading Messages",
-                "Please wait...", true, true, new OnCancelListener() {
-
-					public void onCancel(DialogInterface dialog) {
-						MessageView.this.dialog.dismiss();
-						MessageView.this.onBackPressed();						
-					}        	
-        });*/
-        
-        runThread = new MessageLoader(this, false, handler);
-
-        //Set an action for when a user clicks on a message        
-        list2.setOnItemLongClickListener(new OnItemLongClickListener() {
-        	public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-                final int item_num = position;
-
-                final AlertDialog.Builder popup_builder = new AlertDialog.Builder(MessageView.this);
-                popup_builder.setTitle(contact_name)
-                        .setItems(MessageView.this.getResources()
-                    		.getStringArray(R.array.sms_options),
-                    			new DialogInterface.OnClickListener() {
-
-                        	@SuppressLint({ "NewApi"})
-                        	@TargetApi(11)
-                            public void onClick(final DialogInterface dialog, final int which) {
-
-                                final String[] messageValue = (String[]) list2.getItemAtPosition(item_num);
-
-                                //Toast.makeText(MessageView.this, messageValue[1], Toast.LENGTH_SHORT).show();
-                                //Log.v("message", messageValue[1]);
-                                if (which == 0)
-                                {
-                                    //option = Delete
-                                    dba.deleteMessage(Long.valueOf(messageValue[3]));
-                                    updateList();
-                                }
-                                else if (which == 1)
-                                {
-                                	//option = Copy message
-                                	//TODO look into not using the deprecated version of copy
-                                	
-                                	/*if(TinfoilSMS.threadable)
-                                	{
-                                		android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(MessageView.this.CLIPBOARD_SERVICE); 
-                                		android.content.ClipData clip = android.content.ClipData.newPlainText("text label","text to clip");
-                                	    clipboard.setPrimaryClip(clip);
-                                	}
-                                	else
-                                	{*/
-                                		android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                	    clipboard.setText(messageValue[1]);
-                                	//}
-                                    
-                                    //Toast.makeText(MessageView.this.getBaseContext(), "implement me", Toast.LENGTH_SHORT).show();
-                                }
-                                else if (which == 2)
-                                {
-                                    //option = Forward message
-                                    phoneBox = new AutoCompleteTextView(MessageView.this.getBaseContext());
-
-                                    List<String> contact = null;
-                                    if (MessageView.this.tc == null)
-                                    {
-                                    	//TODO Do in thread.
-                                        MessageView.this.tc = dba.getAllRows(DBAccessor.ALL);
-                                    }
-
-                                    if (MessageView.this.tc != null)
-                                    {
-                                        if (contact == null)
-                                        {
-                                            contact = SMSUtility.contactDisplayMaker(MessageView.this.tc);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        contact = null;
-                                    }
-                                    final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                                    		MessageView.this.getBaseContext(), 
-                                    		R.layout.auto_complete_list_item, contact);
-
-                                    phoneBox.setAdapter(adapter);
-
-                                    final AlertDialog.Builder contact_builder = new AlertDialog.Builder(MessageView.this);
-
-                                    contact_builder.setTitle(R.string.forward_title)
-                                            .setCancelable(true)
-                                            .setView(phoneBox)
-                                            .setPositiveButton(R.string.forward_positive_button, new DialogInterface.OnClickListener() {
-
-                                                public void onClick(final DialogInterface dialog, final int which) {
-                                                	
-                                                	forward(messageValue[1]);
-                                                }
-
-                                            });
-                                    final AlertDialog contact_alert = contact_builder.create();
-
-                                    MessageView.this.popup_alert.cancel();
-                                    contact_alert.show();
-                                }
-                            }
-                        }).setCancelable(true);
-                MessageView.this.popup_alert = popup_builder.create();
-                MessageView.this.popup_alert.show();
-            			
-				return false;
-			}
-        });
-
-        /*	
+    }
+    
+    private void handleNotifications()
+    {
+    	/*	
          * Reset the number of unread messages for the contact to 0
          */
         if (dba.getUnreadMessageCount(selectedNumber) > 0)
@@ -257,7 +160,115 @@ public class MessageView extends Activity {
             {
                 MessageService.mNotificationManager.cancel(MessageService.SINGLE);
             }
-        }       
+        }
+    }
+    
+    private void setupMessageViewUI()
+    {
+    	//TODO fix this
+    	ConversationView.messageViewActive = true;
+    
+	    /*
+	     * Create a list of messages sent between the user and the contact
+	     */
+	    messageList = (ListView) this.findViewById(R.id.message_list);
+	    
+	    messageList.setVisibility(ListView.VISIBLE);
+	
+	    //This allows for the loading to be cancelled
+	    /*this.dialog = ProgressDialog.show(this, "Loading Messages",
+	            "Please wait...", true, true, new OnCancelListener() {
+	
+					public void onCancel(DialogInterface dialog) {
+						MessageView.this.dialog.dismiss();
+						MessageView.this.onBackPressed();						
+					}        	
+	    });*/
+	    
+	    runThread = new MessageLoader(this, false, handler);
+	
+	    //Set an action for when a user clicks on a message        
+	    messageList.setOnItemLongClickListener(new OnItemLongClickListener() {
+	    	public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+	            final int item_num = position;
+	
+	            final AlertDialog.Builder popup_builder = new AlertDialog.Builder(MessageView.this);
+	            popup_builder.setTitle(contact_name)
+	                    .setItems(MessageView.this.getResources()
+	                		.getStringArray(R.array.sms_options),
+	                			new DialogInterface.OnClickListener() {
+	
+	                        public void onClick(final DialogInterface dialog, final int which) {
+	
+	                            final String[] messageValue = (String[]) messageList.getItemAtPosition(item_num);
+	
+	                            if (which == 0)
+	                            {
+	                                //option = Delete
+	                                dba.deleteMessage(Long.valueOf(messageValue[3]));
+	                                updateList();
+	                            }
+	                            else if (which == 1)
+	                            {
+	                            	//TODO test
+	                            	copyText(messageValue[1]);
+	                            }
+	                            else if (which == 2)
+	                            {
+	                                //option = Forward message
+	                                phoneBox = new AutoCompleteTextView(MessageView.this.getBaseContext());
+	
+	                                List<String> contact = null;
+	                                if (MessageView.this.tc == null)
+	                                {
+	                                	//TODO Do in thread.
+	                                    MessageView.this.tc = dba.getAllRows(DBAccessor.ALL);
+	                                }
+	
+	                                if (MessageView.this.tc != null)
+	                                {
+	                                    if (contact == null)
+	                                    {
+	                                        contact = SMSUtility.contactDisplayMaker(MessageView.this.tc);
+	                                    }
+	                                }
+	                                else
+	                                {
+	                                    contact = null;
+	                                }
+	                                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+	                                		MessageView.this.getBaseContext(), 
+	                                		R.layout.auto_complete_list_item, contact);
+	
+	                                phoneBox.setAdapter(adapter);
+	
+	                                final AlertDialog.Builder contact_builder = new AlertDialog.Builder(MessageView.this);
+	
+	                                contact_builder.setTitle(R.string.forward_title)
+	                                        .setCancelable(true)
+	                                        .setView(phoneBox)
+	                                        .setPositiveButton(R.string.forward_positive_button, new DialogInterface.OnClickListener() {
+	
+	                                            public void onClick(final DialogInterface dialog, final int which) {
+	                                            	
+	                                            	forward(messageValue[1]);
+	                                            }
+	
+	                                        });
+	                                final AlertDialog contact_alert = contact_builder.create();
+	
+	                                MessageView.this.popup_alert.cancel();
+	                                contact_alert.show();
+	                            }
+	                        }
+	                    }).setCancelable(true);
+	            MessageView.this.popup_alert = popup_builder.create();
+	            MessageView.this.popup_alert.show();
+	        			
+				return false;
+			}
+	    });
     }
     
     /**
@@ -413,6 +424,24 @@ public class MessageView extends Activity {
         }
         return true;
     }
+    
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void copyText(String message) 
+    {
+    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    		
+    		android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE); 
+    		android.content.ClipData clip = android.content.ClipData.newPlainText(MESSAGE_LABEL, message);
+    	    clipboard.setPrimaryClip(clip);
+		}
+    	else
+    	{
+    		
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+    	    clipboard.setText(message);
+    	}
+    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -501,13 +530,13 @@ public class MessageView extends Activity {
         	switch (msg.what){
         	case LOAD:
 		        contact_name = b.getString(MessageView.CONTACT_NAME);
-		        messageEvent = new MessageBoxWatcher(MessageView.this, R.id.word_count);
-		        messageBox = (EditText) MessageView.this.findViewById(R.id.message);
+		        messageEvent = new MessageBoxWatcher(MessageView.this, R.id.send_word_count);
+		        messageBox = (EditText) MessageView.this.findViewById(R.id.new_message_message);
 	        	messageBox.addTextChangedListener(messageEvent);
 	        	messages = new MessageAdapter(MessageView.this, R.layout.listview_full_item_row, 
 	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
-	        	list2.setAdapter(messages);
-	            list2.setItemsCanFocus(false);
+	        	messageList.setAdapter(messages);
+	            messageList.setItemsCanFocus(false);
 
 	            /*
 	             * Set the list to list from the bottom up and auto scroll to
@@ -515,8 +544,8 @@ public class MessageView extends Activity {
 	             */
 	            if(!sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
 	            {
-	            	list2.setStackFromBottom(true);
-	            	list2.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+	            	messageList.setStackFromBottom(true);
+	            	messageList.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 	            }
 
 	        	break;

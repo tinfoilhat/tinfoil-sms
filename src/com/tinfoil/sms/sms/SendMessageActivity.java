@@ -96,6 +96,7 @@ public class SendMessageActivity extends Activity {
         	{
         		//TODO setup message view ui
         		//TODO set up menu
+        		this.setTitle(R.string.message);
         		currentActivity = ConversationView.MESSAGE_VIEW;
         	}
         	else
@@ -106,13 +107,13 @@ public class SendMessageActivity extends Activity {
                 
         		if(intentValue == ConversationView.COMPOSE)
         		{
-                    setupMessageBox();
+                    setupMessageBox();                    
                     currentActivity = ConversationView.COMPOSE;
         		}
         		else if (intentValue == ConversationView.NEW_KEY_EXCHANGE)
         		{
-        			//TODO set up menu
         			setupInterface();
+        			this.setTitle(R.string.new_key_exchange);
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
         		}
         		else
