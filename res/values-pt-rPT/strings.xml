@@ -4,9 +4,7 @@
     <string name="vibration_default_length">500</string>
     <string name="contact_name">nome</string>
     
-    <string name="okay">Ok</string>
     <string name="cancel">Cancelar</string>
-    <string name="no">Não</string>
     <string name="tell_me_more">Diz-me Mais</string>
     <string name="save">Guardar</string>
     <string name="accept">Aceitar</string>
@@ -151,8 +149,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
         <item>Reencaminhar Mensagem</item>
     </string-array>
     <string name="key_exchange_dialog_message">Gostaria de trocar chaves com</string>
-    <string name="key_exchange_dialog_pos_button">OK</string>
-    <string name="key_exchange_dialog_neg_button">Não</string>
     <string name="shared_secret">Os Segredos Partilhados tem de ser maiores do que</string>
     <string name="export_number_title">Introduzir Número de Contacto</string>
     <string name="key_exchange_import">Importar Troca de Chave</string>

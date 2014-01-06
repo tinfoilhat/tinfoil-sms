@@ -169,7 +169,7 @@ public abstract class SMSUtility {
 		    	builder.setMessage(activity.getString(R.string.key_exchange_dialog_message)
 		    		+ " " + tc.getName() + ", " + numberO.getNumber() + "?")
 		    		.setCancelable(true)
-		    		.setPositiveButton(R.string.key_exchange_dialog_pos_button,
+		    		.setPositiveButton(android.R.string.ok,
 		    	    		new DialogInterface.OnClickListener() {
 			     	   @Override
 			     	   public void onClick(DialogInterface dialog, int id) {
@@ -183,7 +183,7 @@ public abstract class SMSUtility {
 			     		   {
 			     			   KeyExchangeManager.setAndSend(activity, numberO, tc.getName(), entry);
 			      		}}})
-		    	    .setNegativeButton(R.string.key_exchange_dialog_neg_button,
+		    	    .setNegativeButton(android.R.string.no,
 		    	    		new DialogInterface.OnClickListener() {
 			     	   @Override
 			     	   public void onClick(DialogInterface arg0, int arg1) {

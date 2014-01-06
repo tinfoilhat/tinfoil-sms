@@ -4,9 +4,7 @@
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
     <string name="contact_name">name</string>
-    <string name="okay">Okay</string>
     <string name="cancel">Cancel</string>
-    <string name="no">No</string>
     <string name="tell_me_more">Tell Me More</string>
     <string name="save">Save</string>
     <string name="accept">Accept</string>
@@ -154,8 +152,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     </string-array>
 
     <string name="key_exchange_dialog_message">Would you like to exchange keys with</string>
-    <string name="key_exchange_dialog_pos_button">OK</string>
-    <string name="key_exchange_dialog_neg_button">No</string>
     <string name="shared_secret">Shared secrets must be longer than</string>
     <string name="export_number_title">Input Contact\'s Number</string>
     <string name="key_exchange_import">Key Exchange Import</string>

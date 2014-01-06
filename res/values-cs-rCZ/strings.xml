@@ -5,9 +5,7 @@
     <string name="vibration_default_length">500</string>
     <string name="contact_name">Jméno</string>
     
-    <string name="okay">OK</string>
     <string name="cancel">Storno</string>
-    <string name="no">Ne</string>
     <string name="tell_me_more">Dozvědět se více</string>
     <string name="save">Uložit</string>
     <string name="accept">Přijmout</string>
@@ -152,8 +150,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
         <item>Přeposlat zprávu</item>
     </string-array>
     <string name="key_exchange_dialog_message">Chcete vyměnit klíč s kontaktem</string>
-    <string name="key_exchange_dialog_pos_button">Ano</string>
-    <string name="key_exchange_dialog_neg_button">Ne</string>
     <string name="shared_secret">Ověřovací věty musí být delší než</string>
     <string name="export_number_title">Vložit Kontaktovo číslo</string>
     <string name="key_exchange_import">Import výměny klíče</string>

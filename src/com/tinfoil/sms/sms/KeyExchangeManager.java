@@ -263,7 +263,7 @@ public class KeyExchangeManager extends Activity {
 				 builder.setMessage(message)
 			       .setCancelable(true)
 			       .setTitle(R.string.key_exchange_error_title)
-			       .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+			       .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			    	   @Override
 			    	   public void onClick(DialogInterface dialog, int id) {
 			    		  

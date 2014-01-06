@@ -85,7 +85,7 @@ public abstract class KeyExchangeHandler {
 							cancel();
 						}
 					})
-				   .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+				   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 					   @Override
 					   public void onClick(DialogInterface dialog, int id) {
 						   accept();
@@ -100,7 +100,7 @@ public abstract class KeyExchangeHandler {
 							 context.startActivity(i);
 						}
 					})
-				   .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+				   .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 					   @Override
 					   public void onClick(DialogInterface arg0, int which) {
 						   	// Delete the key exchange message that was received
