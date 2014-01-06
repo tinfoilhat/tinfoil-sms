@@ -77,11 +77,13 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class ConversationView extends Activity {
 
+	public static final String selectedNumberIntent = "com.tinfoil.sms.sms.Selected";
+	public static final String MESSAGE_INTENT = "com.tinfoil.sms.sms.message";
+	
 	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
     public static final String SENT = "content://sms/sent";
     public static SharedPreferences sharedPrefs;    
-    public static final String selectedNumberIntent = "com.tinfoil.sms.Selected";
     private static ConversationAdapter conversations;
     public static List<String[]> msgList;
     private static ListView list;
@@ -102,6 +104,10 @@ public class ConversationView extends Activity {
     
     public static final int ADD_CONTACT = 0;
     public static final int IMPORT_CONTACT = 1;
+    
+    public static final int COMPOSE = 0;
+    public static final int MESSAGE_VIEW = 1;
+    public static final int NEW_KEY_EXCHANGE = 2;
 
     /** Called when the activity is first created. */
     @Override
@@ -305,9 +311,13 @@ public class ConversationView extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+    	
+    	Intent i = null;
         switch (item.getItemId()) {
             case R.id.compose:
-                this.startActivity(new Intent(this, SendMessageActivity.class));
+            	i = new Intent(this, SendMessageActivity.class);
+            	i.putExtra(MESSAGE_INTENT, COMPOSE);
+                this.startActivity(i);
                 return true;
             case R.id.settings:
                 this.startActivity(new Intent(this, QuickPrefsActivity.class));
@@ -316,7 +326,9 @@ public class ConversationView extends Activity {
             	this.startActivity(new Intent(this, KeyExchangeManager.class));
             	return true;
             case R.id.key_exchange:
-            	this.startActivity(new Intent(this, NewKeyExchange.class));
+            	i = new Intent(this, SendMessageActivity.class);
+            	i.putExtra(MESSAGE_INTENT, NEW_KEY_EXCHANGE);
+                this.startActivity(i);
             default:
                 return super.onOptionsItemSelected(item);
         }

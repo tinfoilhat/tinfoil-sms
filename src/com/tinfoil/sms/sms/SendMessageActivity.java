@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
@@ -69,11 +70,11 @@ public class SendMessageActivity extends Activity {
     private EditText messageBox;
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
-    
-    //private SharedPreferences sharedPrefs;
-    
+        
     private DBAccessor dba;
     private static ExchangeKey keyThread = new ExchangeKey();
+    
+    private int currentActivity = -1;
     
 
     /** Called when the activity is first created. */
@@ -81,50 +82,95 @@ public class SendMessageActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.new_message);
+        
+        setupActionBar();
 
         //String a = null;
         //Toast.makeText(this, a.length(), Toast.LENGTH_LONG).show();
         dba = new DBAccessor(this);
         
-        //TODO make local sharedPrefs
-        //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        this.newCont = new TrustedContact();
-        
-        //Do in thread.
-        this.tc = dba.getAllRows(DBAccessor.ALL);
-
-        messageEvent = new MessageBoxWatcher(this, R.id.send_word_count);
-        
-        phoneBox = (AutoCompleteTextView) this.findViewById(R.id.new_message_number);
-        List<String> contact;
-        if (this.tc != null)
+        if(this.getIntent().hasExtra(ConversationView.MESSAGE_INTENT))
         {
-            contact = SMSUtility.contactDisplayMaker(this.tc);
+        	int intentValue = this.getIntent().getIntExtra(ConversationView.MESSAGE_INTENT, ConversationView.COMPOSE);
+        	if(intentValue == ConversationView.MESSAGE_VIEW)
+        	{
+        		//TODO setup message view ui
+        		//TODO set up menu
+        		currentActivity = ConversationView.MESSAGE_VIEW;
+        	}
+        	else
+        	{
+        		this.newCont = new TrustedContact();
+                
+                setupPhoneBox();
+                
+        		if(intentValue == ConversationView.COMPOSE)
+        		{
+                    setupMessageBox();
+                    currentActivity = ConversationView.COMPOSE;
+        		}
+        		else if (intentValue == ConversationView.NEW_KEY_EXCHANGE)
+        		{
+        			//TODO set up menu
+        			setupInterface();
+        			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
+        		}
+        		else
+        		{
+        			//TODO throw and catch invalid activity
+        			
+        			//Finish activity, invalid activity requested
+        			finish();
+        		}
+        	}
+        }
+        else
+        {
+        	//TODO Check for send / sendto indent
+            Uri uri = this.getIntent().getData();
+            if (uri != null)
+            {
+            	String[] value = uri.toString().split(":");
+            	if(value.length == 2)
+            	{
+            		this.phoneBox.setText(value[1]);
+            	}
+            	else
+            	{
+            		this.phoneBox.setText(value[0]);
+            	}
+            }
+            else
+            {
+            	//TODO throw and catch invalid activity
+    			
+    			//Finish activity, invalid activity requested
+            	finish();
+            }
+        }
+
+    }
+    
+    private void setupPhoneBox()
+    {
+    	//Do in thread.
+        tc = dba.getAllRows(DBAccessor.ALL);
+        
+        phoneBox = (AutoCompleteTextView)findViewById(R.id.new_message_number);
+        List<String> contact;
+        if (tc != null)
+        {
+            contact = SMSUtility.contactDisplayMaker(tc);
         }
         else
         {
             contact = null;
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.auto_complete_list_item, contact);
-
-        Uri uri = this.getIntent().getData();
-        if (uri != null)
-        {
-        	String[] value = uri.toString().split(":");
-        	if(value.length == 2)
-        	{
-        		this.phoneBox.setText(value[1]);
-        	}
-        	else
-        	{
-        		this.phoneBox.setText(value[0]);
-        	}
-        	
-        }
         
-        this.phoneBox.setAdapter(adapter);
+        phoneBox.setAdapter(adapter);
 
-        this.phoneBox.addTextChangedListener(new TextWatcher() {
+        phoneBox.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(final Editable s) {
 
                 final String[] info = s.toString().split(", ");
@@ -159,14 +205,17 @@ public class SendMessageActivity extends Activity {
             public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
             }
         });
-        
-        //this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
-        this.messageBox = (EditText) this.findViewById(R.id.new_message_message);
+    }
+    
+    public void setupMessageBox()
+    {
+    	 messageEvent = new MessageBoxWatcher(this, R.id.send_word_count);
+    	 
+    	 //this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
+         this.messageBox = (EditText) this.findViewById(R.id.new_message_message);
 
 
-        this.messageBox.addTextChangedListener(messageEvent);
-        
-        setupActionBar();
+         this.messageBox.addTextChangedListener(messageEvent);
     }
     
     public void sendMessage (View view)
@@ -208,11 +257,48 @@ public class SendMessageActivity extends Activity {
     	}       	
             
     }
+    
+	public void setupInterface() 
+	{
+		LinearLayout et = (LinearLayout)findViewById(R.id.new_message_field);
+		
+		et.setVisibility(LinearLayout.INVISIBLE);
+		
+		LinearLayout layout = (LinearLayout)findViewById(R.id.key_exchange_field);
+		layout.setVisibility(LinearLayout.VISIBLE);
+		
+		//Button exchange = (Button)findViewById(R.id.key_exchange);
+	}
+	
+	public void sendKeyExchange(View view)
+	{
+		
+		String[] temp = SendMessageActivity.checkValidNumber(this, newCont, null, false, true);
+		
+		if(temp != null)
+		{
+			SMSUtility.handleKeyExchange(keyThread, dba, this, temp[0]);
+
+			//TODO Give user feedback.
+			//Toast.makeText(this, R.string.key_exchange_sent, Toast.LENGTH_SHORT).show();
+			
+			finish();
+		}
+		else
+		{
+			//TODO Handle bad number
+		}
+	}
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
     	MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.new_message_menu, menu);
+        
+        if(currentActivity == ConversationView.NEW_KEY_EXCHANGE)
+        {
+        	return false;
+        }
         return true;
     }
     

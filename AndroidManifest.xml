@@ -112,15 +112,6 @@
             android:enabled="true"
             android:exported="false" >
         </provider>
-
-        <activity
-            android:name="com.tinfoil.sms.sms.NewKeyExchange"
-            android:label="@string/title_activity_new_key_exchange"
-             >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tinfoil.sms.sms.ConversationView" />
-        </activity>
     </application>
 
 </manifest>
