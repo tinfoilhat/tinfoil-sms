@@ -27,7 +27,7 @@ public class MessageBoxWatcher implements TextWatcher {
 	private int wordCounter;
 	private static final int START_NUMBER = 5;
 	
-	public MessageBoxWatcher(Activity app, int id, boolean trusted)
+	public MessageBoxWatcher(Activity app, int id)
 	{
 		wordCount = (TextView) app.findViewById(id);
 	}

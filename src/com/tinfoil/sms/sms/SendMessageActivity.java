@@ -22,12 +22,12 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,6 +57,11 @@ import com.tinfoil.sms.utility.SMSUtility;
  * editTc != null
  */
 public class SendMessageActivity extends Activity {
+	
+    public static final int TRUSTED = 0;
+    public static final int RESOLVE = 1;
+    public static final int UNTRUSTED = 2;
+	
     private static MessageBoxWatcher messageEvent;
     private AutoCompleteTextView phoneBox;
     private EditText messageBox;
@@ -76,20 +81,17 @@ public class SendMessageActivity extends Activity {
         //String a = null;
         //Toast.makeText(this, a.length(), Toast.LENGTH_LONG).show();
         dba = new DBAccessor(this);
-
+        
+        //TODO make local sharedPrefs
         ConversationView.sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.newCont = new TrustedContact();
         
         //Do in thread.
         this.tc = dba.getAllRows(DBAccessor.ALL);
 
-        //Since the number is being entered cant really set a limit on the size...
-        //Defaults to a trusted contact just to be safe
-        final boolean isTrusted = true;
-
-        messageEvent = new MessageBoxWatcher(this, R.id.send_word_count, isTrusted);
+        messageEvent = new MessageBoxWatcher(this, R.id.send_word_count);
         
-        this.phoneBox = (AutoCompleteTextView) this.findViewById(R.id.new_message_number);
+        phoneBox = (AutoCompleteTextView) this.findViewById(R.id.new_message_number);
         List<String> contact;
         if (this.tc != null)
         {
@@ -157,23 +159,14 @@ public class SendMessageActivity extends Activity {
         //this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
         this.messageBox = (EditText) this.findViewById(R.id.new_message_message);
 
-        final InputFilter[] FilterArray = new InputFilter[1];
-
-        if (isTrusted)
-        {
-            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.ENCRYPTED_MESSAGE_LENGTH);
-        }
-        else
-        {
-            FilterArray[0] = new InputFilter.LengthFilter(SMSUtility.MESSAGE_LENGTH);
-        }
 
         this.messageBox.addTextChangedListener(messageEvent);
     }
     
     public void sendMessage (View view)
     {
-    	String[] temp = checkValidNumber(true, true);
+    	String box =  SendMessageActivity.this.messageBox.getText().toString();
+    	String[] temp = checkValidNumber(this, newCont, box, true, true);
     	
     	if(temp != null)
     	{
@@ -206,8 +199,7 @@ public class SendMessageActivity extends Activity {
             
             SendMessageActivity.this.messageBox.setText("");
             SendMessageActivity.this.phoneBox.setText("");
-    	}
-    	       	
+    	}       	
             
     }
 
@@ -222,32 +214,32 @@ public class SendMessageActivity extends Activity {
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
         
-        String[] values = checkValidNumber(false, false);
+        String text =  SendMessageActivity.this.messageBox.getText().toString();
+        String[] values = checkValidNumber(this, newCont, text, false, false);
         if(values != null)
         {
-	        if(dba.isTrustedContact(values[0]))
-	        {
+        	int ret = validNumber(dba, values[0]);
+        	
+        	if(ret == TRUSTED)
+        	{
 	        	menu.findItem(R.id.exchange)
 	        		.setTitle(R.string.untrust_contact_menu_full)
 	        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short))
 	        		.setEnabled(true);
 	        }
-	        else
+	        else if(ret == UNTRUSTED)
 	        {
-	        	if(dba.getKeyExchangeMessage(values[0]) != null)
-	        	{
-	        		menu.findItem(R.id.exchange)
-	        			.setTitle(R.string.resolve_key_exchange_full)
-	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
-	        			.setEnabled(true);
-	        	}
-	        	else
-	        	{
-	        		menu.findItem(R.id.exchange)
-	        			.setTitle(R.string.exchange_key_full)
-	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
-	        			.setEnabled(true);
-	        	}
+        		menu.findItem(R.id.exchange)
+        			.setTitle(R.string.resolve_key_exchange_full)
+        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
+        			.setEnabled(true);
+	        }
+        	else if(ret == RESOLVE)
+        	{
+        		menu.findItem(R.id.exchange)
+        			.setTitle(R.string.exchange_key_full)
+        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
+        			.setEnabled(true);
 	        }
         }
         else
@@ -263,7 +255,9 @@ public class SendMessageActivity extends Activity {
             case R.id.exchange:
             	
             	//This is a bit of a redundant check
-            	String[] value = checkValidNumber(false, false);
+            	
+            	String text =  SendMessageActivity.this.messageBox.getText().toString();
+            	String[] value = checkValidNumber(this, newCont, text, false, false);
             	if(value!= null) {
             		
             		//Add contact to the database
@@ -281,12 +275,12 @@ public class SendMessageActivity extends Activity {
     	}
     }
     
-    private String[] checkValidNumber(boolean checkText, boolean showError)
+    public static String[] checkValidNumber(Context context, TrustedContact newCont,
+    		String text, boolean checkText, boolean showError)
     {
-    	if (!SendMessageActivity.this.newCont.getNumber().isEmpty()) {
-            final String number = SendMessageActivity.this.newCont.getNumber(0);
-            final String text = SendMessageActivity.this.messageBox.getText().toString();
-
+    	if (!newCont.getNumber().isEmpty()) {
+            final String number = newCont.getNumber(0);
+            
             if (number.length() > 0 && (!checkText || text.length() > 0))
             {
             	return new String[]{number, text};
@@ -294,10 +288,10 @@ public class SendMessageActivity extends Activity {
             }
             else if(showError)
             {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(SendMessageActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage(R.string.insufficent_information_provided)
                         .setCancelable(true)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, final int id) {
                             }
                         });
@@ -308,8 +302,27 @@ public class SendMessageActivity extends Activity {
         }
     	else if(showError)
     	{
-    		Toast.makeText(SendMessageActivity.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
+    		Toast.makeText(context, R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
     	}
     	return null;
+    }
+    
+    public static int validNumber(DBAccessor dba, String value)
+    {
+        if(dba.isTrustedContact(value))
+        {
+        	return TRUSTED;        	
+        }
+        else
+        {
+        	if(dba.getKeyExchangeMessage(value) != null)
+        	{
+        		return RESOLVE;
+        	}
+        	else
+        	{
+        		return UNTRUSTED;
+        	}
+        }
     }
 }

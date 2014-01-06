@@ -156,8 +156,10 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	
 	public SQLiteDatabase getDB()
 	{
-		return SQLiteDatabase.openDatabase(PATH, null, SQLiteDatabase.CREATE_IF_NECESSARY
-				| SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+		//TODO look into localization error	
+		return this.getWritableDatabase();
+		//SQLiteDatabase.openDatabase(PATH, null, SQLiteDatabase.CREATE_IF_NECESSARY
+				//| SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
 	}
 
     @Override

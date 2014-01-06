@@ -89,7 +89,8 @@ public class MessageView extends Activity {
     public static final String IS_TRUSTED = "is_trusted"; 
     
     private DBAccessor dba;
-
+    
+    //TODO merge MessageView and SendMessageActivity
     /** Called when the activity is first created. */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -423,6 +424,7 @@ public class MessageView extends Activity {
         switch (item.getItemId()) {
             case R.id.exchange:
 
+            	//TODO update list of messages once key exchange is sent 
             	SMSUtility.handleKeyExchange(keyThread, dba, this, selectedNumber);
 
                 return true;
@@ -485,7 +487,7 @@ public class MessageView extends Activity {
         	switch (msg.what){
         	case LOAD:
 		        contact_name = b.getString(MessageView.CONTACT_NAME);
-		        messageEvent = new MessageBoxWatcher(MessageView.this, R.id.word_count, b.getBoolean(MessageView.IS_TRUSTED));
+		        messageEvent = new MessageBoxWatcher(MessageView.this, R.id.word_count);
 		        messageBox = (EditText) MessageView.this.findViewById(R.id.message);
 	        	messageBox.addTextChangedListener(messageEvent);
 	        	messages = new MessageAdapter(MessageView.this, R.layout.listview_full_item_row, 

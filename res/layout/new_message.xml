@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".sms.SendMessageActivity" >
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
     <AutoCompleteTextView
         android:id="@+id/new_message_number"
@@ -61,6 +64,25 @@
                 android:onClick="sendMessage"
                 android:src="@android:drawable/ic_menu_send" />
         </LinearLayout>
+    </LinearLayout>
+    
+        <LinearLayout
+        android:id="@+id/key_exchange_field"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" >
+
+        <Button
+                android:id="@+id/key_exchange"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:layout_gravity="bottom"
+                android:onClick="sendKeyExchange"
+                android:text="@string/exchange_key_full" />
     </LinearLayout>
 
 </RelativeLayout>

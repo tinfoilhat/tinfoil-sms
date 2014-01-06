@@ -315,6 +315,8 @@ public class ConversationView extends Activity {
             case R.id.exchange:
             	this.startActivity(new Intent(this, KeyExchangeManager.class));
             	return true;
+            case R.id.key_exchange:
+            	this.startActivity(new Intent(this, NewKeyExchange.class));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -367,6 +369,9 @@ public class ConversationView extends Activity {
 	                SharedPreferences.Editor editor = sharedPrefs.edit();
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
+	                
+	                //If api level > kitkat check if tinfoil-sms is default SMS.
+	                //checkDefault();
 				}
 	        })
 	        .setOnCancelListener(new OnCancelListener(){
@@ -387,8 +392,57 @@ public class ConversationView extends Activity {
 	        });
 	    	builder.create().show();
         }
+    	else
+    	{
+    		// Check if Tinfoil-SMS is default SMS app.
+    		//checkDefault();
+    	}
     }
+
+    /*@TargetApi(19)
+	public void checkDefault()
+    {
+    	if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
+    	{
+	    	final String myPackageName = getPackageName();
+	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
+	        	
+	        	//TODO move strings to strings.xml
+	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		        .setTitle("Change SMS app?")
+		        .setCancelable(true)
+		        .setMessage("Use Tinfoil-SMS instead your currently selected SMS app?")
+		        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
 		
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
+	                            myPackageName);
+	                    startActivity(intent);
+					}
+		        })
+		        .setOnCancelListener(new OnCancelListener(){
+	
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						// Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+					}	        	
+		        })
+		        .setNegativeButton(android.R.string.no, new Dialog.OnClickListener() {
+		
+		            @Override
+		            public void onClick(DialogInterface dialog, int which) {
+		                // Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+		            }
+		        });
+		    	builder.create().show();
+	        }
+    	}
+    }*/
+
 	/**
 	 * The handler class for cleaning up after the loading thread as well as the
 	 * update thread.

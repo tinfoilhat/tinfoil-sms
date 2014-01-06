@@ -104,7 +104,6 @@ public class DBAccessor {
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.EXCHANGE_CONTENT_URI, new String[]{
 				SQLitehelper.KEY_ID, SQLitehelper.KEY_EXCHANGE_MESSAGE}, SQLitehelper.KEY_NUMBER_REFERENCE + " = " + id,
 				null, null);
-		
 		if(cur.moveToFirst())
 		{
 			Entry exchangeMessage = new Entry(number,
@@ -114,6 +113,12 @@ public class DBAccessor {
 			cur.close();
 			return exchangeMessage;
 		}
+		
+		if(cur != null)
+		{
+			cur.close();
+		}
+		
 		return null;
 	}
 	
