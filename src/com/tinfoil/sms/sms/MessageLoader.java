@@ -70,18 +70,18 @@ public class MessageLoader extends Loader{
 				
 		        Message msg = new Message();
 	        	Bundle b = new Bundle();
-	        	b.putString(MessageView.CONTACT_NAME, contact_name);
-	        	b.putBoolean(MessageView.IS_TRUSTED, isTrusted);
-	        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
-	        	b.putInt(MessageView.UNREAD_COUNT, unreadCount);
+	        	b.putString(SendMessageActivity.CONTACT_NAME, contact_name);
+	        	b.putBoolean(SendMessageActivity.IS_TRUSTED, isTrusted);
+	        	b.putSerializable(SendMessageActivity.MESSAGE_LIST, (Serializable)msgList2);
+	        	b.putInt(SendMessageActivity.UNREAD_COUNT, unreadCount);
 	        	msg.setData(b);
-	        	msg.what = MessageView.LOAD;
+	        	msg.what = SendMessageActivity.LOAD;
 		        
 		        this.handler.sendMessage(msg);
 			}
 			else
 			{
-				this.handler.sendEmptyMessage(MessageView.FINISH);
+				this.handler.sendEmptyMessage(SendMessageActivity.FINISH);
 			}
 		}
 		else
@@ -92,9 +92,9 @@ public class MessageLoader extends Loader{
 			
 			Message msg = new Message();
         	Bundle b = new Bundle();
-        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
+        	b.putSerializable(SendMessageActivity.MESSAGE_LIST, (Serializable)msgList2);
         	msg.setData(b);
-        	msg.what = MessageView.UPDATE;
+        	msg.what = SendMessageActivity.UPDATE;
 	        
 	        this.handler.sendMessage(msg);
 		}

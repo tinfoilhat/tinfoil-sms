@@ -34,7 +34,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.sms.KeyExchangeManager;
-import com.tinfoil.sms.sms.MessageView;
+import com.tinfoil.sms.sms.SendMessageActivity;
 
 public class MessageService extends Service {
     private DBAccessor dba;
@@ -61,9 +61,12 @@ public class MessageService extends Service {
         dba = new DBAccessor(this);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
+    
+	//TODO fix deprecated methods in this class
 
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
+
 
         /*
          * Creates a notification if there is one to be created and if the user set the preferences
@@ -107,7 +110,8 @@ public class MessageService extends Service {
                         contentTitle + ": " + contentText, System.currentTimeMillis());
                 if (MessageReceiver.myActivityStarted)
                 {
-                    notifyIntent = new Intent(this.getApplicationContext(), MessageView.class);
+                    notifyIntent = new Intent(this.getApplicationContext(), SendMessageActivity.class);
+                    notifyIntent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
                     notifyIntent.putExtra(notificationIntent, address);
                     in = PendingIntent.getActivity(this,
                             0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);

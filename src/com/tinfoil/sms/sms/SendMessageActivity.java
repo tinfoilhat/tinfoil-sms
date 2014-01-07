@@ -121,6 +121,7 @@ public class SendMessageActivity extends Activity {
         	int intentValue = this.getIntent().getIntExtra(ConversationView.MESSAGE_INTENT, ConversationView.COMPOSE);
         	if(intentValue == ConversationView.MESSAGE_VIEW)
         	{
+        		//TODO add menu functionality
         		this.setTitle(R.string.message);
         		currentActivity = ConversationView.MESSAGE_VIEW;
         		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -798,12 +799,12 @@ public class SendMessageActivity extends Activity {
         	
         	switch (msg.what){
         	case LOAD:
-		        contact_name = b.getString(MessageView.CONTACT_NAME);
+		        contact_name = b.getString(SendMessageActivity.CONTACT_NAME);
 		        messageEvent = new MessageBoxWatcher(SendMessageActivity.this, R.id.send_word_count);
 		        messageBox = (EditText) SendMessageActivity.this.findViewById(R.id.new_message_message);
 	        	messageBox.addTextChangedListener(messageEvent);
 	        	messages = new MessageAdapter(SendMessageActivity.this, R.layout.listview_full_item_row, 
-	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
+	        			(List<String[]>) b.get(SendMessageActivity.MESSAGE_LIST), b.getInt(SendMessageActivity.UNREAD_COUNT, 0));
 	        	messageList.setAdapter(messages);
 	            messageList.setItemsCanFocus(false);
 
@@ -820,10 +821,10 @@ public class SendMessageActivity extends Activity {
 	        	break;
         	case UPDATE:
         		messages.clear();
-        		messages.addData((List<String[]>) b.get(MessageView.MESSAGE_LIST));
+        		messages.addData((List<String[]>) b.get(SendMessageActivity.MESSAGE_LIST));
         		messages.notifyDataSetChanged();
         		break;
-        		
+        		 
         	case FINISH:
         		messages.clear();
         		finish();
