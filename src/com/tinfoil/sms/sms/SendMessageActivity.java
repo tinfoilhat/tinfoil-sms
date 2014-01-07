@@ -40,6 +40,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -164,29 +165,65 @@ public class SendMessageActivity extends Activity {
         }
         else
         {
-        	//TODO Check for send / sendto indent
-            Uri uri = this.getIntent().getData();
+            
+            handleSendIntent();
+            //TODO Check for send / sendto indent
+            /*Uri uri = this.getIntent().getData();
             if (uri != null)
             {
-            	String[] value = uri.toString().split(":");
-            	if(value.length == 2)
-            	{
-            		this.phoneBox.setText(value[1]);
-            	}
-            	else
-            	{
-            		this.phoneBox.setText(value[0]);
-            	}
+                String[] value = uri.toString().split(":");
+                if(value.length == 2)
+                {
+                    this.phoneBox.setText(value[1]);
+                }
+                else
+                {
+                    this.phoneBox.setText(value[0]);
+                }
             }
             else
             {
-            	//TODO throw and catch invalid activity
-    			
-    			//Finish activity, invalid activity requested
-            	finish();
-            }
+                //TODO throw and catch invalid activity
+                
+                //Finish activity, invalid activity requested
+                //finish();
+            }*/
         }
 
+    }
+    
+    private void handleSendIntent()
+    {
+        Intent intent = this.getIntent();
+        
+        //Toast.makeText(this, ""+(Intent.ACTION_SENDTO.equals(intent.getAction())&& intent.getType() != null), Toast.LENGTH_LONG).show();
+        
+        if (Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null) {
+            
+            if ("text/plain".equals(intent.getType())) {
+                
+                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                
+                //TODO test
+                if (sharedText != null) {
+                    Toast.makeText(this, "SEND", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(Intent.ACTION_SENDTO.equals(intent.getAction())){
+            
+            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            Uri uri = this.getIntent().getData();
+            
+            if(uri.getSchemeSpecificPart() != null){
+                
+                //TODO check if contact is already in db
+                    //If it is go messageView
+                    //Else go to Compose and make phoneBox = number
+                //TODO check if sharedText is there, if so use it
+                Toast.makeText(this, ""+uri.getSchemeSpecificPart(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
     
     private void setupPhoneBox()
@@ -384,7 +421,7 @@ public class SendMessageActivity extends Activity {
         	finish();
         }
     }
-	
+
     private void handleNotifications()
     {
     	/*	
@@ -534,7 +571,7 @@ public class SendMessageActivity extends Activity {
     public static void updateList()
     {
         if (selectedNumber != null)
-        {        	
+        {
         	runThread.setUpdate(true);
         	runThread.setStart(false);
         }
@@ -662,7 +699,7 @@ public class SendMessageActivity extends Activity {
     {
         if(dba.isTrustedContact(value))
         {
-        	return TRUSTED;        	
+        	return TRUSTED;
         }
         else
         {
@@ -733,9 +770,12 @@ public class SendMessageActivity extends Activity {
     @Override
     protected void onDestroy()
     {
-		ConversationView.messageViewActive = false;
-		runThread.setRunner(false);
-		super.onDestroy();
+        if(currentActivity == ConversationView.MESSAGE_VIEW)
+        {
+            ConversationView.messageViewActive = false;
+            runThread.setRunner(false);
+        }
+        super.onDestroy();
     }
 
 
@@ -756,7 +796,7 @@ public class SendMessageActivity extends Activity {
             	
             	if(currentActivity == ConversationView.COMPOSE)
             	{
-            		//This is a bit of a redundant check            	
+            		//This is a bit of a redundant check
                 	String text =  SendMessageActivity.this.messageBox.getText().toString();
                 	String[] value = checkValidNumber(this, newCont, text, false, false);
                 	if(value!= null) {

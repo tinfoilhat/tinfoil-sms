@@ -49,6 +49,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.sms.ConversationView" />
             <intent-filter>
+                <action android:name="android.intent.action.SEND" /> 
                 <action android:name="android.intent.action.SENDTO" />
                 <category android:name="android.intent.category.DEFAULT" />
 
