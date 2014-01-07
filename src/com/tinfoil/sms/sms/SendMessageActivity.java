@@ -123,7 +123,6 @@ public class SendMessageActivity extends Activity {
         	int intentValue = this.getIntent().getIntExtra(ConversationView.MESSAGE_INTENT, ConversationView.COMPOSE);
         	if(intentValue == ConversationView.MESSAGE_VIEW)
         	{
-        		//TODO add menu functionality
         		setupMessageView(null, null);
         	}
         	else
@@ -145,9 +144,6 @@ public class SendMessageActivity extends Activity {
         		}
         		else
         		{
-        			//TODO throw and catch invalid activity
-        			
-        			//Finish activity, invalid activity requested
         			finish();
         		}
         	}
@@ -234,11 +230,7 @@ public class SendMessageActivity extends Activity {
             Uri uri = this.getIntent().getData();
             
             if(uri.getSchemeSpecificPart() != null){
-                
-                //TODO check if contact is already in db
-                    //If it is go messageView
-                    //Else go to Compose and make phoneBox = number
-                //TODO check if sharedText is there, if so use it
+
                 Toast.makeText(this, ""+uri.getSchemeSpecificPart(), Toast.LENGTH_LONG).show();
                 
                 String number = uri.getSchemeSpecificPart();

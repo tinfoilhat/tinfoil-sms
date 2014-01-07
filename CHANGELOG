@@ -12,7 +12,8 @@ Beta Release version 1.3.0
 	* Database interface which has solved numerous issues in countered with the system.
 	* Layout of Messages
 	* Layout of New Message
-    * Fixed an issue decrypting messages if app garbage collected
+	* Fixed an issue decrypting messages if app garbage collected
+	* Fixed issues with send and sendto intents to phone
 * Minor Fixes:
 	* Invalid message limit issue
 	* Invalid vibrate length issue
