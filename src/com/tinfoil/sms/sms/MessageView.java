@@ -245,7 +245,7 @@ public class MessageView extends Activity {
 	                                contact_builder.setTitle(R.string.forward_title)
 	                                        .setCancelable(true)
 	                                        .setView(phoneBox)
-	                                        .setPositiveButton(R.string.forward_positive_button, new DialogInterface.OnClickListener() {
+	                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 	
 	                                            public void onClick(final DialogInterface dialog, final int which) {
 	                                            	
