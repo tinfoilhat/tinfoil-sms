@@ -112,7 +112,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="auto_key_exchange">Troca Automática</string>
     <string name="manual_key_exchange">Troca Manual</string>
     <string name="ignore_key_exchange">Ignorar Todas as Trocas</string>
-    <string name="edit_number">Editar Numero</string>
+    <string name="edit_number">Editar Número</string>
     <string name="import_contact_key_menu">Importar Chave do Contacto</string>
     <string name="import_contact_key_menu_condensed">Importar Chave</string>
     <string name="delete_number_menu">Apagar Número</string>
