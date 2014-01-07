@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -55,6 +56,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.settings.AddContact;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -541,7 +543,15 @@ public class SendMessageActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
     	MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.new_message_menu, menu);
+    	
+    	if(currentActivity == ConversationView.COMPOSE)
+    	{
+    		inflater.inflate(R.menu.new_message_menu, menu);
+    	}
+    	else if(currentActivity == ConversationView.MESSAGE_VIEW)
+    	{
+    		inflater.inflate(R.menu.message_view_menu, menu);
+    	}
         
         if(currentActivity == ConversationView.NEW_KEY_EXCHANGE)
         {
@@ -694,6 +704,40 @@ public class SendMessageActivity extends Activity {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
+	
+	@Override
+    protected void onResume()
+    {
+        if(MessageService.mNotificationManager != null)
+        {
+        	MessageService.mNotificationManager.cancel(MessageService.SINGLE);
+        }
+        super.onResume();
+    }
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+            super.onActivityResult(requestCode, resultCode, data);
+            
+            if(resultCode == AddContact.UPDATED_NUMBER)
+            {        
+                    updateList();
+            }
+            /* Handle case where contact's number is deleted */
+            else if (resultCode == AddContact.DELETED_NUMBER)
+            {
+                    finish();
+            }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+		ConversationView.messageViewActive = false;
+		runThread.setRunner(false);
+		super.onDestroy();
+    }
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -710,21 +754,45 @@ public class SendMessageActivity extends Activity {
 				return true;
             case R.id.exchange:
             	
-            	//This is a bit of a redundant check
-            	
-            	String text =  SendMessageActivity.this.messageBox.getText().toString();
-            	String[] value = checkValidNumber(this, newCont, text, false, false);
-            	if(value!= null) {
-            		
-            		//Add contact to the database
-                	if(!dba.inDatabase(value[0]))
-                	{
-                		dba.addRow(new TrustedContact(new Number(value[0])));
+            	if(currentActivity == ConversationView.COMPOSE)
+            	{
+            		//This is a bit of a redundant check            	
+                	String text =  SendMessageActivity.this.messageBox.getText().toString();
+                	String[] value = checkValidNumber(this, newCont, text, false, false);
+                	if(value!= null) {
+                		
+                		//Add contact to the database
+                    	if(!dba.inDatabase(value[0]))
+                    	{
+                    		dba.addRow(new TrustedContact(new Number(value[0])));
+                    	}
+                    	                	
+                    	SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
                 	}
-                	                	
-                	SMSUtility.handleKeyExchange(keyThread, dba, this, value[0]);
             	}
-            	
+            	else if(currentActivity == ConversationView.MESSAGE_VIEW)
+            	{
+            		//TODO update list of messages once key exchange is sent 
+            		SMSUtility.handleKeyExchange(keyThread, dba, this, selectedNumber);
+            	}
+
+            return true;
+            case R.id.delete:
+                
+	            if(dba.deleteMessage(selectedNumber))
+	            {
+	                    finish();
+	            }
+	            return true;
+
+            case R.id.edit:
+                
+                AddContact.addContact = false;
+                AddContact.editTc = dba.getRow(selectedNumber);
+	
+	            Intent intent = new Intent(this, AddContact.class);
+	            
+	            startActivityForResult(intent, UPDATE);
             	return true;
             default:
             return super.onOptionsItemSelected(item);
