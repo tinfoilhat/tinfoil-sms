@@ -47,7 +47,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
@@ -125,17 +124,7 @@ public class SendMessageActivity extends Activity {
         	if(intentValue == ConversationView.MESSAGE_VIEW)
         	{
         		//TODO add menu functionality
-        		this.setTitle(R.string.message);
-        		currentActivity = ConversationView.MESSAGE_VIEW;
-        		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        		
-        		setupMessageInterface();
-                
-                handleNumberIntent();
-                
-                setupMessageViewUI();
-                
-                handleNotifications();
+        		setupMessageView(null, null);
         	}
         	else
         	{
@@ -165,31 +154,58 @@ public class SendMessageActivity extends Activity {
         }
         else
         {
-            
             handleSendIntent();
-            //TODO Check for send / sendto indent
-            /*Uri uri = this.getIntent().getData();
-            if (uri != null)
-            {
-                String[] value = uri.toString().split(":");
-                if(value.length == 2)
-                {
-                    this.phoneBox.setText(value[1]);
-                }
-                else
-                {
-                    this.phoneBox.setText(value[0]);
-                }
-            }
-            else
-            {
-                //TODO throw and catch invalid activity
-                
-                //Finish activity, invalid activity requested
-                //finish();
-            }*/
         }
 
+    }
+    
+    private void setupComposeView(String number, String message)
+    {
+    	this.newCont = new TrustedContact();
+        
+        setupPhoneBox();
+        
+        if(number != null)
+        {
+	        this.phoneBox.setText(number);
+	        newCont.setName(number);
+        }
+        
+        setupMessageBox();
+        
+        if(message != null)
+        {
+        	messageBox.setText(message);
+        }
+        
+        currentActivity = ConversationView.COMPOSE;
+    }
+    
+    private void setupMessageView(String number, String message)
+    {
+		this.setTitle(R.string.message);
+		currentActivity = ConversationView.MESSAGE_VIEW;
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		setupMessageInterface();
+        
+		if(number == null)
+		{
+			handleNumberIntent();
+		}
+		else
+		{
+			selectedNumber = number;
+		}
+        
+        setupMessageViewUI();
+        
+        if(message != null)
+        {
+        	messageBox.setText(message);
+        }
+        
+        handleNotifications();
     }
     
     private void handleSendIntent()
@@ -204,9 +220,11 @@ public class SendMessageActivity extends Activity {
                 
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 
-                //TODO test
                 if (sharedText != null) {
                     Toast.makeText(this, "SEND", Toast.LENGTH_LONG).show();
+                    
+                    //TODO test
+                    setupComposeView(null, sharedText);
                 }
             }
         }
@@ -222,6 +240,17 @@ public class SendMessageActivity extends Activity {
                     //Else go to Compose and make phoneBox = number
                 //TODO check if sharedText is there, if so use it
                 Toast.makeText(this, ""+uri.getSchemeSpecificPart(), Toast.LENGTH_LONG).show();
+                
+                String number = uri.getSchemeSpecificPart();
+                
+                if(dba.inDatabase(number))
+                {
+                	setupMessageView(SMSUtility.format(number), sharedText);
+                }
+                else
+                {
+                	setupComposeView(SMSUtility.format(number), sharedText);
+                }
             }
         }
     }
