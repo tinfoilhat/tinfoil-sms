@@ -3,6 +3,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/orwell-1.1-min.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/bcprov-jdk15on-150.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/bugsense-3.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nineoldandroids-2.4.0.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
