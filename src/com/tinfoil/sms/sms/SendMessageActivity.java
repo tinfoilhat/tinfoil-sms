@@ -133,6 +133,7 @@ public class SendMessageActivity extends Activity {
                 
         		if(intentValue == ConversationView.COMPOSE)
         		{
+        			this.setTitle(R.string.send_message);
                     setupMessageBox();                    
                     currentActivity = ConversationView.COMPOSE;
         		}
@@ -217,9 +218,6 @@ public class SendMessageActivity extends Activity {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 
                 if (sharedText != null) {
-                    Toast.makeText(this, "SEND", Toast.LENGTH_LONG).show();
-                    
-                    //TODO test
                     setupComposeView(null, sharedText);
                 }
             }
@@ -231,8 +229,6 @@ public class SendMessageActivity extends Activity {
             
             if(uri.getSchemeSpecificPart() != null){
 
-                Toast.makeText(this, ""+uri.getSchemeSpecificPart(), Toast.LENGTH_LONG).show();
-                
                 String number = uri.getSchemeSpecificPart();
                 
                 if(dba.inDatabase(number))
