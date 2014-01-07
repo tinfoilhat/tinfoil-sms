@@ -51,6 +51,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.espian.showcaseview.ShowcaseView;
+import com.espian.showcaseview.targets.ViewTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.adapter.ConversationAdapter;
@@ -245,6 +247,16 @@ public class ConversationView extends Activity {
 				}
 			}
 		});
+        
+        /* Display the first step of the introductory walkthrough
+        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+        co.hideOnClickOutside = false;
+        co.block = true;
+        co.shotType = ShowcaseView.TYPE_NO_LIMIT;*/
+        View showcasedView = findViewById(R.id.empty);
+        ViewTarget target = new ViewTarget(showcasedView);
+        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_intro_title, R.string.tut_intro_body);
+        sv.setScaleMultiplier(0);
     }
 
     /**
