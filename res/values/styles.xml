@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="ShowcaseButton">
         <item name="android:layout_width">wrap_content</item>
@@ -43,5 +43,30 @@
     <style name="TextAppearance.ShowcaseView.Title.Light">
         <item name="android:shadowRadius">0</item>
     </style>
+    
+    <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
+        <item name="sv_backgroundColor">#A8DFF4</item>
+        <item name="sv_showcaseColor">#33B5E5</item>
+	    <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+	    <item name="sv_detailTextAppearance">@style/CustomDetailText</item>
+    </style>
+    
+    <style name="CustomDetailText" parent="TextAppearance.ShowcaseView.Detail.Light">
+        <item name="android:textColor">#444444</item>
+        <item name="android:shadowColor">#666666</item>
+        <item name="android:shadowRadius">0</item>
+    </style>
+    
+    
+    <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title.Light">
+        <item name="android:textColor">#0099CC</item>
+        <item name="android:shadowColor">#666666</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowRadius">0</item>
+    </style>
 
+
+    <style name="TinfoilSMSTheme" parent="@android:style/Theme.Light">
+        <item name="showcaseViewStyle">@style/ShowcaseView.Light</item>
+    </style>
 </resources>

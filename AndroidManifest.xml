@@ -30,7 +30,7 @@
         android:allowClearUserData="true"
         android:icon="@drawable/tinfoil_logo"
         android:label="@string/app_name"
-        android:theme="@style/MyAppTheme" >
+        android:theme="@style/TinfoilSMSTheme" >
         <activity
             android:name="com.tinfoil.sms.sms.ConversationView"
             android:configChanges="orientation"
