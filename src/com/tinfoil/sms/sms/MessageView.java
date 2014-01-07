@@ -87,7 +87,7 @@ public class MessageView extends Activity {
     public static final String CONTACT_NAME = "contact_name";
     public static final String MESSAGE_LIST = "message_list";
     public static final String UNREAD_COUNT = "unread_count";
-    public static final String IS_TRUSTED = "is_trusted"; 
+    public static final String IS_TRUSTED = "is_trusted";
     
     public static final String MESSAGE_LABEL = "Message";
     
@@ -106,17 +106,14 @@ public class MessageView extends Activity {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         dba = new DBAccessor(this);
         
-        setupInterface();
-        
-        handleNumberIntent();
-        
-        setupMessageViewUI();
-        
+        setupMessageInterface();        
+        handleNumberIntent();        
+        setupMessageViewUI();        
         handleNotifications();
-       
+        
     }
     
-	public void setupInterface() 
+	public void setupMessageInterface() 
 	{
 		AutoCompleteTextView phone_box = (AutoCompleteTextView)findViewById(R.id.new_message_number);
 		phone_box.setVisibility(AutoCompleteTextView.INVISIBLE);
@@ -185,7 +182,7 @@ public class MessageView extends Activity {
 					}        	
 	    });*/
 	    
-	    runThread = new MessageLoader(this, false, handler);
+	    runThread = new MessageLoader(selectedNumber, this, false, handler);
 	
 	    //Set an action for when a user clicks on a message        
 	    messageList.setOnItemLongClickListener(new OnItemLongClickListener() {

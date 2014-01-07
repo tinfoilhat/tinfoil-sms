@@ -25,9 +25,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,19 +38,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
 import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
+import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -61,21 +70,39 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class SendMessageActivity extends Activity {
 	
-    public static final int TRUSTED = 0;
-    public static final int RESOLVE = 1;
-    public static final int UNTRUSTED = 2;
-	
+	private static MessageAdapter messages;
     private static MessageBoxWatcher messageEvent;
     private AutoCompleteTextView phoneBox;
     private EditText messageBox;
+	private static ListView messageList;
+	private AlertDialog popup_alert;
+	
+    public static final int TRUSTED = 0;
+    public static final int RESOLVE = 1;
+    public static final int UNTRUSTED = 2;
+    
+    public static final int LOAD = 0;
+    public static final int UPDATE = 1;
+    public static final int FINISH = -1;
+    
+    public static final String MESSAGE_LABEL = "Message";
+    
+    public static final String CONTACT_NAME = "contact_name";
+    public static final String MESSAGE_LIST = "message_list";
+    public static final String UNREAD_COUNT = "unread_count";
+    public static final String IS_TRUSTED = "is_trusted";
+	
     private ArrayList<TrustedContact> tc;
     private TrustedContact newCont;
+    public static String selectedNumber;
+    public static MessageLoader runThread;
+    private static String contact_name;
         
     private DBAccessor dba;
     private static ExchangeKey keyThread = new ExchangeKey();
+    public static SharedPreferences sharedPrefs;
     
     private int currentActivity = -1;
-    
 
     /** Called when the activity is first created. */
     @Override
@@ -94,10 +121,17 @@ public class SendMessageActivity extends Activity {
         	int intentValue = this.getIntent().getIntExtra(ConversationView.MESSAGE_INTENT, ConversationView.COMPOSE);
         	if(intentValue == ConversationView.MESSAGE_VIEW)
         	{
-        		//TODO setup message view ui
-        		//TODO set up menu
         		this.setTitle(R.string.message);
         		currentActivity = ConversationView.MESSAGE_VIEW;
+        		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        		
+        		setupMessageInterface();
+                
+                handleNumberIntent();
+                
+                setupMessageViewUI();
+                
+                handleNotifications();
         	}
         	else
         	{
@@ -112,7 +146,7 @@ public class SendMessageActivity extends Activity {
         		}
         		else if (intentValue == ConversationView.NEW_KEY_EXCHANGE)
         		{
-        			setupInterface();
+        			setupKeyExchangeInterface();
         			this.setTitle(R.string.new_key_exchange);
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
         		}
@@ -221,45 +255,97 @@ public class SendMessageActivity extends Activity {
     
     public void sendMessage (View view)
     {
-    	String box =  SendMessageActivity.this.messageBox.getText().toString();
-    	String[] temp = checkValidNumber(this, newCont, box, true, true);
-    	
-    	if(temp != null)
+    	if(currentActivity == ConversationView.MESSAGE_VIEW)
     	{
-    		String number = temp[0];
-    		String text = temp[1];
-    		/*
-             * Numbers are now automatically added upon sending a message to
-             * them (if they are not already in the database). The user can
-             * then go and edit their information as they please.
-             */
-        	
-        	//Add contact to the database
-        	if(!dba.inDatabase(number))
-        	{
-        		dba.addRow(new TrustedContact(new Number(number)));
-        	}
-        	
-        	//Add the message to the database
-        	if(dba.isTrustedContact(number))
-        	{
-        		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
-        	}
-        	else
-        	{
-        		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
-        	}
-
-            //Add the message to the queue to send it
-            dba.addMessageToQueue(number, text, false);         
-            
-            SendMessageActivity.this.messageBox.setText("");
-            SendMessageActivity.this.phoneBox.setText("");
-    	}       	
-            
+    		String text = messageBox.getText().toString();
+    	
+	    	if(text != null && text.length() > 0)
+	        {
+	            sendMessage(selectedNumber, text);
+	        }
+    	}
+    	else if(currentActivity == ConversationView.COMPOSE)
+    	{
+	    	String box =  SendMessageActivity.this.messageBox.getText().toString();
+	    	String[] temp = checkValidNumber(this, newCont, box, true, true);
+	    	
+	    	if(temp != null)
+	    	{
+	    		String number = temp[0];
+	    		String text = temp[1];
+	    		/*
+	             * Numbers are now automatically added upon sending a message to
+	             * them (if they are not already in the database). The user can
+	             * then go and edit their information as they please.
+	             */
+	        	
+	        	//Add contact to the database
+	        	if(!dba.inDatabase(number))
+	        	{
+	        		dba.addRow(new TrustedContact(new Number(number)));
+	        	}
+	        	
+	        	//Add the message to the database
+	        	if(dba.isTrustedContact(number))
+	        	{
+	        		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
+	        	}
+	        	else
+	        	{
+	        		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
+	        	}
+	
+	            //Add the message to the queue to send it
+	            dba.addMessageToQueue(number, text, false);         
+	            
+	            SendMessageActivity.this.messageBox.setText("");
+	            SendMessageActivity.this.phoneBox.setText("");
+	    	}  	
+    	}            
     }
     
-	public void setupInterface() 
+    /**
+     * Take the message information and put the message in the queue.
+     * @param number The number the message will be sent to
+     * @param text The message content for the message
+     */
+    public void sendMessage(final String number, final String text)
+    {
+        if (number.length() > 0 && text.length() > 0)
+        {
+            //Sets so that a new message sent from the user will not show up as bold
+            messages.setCount(0);
+            this.messageBox.setText("");
+            messageEvent.resetCount();
+            dba.addMessageToQueue(number, text, false);
+
+            if(dba.isTrustedContact(number))
+            {
+            	dba.addNewMessage(new Message(text, true, 
+                		Message.SENT_ENCRYPTED), number, false);
+            }
+            else
+            {
+            	dba.addNewMessage(new Message(text, true, 
+                		Message.SENT_DEFAULT), number, false);
+            }
+            
+            //Encrypt the text message before sending it	
+            //SMSUtility.sendMessage(number, text, this.getBaseContext());
+            
+            //Start update thread
+            runThread.setUpdate(true);
+            runThread.setStart(false);
+        }
+    }
+    
+	public void setupMessageInterface() 
+	{
+		AutoCompleteTextView phone_box = (AutoCompleteTextView)findViewById(R.id.new_message_number);
+		phone_box.setVisibility(AutoCompleteTextView.INVISIBLE);
+	}
+    
+	public void setupKeyExchangeInterface() 
 	{
 		LinearLayout et = (LinearLayout)findViewById(R.id.new_message_field);
 		
@@ -270,6 +356,154 @@ public class SendMessageActivity extends Activity {
 		
 		//Button exchange = (Button)findViewById(R.id.key_exchange);
 	}
+	
+    private void handleNumberIntent()
+    {
+        //Finds the number of the recently sent message attached to the notification
+        if (this.getIntent().hasExtra(MessageService.notificationIntent))
+        {
+            selectedNumber = this.getIntent().getStringExtra
+            		(MessageService.notificationIntent);
+        }
+        else if (this.getIntent().hasExtra(ConversationView.selectedNumberIntent))
+        {
+            selectedNumber = this.getIntent().getStringExtra
+            		(ConversationView.selectedNumberIntent);
+        }
+        else 
+        {
+            finish();
+        }
+        
+        // No number is provided
+        if(selectedNumber == null)
+        {
+        	finish();
+        }
+    }
+	
+    private void handleNotifications()
+    {
+    	/*	
+         * Reset the number of unread messages for the contact to 0
+         */
+        if (dba.getUnreadMessageCount(selectedNumber) > 0)
+        {
+            //All messages are now read since the user has entered the conversation.
+            dba.updateMessageCount(selectedNumber, 0);
+            if (MessageService.mNotificationManager != null)
+            {
+                MessageService.mNotificationManager.cancel(MessageService.SINGLE);
+            }
+        }
+    }
+    
+    private void setupMessageViewUI()
+    {
+    	//TODO fix this
+    	ConversationView.messageViewActive = true;
+    
+	    /*
+	     * Create a list of messages sent between the user and the contact
+	     */
+	    messageList = (ListView) this.findViewById(R.id.message_list);
+	    
+	    messageList.setVisibility(ListView.VISIBLE);
+	
+	    //This allows for the loading to be cancelled
+	    /*this.dialog = ProgressDialog.show(this, "Loading Messages",
+	            "Please wait...", true, true, new OnCancelListener() {
+	
+					public void onCancel(DialogInterface dialog) {
+						MessageView.this.dialog.dismiss();
+						MessageView.this.onBackPressed();						
+					}        	
+	    });*/
+	    
+	    runThread = new MessageLoader(selectedNumber, this, false, handler);
+	
+	    //Set an action for when a user clicks on a message        
+	    messageList.setOnItemLongClickListener(new OnItemLongClickListener() {
+	    	public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+	            final int item_num = position;
+	
+	            final AlertDialog.Builder popup_builder = new AlertDialog.Builder(SendMessageActivity.this);
+	            popup_builder.setTitle(contact_name)
+	                    .setItems(SendMessageActivity.this.getResources()
+	                		.getStringArray(R.array.sms_options),
+	                			new DialogInterface.OnClickListener() {
+	
+	                        public void onClick(final DialogInterface dialog, final int which) {
+	
+	                            final String[] messageValue = (String[]) messageList.getItemAtPosition(item_num);
+	
+	                            if (which == 0)
+	                            {
+	                                //option = Delete
+	                                dba.deleteMessage(Long.valueOf(messageValue[3]));
+	                                updateList();
+	                            }
+	                            else if (which == 1)
+	                            {
+	                            	copyText(messageValue[1]);
+	                            }
+	                            else if (which == 2)
+	                            {
+	                                //option = Forward message
+	                                phoneBox = new AutoCompleteTextView(SendMessageActivity.this.getBaseContext());
+	
+	                                List<String> contact = null;
+	                                if (tc == null)
+	                                {
+	                                	//TODO Do in thread.
+	                                	tc = dba.getAllRows(DBAccessor.ALL);
+	                                }
+	
+	                                if (tc != null)
+	                                {
+	                                    if (contact == null)
+	                                    {
+	                                        contact = SMSUtility.contactDisplayMaker(tc);
+	                                    }
+	                                }
+	                                else
+	                                {
+	                                    contact = null;
+	                                }
+	                                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+	                                		SendMessageActivity.this.getBaseContext(), 
+	                                		R.layout.auto_complete_list_item, contact);
+	
+	                                phoneBox.setAdapter(adapter);
+	
+	                                final AlertDialog.Builder contact_builder = new AlertDialog.Builder(SendMessageActivity.this);
+	
+	                                contact_builder.setTitle(R.string.forward_title)
+	                                        .setCancelable(true)
+	                                        .setView(phoneBox)
+	                                        .setPositiveButton(R.string.forward_positive_button, new DialogInterface.OnClickListener() {
+	
+	                                            public void onClick(final DialogInterface dialog, final int which) {
+	                                            	
+	                                            	forward(messageValue[1]);
+	                                            }
+	
+	                                        });
+	                                final AlertDialog contact_alert = contact_builder.create();
+	
+	                                SendMessageActivity.this.popup_alert.cancel();
+	                                contact_alert.show();
+	                            }
+	                        }
+	                    }).setCancelable(true);
+	            SendMessageActivity.this.popup_alert = popup_builder.create();
+	            SendMessageActivity.this.popup_alert.show();
+	        			
+				return false;
+			}
+	    });
+    }
 	
 	public void sendKeyExchange(View view)
 	{
@@ -290,6 +524,18 @@ public class SendMessageActivity extends Activity {
 			//TODO Handle bad number
 		}
 	}
+	
+    /**
+     * Update the list of messages shown when a new message is received or sent.
+     */
+    public static void updateList()
+    {
+        if (selectedNumber != null)
+        {        	
+        	runThread.setUpdate(true);
+        	runThread.setStart(false);
+        }
+    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -307,37 +553,64 @@ public class SendMessageActivity extends Activity {
     public boolean onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
         
-        String text =  SendMessageActivity.this.messageBox.getText().toString();
-        String[] values = checkValidNumber(this, newCont, text, false, false);
-        if(values != null)
+        if(currentActivity == ConversationView.COMPOSE)
         {
-        	int ret = validNumber(dba, values[0]);
-        	
-        	if(ret == TRUSTED)
-        	{
-	        	menu.findItem(R.id.exchange)
-	        		.setTitle(R.string.untrust_contact_menu_full)
-	        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short))
-	        		.setEnabled(true);
-	        }
-	        else if(ret == UNTRUSTED)
+	        String text =  SendMessageActivity.this.messageBox.getText().toString();
+	        String[] values = checkValidNumber(this, newCont, text, false, false);
+	        if(values != null)
 	        {
-        		menu.findItem(R.id.exchange)
-        			.setTitle(R.string.resolve_key_exchange_full)
-        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
-        			.setEnabled(true);
+	        	int ret = validNumber(dba, values[0]);
+	        	
+	        	if(ret == TRUSTED)
+	        	{
+		        	menu.findItem(R.id.exchange)
+		        		.setTitle(R.string.untrust_contact_menu_full)
+		        		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short))
+		        		.setEnabled(true);
+		        }
+		        else if(ret == UNTRUSTED)
+		        {
+	        		menu.findItem(R.id.exchange)
+	        			.setTitle(R.string.resolve_key_exchange_full)
+	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
+	        			.setEnabled(true);
+		        }
+	        	else if(ret == RESOLVE)
+	        	{
+	        		menu.findItem(R.id.exchange)
+	        			.setTitle(R.string.exchange_key_full)
+	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
+	        			.setEnabled(true);
+		        }
 	        }
-        	else if(ret == RESOLVE)
-        	{
-        		menu.findItem(R.id.exchange)
-        			.setTitle(R.string.exchange_key_full)
-        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
-        			.setEnabled(true);
+	        else
+	        {
+	        	menu.findItem(R.id.exchange).setEnabled(false);
 	        }
         }
-        else
+        else if(currentActivity == ConversationView.MESSAGE_VIEW)
         {
-        	menu.findItem(R.id.exchange).setEnabled(false);
+        	if(dba.isTrustedContact(selectedNumber))
+            {
+            	menu.findItem(R.id.exchange)
+            		.setTitle(R.string.untrust_contact_menu_full)
+            		.setTitleCondensed(this.getString(R.string.untrust_contact_menu_short));
+            }
+            else
+            {
+            	if(dba.getKeyExchangeMessage(selectedNumber) != null)
+            	{
+            		menu.findItem(R.id.exchange)
+            			.setTitle(R.string.resolve_key_exchange_full)
+            			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short));
+            	}
+            	else
+            	{
+            		menu.findItem(R.id.exchange)
+            			.setTitle(R.string.exchange_key_full)
+            			.setTitleCondensed(this.getString(R.string.exchange_key_short));
+            	}
+            }
         }
         return true;
     }
@@ -373,7 +646,7 @@ public class SendMessageActivity extends Activity {
     	}
     	return null;
     }
-    
+
     public static int validNumber(DBAccessor dba, String value)
     {
         if(dba.isTrustedContact(value))
@@ -391,6 +664,24 @@ public class SendMessageActivity extends Activity {
         		return UNTRUSTED;
         	}
         }
+    }
+    
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void copyText(String message) 
+    {
+    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    		
+    		android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE); 
+    		android.content.ClipData clip = android.content.ClipData.newPlainText(MESSAGE_LABEL, message);
+    	    clipboard.setPrimaryClip(clip);
+		}
+    	else
+    	{
+    		
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+    	    clipboard.setText(message);
+    	}
     }
     
     /**
@@ -438,4 +729,106 @@ public class SendMessageActivity extends Activity {
             return super.onOptionsItemSelected(item);
     	}
     }
+	
+	/**
+     * Forward the given message.
+     * @param message The message that is going to be forwarded.
+     */
+    private void forward(String message)
+    {
+    	final String[] info = SMSUtility.parseAutoComplete(phoneBox.getText().toString());
+    	String num = null;
+        boolean invalid = false;
+
+        if (info != null)
+        {
+        	if (info.length == 2 && info[1] != null)
+            {
+        		num = info[1];
+                if (!SMSUtility.isANumber(info[1]))
+                {              
+                	invalid = true;
+                }
+            }
+            else
+            {
+                num  = phoneBox.getText().toString();
+                if (!SMSUtility.isANumber(num))
+                {
+                	 invalid = true;
+                }
+            }
+        }
+
+        if (invalid)
+        {
+            Toast.makeText(SendMessageActivity.this.getBaseContext(), R.string.invalid_number_message, Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+        	if(!dba.inDatabase(num))
+        	{
+        		dba.addRow(new TrustedContact(new Number(num)));
+        	}
+        	
+        	if(dba.isTrustedContact(num))
+        	{
+        		dba.addNewMessage(new Message(message, true, Message.SENT_ENCRYPTED), num, true);
+        	}
+        	else
+        	{
+        		dba.addNewMessage(new Message(message, true, Message.SENT_DEFAULT), num, true);
+        	}
+
+            //Add the message to the queue to send it
+            dba.addMessageToQueue(num, message, false);      
+        }
+    }
+    
+    /**
+	 * The handler class for cleaning up after the loading thread and the update
+	 * thread.
+	 */
+	private final Handler handler = new Handler() {
+        @SuppressWarnings("unchecked")
+		@Override
+        public void handleMessage(final android.os.Message msg)
+        {
+        	Bundle b = msg.getData();
+        	
+        	switch (msg.what){
+        	case LOAD:
+		        contact_name = b.getString(MessageView.CONTACT_NAME);
+		        messageEvent = new MessageBoxWatcher(SendMessageActivity.this, R.id.send_word_count);
+		        messageBox = (EditText) SendMessageActivity.this.findViewById(R.id.new_message_message);
+	        	messageBox.addTextChangedListener(messageEvent);
+	        	messages = new MessageAdapter(SendMessageActivity.this, R.layout.listview_full_item_row, 
+	        			(List<String[]>) b.get(MessageView.MESSAGE_LIST), b.getInt(MessageView.UNREAD_COUNT, 0));
+	        	messageList.setAdapter(messages);
+	            messageList.setItemsCanFocus(false);
+
+	            /*
+	             * Set the list to list from the bottom up and auto scroll to
+	             * the bottom of the list
+	             */
+	            if(!sharedPrefs.getBoolean(QuickPrefsActivity.REVERSE_MESSAGE_ORDERING_KEY, false))
+	            {
+	            	messageList.setStackFromBottom(true);
+	            	messageList.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+	            }
+
+	        	break;
+        	case UPDATE:
+        		messages.clear();
+        		messages.addData((List<String[]>) b.get(MessageView.MESSAGE_LIST));
+        		messages.notifyDataSetChanged();
+        		break;
+        		
+        	case FINISH:
+        		messages.clear();
+        		finish();
+        		break;
+        	}
+        }
+    };
 }

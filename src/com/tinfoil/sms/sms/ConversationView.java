@@ -176,7 +176,8 @@ public class ConversationView extends Activity {
              * This check is to find out if there is a single message received pending.
              * If so then the conversation with that contact will be loaded.
              */
-            final Intent intent = new Intent(this, MessageView.class);
+            final Intent intent = new Intent(this, SendMessageActivity.class);
+            intent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
             intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
             this.getIntent().removeExtra(MessageService.notificationIntent);
             this.startActivity(intent);
@@ -214,7 +215,8 @@ public class ConversationView extends Activity {
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
 
-                final Intent intent = new Intent(ConversationView.this.getBaseContext(), MessageView.class);
+                final Intent intent = new Intent(ConversationView.this.getBaseContext(), SendMessageActivity.class);
+                intent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
                 intent.putExtra(ConversationView.selectedNumberIntent, msgList.get(position)[0]);
                 ConversationView.this.startActivity(intent);
             }
@@ -264,7 +266,7 @@ public class ConversationView extends Activity {
             
             if (messageViewUpdate)
             {
-                MessageView.updateList();
+                SendMessageActivity.updateList();
             }
         }
     }

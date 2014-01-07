@@ -32,6 +32,7 @@ public class MessageLoader extends Loader{
 	
     private boolean update;
     private Handler handler;
+    private String number;
     
     /**
      * Create the object and start the thread 
@@ -40,11 +41,12 @@ public class MessageLoader extends Loader{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public MessageLoader(Context context, boolean update, Handler handler)
+    public MessageLoader(String number, Context context, boolean update, Handler handler)
     {
     	super(context);
     	this.update = update;
     	this.handler = handler;
+    	this.number = number;
     	start();
     }
 
@@ -53,14 +55,14 @@ public class MessageLoader extends Loader{
     	
 		if(!update)
 		{
-	        final boolean isTrusted = loader.isTrustedContact(MessageView.selectedNumber);
+	        final boolean isTrusted = loader.isTrustedContact(number);
 	        
-			List<String[]> msgList2 = loader.getSMSList(MessageView.selectedNumber);
-			final int unreadCount = loader.getUnreadMessageCount(MessageView.selectedNumber);
+			List<String[]> msgList2 = loader.getSMSList(number);
+			final int unreadCount = loader.getUnreadMessageCount(number);
 
 	        //Retrieve the name of the contact from the database
 			
-			TrustedContact tc = loader.getRow(MessageView.selectedNumber);
+			TrustedContact tc = loader.getRow(number);
 			
 			if(tc != null)
 			{
@@ -84,8 +86,8 @@ public class MessageLoader extends Loader{
 		}
 		else
 		{
-			List<String[]> msgList2 = loader.getSMSList(MessageView.selectedNumber);
-			loader.updateMessageCount(MessageView.selectedNumber, 0);
+			List<String[]> msgList2 = loader.getSMSList(number);
+			loader.updateMessageCount(number, 0);
 			setUpdate(false);
 			
 			Message msg = new Message();
