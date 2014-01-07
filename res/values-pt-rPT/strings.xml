@@ -259,5 +259,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="key_exchange_sent">Key Exchange Sent</string>
 	<!-- TODO Translate -->
     <string name="new_key_exchange">Key Exchange</string>
+    <!-- TODO Translate -->
+    <string name="new_key_exchange_menu">New Key Exchange</string>
     
 </resources>

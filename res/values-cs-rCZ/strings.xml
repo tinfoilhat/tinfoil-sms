@@ -259,5 +259,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="key_exchange_sent">Key Exchange Sent</string>
 	<!-- TODO Translate -->
     <string name="new_key_exchange">Key Exchange</string>
-
+	<!-- TODO Translate -->
+    <string name="new_key_exchange_menu">New Key Exchange</string>
+    
 </resources>

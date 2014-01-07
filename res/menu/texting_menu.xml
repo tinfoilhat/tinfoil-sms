@@ -2,17 +2,26 @@
  	
     <item
         android:id="@+id/compose"
-        android:title="@string/compose_menu" />
+        android:title="@string/compose_menu"
+        android:icon="@drawable/ic_menu_msg_compose_holo_dark"
+        android:showAsAction="always" />
     <item
         android:id="@+id/settings"
-        android:title="@string/settings_menu" />
+        android:title="@string/settings_menu"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:showAsAction="always" >
+    </item>
     <item
         android:id="@+id/exchange"
         android:titleCondensed="@string/pending_key_exchange_menu_condensed"
-        android:title="@string/pending_key_exchange_menu" />
+        android:title="@string/pending_key_exchange_menu"
+        android:icon="@drawable/key_exchange"
+        android:showAsAction="ifRoom|never" />
     
+    <!-- TODO use icon -->
     <item android:id="@+id/key_exchange"
-        android:title="New Key Exchange">
+        android:title="@string/new_key_exchange_menu"
+        android:showAsAction="never">
     </item>
 	
 </menu>

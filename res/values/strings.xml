@@ -257,5 +257,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <!-- New Key Exchange strings -->
     <string name="key_exchange_sent">Key Exchange Sent</string>
     <string name="new_key_exchange">Key Exchange</string>
+    <string name="new_key_exchange_menu">New Key Exchange</string>
 
 </resources>

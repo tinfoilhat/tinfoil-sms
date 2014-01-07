@@ -308,7 +308,7 @@ public class ConversationView extends Activity {
 
         final MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.texting_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
