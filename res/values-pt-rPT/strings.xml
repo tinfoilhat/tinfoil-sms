@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
     <string name="contact_name">nome</string>
-    
     <string name="cancel">Cancelar</string>
     <string name="tell_me_more">Diz-me Mais</string>
     <string name="save">Guardar</string>
     <string name="accept">Aceitar</string>
     <string name="refuse">Recusar</string>
-    
     <string name="key_exchange_failed_to_decrypt">FALHA AO DECIFRAR</string>
     <string name="possible_man_in_the_middle_attack_warning">Possível Ataque de Man In The Middle</string>
     <string name="key_exchange_received">Mensagem de Troca de Chave Recebida</string>
@@ -33,6 +32,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="duplicate_key_exchange_warning_1">Aviso: A mensagem recebida foi identificada como tendo uma chave diferente da anterior.</string>
 	<string name="duplicate_key_exchange_warning_2">Possível Ataque de Man In The Middle.</string>
     <string name="user">Eu</string>
+
     <string-array name="phone_types">
         <item>Casa</item>
         <item>Telemóvel</item>
@@ -66,7 +66,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="invalid_secrets">Segredo Inválido</string>
 	<string name="shared_secret_hint_1">Segredo Partilhado 1</string>
 	<string name="shared_secret_hint_2">Segredo Partilhado 2</string>
-
 	<string name="set_shared_secrets">Definir o segredo partilhado para</string>
 	<string name="set_shared_secrets_title">Troca de Chave</string>
 	
@@ -135,7 +134,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <!-- MessageView strings -->
     <string name="message">Mensagens</string>
     <string name="forward_title">Introduzir Número de Contacto</string>
-    <string name="forward_positive_button">OK</string>
     <string name="invalid_number_message">Número Inválido</string>
     <string name="untrust_contact_menu_full">Desconfiar Contacto</string>
     <string name="untrust_contact_menu_short">Desconfiar</string>
@@ -143,11 +141,13 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="resolve_key_exchange_short">Esclarecer</string>
     <string name="exchange_key_full">Troca de Chaves</string>
     <string name="exchange_key_short">Troca de Chaves</string>
+
     <string-array name="sms_options">
         <item>Apagar Mensagem</item>
         <item>Copiar Mensagem</item>
         <item>Reencaminhar Mensagem</item>
     </string-array>
+
     <string name="key_exchange_dialog_message">Gostaria de trocar chaves com</string>
     <string name="shared_secret">Os Segredos Partilhados tem de ser maiores do que</string>
     <string name="export_number_title">Introduzir Número de Contacto</string>
@@ -164,6 +164,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
 
     <!-- SendMessageActivity strings -->
     <string name="to">Para</string>
+	<!-- TODO update translation -->
     <string name="send_message">Enviar Mensagem</string>
     <string name="insufficent_information_provided">Não têm informações suficientes</string>
 
@@ -208,7 +209,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="donate_dialog_message">Gostaria de doar para o projecto Tinfoil-SMS?</string>
     <string name="flattr_option">Flattr</string>
     <string name="paypal_option">PayPal</string>
-    
+
     <!-- Urls -->
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
@@ -228,7 +229,8 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="contact_settings_option_title">Definições do Contacto</string>
     <string name="import_contacts_option_title">Importar Contactos</string>
     <string name="import_contacts_option_summary">Importar Contactos Confiáveis do Telemóvel</string>
-    <string name="manage_contacts_option_title">Gerir Contactos</string>
+	<!-- TODO update translation -->    
+	<string name="manage_contacts_option_title">Gerir Contactos</string>
     <string name="encryption_option_title">Definições de Cifra</string>
     <string name="encryption_message_option_title">Mensagens Cifradas</string>
     <string name="encrypted_message_option_summary">Mostrar a mensagem cifrada original</string>
@@ -251,5 +253,11 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="unread_email_message">Mensagens Por Ler</string>
     <string name="pending_key_exchange_notification">Em Espera pela Troca de Chaves</string>
     <string name="pending_key_exchange_message">Carregue aqui para resolver</string>
+
+	<!-- New Key Exchange strings -->
+	<!-- TODO Translate -->
+    <string name="key_exchange_sent">Key Exchange Sent</string>
+	<!-- TODO Translate -->
+    <string name="new_key_exchange">Key Exchange</string>
     
 </resources>

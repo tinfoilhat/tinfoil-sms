@@ -136,7 +136,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <!-- MessageView strings -->
     <string name="message">Messages</string>
     <string name="forward_title">Input Contact Number</string>
-    <string name="forward_positive_button">OK</string>
     <string name="invalid_number_message">Invalid Number</string>
     <string name="untrust_contact_menu_full">Untrust Contact</string>
     <string name="untrust_contact_menu_short">Untrust</string>
@@ -254,13 +253,9 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="unread_email_message">Unread Messages</string>
     <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
     <string name="pending_key_exchange_message">Click here to resolve</string>
-    <string name="title_activity_new_key_exchange">Key Exchange</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    
-    
+
     <!-- New Key Exchange strings -->
     <string name="key_exchange_sent">Key Exchange Sent</string>
-    <string name="new_key_exchange">New Key Exchange</string>
+    <string name="new_key_exchange">Key Exchange</string>
 
 </resources>

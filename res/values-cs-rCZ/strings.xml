@@ -4,17 +4,15 @@
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
     <string name="contact_name">Jméno</string>
-    
     <string name="cancel">Storno</string>
     <string name="tell_me_more">Dozvědět se více</string>
     <string name="save">Uložit</string>
     <string name="accept">Přijmout</string>
     <string name="refuse">Odmítnout</string>
-    
     <string name="key_exchange_failed_to_decrypt">DEŠIFROVÁNÍ SELHALO</string>
     <string name="possible_man_in_the_middle_attack_warning">Možný útok typu Man In The Middle Position</string>
     <string name="key_exchange_received">Zpráva obsahující klíč obdržena</string>
-    
+
     <!-- ConversationView Activity strings -->
     <string name="add_contacts_list">Přidat kontakt</string>
     <string name="import_contacts_list">Importovat kontakt</string>
@@ -28,12 +26,13 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="settings_menu">Nastavení</string>
     <string name="pending_key_exchange_menu">Nevyřízené výměny klíčů</string>
     <string name="pending_key_exchange_menu_condensed">Vyměnit klíč</string>
-    
+
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">Zpráva obsahující jiný klíč byla odeslána</string>
     <string name="duplicate_key_exchange_warning_1">Varování: Klíč v obdržené zprávě se neshoduje s dříve obdrženým klíčem.</string>
-	<string name="duplicate_key_exchange_warning_2">Toto je dost možná útok typu Man In The Middle Position.</string>
+    <string name="duplicate_key_exchange_warning_2">Toto je dost možná útok typu Man In The Middle Position.</string>
     <string name="user">Já</string>
+
     <string-array name="phone_types">
         <item>Domů</item>
         <item>Mobil</item>
@@ -67,7 +66,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="invalid_secrets">Neplatné ověřovací věty</string>
 	<string name="shared_secret_hint_1">Ověřovací věta 1</string>
 	<string name="shared_secret_hint_2">Ověřovací věta 2</string>
-
 	<string name="set_shared_secrets">Nastavte si Ověřovací věty pro kontakt</string>
 	<string name="set_shared_secrets_title">Výměna klíčů</string>
 	
@@ -136,7 +134,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <!-- MessageView strings -->
     <string name="message">Zprávy</string>
     <string name="forward_title">Zadejte číslo kontaktu</string>
-    <string name="forward_positive_button">OK</string>
     <string name="invalid_number_message">Neplatné číslo</string>
     <string name="untrust_contact_menu_full">Nedůvěryhodný kontakt</string>
     <string name="untrust_contact_menu_short">Neduvěryhodný</string>
@@ -144,11 +141,13 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="resolve_key_exchange_short">Resolve\n Vyřešte</string>
     <string name="exchange_key_full">Vyměnit klíče</string>
     <string name="exchange_key_short">Vyměnit klíče</string>
+
     <string-array name="sms_options">
         <item>Smazat zprávu</item>
         <item>Kopírovat zprávu</item>
         <item>Přeposlat zprávu</item>
     </string-array>
+
     <string name="key_exchange_dialog_message">Chcete vyměnit klíč s kontaktem</string>
     <string name="shared_secret">Ověřovací věty musí být delší než</string>
     <string name="export_number_title">Vložit Kontaktovo číslo</string>
@@ -165,18 +164,19 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
 
     <!-- SendMessageActivity strings -->
     <string name="to">Příjemce</string>
+	<!-- TODO update translation -->
     <string name="send_message">Odeslat zprávu</string>
     <string name="insufficent_information_provided">Neuvedli jste dostatečné informace</string>
 
     <!-- DeleteContacts strings -->
     <string name="delete_contacts">Smazat kontakty</string>
-    
+
     <!-- SMSUtility strings -->
     <string name="encrypted_message_sent">Šifrovaná zpráva odeslána</string>
     <string name="message_sent">Zpráva odeslána</string>
     <string name="failed_to_encrypt">NEPODAŘILO SE ZAŠIFROVAT</string>
     <string name="failed_to_sent">NEPODAŘILO SE ODESLAT</string>
-    
+
     <!-- Tabbed activity -->
     <string name="contacts_tab">Kontakty</string>
     <string name="trusted_contact_tab">Důvěryhodné kontakty</string>
@@ -209,13 +209,13 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="donate_dialog_message">Chcete finančně podpořit Tinfoil-SMS?</string>
     <string name="flattr_option">Flattr</string>
     <string name="paypal_option">PayPal</string>
-    
+
     <!-- Urls -->
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
-    
-    <!-- Settings string keys -->    
+
+    <!-- Settings string keys -->
     <string name="source_code_title">Získat zdrojový kód aplikace Tinfoil-SMS</string>
     <string name="source_code_sub_title">Podílejte se na Tinfoil-SMS</string>
     <string name="application_settings_options">Nastavení aplikace</string>
@@ -229,6 +229,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="contact_settings_option_title">Nastavení kontaktu</string>
     <string name="import_contacts_option_title">Importovat kontakty</string>
     <string name="import_contacts_option_summary">Importovat důvěryhodné kontakty z telefonu</string>
+	<!-- TODO update translation -->
     <string name="manage_contacts_option_title">Spravovat kontakty</string>
     <string name="encryption_option_title">Nastavení šifrování</string>
     <string name="encryption_message_option_title">Šifrované zprávy</string>
@@ -253,6 +254,10 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="pending_key_exchange_notification">Nevyřízené výměny klíčů</string>
     <string name="pending_key_exchange_message">Klikni pro vyřešení</string>
     
+	<!-- New Key Exchange strings -->
+	<!-- TODO Translate -->
+    <string name="key_exchange_sent">Key Exchange Sent</string>
+	<!-- TODO Translate -->
+    <string name="new_key_exchange">Key Exchange</string>
 
-    
 </resources>
