@@ -11,6 +11,13 @@
             android:title="@string/enable_tinfoil_sms_option_title" 
             android:defaultValue="true"
             android:persistent="true" />
+        
+        <CheckBoxPreference 
+            android:key="enable_walkthrough"
+            android:summary="@string/walkthrough_title"
+            android:title="@string/walkthrough_summary" 
+            android:defaultValue="true"
+            android:persistent="true" />
                    
     </PreferenceCategory>
     

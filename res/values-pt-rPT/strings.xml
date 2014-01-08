@@ -247,6 +247,10 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="ringtone_settings_title">Activar Toque</string>
     <string name="message_order_title">Ordem das Mensagens</string>
     <string name="message_order_summary">Mostrar últimas mensagens no topo</string>
+    <!-- TODO Translate -->
+    <string name="walkthrough_title">Enable Walkthrough</string>
+    <!-- TODO Translate -->
+    <string name="walkthrough_summary">Show Walkthrough</string>
     
     <!-- Notification strings -->
     <string name="new_message_notification_title">Nova Mensagem</string>
@@ -255,11 +259,41 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="pending_key_exchange_message">Carregue aqui para resolver</string>
 
 	<!-- New Key Exchange strings -->
-	<!-- TODO Translate -->
+	<!-- TODO Translate all following strings-->
     <string name="key_exchange_sent">Key Exchange Sent</string>
-	<!-- TODO Translate -->
-    <string name="new_key_exchange">Key Exchange</string>
-    <!-- TODO Translate -->
+	<string name="new_key_exchange">Key Exchange</string>
     <string name="new_key_exchange_menu">New Key Exchange</string>
+    
+    <!-- Introductory Tutorial strings -->
+    <!-- Intro -->
+    <string name="tut_intro_title">Welcome to Tinfoil-SMS!</string>
+    <string name="tut_intro_body">The following guide is intended to walk you through the basics and make you familiar with best security practices so you are as secure as possible! It is highly recommended that you follow this guide. You can always restart this guide again anytime by enabling it in the settings.</string>
+    <!-- Start importing contacts -->
+    <string name="tut_startimport_title">Start Importing Contacts</string>
+    <string name="tut_startimport_body">In order to use Tinfoil-SMS to text securely with contacts you must begin by adding or importing them.</string>
+    <!-- Importing existing contacts -->
+    <string name="tut_import_title">Import Contacts from your Phone</string>
+    <string name="tut_import_boby">Select contacts from your phone to import, all previous conversations will be imported and your future conversations will be handled by the app.\nNOTE: By default communication with contacts are NOT secure until a successful key exchange has been executed!</string>
+    <!-- Start a key exchange -->
+    <string name="tut_startexchange_title">Great! You\'re almost Communicating Securely</string>
+    <string name="tut_startexchange_body">In order for you and a contact to start communicating securely you must both be using the app and execute a key exchange. To do this, you need three things: you both must have Tinfoil-SMS installed, import each other within the app, and lastly agree on two shared secrets.\nAfter you have both imported each other as contacts within the app, you now must communicate through some means the two shared secrets to use, such as in person.</string>
+    <!--  Set shared secret -->
+    <string name="tut_setsecret_title">Why Shared Secrets are Important!</string>
+    <string name="tut_setsecret_body">The two shared secrets must be something only you and the contact know and are used to ensure your identities and prevent imposters!\nBest Practice: The best type of shared secrets to use are difficult but easy to remember, such as fuzzy is wuzzy! and wuzz he fuzzy? </string>
+    <!-- Key exchange sent -->
+    <string name="tut_keysent_title">Key Exchange Sent!</string>
+    <string name="tut_keysent_body">Your key exchange has been sent, your contact should receive a notification to initiate a key exchange. If all goes well you should receive a key back from them! You can view pending key exchanges any time from the menu.</string>
+    <!-- Pending key exchanges -->
+    <string name="tut_pending_title">Pending Key Exchanges</string>
+    <string name="tut_pending_body">This shows any pending key exchanges that you have received, a key exchange is not accepted unless you accept it and the shared secrets are correct!\nBest Practice: If you are not expecting a key exchange, or do not know the shared secret, it is highly recommended that you reject the key exchange and communicate with them in person, agree on the shared secrets and then redo the key exchange.</string>
+    <!-- Accepting a key exchange -->
+    <string name="tut_accept_title">Enter the Shared Secrets Carefully!</string>
+    <string name="tut_accept_body">Ensure that you and the other contact have agreed on the two shared secrets, enter them in carefully, the shared secrets are case sensitive and must be entered in the correct order!</string>
+    <!-- Successful key exchange -->
+    <string name="tut_success_title">Congratulations! You\'re Now Texting Securely</string>
+    <string name="tut_success_body">The key exchange succeeded, you will notice that the contact is now a trusted contact and will have a locked icon beside their name in the list of contacts.\nIf you view the list of messages sent with the now trusted contact, you will notice that any new messages will also have a locked icon, indicating that the messages have been transmitted securely using encryption.</string>
+    <!-- Closing -->
+    <string name="tut_close_title">That\'s it!</string>
+    <string name="tut_close_body">Thanks for following the tutorial, you can add more contacts any time by going to the settings and importing them. If you need more information be sure to see our website @string/tinfoil_sms_website for a video tutorial and documentation. If you have any feedback please contact us, you can do so from the settings.\nYou can restart the tutorial at anytime by enabling it in the settings.</string>
     
 </resources>
