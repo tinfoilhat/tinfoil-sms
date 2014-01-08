@@ -50,6 +50,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.espian.showcaseview.ShowcaseViews;
 import com.tinfoil.sms.R;
@@ -478,8 +479,22 @@ public class ConversationView extends Activity {
         		emptyItems.add(ConversationView.this.getString(R.string.import_contacts_list));
         		
         		ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
+        		
+        		
                 emptyList.setAdapter(ap);
         		emptyList.setVisibility(ListView.VISIBLE);
+        		
+        		emptyList.post(new Runnable(){
+
+					@Override
+					public void run() {
+						//TODO implement showcase view
+						View addContacts = emptyList.getChildAt(ADD_CONTACT);
+						View importContacts = emptyList.getChildAt(IMPORT_CONTACT);
+					}
+        			
+        		});
+        		
         		list.setVisibility(ListView.INVISIBLE);
         		//ConversationView.this.dialog.dismiss();
         	}
