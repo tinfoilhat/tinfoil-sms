@@ -20,7 +20,7 @@ package com.tinfoil.sms.settings;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,7 +39,7 @@ import com.tinfoil.sms.utility.SMSUtility;
 
 public class ImportContactLoader extends Loader{
 
-    private Activity activity;
+    private Context context;
 	private Handler handler;
     private ArrayList<TrustedContact> tc;
     private ArrayList<Boolean> inDb;
@@ -56,14 +56,14 @@ public class ImportContactLoader extends Loader{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public ImportContactLoader(Activity activity, boolean clicked, boolean doNothing, 
+    public ImportContactLoader(Context context, boolean doNothing, 
     		ArrayList<Boolean> inDb, ArrayList<TrustedContact> tc, Handler handler)
     {
-    	super(activity.getBaseContext());
-    	this.activity = activity;
+    	super(context);
+    	this.context = context;
     	this.handler = handler;
     	this.doNothing = doNothing;
-    	this.clicked = clicked;
+    	this.clicked = false;
     	this.inDb = inDb;
     	this.tc = tc;
     	start();
@@ -86,7 +86,7 @@ public class ImportContactLoader extends Loader{
     	 * number of contacts increases, of course this also has to do with the
     	 * users phone.
     	 */
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     	 
 		if (!doNothing)
 		{
@@ -98,7 +98,7 @@ public class ImportContactLoader extends Loader{
 	            String id;
 	
 	            final Uri mContacts = ContactsContract.Contacts.CONTENT_URI;
-	            final Cursor cur = activity.getContentResolver().query(mContacts, new String[] 
+	            final Cursor cur = context.getContentResolver().query(mContacts, new String[] 
 	            		{ Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER }, 
 	                    null, null, Contacts.DISPLAY_NAME);
 	
@@ -120,7 +120,7 @@ public class ImportContactLoader extends Loader{
 	                    if (cur.getString(cur.getColumnIndex(Contacts.HAS_PHONE_NUMBER)).equalsIgnoreCase("1"))
 	                    {
 	                    	Cursor mCur = null;
-	                        final Cursor pCur = activity.getContentResolver().query(Phone.CONTENT_URI,
+	                        final Cursor pCur = context.getContentResolver().query(Phone.CONTENT_URI,
 	                                new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?",
 	                                new String[] { id }, null);
 	
@@ -145,7 +145,7 @@ public class ImportContactLoader extends Loader{
 	                                
 	
 		                                //This now takes into account the different formats of the numbers. 
-		                                mCur = activity.getContentResolver().query(uriSMSURI, new String[]
+		                                mCur = context.getContentResolver().query(uriSMSURI, new String[]
 		                                { "body", "date", "type" }, "address = ? or address = ? or address = ?",
 		                                        new String[] { SMSUtility.format(numb),
 		                                                "+1" + SMSUtility.format(numb),
@@ -220,7 +220,7 @@ public class ImportContactLoader extends Loader{
 	            // cur.close();
 	
 	            final Uri uriSMSURI = Uri.parse("content://sms/conversations/");
-	            final Cursor convCur = activity.getContentResolver().query(uriSMSURI,
+	            final Cursor convCur = context.getContentResolver().query(uriSMSURI,
 	                    new String[] { "thread_id" }, null,
 	                    null, "date DESC");
 	            
@@ -234,7 +234,7 @@ public class ImportContactLoader extends Loader{
 	            {
 	                id = convCur.getString(convCur.getColumnIndex("thread_id"));
 	
-	                nCur = activity.getContentResolver().query(Uri.parse("content://sms/inbox"),
+	                nCur = context.getContentResolver().query(Uri.parse("content://sms/inbox"),
 	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
 	                        new String[] { id }, "date DESC LIMIT " +
 	                                Integer.valueOf(sharedPrefs.getString
@@ -258,7 +258,7 @@ public class ImportContactLoader extends Loader{
 	                    } while (nCur.moveToNext());
 	                }
 	
-	                sCur = activity.getContentResolver().query(Uri.parse("content://sms/sent"),
+	                sCur = context.getContentResolver().query(Uri.parse("content://sms/sent"),
 	                        new String[] { "body", "address", "date", "type" }, "thread_id = ?",
 	                        new String[] { id }, "date DESC LIMIT " +
 	                        Integer.valueOf(sharedPrefs.getString
