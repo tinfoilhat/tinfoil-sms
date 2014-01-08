@@ -134,14 +134,6 @@
         android:title="@string/feedback_options"
         android:key="feedback_category">
         
-        <CheckBoxPreference
-            android:key="bugsense_enable"
-		    android:title="@string/pref_enable_bugsense"
-		    android:summaryOn="@string/pref_bugsense_enabled"
-		    android:summaryOff="@string/pref_bugsense_disabled"
-		    android:defaultValue="true"
-		    android:persistent="true"/>
-        
           <PreferenceScreen
            	android:title="@string/source_code_title"
             android:key="source_code"

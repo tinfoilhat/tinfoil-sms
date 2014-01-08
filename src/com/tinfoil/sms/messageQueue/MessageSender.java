@@ -17,14 +17,13 @@
 
 package com.tinfoil.sms.messageQueue;
 
-import com.bugsense.trace.BugSenseHandler;
-import com.tinfoil.sms.dataStructures.Entry;
-import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.SMSUtility;
-
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
+
+import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.utility.SMSUtility;
 
 public class MessageSender implements Runnable{
 
@@ -88,7 +87,6 @@ public class MessageSender implements Runnable{
 						this.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-						BugSenseHandler.sendExceptionMessage("Type", "MessageSender Concurrency Issue", e);
 					}
 				}
 			}
@@ -131,7 +129,6 @@ public class MessageSender implements Runnable{
 						this.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-						BugSenseHandler.sendExceptionMessage("Type", "MessageSender Concurrency Issue", e);
 					}
 				}
 			}

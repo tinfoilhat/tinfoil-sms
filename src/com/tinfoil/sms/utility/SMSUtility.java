@@ -34,7 +34,6 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.dataStructures.Entry;
@@ -255,14 +254,12 @@ public abstract class SMSUtility {
         {
             Toast.makeText(context, R.string.failed_to_encrypt, Toast.LENGTH_LONG).show();
             e.printStackTrace();
-            BugSenseHandler.sendExceptionMessage("Type", "Encrypt Message Error", e);
             return false;
         }
         catch (final Exception e)
         {
             Toast.makeText(context, R.string.failed_to_sent, Toast.LENGTH_LONG).show();
             e.printStackTrace();
-            BugSenseHandler.sendExceptionMessage("Type", "Send Message Error", e);
             return false;
         }
     }

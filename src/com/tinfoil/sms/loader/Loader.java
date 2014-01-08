@@ -19,7 +19,6 @@ package com.tinfoil.sms.loader;
 
 import android.content.Context;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.database.DBAccessor;
 
 public abstract class Loader implements Runnable {
@@ -57,7 +56,6 @@ public abstract class Loader implements Runnable {
 						wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-			            BugSenseHandler.sendExceptionMessage("Type", "Loader Concurrency Issue", e);
 					}
 				}
 			}

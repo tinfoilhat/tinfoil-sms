@@ -33,7 +33,6 @@ import org.spongycastle.jce.provider.BouncyCastleProvider;
 import android.util.Base64;
 import android.util.Log;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.orwell.crypto.APrioriInfo;
 import com.orwell.crypto.ECEngine;
 import com.orwell.crypto.ECGKeyUtil;
@@ -41,7 +40,6 @@ import com.orwell.crypto.ECKeyParam;
 import com.orwell.csprng.ISAACRandomGenerator;
 import com.orwell.csprng.SDFGenerator;
 import com.orwell.csprng.SDFParameters;
-
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -158,11 +156,6 @@ public class Encryption
         
         /* Remove the nonce counter from the message received */
         System.arraycopy(decodedMessage, COUNT_SIZE, encMessage, 0, encMessage.length);
-        
-		/* Log the message data, before it's decrypted, in the event of a crash */
-        BugSenseHandler.addCrashExtraData("Original", message);
-        BugSenseHandler.addCrashExtraData("Decoded", new String(decodedMessage));
-        BugSenseHandler.addCrashExtraData("Encrypted", new String(encMessage));
 
         /* decrypt the message, increment and save the nonce counter */
         decMessage = decryptMap.get(number.getId()).processBlock(encMessage);

@@ -32,7 +32,6 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.Encryption;
 import com.tinfoil.sms.crypto.KeyExchange;
@@ -203,12 +202,10 @@ public class MessageReceiver extends BroadcastReceiver {
 								Toast.makeText(context, R.string.key_exchange_failed_to_decrypt, Toast.LENGTH_LONG).show();
 								Toast.makeText(context, R.string.possible_man_in_the_middle_attack_warning, Toast.LENGTH_LONG).show();
 								e.printStackTrace();
-								BugSenseHandler.sendExceptionMessage("Type", "Decrypt Message Error or Man In The Middle Attack", e);
 							}
 							catch (Exception e)
 							{
 							    e.printStackTrace();
-                                BugSenseHandler.sendExceptionMessage("Type", "Message Receiver Error", e);  
 							}
 						}
 						else

@@ -44,7 +44,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Number;
@@ -394,10 +393,8 @@ public class EditNumber extends Activity{
 	                					    f.close();
 	                					} catch (FileNotFoundException e) {
 	                						e.printStackTrace();
-	                						BugSenseHandler.sendExceptionMessage("Type", "Import Public Key Not Found Error", e);
 	                					} catch (IOException e) {
 	                						e.printStackTrace();
-	                						BugSenseHandler.sendExceptionMessage("Type", "Import Public Key Error", e);
 	                					}
 	                           		
 	                            		String keyExchangeMessage = sb.toString();
