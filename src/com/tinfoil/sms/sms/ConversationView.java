@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -50,11 +49,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.espian.showcaseview.ShowcaseView;
 import com.espian.showcaseview.ShowcaseViews;
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
 import com.tinfoil.sms.dataStructures.User;
@@ -245,7 +243,9 @@ public class ConversationView extends Activity {
         /* Second step importing contacts, highlights add/import contacts */
         mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                 R.string.tut_startimport_title,
-                R.string.tut_startimport_body));
+                R.string.tut_startimport_body,
+                ShowcaseView.ITEM_TITLE,
+                1.6f));
         mViews.show();
     }
 
@@ -483,17 +483,6 @@ public class ConversationView extends Activity {
         		
                 emptyList.setAdapter(ap);
         		emptyList.setVisibility(ListView.VISIBLE);
-        		
-        		emptyList.post(new Runnable(){
-
-					@Override
-					public void run() {
-						//TODO implement showcase view
-						View addContacts = emptyList.getChildAt(ADD_CONTACT);
-						View importContacts = emptyList.getChildAt(IMPORT_CONTACT);
-					}
-        			
-        		});
         		
         		list.setVisibility(ListView.INVISIBLE);
         		//ConversationView.this.dialog.dismiss();
