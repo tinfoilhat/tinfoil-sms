@@ -260,13 +260,34 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="new_key_exchange_menu">New Key Exchange</string>
 
     <!-- Introductory Tutorial strings -->
-    <!-- Intro Text -->
+    <!-- Intro -->
     <string name="tut_intro_title">Welcome to Tinfoil-SMS!</string>
     <string name="tut_intro_body">The following guide is intended to walk you through the basics and make you familiar with best security practices so you are as secure as possible! It is highly recommended that you follow this guide. You can always restart this guide again anytime by enabling it in the settings.</string>
-    <!-- Start Importing contacts -->
+    <!-- Start importing contacts -->
     <string name="tut_startimport_title">Start Importing Contacts</string>
     <string name="tut_startimport_body">In order to use Tinfoil-SMS to text securely with contacts you must begin by adding or importing them.</string>
     <!-- Importing existing contacts -->
     <string name="tut_import_title">Import Contacts from your Phone</string>
     <string name="tut_import_boby">Select contacts from your phone to import, all previous conversations will be imported and your future conversations will be handled by the app.\nNOTE: By default communication with contacts are NOT secure until a successful key exchange has been executed!</string>
+    <!-- Start a key exchange -->
+    <string name="tut_startexchange_title"></string>
+    <string name="tut_startexchange_body"></string>
+    <!--  Set shared secret -->
+    <string name="tut_setsecret_title"></string>
+    <string name="tut_setsecret_body"></string>
+    <!-- Key exchange sent -->
+    <string name="tut_keysent_title"></string>
+    <string name="tut_keysent_body"></string>
+    <!-- Pending key exchanges -->
+    <string name="tut_pending_title"></string>
+    <string name="tut_pending_body"></string>
+    <!-- Accepting a key exchange -->
+    <string name="tut_accept_title"></string>
+    <string name="tut_accept_body"></string>
+    <!-- Successful key exchange -->
+    <string name="tut_success_title"></string>
+    <string name="tut_success_body"></string>
+    <!-- Closing -->
+    <string name="tut_close_title"></string>
+    <string name="tut_close_body"></string>
 </resources>
