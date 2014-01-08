@@ -34,7 +34,6 @@ import com.tinfoil.sms.settings.QuickPrefsActivity;
  */
 public class TinfoilSMS extends Application
 {
-	public static boolean threadable = false;
 	
     /* Register spongycastle as the most preferred security provider */
     static {

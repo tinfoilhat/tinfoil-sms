@@ -144,22 +144,6 @@ public class ConversationView extends Activity {
         Log.v("public key", new String(SMSUtility.user.getPublicKey()));
         Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
         
-        // Set the user's build version
-        String versionNumber =  Build.VERSION.RELEASE;
-        String[] numbers = versionNumber.split("\\.");
-        
-        try {
-        	if(Integer.valueOf(numbers[0]) >= 4 && Integer.valueOf(numbers[1]) >= 1)
-        	{
-        		TinfoilSMS.threadable = true;
-        	}
-        }
-        // If the version cannot be parsed assume the version is requires the 2.3 version
-        catch (NumberFormatException e){}
-        
-        Log.v("Build Version", Build.VERSION.RELEASE + " " + TinfoilSMS.threadable);
-        Log.v("Build Thread Safe", ""+TinfoilSMS.threadable);
-
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
             /*
