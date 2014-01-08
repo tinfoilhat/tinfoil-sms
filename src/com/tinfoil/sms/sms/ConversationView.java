@@ -51,8 +51,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.targets.ViewTarget;
+import com.espian.showcaseview.ShowcaseViews;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.adapter.ConversationAdapter;
@@ -248,15 +247,21 @@ public class ConversationView extends Activity {
 			}
 		});
         
-        /* Display the first step of the introductory walkthrough
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-        co.hideOnClickOutside = false;
-        co.block = true;
-        co.shotType = ShowcaseView.TYPE_NO_LIMIT;*/
-        View showcasedView = findViewById(R.id.empty);
-        ViewTarget target = new ViewTarget(showcasedView);
-        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_intro_title, R.string.tut_intro_body);
-        sv.setScaleMultiplier(0);
+        /* If tutorial enabled display the first two steps of the tutorial */
+        // TODO add checks based on array of bools from preferences
+        ShowcaseViews mViews = new ShowcaseViews(this);
+        
+        /* First step of the introductory walkthrough, initial intro */
+        mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
+                R.string.tut_intro_title,
+                R.string.tut_intro_body,
+                0.0f));
+        
+        /* Second step importing contacts, highlights add/import contacts */
+        mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
+                R.string.tut_startimport_title,
+                R.string.tut_startimport_body));
+        mViews.show();
     }
 
     /**
