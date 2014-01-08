@@ -1,31 +1,12 @@
-/** 
- * Copyright (C) 2013 Jonathan Gillett, Joseph Heron
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.tinfoil.sms.settings;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -34,60 +15,54 @@ import android.provider.ContactsContract.Contacts;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
-import com.tinfoil.sms.loader.Loader;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.loader.OnFinishedImportingListener;
 import com.tinfoil.sms.utility.SMSUtility;
 
-public class ImportContactLoader extends Loader{
+public class ImportTask extends AsyncTask<Context, Void, Boolean>{
 
-    private Context context;
-	private Handler handler;
-    private ArrayList<TrustedContact> tc;
-    private ArrayList<Boolean> inDb;
-    private boolean clicked;   
-    private boolean stop;
-    private boolean doNothing;
-    
-    private SharedPreferences sharedPrefs;
-
-    /**
-     * Create the object and start the thread 
-     * @param context The activity context
-     * @param update Whether the load is an update or not.
-     * @param handler The Handler that takes care of UI setup after the thread
-     * has finished
+	private OnFinishedImportingListener listener;
+	private ArrayList<TrustedContact> tc;
+	private ArrayList<Boolean> inDb;
+	private boolean clicked;
+	private DBAccessor loader;
+	
+	private boolean doNothing;
+	
+	private SharedPreferences sharedPrefs;
+	
+	public ImportTask(OnFinishedImportingListener listener, boolean doNothing)
+	{
+		super();
+		this.listener = listener;
+		this.clicked = false;
+		this.doNothing = doNothing;
+	}
+	
+	public ImportTask(OnFinishedImportingListener listener, boolean clicked, boolean doNothing,
+			ArrayList<TrustedContact> tc, ArrayList<Boolean> inDb)
+	{
+		super();
+		this.listener = listener;
+		this.clicked = clicked;
+		this.doNothing = doNothing;
+		this.tc = tc;
+		this.inDb = inDb;
+	}
+	
+	/*
+     * (non-Javadoc)
+     * 
+     * @see android.os.AsyncTask#doInBackground(Params[])
      */
-    public ImportContactLoader(Context context, boolean doNothing, 
-    		ArrayList<Boolean> inDb, ArrayList<TrustedContact> tc, Handler handler)
-    {
-    	super(context);
-    	this.context = context;
-    	this.handler = handler;
-    	this.doNothing = doNothing;
-    	this.clicked = false;
-    	this.inDb = inDb;
-    	this.tc = tc;
-    	start();
-    }	
-
-
 	@Override
-	public void execution() {
-		/*
-    	 * Note throughout this thread checks are made to a variable 'stop'.
-    	 * This variable identifies if the user has pressed the back button. If
-    	 * they have the thread will break each loop until it is at the end of
-    	 * run method and then will the dialog will be dismissed and the user
-    	 * will go back to the previous activity.
-    	 * This allows the user to interrupt the import contacts loading thread
-    	 * so that if the user does not actually want to wait for the all the
-    	 * contacts to be found then it will terminate the search. This is
-    	 * because the method of reading in the contacts from the native's
-    	 * database can be quite time consuming. This time increases as the
-    	 * number of contacts increases, of course this also has to do with the
-    	 * users phone.
-    	 */
+	protected Boolean doInBackground(Context... params) {
+		
+		Context context = params[0];
+		loader = new DBAccessor(context);
+		
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-    	 
+   	 
 		if (!doNothing)
 		{
 	        if (!this.clicked)
@@ -106,13 +81,7 @@ public class ImportContactLoader extends Loader{
 	
 	            if (cur != null && cur.moveToFirst()) {
 	                do {
-	                	
-	                	//Check if the thread has been stopped
-	                	if(getStop())
-	                	{
-	                		break;
-	                	}
-	                	
+
 	                    number = new ArrayList<Number>();
 	                    name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
 	                    id = cur.getString(cur.getColumnIndex(Contacts._ID));
@@ -127,13 +96,7 @@ public class ImportContactLoader extends Loader{
 	                        if (pCur != null && pCur.moveToFirst())
 	                        {
 	                            do
-	                            {
-	                            	//Check if the thread has been stopped
-	                            	if(getStop())
-	                            	{
-	                            		break;
-	                            	}
-	                            	
+	                            {                           	
 	                                final String numb = pCur.getString(pCur.getColumnIndex(Phone.NUMBER));
 	                                final int type = pCur.getInt(pCur.getColumnIndex(Phone.TYPE));
 	                                final Uri uriSMSURI = Uri.parse("content://sms/");
@@ -158,32 +121,16 @@ public class ImportContactLoader extends Loader{
 		                                {
 		                                    do
 		                                    {
-		                                    	//Check if the thread has been stopped
-		                                    	if(getStop())
-		                                    	{
-		                                    		break;
-		                                    	}
 		                                    	
 		                                        //Toast.makeText(this, ContactRetriever.millisToDate(mCur.getLong(mCur.getColumnIndex("date"))), Toast.LENGTH_LONG);
 		                                        final Message myM = new Message(mCur.getString(mCur.getColumnIndex("body")),
 		                                                mCur.getLong(mCur.getColumnIndex("date")), mCur.getInt(mCur.getColumnIndex("type")));
 		                                        number.get(number.size() - 1).addMessage(myM);
 		                                        
-		                                        //Check if the thread has been stopped
-		                                    	if(getStop())
-		                                    	{
-		                                    		break;
-		                                    	}
 		                                    } while (mCur.moveToNext());
 		                                    
 		                                }
 	                                }
-	
-	                                //Check if the thread has been stopped
-	                            	if(getStop())
-	                            	{
-	                            		break;
-	                            	}
 	                                
 	                            } while (pCur.moveToNext());
 	                        }
@@ -193,12 +140,6 @@ public class ImportContactLoader extends Loader{
 	                        }                        
 	                        pCur.close();
 	                    }
-	
-	                    //Check if the thread has been stopped
-	                	if(getStop())
-	                	{
-	                		break;
-	                	}
 	                	
 	                    /*
 	                     * Added a check to see if the number array is empty
@@ -230,7 +171,7 @@ public class ImportContactLoader extends Loader{
 	            Number newNumber = null;
 	
 	            //Check if the thread has been stopped
-	            while (convCur != null && convCur.moveToNext() && !getStop())
+	            while (convCur != null && convCur.moveToNext())
 	            {
 	                id = convCur.getString(convCur.getColumnIndex("thread_id"));
 	
@@ -246,12 +187,6 @@ public class ImportContactLoader extends Loader{
 	                            nCur.getString(nCur.getColumnIndex("address"))));
 	                    do
 	                    {
-	                    	//Check if the thread has been stopped
-	                    	if(getStop())
-	                    	{
-	                    		break;
-	                    	}
-	                        
 	                        newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
 	                                nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
 	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
@@ -274,11 +209,6 @@ public class ImportContactLoader extends Loader{
 	
 	                    do
 	                    {
-	                    	//Check if the thread has been stopped
-	                        if(getStop())
-	                    	{
-	                    		break;
-	                    	}
 	                        newNumber.addMessage(new Message(sCur.getString(sCur.getColumnIndex("body")),
 	                                sCur.getLong(sCur.getColumnIndex("date")), sCur.getInt(sCur.getColumnIndex("type"))));
 	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
@@ -303,6 +233,7 @@ public class ImportContactLoader extends Loader{
 	        }
 	        else
 	        {
+	        	
 	            for (int i = 0; i < this.tc.size(); i++)
 	            {
 	                if (this.inDb.get(i))
@@ -311,49 +242,59 @@ public class ImportContactLoader extends Loader{
 	                }
 	            }
 	            
-	            android.os.Message msg = new android.os.Message();
-	        	Bundle b = new Bundle();
-	        	msg.setData(b);
-	        	msg.what = ImportContacts.FINISH;
-	        	
-	        	handler.sendMessage(msg);
+	        	//msg.what = ImportContacts.FINISH;
+	        	return false;
 	        }
 	        
-	        if(!getStop())
-	        {
-	        	android.os.Message msg = new android.os.Message();
-	        	Bundle b = new Bundle();
-	        	b.putSerializable(ImportContacts.TRUSTED_CONTACTS, (Serializable) tc);
-	        	b.putSerializable(ImportContacts.IN_DATABASE, (Serializable) inDb);
-	        	msg.setData(b);
-	        	msg.what = ImportContacts.LOAD;
+	        //b.putSerializable(ImportContacts.TRUSTED_CONTACTS, (Serializable) tc);
+        	//b.putSerializable(ImportContacts.IN_DATABASE, (Serializable) inDb);
+        	//msg.what = ImportContacts.LOAD;
+	        return true;
 	        	
-	        	handler.sendMessage(msg);
-	        }
-	        else
-	        {
-	        	setStop(false);
-	        	android.os.Message msg = new android.os.Message();
-	        	Bundle b = new Bundle();
-	        	msg.setData(b);
-	        	msg.what = ImportContacts.FINISH;
-	        	
-	        	handler.sendMessage(msg);
-	        }
 		}
 		else
 		{
 			doNothing = false;
 		}
+		return false;
 	}
+	
+	/*
+     * (non-Javadoc)
+     * 
+     * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+     */
+    @Override
+    protected void onPostExecute(final Boolean success)
+    {
+    	// Call the listener if this is successful.
+        if (listener != null)
+        {
+
+            listener.onFinishedImportingListener(success, tc, inDb);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see android.os.AsyncTask#onCancelled()
+     */
+    @Override
+    protected void onCancelled()
+    {
+        // Not implemented. Provided to satisfy interface.
+    }
     
     /**
-     * Get the stop flag
-     * @return The stop flag
+     * setOnFinishedTaskListener Used to set the task listener.
+     * 
+     * @param listener
+     *            The listener to set to.
      */
-    public synchronized boolean getStop()
+    public void setOnFinshedTaskListener(OnFinishedImportingListener listener)
     {
-    	return this.stop;
+        this.listener = listener;
     }
     
     /**
@@ -371,14 +312,5 @@ public class ImportContactLoader extends Loader{
     public synchronized boolean getClicked()
     {
     	return this.clicked;
-    }    
-    
-    /**
-     * Set the stop flag.
-	 * @param stop Whether the thread should be stopped or not.
-	 */
-    public synchronized void setStop(boolean stop)
-	{
-    	this.stop = stop;
-	}
+    }
 }

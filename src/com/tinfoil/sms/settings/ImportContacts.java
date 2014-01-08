@@ -26,7 +26,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +39,7 @@ import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.loader.OnFinishedImportingListener;
 
 /**
  * ImportContact activity allows for contacts to be imported from the native
@@ -50,7 +50,7 @@ import com.tinfoil.sms.dataStructures.TrustedContact;
  * contact in the native database. An imported contact will appear in the
  * ManageContactsActivity.
  */
-public class ImportContacts extends Activity {
+public class ImportContacts extends Activity implements OnFinishedImportingListener {
     private ListView importList;
     private ArrayList<TrustedContact> tc;
     private boolean disable;
@@ -62,7 +62,8 @@ public class ImportContacts extends Activity {
     public static final int LOAD = 0;
     public static final int FINISH = 1;
 
-    private ImportContactLoader runThread;
+    //private ImportContactLoader runThread;
+    private ImportTask runTask;
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -76,7 +77,8 @@ public class ImportContacts extends Activity {
         
         if(savedInstanceState == null)
         {
-	        runThread = new ImportContactLoader(this, false, inDb, tc, handler);
+        	runTask = new ImportTask(this, false);
+        	runTask.execute(this);
 	        
 	        //final Thread thread = new Thread(this);
 	        this.dialog = ProgressDialog.show(this, this
@@ -85,7 +87,7 @@ public class ImportContacts extends Activity {
 	        		new OnCancelListener() {
 	    		
 	        	public void onCancel(DialogInterface dialog) {
-	    			runThread.setStop(true);
+	        		runTask.cancel(true);
 	    			dialog.dismiss();
 	    			ImportContacts.this.finish();
 	    		}
@@ -95,7 +97,8 @@ public class ImportContacts extends Activity {
         {
         	tc = (ArrayList<TrustedContact>) savedInstanceState.getSerializable(ImportContacts.TRUSTED_CONTACTS);
         	inDb = (ArrayList<Boolean>) savedInstanceState.getSerializable(ImportContacts.IN_DATABASE);
-        	runThread = new ImportContactLoader(this, true, inDb, tc, handler);
+        	runTask = new ImportTask(this, true);
+        	runTask.execute(this);
         	setUpUI();
         }
         
@@ -129,10 +132,12 @@ public class ImportContacts extends Activity {
     	//Add Contacts to the tinfoil-sms database from android's database
         if (!ImportContacts.this.disable)
         {
-            runThread.setClicked(true);
+        	
 
-            runThread.setStart(false);
+        	runTask = new ImportTask(this, true, false, tc, inDb);
+        	runTask.execute(this);
 
+        	//TODO fix leaked window
             ImportContacts.this.dialog = ProgressDialog.show(ImportContacts.this,
             		this.getString(R.string.importing_title),
                     this.getString(R.string.importing_message), true, false);
@@ -200,9 +205,7 @@ public class ImportContacts extends Activity {
     @Override
     protected void onDestroy()
     {
-    	if(runThread != null){
-    		runThread.setRunner(false);
-    	}
+    	runTask = null;
 	    //tc = null;
 	    //dialog = null;
 	    super.onDestroy();
@@ -296,7 +299,7 @@ public class ImportContacts extends Activity {
      * Please note android.os.Message is needed because tinfoil-sms has another
      * class called Message.
      */
-    private final Handler handler = new Handler() {
+    /*private final Handler handler = new Handler() {
         @SuppressWarnings("unchecked")
 		@Override
         public void handleMessage(final android.os.Message msg)
@@ -328,6 +331,43 @@ public class ImportContacts extends Activity {
         	}
         	
         }
-    };
+    };*/
+
+	@Override
+	public void onFinishedImportingListener(final boolean success,
+			ArrayList<TrustedContact> tc, ArrayList<Boolean> inDb) {
+		
+		if(success)
+		{
+			this.tc = tc;
+	    	this.inDb = inDb;
+		}
+	
+    	runOnUiThread(new Runnable(){
+
+			@Override
+			public void run() {
+				
+				if(success)
+				{
+					setUpUI();
+				}
+				
+				
+				if (ImportContacts.this.dialog.isShowing())
+	            {
+	            	ImportContacts.this.dialog.dismiss();
+	            }
+				
+				if(!success)
+				{
+					finish();
+				}
+				
+			}
+    		
+    	});
+		
+	}
 
 }
