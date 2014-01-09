@@ -64,6 +64,8 @@ Beta Release version 1.3.0
 	* Donations through custom dialog
 	* Added ability to send a key exchange through new message
 	* Added action bar features for 4.0+
+	* Added links to message lists
+	* Added warning for Kitkat (4.4) users since Kitkat is not supported yet.
 * Major Fixes:
 	* Database interface which has solved numerous issues in countered with the system.
 	* Layout of Messages
