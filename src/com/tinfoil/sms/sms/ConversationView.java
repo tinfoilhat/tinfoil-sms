@@ -54,6 +54,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.espian.showcaseview.ShowcaseView;
+import com.espian.showcaseview.targets.ActionViewTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
@@ -231,6 +233,17 @@ public class ConversationView extends Activity {
 				}
 			}
 		});
+        
+        // Display the key exchange instructions if step 1&2 already shown
+        // TODO add checks
+        /*
+        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+        co.hideOnClickOutside = true;
+        ActionViewTarget target = new ActionViewTarget(this, ActionViewTarget.Type.OVERFLOW);
+        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_startexchange_title, 
+                R.string.tut_startexchange_body, co);
+        sv.setScaleMultiplier(0.5f);
+        
         
         /* If tutorial enabled display the first two steps of the tutorial */
         // TODO add checks based on array of bools from preferences
