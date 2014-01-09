@@ -27,8 +27,8 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="pending_key_exchange_menu">Pending Key Exchanges</string>
     <string name="pending_key_exchange_menu_condensed">Exchange</string>
     
-    <string name="kitkat_dialog_title">Warning!</string>
-    <string name="kitkat_dialog_message">Tinfoil-SMS currently does not support Android KitKat 4.4 and will not be able to send any text messages. Continue anyways?</string>
+    <string name="kitkat_dialog_title">Change default SMS app?</string>
+    <string name="kitkat_dialog_message">To use Tinfoil-SMS, it must be the default SMS app.</string>
 
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">has sent another key exchange message</string>
