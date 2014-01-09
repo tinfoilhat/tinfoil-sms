@@ -26,6 +26,10 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="settings_menu">Definições</string>
     <string name="pending_key_exchange_menu">Em Espera pela Troca de Chaves</string>
     <string name="pending_key_exchange_menu_condensed">Troca</string>
+    <!-- TODO Translate -->
+    <string name="kitkat_dialog_title">Warning!</string>
+    <!-- TODO Translate -->
+    <string name="kitkat_dialog_message">Tinfoil-SMS currently does not support Android KitKat 4.4 and will not be able to send any text messages. Continue anyways?</string>
     
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">enviou outra mensagem de troca de chaves</string>

@@ -20,6 +20,7 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,13 +28,16 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Telephony;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
@@ -385,7 +389,7 @@ public class ConversationView extends Activity {
 	                editor.commit();
 	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
-	                //checkDefault();
+	                checkDefault();
 				}
 	        })
 	        .setOnCancelListener(new OnCancelListener(){
@@ -409,11 +413,11 @@ public class ConversationView extends Activity {
     	else
     	{
     		// Check if Tinfoil-SMS is default SMS app.
-    		//checkDefault();
+    		checkDefault();
     	}
     }
 
-    /*@TargetApi(19)
+    @TargetApi(android.os.Build.VERSION_CODES.KITKAT)
 	public void checkDefault()
     {
     	if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
@@ -422,7 +426,7 @@ public class ConversationView extends Activity {
 	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
 	        	
 	        	//TODO move strings to strings.xml
-	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
+	        	/*AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle("Change SMS app?")
 		        .setCancelable(true)
 		        .setMessage("Use Tinfoil-SMS instead your currently selected SMS app?")
@@ -453,9 +457,52 @@ public class ConversationView extends Activity {
 		            }
 		        });
 		    	builder.create().show();
+		    	*/
+	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		        .setTitle(R.string.kitkat_dialog_title)
+		        .setCancelable(true)
+		        .setMessage(R.string.kitkat_dialog_message)
+		        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+		
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
+	                            myPackageName);
+	                    startActivity(intent);
+					}
+		        })
+		        .setOnCancelListener(new OnCancelListener(){
+	
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						// Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+					}	        	
+		        })
+		        .setNegativeButton(android.R.string.no, new Dialog.OnClickListener() {
+		
+		            @Override
+		            public void onClick(DialogInterface dialog, int which) {
+		                // Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+		            }
+		        })
+		        .setNeutralButton(R.string.tell_me_more, new OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Android-KitKat-Support";
+						Intent i = new Intent(Intent.ACTION_VIEW);
+						i.setData(Uri.parse(url));
+						ConversationView.this.startActivity(i);
+					}
+		        	
+		        });
+		    	builder.create().show();
 	        }
     	}
-    }*/
+    }
 
 	/**
 	 * The handler class for cleaning up after the loading thread as well as the

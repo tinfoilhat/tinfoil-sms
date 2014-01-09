@@ -26,6 +26,10 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="settings_menu">Nastavení</string>
     <string name="pending_key_exchange_menu">Nevyřízené výměny klíčů</string>
     <string name="pending_key_exchange_menu_condensed">Vyměnit klíč</string>
+    <!-- TODO Translate -->
+    <string name="kitkat_dialog_title">Warning!</string>
+    <!-- TODO Translate -->
+    <string name="kitkat_dialog_message">Tinfoil-SMS currently does not support Android KitKat 4.4 and will not be able to send any text messages. Continue anyways?</string>
 
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">Zpráva obsahující jiný klíč byla odeslána</string>
