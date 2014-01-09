@@ -232,13 +232,13 @@ public class ConversationView extends Activity {
         // TODO add checks based on array of bools from preferences
         /*ShowcaseViews mViews = new ShowcaseViews(this);
         
-        /* First step of the introductory walkthrough, initial intro
+        // First step of the introductory walkthrough, initial intro
         mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                 R.string.tut_intro_title,
                 R.string.tut_intro_body,
                 0.0f));
         
-        /* Second step importing contacts, highlights add/import contacts 
+        // Second step importing contacts, highlights add/import contacts 
         mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                 R.string.tut_startimport_title,
                 R.string.tut_startimport_body,
