@@ -103,12 +103,17 @@ public class Encryption
         encMessage = encryptMap.get(number.getId()).processBlock(message.getBytes());
         finalMessage = addCounter(encMessage, number.getNonceEncrypt());
         
+        /* Log data for debugging, in the event of a crash */
         Log.v("Nonce counter:", Integer.toString(number.getNonceEncrypt()));
+        BugSenseHandler.addCrashExtraData("Nonce", Integer.toString(number.getNonceEncrypt()));
         
         /* Increment and save the counter used by the nonce for encryption */
         number.setNonceEncrypt(number.getNonceEncrypt() + 1);
        
+        /* Log data for debugging, in the event of a crash */
         Log.v("Encrypted Message", Base64.encodeToString(finalMessage, Base64.DEFAULT));
+        BugSenseHandler.addCrashExtraData("Encrypted", new String(finalMessage));
+        BugSenseHandler.addCrashExtraData("Encoded", Base64.encodeToString(finalMessage, Base64.DEFAULT));
         
         return Base64.encodeToString(finalMessage, Base64.DEFAULT);
     }
@@ -127,6 +132,9 @@ public class Encryption
      */
     public String decrypt(Number number, String message) throws InvalidCipherTextException
     {
+        /* Log data, before it's decrypted, in the event of a crash */
+        BugSenseHandler.addCrashExtraData("Original", message);
+        
         byte[] decodedMessage = Base64.decode(message, Base64.DEFAULT);
         byte[] encMessage = new byte[decodedMessage.length - COUNT_SIZE];
         byte[] decMessage;
@@ -138,6 +146,10 @@ public class Encryption
         
         Log.v("Nonce counter received:", Integer.toString(counter));
         
+        /* Log data, before it's decrypted, in the event of a crash */
+        BugSenseHandler.addCrashExtraData("Nonce Received", Integer.toString(counter));
+        BugSenseHandler.addCrashExtraData("Nonce", Integer.toString(number.getNonceDecrypt()));
+                        
         /* Re-initialize the encryption engine if the nonce counter is incorrect
          * due to message not being received in the correct order (benefit of the doubt)
          * 
@@ -159,10 +171,9 @@ public class Encryption
         }
         
         /* Remove the nonce counter from the message received */
-        System.arraycopy(decodedMessage, COUNT_SIZE, encMessage, 0, encMessage.length);
-        
-		/* Log the message data, before it's decrypted, in the event of a crash */
-        BugSenseHandler.addCrashExtraData("Original", message);
+        System.arraycopy(decodedMessage, COUNT_SIZE, encMessage, 0, encMessage.length);      
+
+        /* Log data, before it's decrypted, in the event of a crash */
         BugSenseHandler.addCrashExtraData("Decoded", new String(decodedMessage));
         BugSenseHandler.addCrashExtraData("Encrypted", new String(encMessage));
 
@@ -222,7 +233,10 @@ public class Encryption
             sharedInfo = new APrioriInfo(sharedInfo1, sharedInfo2);
             generator.init(new SDFParameters(sharedInfo1, sharedInfo2));
             nonce = new Nonce(CSPRNG, number.getNonceEncrypt());
-            Log.v("Nonce encrypt", String.valueOf(number.getNonceEncrypt()));
+            
+            /* Log data for debugging, in the event of a crash */
+            Log.v("Nonce Encrypt", String.valueOf(number.getNonceEncrypt()));
+            BugSenseHandler.addCrashExtraData("Nonce Encrypt", String.valueOf(number.getNonceEncrypt()));
         }
         else
         {
@@ -230,7 +244,10 @@ public class Encryption
             sharedInfo = new APrioriInfo(sharedInfo2, sharedInfo1);
             generator.init(new SDFParameters(sharedInfo2, sharedInfo1));
             nonce = new Nonce(CSPRNG, number.getNonceDecrypt());
-            Log.v("Nonce decrypt", String.valueOf(number.getNonceDecrypt()));
+            
+            /* Log data for debugging, in the event of a crash */
+            Log.v("Nonce Decrypt", String.valueOf(number.getNonceDecrypt()));
+            BugSenseHandler.addCrashExtraData("Nonce Decrypt", String.valueOf(number.getNonceDecrypt()));
         }
         
         /* Generate the seed, initialize the nonce */
@@ -241,12 +258,15 @@ public class Encryption
         
         /* Initialize the keypair using the current user's private key and the number's public key */
         ECKeyParam param = new ECKeyParam();
-        ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, user.getPrivateKey());
-        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, number.getPublicKey());
         
+        /* Log keys for debugging, in the event of a crash */
         Log.v("My private key", new String(user.getPrivateKey()));
         Log.v("Number's public key", new String(number.getPublicKey()));
+        BugSenseHandler.addCrashExtraData("Public Key", new String(number.getPublicKey()));
         
+        ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, user.getPrivateKey());
+        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, number.getPublicKey());       
+       
         /* Finally initialize the encryption engine */
         ECEngine engine = new ECEngine(nonce, sharedInfo);
         engine.init(mode,priKey,pubKey);
