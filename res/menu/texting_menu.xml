@@ -9,14 +9,14 @@
         android:id="@+id/settings"
         android:title="@string/settings_menu"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction="always" >
+        android:showAsAction="never" >
     </item>
     <item
         android:id="@+id/exchange"
         android:titleCondensed="@string/pending_key_exchange_menu_condensed"
         android:title="@string/pending_key_exchange_menu"
         android:icon="@drawable/key_exchange"
-        android:showAsAction="ifRoom|never" />
+        android:showAsAction="never" />
     
     <!-- TODO use icon -->
     <item android:id="@+id/key_exchange"

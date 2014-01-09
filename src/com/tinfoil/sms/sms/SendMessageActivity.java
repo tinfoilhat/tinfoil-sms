@@ -564,7 +564,6 @@ public class SendMessageActivity extends Activity {
 	
 	public void sendKeyExchange(View view)
 	{
-		
 		String[] temp = SendMessageActivity.checkValidNumber(this, newCont, null, false, true);
 		
 		if(temp != null)
