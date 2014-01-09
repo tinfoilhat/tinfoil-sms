@@ -50,8 +50,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.ShowcaseViews;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
@@ -232,21 +230,21 @@ public class ConversationView extends Activity {
         
         /* If tutorial enabled display the first two steps of the tutorial */
         // TODO add checks based on array of bools from preferences
-        ShowcaseViews mViews = new ShowcaseViews(this);
+        /*ShowcaseViews mViews = new ShowcaseViews(this);
         
-        /* First step of the introductory walkthrough, initial intro */
+        /* First step of the introductory walkthrough, initial intro
         mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                 R.string.tut_intro_title,
                 R.string.tut_intro_body,
                 0.0f));
         
-        /* Second step importing contacts, highlights add/import contacts */
+        /* Second step importing contacts, highlights add/import contacts 
         mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                 R.string.tut_startimport_title,
                 R.string.tut_startimport_body,
                 ShowcaseView.ITEM_TITLE,
                 1.6f));
-        mViews.show();
+        mViews.show();*/
     }
 
     /**
