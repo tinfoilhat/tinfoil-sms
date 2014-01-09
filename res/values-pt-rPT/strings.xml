@@ -259,13 +259,14 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="pending_key_exchange_message">Carregue aqui para resolver</string>
 
 	<!-- New Key Exchange strings -->
-	<!-- TODO Translate all following strings-->
+	<!-- TODO Translate all the following strings-->
     <string name="key_exchange_sent">Key Exchange Sent</string>
 	<string name="new_key_exchange">Key Exchange</string>
     <string name="new_key_exchange_menu">New Key Exchange</string>
     
     <!-- Introductory Tutorial strings -->
     <!-- Intro -->
+    <!-- TODO Translate all the following strings-->
     <string name="tut_intro_title">Welcome to Tinfoil-SMS!</string>
     <string name="tut_intro_body">The following guide is intended to walk you through the basics and make you familiar with best security practices so you are as secure as possible! It is highly recommended that you follow this guide. You can always restart this guide again anytime by enabling it in the settings.</string>
     <!-- Start importing contacts -->
