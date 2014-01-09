@@ -9,6 +9,6 @@ public interface OnFinishedImportingListener {
     /**
      * onFinishedTaskListener Called when the task finishes loading.
      */
-    public void onFinishedImportingListener(boolean success, 
+    public void onFinishedImportingListener(Integer success, 
     		ArrayList<TrustedContact> tc, ArrayList<Boolean> inDb);
 }

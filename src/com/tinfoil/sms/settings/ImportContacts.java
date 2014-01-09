@@ -61,6 +61,7 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
     public static final String IN_DATABASE = "in_database";
     public static final int LOAD = 0;
     public static final int FINISH = 1;
+	public static final int NOTHING = 2;
 
     //private ImportContactLoader runThread;
     private ImportTask runTask;
@@ -295,49 +296,11 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
 		}
 	}
 
-    /*
-     * Please note android.os.Message is needed because tinfoil-sms has another
-     * class called Message.
-     */
-    /*private final Handler handler = new Handler() {
-        @SuppressWarnings("unchecked")
-		@Override
-        public void handleMessage(final android.os.Message msg)
-        {
-        	
-        	switch (msg.what){
-	    		case LOAD:
-		        	Bundle b = msg.getData();
-		        	tc = (ArrayList<TrustedContact>) b.getSerializable(ImportContacts.TRUSTED_CONTACTS);
-		        	inDb = (ArrayList<Boolean>) b.getSerializable(ImportContacts.IN_DATABASE);
-
-		        	ImportContacts.this.runOnUiThread(new Runnable(){
-
-						@Override
-						public void run() {
-							setUpUI();
-							if (ImportContacts.this.dialog.isShowing())
-				            {
-				            	ImportContacts.this.dialog.dismiss();
-				            }
-						}
-		        		
-		        	});
-		            
-		            break;
-	    		case FINISH:
-	    			ImportContacts.this.finish();
-	    			break;
-        	}
-        	
-        }
-    };*/
-
 	@Override
-	public void onFinishedImportingListener(final boolean success,
+	public void onFinishedImportingListener(final Integer success,
 			ArrayList<TrustedContact> tc, ArrayList<Boolean> inDb) {
 		
-		if(success)
+		if(success == ImportContacts.LOAD)
 		{
 			this.tc = tc;
 	    	this.inDb = inDb;
@@ -348,7 +311,7 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
 			@Override
 			public void run() {
 				
-				if(success)
+				if(success == ImportContacts.LOAD)
 				{
 					setUpUI();
 				}
@@ -359,15 +322,14 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
 	            	ImportContacts.this.dialog.dismiss();
 	            }
 				
-				if(!success)
+				if(success == ImportContacts.FINISH)
 				{
 					finish();
 				}
 				
 			}
     		
-    	});
-		
+    	});		
 	}
 
 }

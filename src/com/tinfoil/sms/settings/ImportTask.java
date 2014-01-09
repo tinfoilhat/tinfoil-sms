@@ -19,7 +19,7 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.loader.OnFinishedImportingListener;
 import com.tinfoil.sms.utility.SMSUtility;
 
-public class ImportTask extends AsyncTask<Context, Void, Boolean>{
+public class ImportTask extends AsyncTask<Context, Void, Integer>{
 
 	private OnFinishedImportingListener listener;
 	private ArrayList<TrustedContact> tc;
@@ -56,7 +56,7 @@ public class ImportTask extends AsyncTask<Context, Void, Boolean>{
      * @see android.os.AsyncTask#doInBackground(Params[])
      */
 	@Override
-	protected Boolean doInBackground(Context... params) {
+	protected Integer doInBackground(Context... params) {
 		
 		Context context = params[0];
 		loader = new DBAccessor(context);
@@ -198,7 +198,7 @@ public class ImportTask extends AsyncTask<Context, Void, Boolean>{
 	                        new String[] { id }, "date DESC LIMIT " +
 	                        Integer.valueOf(sharedPrefs.getString
 	                        (QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))));
-	
+
 	                if (sCur != null && sCur.moveToFirst())
 	                {
 	                    if (newNumber == null)
@@ -214,11 +214,33 @@ public class ImportTask extends AsyncTask<Context, Void, Boolean>{
 	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
 	                    } while (sCur.moveToNext());
 	                }
-	                if (newNumber != null && !TrustedContact.isNumberUsed(tc, newNumber.getNumber())
+	                
+	                int [] ent = TrustedContact.isNumberUsed(tc, newNumber.getNumber());
+	                
+	                if (newNumber != null && ent == null
 	                        && !loader.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
 	                {
 	                    tc.add(new TrustedContact(newNumber));
 	                    this.inDb.add(false);
+	                }
+	                else if(newNumber != null && newNumber.getNumber() != null && 
+	                		ent != null && !loader.inDatabase(newNumber.getNumber()))
+	                {
+
+	                	//Add messages to list
+	                	//newNumber.getNumber();
+	                	Number num = tc.get(ent[0]).getNumberOb(ent[1]);
+	                	if(num != null)
+	                	{
+	                		for(int i = 0; i < newNumber.getMessages().size(); i++)
+	                		{
+	                			if(!num.getMessages().contains(newNumber.getMessages().get(i)))
+	                			{
+	                				num.getMessages().add(newNumber.getMessages().get(i));
+	                			}
+	                		}
+	                		//num.setMessage(newNumber.getMessages());
+	                	}
 	                }
 	            }
 	            if(nCur != null)
@@ -241,22 +263,14 @@ public class ImportTask extends AsyncTask<Context, Void, Boolean>{
 	                    loader.addRow(tc.get(i));
 	                }
 	            }
-	            
-	        	//msg.what = ImportContacts.FINISH;
-	        	return false;
+
+	        	return ImportContacts.FINISH;
 	        }
 	        
-	        //b.putSerializable(ImportContacts.TRUSTED_CONTACTS, (Serializable) tc);
-        	//b.putSerializable(ImportContacts.IN_DATABASE, (Serializable) inDb);
-        	//msg.what = ImportContacts.LOAD;
-	        return true;
+	        return ImportContacts.LOAD;
 	        	
 		}
-		else
-		{
-			doNothing = false;
-		}
-		return false;
+		return ImportContacts.NOTHING;
 	}
 	
 	/*
@@ -265,7 +279,7 @@ public class ImportTask extends AsyncTask<Context, Void, Boolean>{
      * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
      */
     @Override
-    protected void onPostExecute(final Boolean success)
+    protected void onPostExecute(final Integer success)
     {
     	// Call the listener if this is successful.
         if (listener != null)
