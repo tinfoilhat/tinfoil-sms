@@ -37,6 +37,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.espian.showcaseview.ShowcaseView;
+import com.espian.showcaseview.targets.PointTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.OnFinishedImportingListener;
@@ -114,6 +116,16 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
             }
         });
         
+        /* If tutorial enabled display the third step of the tutorial */
+        // TODO add checks based on array of bools from preferences        
+        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+        co.hideOnClickOutside = true;
+        
+        //ViewTarget target = new ViewTarget(R.id.import_contact_list, this);
+        PointTarget target = new PointTarget(200, 200);
+        //ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_import_title, R.string.tut_import_boby);
+        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_import_title, R.string.tut_import_boby, co);
+        //ShowcaseView.
     }
     
     @Override
