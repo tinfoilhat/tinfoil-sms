@@ -48,6 +48,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.espian.showcaseview.ShowcaseView;
+import com.espian.showcaseview.targets.ViewTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
@@ -142,6 +144,15 @@ public class SendMessageActivity extends Activity {
         			setupKeyExchangeInterface();
         			this.setTitle(R.string.new_key_exchange);
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
+        			
+                    // Show the tutorial for setting shared secrets
+                    // TODO add check for enabling tutorial
+        	        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+        	        co.hideOnClickOutside = true;
+
+                    ViewTarget target = new ViewTarget(R.id.new_message_number, this);
+                    ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, 
+                               R.string.tut_setsecret_title, R.string.tut_setsecret_body);
         		}
         		else
         		{
