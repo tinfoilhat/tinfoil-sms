@@ -102,6 +102,9 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="empty_list_value">Prázdný seznam</string>
     <string name="empty_loader_value">Žádné kontakty</string>
     <string name="empty_loader_trusted_value">Žádné duvěryhodné kontakty</string>
+    <!-- TODO Translate -->
+    <string name="loading_dialog_header">Load Contacts</string>
+    <string name="loading_dialog_body">Loading Contacts&#8230;</string>
 
     <!-- EditNumber strings -->
     <string name="shared_secret_1">Ověřovací věta</string>
@@ -218,6 +221,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
     <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
+    <string name="tinfoil_sms_website">http://tinfoilhat.github.io/tinfoil-sms</string>
 
     <!-- Settings string keys -->
     <string name="source_code_title">Získat zdrojový kód aplikace Tinfoil-SMS</string>
