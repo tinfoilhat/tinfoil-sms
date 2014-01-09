@@ -214,6 +214,16 @@ public class TrustedContact implements Serializable{
 	
 	/**
 	 * Access a contact's number from their contact list
+	 * @param index The number's index
+	 * @return The number at the given index.
+	 */
+	public Number getNumberOb(int index)
+	{
+		return numbers.get(index);
+	}
+	
+	/**
+	 * Access a contact's number from their contact list
 	 * @param number The number to look for
 	 * @return The Number that contains the given number
 	 */
@@ -279,7 +289,7 @@ public class TrustedContact implements Serializable{
 	 * @return Whether the number is already used. If it is the return will be
 	 * true, otherwise it will be false.
 	 */
-	public static boolean isNumberUsed(ArrayList<TrustedContact> tc, String number)
+	/*public static boolean isNumberUsed(ArrayList<TrustedContact> tc, String number)
 	{
 		for (int i = 0; i < tc.size(); i++)
 		{
@@ -292,6 +302,28 @@ public class TrustedContact implements Serializable{
 			}			
 		}		
 		return false;
+	}*/
+	
+	/**
+	 * Check whether another contact has the given number
+	 * @param tc The list of the user's trusted contacts 
+	 * @param number The number to check if there is a duplicate of
+	 * @return Whether the number is already used. If it is the return will be
+	 * true, otherwise it will be false.
+	 */
+	public static int[] isNumberUsed(ArrayList<TrustedContact> tc, String number)
+	{
+		for (int i = 0; i < tc.size(); i++)
+		{
+			for (int h = 0; h < tc.get(i).getNumber().size(); h++)
+			{
+				if (number.equalsIgnoreCase(tc.get(i).getNumber(h)))
+				{
+					return new int[] {i, h};
+				}
+			}			
+		}		
+		return null;
 	}
 	
 }
