@@ -892,6 +892,28 @@ public class DBAccessor {
 		return null;
 	}
 	
+	public boolean anyTrusted()
+	{
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
+				new String[]{SQLitehelper.KEY_ID}, SQLitehelper.KEY_PUBLIC_KEY 
+				+ " IS NOT NULL" , null, null);
+		
+		if(cur != null)
+		{
+			if (cur.moveToFirst())
+			{
+				if(cur.getCount()> 0)
+				{
+					cur.close();
+					return true;
+				}
+				cur.close();
+			}
+		}
+		return false;
+		
+	}
+	
 	/**
 	 * Get all of the rows in the database with the columns
 	 * @param select Whether to get trusted, untrusted or all contacts.
