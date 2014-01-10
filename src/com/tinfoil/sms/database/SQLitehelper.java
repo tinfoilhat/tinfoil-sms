@@ -89,7 +89,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	public static final String KEY_IMPORT = "import";
 	public static final String KEY_START_EXCHANGE = "start_exchange";
 	public static final String KEY_SET_SECRET = "set_secret";
-	public static final String KEY_KEY_SEND = "key_send";
+	public static final String KEY_KEY_SENT = "key_sent";
 	public static final String KEY_PENDING = "pending";
 	public static final String KEY_ACCEPT = "accept";
 	public static final String KEY_SUCCESS = "success";

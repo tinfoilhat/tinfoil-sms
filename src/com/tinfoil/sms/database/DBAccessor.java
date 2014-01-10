@@ -32,10 +32,11 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
-import com.tinfoil.sms.dataStructures.ValueHolder;
+import com.tinfoil.sms.dataStructures.WalkthroughStep;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * Creates a database that is read and write and provides methods to 
@@ -1357,49 +1358,49 @@ public class DBAccessor {
 		return trusted;
 	}
 	
-	public void updateWalkthrough(ValueHolder vh)
+	public void updateWalkthrough(WalkthroughStep ws)
 	{
 		ContentValues cv = new ContentValues();
 		
-		cv.put(SQLitehelper.KEY_INTRO, vh.isIntro());
-		cv.put(SQLitehelper.KEY_START_IMPORT, vh.isStartImport());
-		cv.put(SQLitehelper.KEY_IMPORT, vh.isEndImport());
-		cv.put(SQLitehelper.KEY_START_EXCHANGE, vh.isStartExchange());
-		cv.put(SQLitehelper.KEY_SET_SECRET, vh.isSetSecret());
-		cv.put(SQLitehelper.KEY_KEY_SEND, vh.isKeySend());
-		cv.put(SQLitehelper.KEY_PENDING, vh.isPending());
-		cv.put(SQLitehelper.KEY_ACCEPT, vh.isAccept());
-		cv.put(SQLitehelper.KEY_SUCCESS, vh.isSuccess());
-		cv.put(SQLitehelper.KEY_CLOSE, vh.isClose());
+		cv.put(SQLitehelper.KEY_INTRO, ws.get(Step.INTRO));
+		cv.put(SQLitehelper.KEY_START_IMPORT, ws.get(Step.START_IMPORT));
+		cv.put(SQLitehelper.KEY_IMPORT, ws.get(Step.IMPORT));
+		cv.put(SQLitehelper.KEY_START_EXCHANGE, ws.get(Step.START_EXCHANGE));
+		cv.put(SQLitehelper.KEY_SET_SECRET, ws.get(Step.SET_SECRET));
+		cv.put(SQLitehelper.KEY_KEY_SENT, ws.get(Step.KEY_SENT));
+		cv.put(SQLitehelper.KEY_PENDING, ws.get(Step.PENDING));
+		cv.put(SQLitehelper.KEY_ACCEPT, ws.get(Step.ACCEPT));
+		cv.put(SQLitehelper.KEY_SUCCESS, ws.get(Step.SUCCESS));
+		cv.put(SQLitehelper.KEY_CLOSE, ws.get(Step.CLOSE));
 		
 		context.getContentResolver().update(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
         		cv, null, null);
 	}
 	
-	public ValueHolder getWalkthrough()
+	public WalkthroughStep getWalkthrough()
 	{
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
         		new String[]{SQLitehelper.KEY_INTRO, SQLitehelper.KEY_START_IMPORT,
 				SQLitehelper.KEY_IMPORT, SQLitehelper.KEY_START_EXCHANGE,
-				SQLitehelper.KEY_SET_SECRET, SQLitehelper.KEY_KEY_SEND,
+				SQLitehelper.KEY_SET_SECRET, SQLitehelper.KEY_KEY_SENT,
 				SQLitehelper.KEY_PENDING, SQLitehelper.KEY_ACCEPT,
 				SQLitehelper.KEY_SUCCESS, SQLitehelper.KEY_CLOSE}, null, null, null);
 
-		ValueHolder vh = new ValueHolder();
+		WalkthroughStep ws = new WalkthroughStep();
 		if(cur.moveToFirst())
 		{
-			vh.setIntro(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_IMPORT)));
-			vh.setStartImport(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_IMPORT)));
-			vh.setEndImport(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_IMPORT)));
-			vh.setStartExchange(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_EXCHANGE)));
-			vh.setSetSecret(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SET_SECRET)));
-			vh.setKeySend(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_KEY_SEND)));
-			vh.setPending(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_PENDING)));
-			vh.setAccept(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_ACCEPT)));
-			vh.setSuccess(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SUCCESS)));
-			vh.setClose(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_CLOSE)));
+			ws.set(Step.INTRO, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_INTRO)));
+			ws.set(Step.START_IMPORT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_IMPORT)));
+			ws.set(Step.IMPORT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_IMPORT)));
+			ws.set(Step.START_EXCHANGE, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_EXCHANGE)));
+			ws.set(Step.SET_SECRET, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SET_SECRET)));
+			ws.set(Step.KEY_SENT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_KEY_SENT)));
+			ws.set(Step.PENDING, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_PENDING)));
+			ws.set(Step.ACCEPT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_ACCEPT)));
+			ws.set(Step.SUCCESS, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SUCCESS)));
+			ws.set(Step.CLOSE, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_CLOSE)));
 			cur.close();
-			return vh;
+			return ws;
 		}
 		cur.close();
 		return null;
