@@ -178,7 +178,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     		+ WALKTHROUGH_TABLE_NAME + " (" + KEY_ID + ", " + KEY_INTRO + ","
     		+ KEY_START_IMPORT + ", " + KEY_IMPORT + "," + KEY_START_EXCHANGE
     		+ ", " + KEY_SET_SECRET + "," + KEY_PENDING + ", " + KEY_ACCEPT + ","
-    		+ KEY_SUCCESS + ", " + KEY_CLOSE + ") VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+    		+ KEY_SUCCESS + ", " + KEY_CLOSE + ") VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
     
 	public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
