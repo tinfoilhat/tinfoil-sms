@@ -95,7 +95,7 @@ CREATE TABLE walkthrough
     import INTEGER DEFAULT 0,
     start_exchange INTEGER DEFAULT 0,
     set_secret INTEGER DEFAULT 0,
-    key_send INTEGER DEFAULT 0,
+    key_sent INTEGER DEFAULT 0,
     pending INTEGER DEFAULT 0,
     accept INTEGER DEFAULT 0,
     success INTEGER DEFAULT 0,

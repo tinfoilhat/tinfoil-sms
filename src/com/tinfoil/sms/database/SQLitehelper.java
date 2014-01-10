@@ -169,16 +169,17 @@ public class SQLitehelper extends SQLiteOpenHelper {
     		" " + KEY_IMPORT + " INTEGER NOT NULL," +
     		" " + KEY_START_EXCHANGE + " INTEGER NOT NULL," +
     		" " + KEY_SET_SECRET + " INTEGER NOT NULL," +
+    		" " + KEY_KEY_SENT + " INTEGER NOT NULL," +
     		" " + KEY_PENDING + " INTEGER NOT NULL," +
     		" " + KEY_ACCEPT + " INTEGER NOT NULL," +
     		" " + KEY_SUCCESS + " INTEGER NOT NULL," +
     		" " + KEY_CLOSE + " INTEGER NOT NULL);";
 
     private static final String INSERT_WALKTHROUGH = "INSERT OR IGNORE INTO "
-    		+ WALKTHROUGH_TABLE_NAME + " (" + KEY_ID + ", " + KEY_INTRO + ","
-    		+ KEY_START_IMPORT + ", " + KEY_IMPORT + "," + KEY_START_EXCHANGE
-    		+ ", " + KEY_SET_SECRET + "," + KEY_PENDING + ", " + KEY_ACCEPT + ","
-    		+ KEY_SUCCESS + ", " + KEY_CLOSE + ") VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+    		+ WALKTHROUGH_TABLE_NAME + " (" + KEY_ID + ", " + KEY_INTRO + ", "
+    		+ KEY_START_IMPORT + ", " + KEY_IMPORT + ", " + KEY_START_EXCHANGE
+    		+ ", " + KEY_SET_SECRET + ", " + KEY_KEY_SENT + "," + KEY_PENDING + ", " + KEY_ACCEPT + ","
+    		+ KEY_SUCCESS + ", " + KEY_CLOSE + ") VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
     
 	public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -220,6 +221,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + MESSAGES_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + QUEUE_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + EXCHANGE_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + WALKTHROUGH_TABLE_CREATE);
 		onCreate(db);		
 	}
 	
