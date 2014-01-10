@@ -61,4 +61,16 @@ public class WalkthroughStep
             steps.put(step, true);
         }
     }
+    
+    /**
+     * Sets all steps in the walkthrough to the specified value.
+     * @param value The value, true for viewed, false if not viewed
+     */
+    public void setAll(boolean value)
+    {
+        for (Step step : steps.keySet())
+        {
+            steps.put(step, value);
+        }
+    }
 }
