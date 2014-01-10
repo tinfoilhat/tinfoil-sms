@@ -86,3 +86,22 @@ CREATE TABLE exchange_messages
         ON DELETE CASCADE ON UPDATE CASCADE,
     key_message TEXT
 )
+
+CREATE TABLE walkthrough
+(
+    id INTEGER UNIQUE,
+    intro INTEGER DEFAULT 0, 
+    start_import INTEGER DEFAULT 0,
+    import INTEGER DEFAULT 0,
+    start_exchange INTEGER DEFAULT 0,
+    set_secret INTEGER DEFAULT 0,
+    key_send INTEGER DEFAULT 0,
+    pending INTEGER DEFAULT 0,
+    accept INTEGER DEFAULT 0,
+    success INTEGER DEFAULT 0,
+    close INTEGER DEFAULT 0
+)
+
+INSERT INTO walkthrough (intro, start_import, import, start_exchange, set_secret, key_send, pending, accept, success, close) VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+INSERT OR IGNORE INTO walkthrough (id, intro, start_import, import, start_exchange, set_secret, key_send, pending, accept, success, close) VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);

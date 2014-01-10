@@ -55,6 +55,8 @@ public class DatabaseProvider extends ContentProvider {
             + SQLitehelper.QUEUE_TABLE_NAME);
     public static final Uri EXCHANGE_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
             + SQLitehelper.EXCHANGE_TABLE_NAME);
+    public static final Uri WALKTHROUGH_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
+            + SQLitehelper.WALKTHROUGH_TABLE_NAME);
     
 
     public static final Uri TN_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
@@ -83,9 +85,10 @@ public class DatabaseProvider extends ContentProvider {
     private static final int MESSAGE = 5;
     private static final int QUEUE = 6;
     private static final int EXCHANGE = 7;
-    private static final int TRUST_NUMBERS = 8;
-    private static final int TRUST_NUM_MESS = 9;
-    private static final int QUERY = 10;
+    private static final int WALKTHROUGH = 8;    
+    private static final int TRUST_NUMBERS = 9;
+    private static final int TRUST_NUM_MESS = 10;
+    private static final int QUERY = 11;
     
     //SQLitehelper.TRUSTED_TABLE_NAME + ", " + SQLitehelper.NUMBERS_TABLE_NAME + ", " + SQLitehelper.MESSAGES_TABLE_NAME
     //A select Statement
@@ -106,6 +109,7 @@ public class DatabaseProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, SQLitehelper.MESSAGES_TABLE_NAME, MESSAGE);
         sURIMatcher.addURI(AUTHORITY, SQLitehelper.QUEUE_TABLE_NAME, QUEUE);
         sURIMatcher.addURI(AUTHORITY, SQLitehelper.EXCHANGE_TABLE_NAME, EXCHANGE);
+        sURIMatcher.addURI(AUTHORITY, SQLitehelper.WALKTHROUGH_TABLE_NAME, WALKTHROUGH);  
         
         sURIMatcher.addURI(AUTHORITY, SQLitehelper.TRUSTED_TABLE_NAME + 
         		"/" + SQLitehelper.NUMBERS_TABLE_NAME, TRUST_NUMBERS);
@@ -223,6 +227,11 @@ public class DatabaseProvider extends ContentProvider {
         	id = dba.insert(SQLitehelper.EXCHANGE_TABLE_NAME, null, values);
             getContext().getContentResolver().notifyChange(uri, null);
             return Uri.parse(SQLitehelper.EXCHANGE_TABLE_NAME + "/" + id);
+            /*case WALKTHROUGH:
+        	id = dba.insert(SQLitehelper.WALKTHROUGH_TABLE_NAME, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null);
+            return Uri.parse(SQLitehelper.WALKTHROUGH_TABLE_NAME + "/" + id);
+            */
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -348,6 +357,17 @@ public class DatabaseProvider extends ContentProvider {
             		SQLitehelper.KEY_REFERENCE, "", sortOrder);
             c.setNotificationUri(getContext().getContentResolver(), uri);
             return c;
+        case WALKTHROUGH:
+        	//Select special inner query data
+        	qBuilder.setTables(SQLitehelper.WALKTHROUGH_TABLE_NAME);
+
+        	/* This groups by SQLitehelper.KEY_REFERENCE, since it is only used in 1 place
+        	 * If this query is used in more than 1 place than it will also use group by so
+        	 * be wary.
+        	 */
+        	c = qBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs, "",
+                    "", sortOrder);
+            c.setNotificationUri(getContext().getContentResolver(), uri);
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -360,49 +380,57 @@ public class DatabaseProvider extends ContentProvider {
 
 		dba = db.getDB();
 		
-        // Delete either user data, or booking data.
+        // Update either user data, or booking data.
         switch (choose)
         {
         case USER:
-            // Delete user data.
+            // Update user data.
             int count = dba.update(SQLitehelper.USER_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case TRUSTED:
-            // Delete trusted data.
+            // Update trusted data.
             count = dba.update(SQLitehelper.TRUSTED_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case NUMBERS:
-            // Delete number data.
+            // Update number data.
             count = dba.update(SQLitehelper.NUMBERS_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case SHARED_INFO:
-            // Delete shared info data.
+            // Update shared info data.
             count = dba.update(SQLitehelper.SHARED_INFO_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case BOOK_PATH:
-            // Delete book path data.
+            // Update book path data.
             count = dba.update(SQLitehelper.BOOK_PATHS_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case MESSAGE:
-            // Delete message data.
+            // Update message data.
         	count = dba.update(SQLitehelper.MESSAGES_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case QUEUE:
-            // Delete queue data.
+            // Update queue data.
             count = dba.update(SQLitehelper.QUEUE_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         case EXCHANGE:
-            // Delete exchange data.
+            // Update exchange data.
             count = dba.update(SQLitehelper.EXCHANGE_TABLE_NAME, values, selection, selectionArgs);
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
+        case WALKTHROUGH:
+        	// Update walkthrough data.
+        	if(!selection.contains(SQLitehelper.KEY_ID))
+        	{
+	        	count = dba.update(SQLitehelper.WALKTHROUGH_TABLE_NAME, values, selection, selectionArgs);
+	            getContext().getContentResolver().notifyChange(uri, null);
+	            return count;
+        	}
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }

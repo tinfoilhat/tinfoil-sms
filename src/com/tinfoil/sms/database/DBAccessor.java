@@ -1356,6 +1356,11 @@ public class DBAccessor {
 		return trusted;
 	}
 	
+	/*public void updateWalkthrough(Walkthrough)
+	{
+		
+	}*/
+	
 	/**
 	 * Adding a message to the queue to be sent when there is service to send
 	 * the message. Once the message has been sent it will be removed from the

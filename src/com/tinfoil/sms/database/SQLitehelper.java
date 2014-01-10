@@ -47,6 +47,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
     public static final String MESSAGES_TABLE_NAME = "messages";
     public static final String QUEUE_TABLE_NAME = "queue";
     public static final String EXCHANGE_TABLE_NAME = "exchange_messages";
+    public static final String WALKTHROUGH_TABLE_NAME = "walkthrough";
     
     public static final String EXISTS_CLAUSE = "IF NOT EXISTS";
     
@@ -81,7 +82,18 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	public static final String KEY_EXCHANGE_SETTING = "exchange_setting";
 	
 	public static final String KEY_EXCHANGE = "exchange";
-	public static final String KEY_EXCHANGE_MESSAGE = "key_message";    
+	public static final String KEY_EXCHANGE_MESSAGE = "key_message";
+	
+	public static final String KEY_INTRO = "intro";
+	public static final String KEY_START_IMPORT = "start_import";
+	public static final String KEY_IMPORT = "import";
+	public static final String KEY_START_EXCHANGE = "start_exchange";
+	public static final String KEY_SET_SECRET = "set_secret";
+	public static final String KEY_KEY_SEND = "key_send";
+	public static final String KEY_PENDING = "pending";
+	public static final String KEY_ACCEPT = "accept";
+	public static final String KEY_SUCCESS = "success";
+	public static final String KEY_CLOSE = "close";
     
     /* Create statements */
     private static final String SHARED_INFO_TABLE_CREATE =
@@ -148,7 +160,26 @@ public class SQLitehelper extends SQLiteOpenHelper {
     		" " + KEY_NUMBER_REFERENCE + " INTEGER REFERENCES numbers (id)" +
     		" ON DELETE CASCADE ON UPDATE CASCADE," +
     		" " + KEY_EXCHANGE_MESSAGE + " TEXT);";
+    
+    private static final String WALKTHROUGH_TABLE_CREATE =
+    		"CREATE TABLE " + EXISTS_CLAUSE + " " + WALKTHROUGH_TABLE_NAME + 
+    		" (" + KEY_ID + " INTEGER UNIQUE," +
+    		" " + KEY_INTRO + " INTEGER NOT NULL," +
+    		" " + KEY_START_IMPORT + " INTEGER NOT NULL," +
+    		" " + KEY_IMPORT + " INTEGER NOT NULL," +
+    		" " + KEY_START_EXCHANGE + " INTEGER NOT NULL," +
+    		" " + KEY_SET_SECRET + " INTEGER NOT NULL," +
+    		" " + KEY_PENDING + " INTEGER NOT NULL," +
+    		" " + KEY_ACCEPT + " INTEGER NOT NULL," +
+    		" " + KEY_SUCCESS + " INTEGER NOT NULL," +
+    		" " + KEY_CLOSE + " INTEGER NOT NULL);";
 
+    private static final String INSERT_WALKTHROUGH = "INSERT OR IGNORE INTO "
+    		+ WALKTHROUGH_TABLE_NAME + " (" + KEY_ID + ", " + KEY_INTRO + ","
+    		+ KEY_START_IMPORT + ", " + KEY_IMPORT + "," + KEY_START_EXCHANGE
+    		+ ", " + KEY_SET_SECRET + "," + KEY_PENDING + ", " + KEY_ACCEPT + ","
+    		+ KEY_SUCCESS + ", " + KEY_CLOSE + ") VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+    
 	public SQLitehelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         
@@ -172,6 +203,9 @@ public class SQLitehelper extends SQLiteOpenHelper {
         db.execSQL(MESSAGES_TABLE_CREATE);
         db.execSQL(QUEUE_TABLE_CREATE);
         db.execSQL(EXCHANGE_TABLE_CREATE);
+        db.execSQL(WALKTHROUGH_TABLE_CREATE);     
+        
+        db.execSQL(INSERT_WALKTHROUGH);
     }
 
 	@Override
