@@ -1,6 +1,7 @@
 package com.tinfoil.sms.utility;
 
 import android.app.Activity;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.espian.showcaseview.OnShowcaseEventListener;
@@ -13,6 +14,7 @@ import com.espian.showcaseview.targets.ViewTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.WalkthroughStep;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 
 public abstract class Walkthrough
 {
@@ -180,9 +182,17 @@ public abstract class Walkthrough
      */
     public static boolean hasShown(Step step, Activity activity)
     {
-        DBAccessor dba = new DBAccessor(activity);
-        WalkthroughStep ws = dba.getWalkthrough();
-        return ws.get(step);
+        Log.v("PREFS", QuickPrefsActivity.ENABLE_WALKTHROUGH_SETTING_KEY);
+        if (PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()).getBoolean(
+                QuickPrefsActivity.ENABLE_WALKTHROUGH_SETTING_KEY, false))
+        {
+            DBAccessor dba = new DBAccessor(activity);
+            WalkthroughStep ws = dba.getWalkthrough();
+            return ws.get(step);
+        }
+        
+        // Return true regardless if walkthrough disabled
+        return true;
     }
     
     /**
