@@ -62,6 +62,8 @@ import com.tinfoil.sms.settings.AddContact;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * SendMessageActivity is an activity that allows a user to create a new or
@@ -146,13 +148,11 @@ public class SendMessageActivity extends Activity {
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
         			
                     // Show the tutorial for setting shared secrets
-                    // TODO add check for enabling tutorial
-        	        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-        	        co.hideOnClickOutside = true;
+        			if (! Walkthrough.hasShown(Step.SET_SECRET, this))
+        			{
+        			    Walkthrough.show(Step.SET_SECRET, this);
+        			}
 
-                    ViewTarget target = new ViewTarget(R.id.new_message_number, this);
-                    ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, 
-                               R.string.tut_setsecret_title, R.string.tut_setsecret_body);
         		}
         		else
         		{

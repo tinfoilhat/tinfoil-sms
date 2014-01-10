@@ -53,6 +53,7 @@ import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.sms.KeyExchangeManager;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * An abstract class used to retrieve contacts information from the native
@@ -208,8 +209,8 @@ public abstract class SMSUtility {
 			    }
 			    else 
 			    {
-			        // Show the tutorial for key exchange sent
-			        // TODO add check for enabling tutorial
+			        // TODO Show the tutorial for when key exchange sent, need to set listener for keythread
+			        // Walkthrough.show(Step.KEY_SENT, activity)
 			        
 			    	//Initiate the key exchange with the contact. 
 			    	keyThread.startThread(activity, SMSUtility.format(number), null);
