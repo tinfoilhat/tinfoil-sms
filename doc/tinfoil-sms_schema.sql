@@ -102,6 +102,4 @@ CREATE TABLE walkthrough
     close INTEGER DEFAULT 0
 )
 
-INSERT INTO walkthrough (intro, start_import, import, start_exchange, set_secret, key_send, pending, accept, success, close) VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
 INSERT OR IGNORE INTO walkthrough (id, intro, start_import, import, start_exchange, set_secret, key_send, pending, accept, success, close) VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);

@@ -25,12 +25,28 @@ public class WalkthroughStep
 	    steps.put(Step.CLOSE, false);
 	}
 	
+	public WalkthroughStep(Boolean setOne)
+	{
+	    steps =  new EnumMap<Step, Boolean>(Step.class);
+	    
+	    steps.put(Step.INTRO, setOne);
+	    steps.put(Step.START_IMPORT, setOne);
+	    steps.put(Step.IMPORT, setOne);
+	    steps.put(Step.START_EXCHANGE, setOne);
+	    steps.put(Step.SET_SECRET, setOne);
+	    steps.put(Step.KEY_SENT, setOne);
+	    steps.put(Step.PENDING, setOne);
+	    steps.put(Step.ACCEPT, setOne);
+	    steps.put(Step.SUCCESS, setOne);
+	    steps.put(Step.CLOSE, setOne);
+	}
+	
 	/**
 	 * Gets whether the specified walkthrough step has been viewed
 	 * @param step The walkthrough step
 	 * @return True if already viewed
 	 */
-	public boolean get(Step step)
+	public Boolean get(Step step)
 	{
 	    return steps.get(step);
 	}
