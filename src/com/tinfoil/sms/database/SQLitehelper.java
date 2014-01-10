@@ -204,8 +204,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
         db.execSQL(MESSAGES_TABLE_CREATE);
         db.execSQL(QUEUE_TABLE_CREATE);
         db.execSQL(EXCHANGE_TABLE_CREATE);
-        db.execSQL(WALKTHROUGH_TABLE_CREATE);     
-        
+        db.execSQL(WALKTHROUGH_TABLE_CREATE);        
         db.execSQL(INSERT_WALKTHROUGH);
     }
 

@@ -431,7 +431,7 @@ public class DatabaseProvider extends ContentProvider {
             return count;
         case WALKTHROUGH:
         	// Update walkthrough data.
-        	if(values.containsKey(SQLitehelper.KEY_ID))
+        	if(!values.containsKey(SQLitehelper.KEY_ID))
         	{
 	        	count = dba.update(SQLitehelper.WALKTHROUGH_TABLE_NAME, values, selection, selectionArgs);
 		        getContext().getContentResolver().notifyChange(uri, null);
