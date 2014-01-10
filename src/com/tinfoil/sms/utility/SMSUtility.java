@@ -208,6 +208,9 @@ public abstract class SMSUtility {
 			    }
 			    else 
 			    {
+			        // Show the tutorial for key exchange sent
+			        // TODO add check for enabling tutorial
+			        
 			    	//Initiate the key exchange with the contact. 
 			    	keyThread.startThread(activity, SMSUtility.format(number), null);
 			    }
