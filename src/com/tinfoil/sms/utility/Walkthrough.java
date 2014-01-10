@@ -192,7 +192,7 @@ public abstract class Walkthrough
     public static void enableWalkthroughStep(Step step, Activity activity)
     {
         DBAccessor dba = new DBAccessor(activity);
-        WalkthroughStep ws = dba.getWalkthrough();
+        WalkthroughStep ws = new WalkthroughStep(null);
         ws.set(step, true);
         dba.updateWalkthrough(ws);
     }
@@ -204,7 +204,7 @@ public abstract class Walkthrough
     private static void disableWalkthroughStep(Step step, Activity activity)
     {
         DBAccessor dba = new DBAccessor(activity);
-        WalkthroughStep ws = dba.getWalkthrough();
+        WalkthroughStep ws = new WalkthroughStep(null);
         ws.set(step, false);
         dba.updateWalkthrough(ws);
     }
@@ -215,9 +215,8 @@ public abstract class Walkthrough
      */
     public static void enableWalkthrough(Activity activity)
     {
-        WalkthroughStep ws = new WalkthroughStep();
+        WalkthroughStep ws = new WalkthroughStep(true);
         DBAccessor dba = new DBAccessor(activity);
-        ws.setAll(true);
         dba.updateWalkthrough(ws);
     }
     
@@ -227,9 +226,8 @@ public abstract class Walkthrough
      */
     public static void disableWalkthrough(Activity activity)
     {
-        WalkthroughStep ws = new WalkthroughStep();
+        WalkthroughStep ws = new WalkthroughStep(false);
         DBAccessor dba = new DBAccessor(activity);
-        ws.setAll(false);
         dba.updateWalkthrough(ws);
     }
 }

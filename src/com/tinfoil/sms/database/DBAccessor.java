@@ -1362,16 +1362,35 @@ public class DBAccessor {
 	{
 		ContentValues cv = new ContentValues();
 		
-		cv.put(SQLitehelper.KEY_INTRO, ws.get(Step.INTRO));
-		cv.put(SQLitehelper.KEY_START_IMPORT, ws.get(Step.START_IMPORT));
-		cv.put(SQLitehelper.KEY_IMPORT, ws.get(Step.IMPORT));
-		cv.put(SQLitehelper.KEY_START_EXCHANGE, ws.get(Step.START_EXCHANGE));
-		cv.put(SQLitehelper.KEY_SET_SECRET, ws.get(Step.SET_SECRET));
-		cv.put(SQLitehelper.KEY_KEY_SENT, ws.get(Step.KEY_SENT));
-		cv.put(SQLitehelper.KEY_PENDING, ws.get(Step.PENDING));
-		cv.put(SQLitehelper.KEY_ACCEPT, ws.get(Step.ACCEPT));
-		cv.put(SQLitehelper.KEY_SUCCESS, ws.get(Step.SUCCESS));
-		cv.put(SQLitehelper.KEY_CLOSE, ws.get(Step.CLOSE));
+		if(ws.get(Step.INTRO) != null)
+			cv.put(SQLitehelper.KEY_INTRO, ws.get(Step.INTRO));
+		
+		if(ws.get(Step.START_IMPORT) != null)
+			cv.put(SQLitehelper.KEY_START_IMPORT, ws.get(Step.START_IMPORT));
+		
+		if(ws.get(Step.IMPORT) != null)
+			cv.put(SQLitehelper.KEY_IMPORT, ws.get(Step.IMPORT));
+		
+		if(ws.get(Step.START_EXCHANGE) != null)
+			cv.put(SQLitehelper.KEY_START_EXCHANGE, ws.get(Step.START_EXCHANGE));
+		
+		if(ws.get(Step.SET_SECRET) != null)
+			cv.put(SQLitehelper.KEY_SET_SECRET, ws.get(Step.SET_SECRET));
+		
+		if(ws.get(Step.KEY_SENT) != null)
+			cv.put(SQLitehelper.KEY_KEY_SENT, ws.get(Step.KEY_SENT));
+		
+		if(ws.get(Step.PENDING) != null)
+			cv.put(SQLitehelper.KEY_PENDING, ws.get(Step.PENDING));
+		
+		if(ws.get(Step.ACCEPT) != null)
+			cv.put(SQLitehelper.KEY_ACCEPT, ws.get(Step.ACCEPT));
+		
+		if(ws.get(Step.SUCCESS) != null)
+			cv.put(SQLitehelper.KEY_SUCCESS, ws.get(Step.SUCCESS));
+		
+		if(ws.get(Step.CLOSE) != null)
+			cv.put(SQLitehelper.KEY_CLOSE, ws.get(Step.CLOSE));
 		
 		context.getContentResolver().update(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
         		cv, null, null);
