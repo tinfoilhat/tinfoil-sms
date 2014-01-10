@@ -54,8 +54,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.targets.ActionViewTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
@@ -69,6 +67,8 @@ import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * This activity shows all of the conversations the user has with contacts. The
@@ -233,35 +233,25 @@ public class ConversationView extends Activity {
 				}
 			}
 		});
-        
-        // Display the key exchange instructions if step 1&2 already shown
-        // TODO add checks
-        /*
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-        co.hideOnClickOutside = true;
-        ActionViewTarget target = new ActionViewTarget(this, ActionViewTarget.Type.OVERFLOW);
-        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_startexchange_title, 
-                R.string.tut_startexchange_body, co);
-        sv.setScaleMultiplier(0.5f);
-        
-        
-        /* If tutorial enabled display the first two steps of the tutorial */
-        // TODO add checks based on array of bools from preferences
-        /*ShowcaseViews mViews = new ShowcaseViews(this);
-        
-        // First step of the introductory walkthrough, initial intro
-        mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
-                R.string.tut_intro_title,
-                R.string.tut_intro_body,
-                0.0f));
-        
-        // Second step importing contacts, highlights add/import contacts 
-        mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
-                R.string.tut_startimport_title,
-                R.string.tut_startimport_body,
-                ShowcaseView.ITEM_TITLE,
-                1.6f));
-        mViews.show();*/
+
+        // If tutorial enabled display the first two steps of the tutorial
+        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
+        {
+            Walkthrough.show(Step.INTRO, this);
+            Walkthrough.show(Step.START_IMPORT, this);
+        }
+        else if (!Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {
+            // Display the key exchange instructions if step 1&2 already shown
+            Walkthrough.show(Step.START_EXCHANGE, this);
+        }
+
+        // Display the last step of the tutorial upon successful key exchange
+        if ( (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
+        {
+            Walkthrough.show(Step.SUCCESS, this);
+            Walkthrough.show(Step.CLOSE, this);
+        }
     }
 
     /**
@@ -297,7 +287,6 @@ public class ConversationView extends Activity {
     		updateList(this, false);
     	}
         super.onResume();
-        
     }
 
     @Override

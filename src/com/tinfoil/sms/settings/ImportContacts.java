@@ -42,6 +42,8 @@ import com.espian.showcaseview.targets.PointTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.OnFinishedImportingListener;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * ImportContact activity allows for contacts to be imported from the native
@@ -116,16 +118,11 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
             }
         });
         
-        /* If tutorial enabled display the third step of the tutorial */
-        // TODO add checks based on array of bools from preferences        
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-        co.hideOnClickOutside = true;
-        
-        //ViewTarget target = new ViewTarget(R.id.import_contact_list, this);
-        PointTarget target = new PointTarget(200, 200);
-        //ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_import_title, R.string.tut_import_boby);
-        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, R.string.tut_import_title, R.string.tut_import_boby, co);
-        //ShowcaseView.
+        // If walkthrough enabled display the third step of the tutorial
+        if (! Walkthrough.hasShown(Step.IMPORT, this))
+        {
+            Walkthrough.show(Step.IMPORT, this);
+        }
     }
     
     @Override

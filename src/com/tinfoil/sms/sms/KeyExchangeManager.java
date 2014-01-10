@@ -43,7 +43,6 @@ import android.widget.Toast;
 
 import com.espian.showcaseview.OnShowcaseEventListener;
 import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.targets.ViewTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.crypto.KeyExchangeHandler;
@@ -55,6 +54,8 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * The activity for handling pending key exchanges. If the user does not set
@@ -85,14 +86,10 @@ public class KeyExchangeManager extends Activity {
 		setupActionBar();
 		
         // Show the tutorial for pending key exchanges
-        // TODO add check for enabling tutorial
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-        co.hideOnClickOutside = false;
-
-        ViewTarget target = new ViewTarget(R.id.button_layout, this);
-        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, 
-                   R.string.tut_pending_title, R.string.tut_pending_body);		
-        sv.setScaleMultiplier(0.0f);
+		if (! Walkthrough.hasShown(Step.PENDING, this))
+		{
+		    Walkthrough.show(Step.PENDING, this);
+		}
 	}
 
 	/**
@@ -144,31 +141,28 @@ public class KeyExchangeManager extends Activity {
 	public static void requestSharedSecrets(final Context context, final Number number, final String name, final Entry entry)
 	{
         // Show the tutorial for setting shared secrets
-        // TODO add check for enabling tutorial
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
-        co.hideOnClickOutside = true;
-
-        ViewTarget target = new ViewTarget(R.id.button_layout, (Activity) context);
-        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, (Activity) context, 
-                   R.string.tut_accept_title, R.string.tut_accept_body);
-        
-        sv.setOnShowcaseEventListener(new OnShowcaseEventListener() {
-            public void onShowcaseViewHide(ShowcaseView showcaseView) {
-                // Load the dialog to get the shared secrets
-                setAndSend(context, number, name, entry);  
-            }
-            
-            @Override
-            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-            }
-            
-            @Override
-            public void onShowcaseViewShow(ShowcaseView showcaseView) {
-            }
-        });
-        
-        // else
-        // setAndSend(context, number, name, entry);
+	    if (! Walkthrough.hasShown(Step.ACCEPT, (Activity) context))
+	    {
+    	    Walkthrough.showWithListener(Step.ACCEPT, (Activity) context, 
+    	            new OnShowcaseEventListener() {
+                        public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                            // Load the dialog to get the shared secrets
+                            setAndSend(context, number, name, entry);  
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewShow(ShowcaseView showcaseView) {
+                        }
+                    });
+	    }
+	    else
+	    {
+	        setAndSend(context, number, name, entry);
+	    }
 	}
 		
 	/**
