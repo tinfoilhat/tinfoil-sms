@@ -11,6 +11,8 @@ import com.espian.showcaseview.targets.PointTarget;
 import com.espian.showcaseview.targets.Target;
 import com.espian.showcaseview.targets.ViewTarget;
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.WalkthroughStep;
+import com.tinfoil.sms.database.DBAccessor;
 
 public abstract class Walkthrough
 {
@@ -58,10 +60,12 @@ public abstract class Walkthrough
                     ShowcaseView.ITEM_ACTION_HOME,
                     1.6f));
             mViews.show();
+            disableWalkthroughStep(step, activity);
             break;
             
         case START_IMPORT:
             // Done as part of the INTRO step, skip
+            disableWalkthroughStep(step, activity);
             break;
         
         case IMPORT:
@@ -69,6 +73,7 @@ public abstract class Walkthrough
             co.hideOnClickOutside = true;
             target = new PointTarget(200, 200);
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_import_title, R.string.tut_import_boby, co);
+            disableWalkthroughStep(step, activity);
             break;
             
         case START_EXCHANGE:
@@ -77,12 +82,14 @@ public abstract class Walkthrough
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_startexchange_title, 
                     R.string.tut_startexchange_body, co);
             sv.setScaleMultiplier(0.5f);
+            disableWalkthroughStep(step, activity);
             break;
         
         case SET_SECRET:
             // Show the tutorial for setting shared secrets
             target = new ViewTarget(R.id.new_message_number, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_setsecret_title, R.string.tut_setsecret_body);
+            disableWalkthroughStep(step, activity);
             break;
             
         case KEY_SENT:
@@ -90,6 +97,7 @@ public abstract class Walkthrough
             target = new ViewTarget(R.id.key_exchange, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_keysent_title, R.string.tut_keysent_body);
             sv.setScaleMultiplier(0.0f);
+            disableWalkthroughStep(step, activity);
             break;
             
         case PENDING:
@@ -97,6 +105,7 @@ public abstract class Walkthrough
             target = new ViewTarget(R.id.button_layout, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_pending_title, R.string.tut_pending_body);      
             sv.setScaleMultiplier(0.0f);
+            disableWalkthroughStep(step, activity);
             break;
             
         case ACCEPT:
@@ -118,9 +127,12 @@ public abstract class Walkthrough
                     R.string.tut_close_body,
                     0.0f));
             mViews.show();
+            disableWalkthroughStep(step, activity);
+            break;
             
         case CLOSE:
             // Done as part of the SUCCESS step, skip
+            disableWalkthroughStep(step, activity);
             break;
             
         default:
@@ -152,6 +164,7 @@ public abstract class Walkthrough
                        R.string.tut_accept_title, R.string.tut_accept_body);
             
             sv.setOnShowcaseEventListener(listener);
+            disableWalkthroughStep(step, activity);
             break;
             
         default:
@@ -165,26 +178,58 @@ public abstract class Walkthrough
      * @param step The step in the walkthrough
      * @return
      */
-    public static boolean hasShown(Step step)
+    public static boolean hasShown(Step step, Activity activity)
     {
-        return true;
+        DBAccessor dba = new DBAccessor(activity);
+        WalkthroughStep ws = dba.getWalkthrough();
+        return ws.get(step);
     }
     
     /**
-     * Disables the walkthrough in the application settings preferences, this should
+     * Enables a step in the walkthrough in the application settings preferences, this should
      * only be called upon completion of the walkthrough.
      */
-    private static void disableWalkthrough()
+    public static void enableWalkthroughStep(Step step, Activity activity)
     {
-        return;
+        DBAccessor dba = new DBAccessor(activity);
+        WalkthroughStep ws = dba.getWalkthrough();
+        ws.set(step, true);
+        dba.updateWalkthrough(ws);
+    }
+        
+    /**
+     * Disables a step in the walkthrough in the application settings preferences, this should
+     * only be called upon completion of the walkthrough.
+     */
+    private static void disableWalkthroughStep(Step step, Activity activity)
+    {
+        DBAccessor dba = new DBAccessor(activity);
+        WalkthroughStep ws = dba.getWalkthrough();
+        ws.set(step, false);
+        dba.updateWalkthrough(ws);
     }
     
     /**
-     * Enables the walkthrough by initializing every step as not having been viewed,
+     * Enables the whole walkthrough by initializing every step as not having been viewed,
      * this should be executed the first time the application is started.
      */
-    private static void enableWalkthrough()
+    public static void enableWalkthrough(Activity activity)
     {
-        return;
+        WalkthroughStep ws = new WalkthroughStep();
+        DBAccessor dba = new DBAccessor(activity);
+        ws.setAll(true);
+        dba.updateWalkthrough(ws);
+    }
+    
+    /**
+     * Disables the whole walkthrough by initializing every step as not having been viewed,
+     * this should be executed the first time the application is started.
+     */
+    public static void disableWalkthrough(Activity activity)
+    {
+        WalkthroughStep ws = new WalkthroughStep();
+        DBAccessor dba = new DBAccessor(activity);
+        ws.setAll(false);
+        dba.updateWalkthrough(ws);
     }
 }
