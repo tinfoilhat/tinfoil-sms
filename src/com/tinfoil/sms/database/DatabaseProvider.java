@@ -232,6 +232,11 @@ public class DatabaseProvider extends ContentProvider {
         	getContext().getContentResolver().notifyChange(uri, null);
             return Uri.parse(SQLitehelper.WALKTHROUGH_TABLE_NAME + "/" + id);
             */
+        case WALKTHROUGH:
+            // Insert walkthrough data.
+            id = dba.insert(SQLitehelper.WALKTHROUGH_TABLE_NAME, null, values);
+            getContext().getContentResolver().notifyChange(uri, null);
+            return Uri.parse(SQLitehelper.WALKTHROUGH_TABLE_NAME + "/" + id);
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -329,6 +334,18 @@ public class DatabaseProvider extends ContentProvider {
                     "", sortOrder);
             c.setNotificationUri(getContext().getContentResolver(), uri);
             return c;
+        case WALKTHROUGH:
+            //Select special inner query data
+            qBuilder.setTables(SQLitehelper.WALKTHROUGH_TABLE_NAME);
+
+            /* This groups by SQLitehelper.KEY_REFERENCE, since it is only used in 1 place
+             * If this query is used in more than 1 place than it will also use group by so
+             * be wary.
+             */
+            c = qBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs, "",
+                    "", sortOrder);
+            c.setNotificationUri(getContext().getContentResolver(), uri);
+            return c;
         case TRUST_NUMBERS:
         	//Select trusted and numbers data
         	qBuilder.setTables(TRUST_NUMBER_TABLE);
@@ -357,17 +374,6 @@ public class DatabaseProvider extends ContentProvider {
             		SQLitehelper.KEY_REFERENCE, "", sortOrder);
             c.setNotificationUri(getContext().getContentResolver(), uri);
             return c;
-        case WALKTHROUGH:
-        	//Select special inner query data
-        	qBuilder.setTables(SQLitehelper.WALKTHROUGH_TABLE_NAME);
-
-        	/* This groups by SQLitehelper.KEY_REFERENCE, since it is only used in 1 place
-        	 * If this query is used in more than 1 place than it will also use group by so
-        	 * be wary.
-        	 */
-        	c = qBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs, "",
-                    "", sortOrder);
-            c.setNotificationUri(getContext().getContentResolver(), uri);
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
