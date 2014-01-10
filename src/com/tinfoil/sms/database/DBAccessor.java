@@ -32,6 +32,7 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.dataStructures.ValueHolder;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.SMSUtility;
@@ -1356,10 +1357,53 @@ public class DBAccessor {
 		return trusted;
 	}
 	
-	/*public void updateWalkthrough(Walkthrough)
+	public void updateWalkthrough(ValueHolder vh)
 	{
+		ContentValues cv = new ContentValues();
 		
-	}*/
+		cv.put(SQLitehelper.KEY_INTRO, vh.isIntro());
+		cv.put(SQLitehelper.KEY_START_IMPORT, vh.isStartImport());
+		cv.put(SQLitehelper.KEY_IMPORT, vh.isEndImport());
+		cv.put(SQLitehelper.KEY_START_EXCHANGE, vh.isStartExchange());
+		cv.put(SQLitehelper.KEY_SET_SECRET, vh.isSetSecret());
+		cv.put(SQLitehelper.KEY_KEY_SEND, vh.isKeySend());
+		cv.put(SQLitehelper.KEY_PENDING, vh.isPending());
+		cv.put(SQLitehelper.KEY_ACCEPT, vh.isAccept());
+		cv.put(SQLitehelper.KEY_SUCCESS, vh.isSuccess());
+		cv.put(SQLitehelper.KEY_CLOSE, vh.isClose());
+		
+		context.getContentResolver().update(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
+        		cv, null, null);
+	}
+	
+	public ValueHolder getWalkthrough()
+	{
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
+        		new String[]{SQLitehelper.KEY_INTRO, SQLitehelper.KEY_START_IMPORT,
+				SQLitehelper.KEY_IMPORT, SQLitehelper.KEY_START_EXCHANGE,
+				SQLitehelper.KEY_SET_SECRET, SQLitehelper.KEY_KEY_SEND,
+				SQLitehelper.KEY_PENDING, SQLitehelper.KEY_ACCEPT,
+				SQLitehelper.KEY_SUCCESS, SQLitehelper.KEY_CLOSE}, null, null, null);
+
+		ValueHolder vh = new ValueHolder();
+		if(cur.moveToFirst())
+		{
+			vh.setIntro(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_IMPORT)));
+			vh.setStartImport(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_IMPORT)));
+			vh.setEndImport(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_IMPORT)));
+			vh.setStartExchange(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_EXCHANGE)));
+			vh.setSetSecret(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SET_SECRET)));
+			vh.setKeySend(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_KEY_SEND)));
+			vh.setPending(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_PENDING)));
+			vh.setAccept(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_ACCEPT)));
+			vh.setSuccess(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SUCCESS)));
+			vh.setClose(cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_CLOSE)));
+			cur.close();
+			return vh;
+		}
+		cur.close();
+		return null;
+	}
 	
 	/**
 	 * Adding a message to the queue to be sent when there is service to send
