@@ -248,8 +248,7 @@ public class KeyExchangeManager extends Activity {
 				
 				dba.deleteKeyExchangeMessage(entry.getNumber());
 				
-				dba.updateNumberRow(number,
-						number.getNumber(), 0);
+				dba.updateNumberRow(number, number.getNumber(), 0);
 				
 				if(!number.isInitiator())
 				{
@@ -269,6 +268,8 @@ public class KeyExchangeManager extends Activity {
 							true, Message.SENT_KEY_EXCHANGE_INIT);
 					dba.addNewMessage(newMessage, entry.getMessage(), true);
 				}
+				
+				ConversationView.updateList(context, ConversationView.messageViewActive);
 				
 				if(dba.getKeyExchangeMessageCount() == 0)
 			    {

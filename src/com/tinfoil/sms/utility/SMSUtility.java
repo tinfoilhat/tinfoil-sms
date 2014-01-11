@@ -53,7 +53,6 @@ import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.sms.KeyExchangeManager;
-import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * An abstract class used to retrieve contacts information from the native
