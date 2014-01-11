@@ -233,25 +233,6 @@ public class ConversationView extends Activity {
 				}
 			}
 		});
-
-        // If tutorial enabled display the first two steps of the tutorial
-        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
-        {
-            Walkthrough.show(Step.INTRO, this);
-            Walkthrough.show(Step.START_IMPORT, this);
-        }
-        else if (!Walkthrough.hasShown(Step.START_EXCHANGE, this))
-        {
-            // Display the key exchange instructions if step 1&2 already shown
-            Walkthrough.show(Step.START_EXCHANGE, this);
-        }
-
-        // Display the last step of the tutorial upon successful key exchange
-        if ( (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
-        {
-            Walkthrough.show(Step.SUCCESS, this);
-            Walkthrough.show(Step.CLOSE, this);
-        }
     }
 
     /**
@@ -287,6 +268,26 @@ public class ConversationView extends Activity {
     		updateList(this, false);
     	}
         super.onResume();
+        
+        // If tutorial enabled display the first two steps of the tutorial
+        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
+        {
+            Walkthrough.show(Step.INTRO, this);
+            Walkthrough.show(Step.START_IMPORT, this);
+        }
+        else if (!Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {
+            // Display the key exchange instructions if step 1&2 already shown
+            Walkthrough.show(Step.START_EXCHANGE, this);
+        }
+
+        // Display the last step of the tutorial upon successful key exchange
+        DBAccessor dba = new DBAccessor(this);
+        if ( (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
+        {
+            Walkthrough.show(Step.SUCCESS, this);
+            Walkthrough.show(Step.CLOSE, this);
+        }
     }
 
     @Override

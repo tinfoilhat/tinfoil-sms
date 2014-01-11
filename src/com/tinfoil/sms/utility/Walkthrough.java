@@ -182,9 +182,8 @@ public abstract class Walkthrough
      */
     public static boolean hasShown(Step step, Activity activity)
     {
-        Log.v("PREFS", QuickPrefsActivity.ENABLE_WALKTHROUGH_SETTING_KEY);
-        if (PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()).getBoolean(
-                QuickPrefsActivity.ENABLE_WALKTHROUGH_SETTING_KEY, false))
+        if (PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext()).getBoolean(
+                QuickPrefsActivity.ENABLE_WALKTHROUGH_SETTING_KEY, true))
         {
             DBAccessor dba = new DBAccessor(activity);
             WalkthroughStep ws = dba.getWalkthrough();
@@ -203,7 +202,7 @@ public abstract class Walkthrough
     {
         DBAccessor dba = new DBAccessor(activity);
         WalkthroughStep ws = new WalkthroughStep(null);
-        ws.set(step, true);
+        ws.set(step, false);
         dba.updateWalkthrough(ws);
     }
         
@@ -215,7 +214,7 @@ public abstract class Walkthrough
     {
         DBAccessor dba = new DBAccessor(activity);
         WalkthroughStep ws = new WalkthroughStep(null);
-        ws.set(step, false);
+        ws.set(step, true);
         dba.updateWalkthrough(ws);
     }
     
@@ -225,7 +224,7 @@ public abstract class Walkthrough
      */
     public static void enableWalkthrough(Activity activity)
     {
-        WalkthroughStep ws = new WalkthroughStep(true);
+        WalkthroughStep ws = new WalkthroughStep(false);
         DBAccessor dba = new DBAccessor(activity);
         dba.updateWalkthrough(ws);
     }
@@ -236,7 +235,7 @@ public abstract class Walkthrough
      */
     public static void disableWalkthrough(Activity activity)
     {
-        WalkthroughStep ws = new WalkthroughStep(false);
+        WalkthroughStep ws = new WalkthroughStep(true);
         DBAccessor dba = new DBAccessor(activity);
         dba.updateWalkthrough(ws);
     }
