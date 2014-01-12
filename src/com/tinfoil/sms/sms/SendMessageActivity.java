@@ -44,6 +44,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -80,6 +81,7 @@ public class SendMessageActivity extends Activity {
     private static MessageBoxWatcher messageEvent;
     private AutoCompleteTextView phoneBox;
     private EditText messageBox;
+    private ImageButton sendSMS;
 	private static ListView messageList;
 	private AlertDialog popup_alert;
 	
@@ -158,6 +160,10 @@ public class SendMessageActivity extends Activity {
             handleSendIntent();
         }
 
+        // Set the send button as disabled until they enter text
+        sendSMS = (ImageButton) this.findViewById(R.id.new_message_send);
+        sendSMS.setEnabled(false);
+        sendSMS.setClickable(false);
     }
     
     private void setupComposeView(String number, String message)
@@ -305,13 +311,9 @@ public class SendMessageActivity extends Activity {
     
     public void setupMessageBox()
     {
-    	 messageEvent = new MessageBoxWatcher(this, R.id.send_word_count);
-    	 
-    	 //this.sendSMS = (Button) this.findViewById(R.id.new_message_send);
-         this.messageBox = (EditText) this.findViewById(R.id.new_message_message);
-
-
-         this.messageBox.addTextChangedListener(messageEvent);
+    	 messageEvent = new MessageBoxWatcher(this, R.id.new_message_send, R.id.send_word_count);
+         messageBox = (EditText) this.findViewById(R.id.new_message_message);
+         messageBox.addTextChangedListener(messageEvent);
     }
     
     public void sendMessage (View view)
@@ -950,7 +952,7 @@ public class SendMessageActivity extends Activity {
         	switch (msg.what){
         	case LOAD:
 		        contact_name = b.getString(SendMessageActivity.CONTACT_NAME);
-		        messageEvent = new MessageBoxWatcher(SendMessageActivity.this, R.id.send_word_count);
+		        messageEvent = new MessageBoxWatcher(SendMessageActivity.this, R.id.new_message_send, R.id.send_word_count);
 		        messageBox = (EditText) SendMessageActivity.this.findViewById(R.id.new_message_message);
 	        	messageBox.addTextChangedListener(messageEvent);
 	        	messages = new MessageAdapter(SendMessageActivity.this, R.layout.listview_full_item_row, 

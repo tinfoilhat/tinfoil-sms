@@ -20,31 +20,45 @@ package com.tinfoil.sms.adapter;
 import android.app.Activity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MessageBoxWatcher implements TextWatcher {
+    private ImageView sendSMS;
 	private TextView wordCount;
 	private int wordCounter;
 	private static final int START_NUMBER = 5;
 	
-	public MessageBoxWatcher(Activity app, int id)
+	public MessageBoxWatcher(Activity app, int buttonId, int countId)
 	{
-		wordCount = (TextView) app.findViewById(id);
+	    sendSMS = (ImageView) app.findViewById(buttonId);
+		wordCount = (TextView) app.findViewById(countId);
 	}
 	
-	public void afterTextChanged(Editable s) {
+	public void afterTextChanged(Editable s)
+	{
+	    if (s.length() > 0)
+	    {
+	        sendSMS.setEnabled(true);
+	        sendSMS.setClickable(true);
+	    }
+        else
+        {
+            sendSMS.setEnabled(false);
+            sendSMS.setClickable(false);
+        }
+	    
 		if (s.length() < wordCounter)
 		{
 			wordCounter--;
 		}
 	}
 
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
-
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) 
+	{
 		wordCounter = s.length();
 		int limit = 0;
-				
+        
 		if(wordCounter > START_NUMBER)
 		{
 			wordCount.setText(String.valueOf(limit - wordCounter));
@@ -56,7 +70,6 @@ public class MessageBoxWatcher implements TextWatcher {
 	}
 
 	public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
 	
 	public void resetCount()
 	{
