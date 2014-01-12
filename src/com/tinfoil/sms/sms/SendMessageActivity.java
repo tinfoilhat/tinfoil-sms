@@ -48,6 +48,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.espian.showcaseview.OnShowcaseEventListener;
+import com.espian.showcaseview.ShowcaseView;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.MessageAdapter;
 import com.tinfoil.sms.adapter.MessageBoxWatcher;
@@ -144,13 +146,6 @@ public class SendMessageActivity extends Activity {
         			setupKeyExchangeInterface();
         			this.setTitle(R.string.new_key_exchange);
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
-        			
-                    // Show the tutorial for setting shared secrets
-        			if (! Walkthrough.hasShown(Step.SET_SECRET, this))
-        			{
-        			    Walkthrough.show(Step.SET_SECRET, this);
-        			}
-
         		}
         		else
         		{
@@ -573,11 +568,33 @@ public class SendMessageActivity extends Activity {
 	
 	public void sendKeyExchange(View view)
 	{
-		String[] temp = SendMessageActivity.checkValidNumber(this, newCont, null, false, true);
+		final String[] temp = SendMessageActivity.checkValidNumber(this, newCont, null, false, true);
 		
 		if(temp != null)
 		{
-			SMSUtility.handleKeyExchange(keyThread, dba, this, temp[0]);
+            // Show the tutorial for setting shared secrets
+            if (! Walkthrough.hasShown(Step.SET_SECRET, this))
+            {
+                Walkthrough.showWithListener(Step.SET_SECRET, SendMessageActivity.this, 
+                        new OnShowcaseEventListener() {
+                            public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                // Load the dialog to get the shared secrets
+                                SMSUtility.handleKeyExchange(keyThread, dba, SendMessageActivity.this, temp[0]);
+                            }
+                            
+                            @Override
+                            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                            }
+                            
+                            @Override
+                            public void onShowcaseViewShow(ShowcaseView showcaseView) {
+                            }
+                        });
+            }
+            else
+            {
+                SMSUtility.handleKeyExchange(keyThread, dba, this, temp[0]);
+            }	
 
 			//TODO Give user feedback.
 			//Toast.makeText(this, R.string.key_exchange_sent, Toast.LENGTH_SHORT).show();

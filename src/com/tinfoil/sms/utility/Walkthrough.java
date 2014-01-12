@@ -95,11 +95,7 @@ public abstract class Walkthrough
             break;
         
         case SET_SECRET:
-            // Show the tutorial for setting shared secrets
-            target = new ViewTarget(R.id.new_message_number, activity);
-            sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_setsecret_title, R.string.tut_setsecret_body);
-            sv.setScaleMultiplier(0.0f);
-            disableWalkthroughStep(step, activity);
+            // Requires listener handled by showWithListener
             break;
             
         case KEY_SENT:
@@ -163,6 +159,15 @@ public abstract class Walkthrough
         
         switch (step)
         {
+        case SET_SECRET:
+            // Show the tutorial for setting shared secrets
+            target = new ViewTarget(R.id.key_exchange, activity);
+            sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_setsecret_title, R.string.tut_setsecret_body);
+            sv.setOnShowcaseEventListener(listener);
+            sv.setScaleMultiplier(0.0f);
+            disableWalkthroughStep(step, activity);
+            break;
+        
         case ACCEPT:
             // Show the accept tutorial when the user accepts key exchange;
             target = new ViewTarget(R.id.button_layout, activity);
