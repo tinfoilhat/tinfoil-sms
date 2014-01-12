@@ -1,6 +1,7 @@
 package com.tinfoil.sms.utility;
 
 import android.app.Activity;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -41,26 +42,22 @@ public abstract class Walkthrough
     {
         ShowcaseViews mViews;
         ShowcaseView sv;
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
         Target target;
         
         switch (step)
         {
         case INTRO:
             mViews = new ShowcaseViews(activity);
-            
             // First step of the introductory walkthrough, initial intro
             mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                     R.string.tut_intro_title,
                     R.string.tut_intro_body,
                     0.0f));
-            
             // Second step importing contacts, highlights add/import contacts 
             mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                     R.string.tut_startimport_title,
                     R.string.tut_startimport_body,
-                    ShowcaseView.ITEM_ACTION_HOME,
-                    1.6f));
+                    0.0f));
             mViews.show();
             disableWalkthroughStep(step, activity);
             break;
@@ -72,18 +69,28 @@ public abstract class Walkthrough
         
         case IMPORT:
             // Shows importing instructions
-            co.hideOnClickOutside = true;
-            target = new PointTarget(200, 200);
-            sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_import_title, R.string.tut_import_boby, co);
+            target = new ViewTarget(R.id.confirm, activity);
+            sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_import_title, R.string.tut_import_boby);
+            sv.setScaleMultiplier(0.0f);
             disableWalkthroughStep(step, activity);
             break;
             
         case START_EXCHANGE:
             // Display the start new key exchange instructions
-            target = new ActionViewTarget(activity, ActionViewTarget.Type.OVERFLOW);
-            sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_startexchange_title, 
-                    R.string.tut_startexchange_body, co);
-            sv.setScaleMultiplier(0.5f);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            {
+                target = new ActionViewTarget(activity, ActionViewTarget.Type.OVERFLOW);
+                sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_startexchange_title, 
+                        R.string.tut_startexchange_body);
+                sv.setScaleMultiplier(0.5f);
+            }
+            else
+            {
+                target = new ViewTarget(R.id.empty, activity);
+                sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_startexchange_title, 
+                        R.string.tut_startexchange_body);
+                sv.setScaleMultiplier(0.0f);
+            }
             disableWalkthroughStep(step, activity);
             break;
         
@@ -91,6 +98,7 @@ public abstract class Walkthrough
             // Show the tutorial for setting shared secrets
             target = new ViewTarget(R.id.new_message_number, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_setsecret_title, R.string.tut_setsecret_body);
+            sv.setScaleMultiplier(0.0f);
             disableWalkthroughStep(step, activity);
             break;
             
@@ -121,8 +129,7 @@ public abstract class Walkthrough
             mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                 R.string.tut_success_title,
                 R.string.tut_success_body,
-                0.0f));
-        
+                0.0f));        
             // Second step importing contacts, highlights add/import contacts 
             mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
                     R.string.tut_close_title,
@@ -152,20 +159,17 @@ public abstract class Walkthrough
     public static void showWithListener(Step step, Activity activity, OnShowcaseEventListener listener)
     {
         ShowcaseView sv;
-        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
         Target target;
         
         switch (step)
         {
         case ACCEPT:
             // Show the accept tutorial when the user accepts key exchange;
-            co.hideOnClickOutside = true;
-
             target = new ViewTarget(R.id.button_layout, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, 
-                       R.string.tut_accept_title, R.string.tut_accept_body);
-            
+                       R.string.tut_accept_title, R.string.tut_accept_body);            
             sv.setOnShowcaseEventListener(listener);
+            sv.setScaleMultiplier(0.0f);
             disableWalkthroughStep(step, activity);
             break;
             
