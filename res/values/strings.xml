@@ -66,7 +66,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="key_exchange_error_message_1">The Key Exchange with</string>
     <string name="key_exchange_error_message_2">was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct.</string>
     <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
-    <string name="invalid_secrets">Invalid Secrets</string>
+    <string name="invalid_secrets">Invalid shared secrets, must be different and at least 8 characters!</string>
     <string name="shared_secret_hint_1">Shared Secret 1</string>
     <string name="shared_secret_hint_2">Shared Secret 2</string>
     <string name="set_shared_secrets">Set the shared secret for</string>
@@ -276,7 +276,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="tut_import_title">Import Contacts from your Phone</string>
     <string name="tut_import_boby">Select contacts from your phone to import, all previous conversations will be imported and your future conversations will be handled by the app.\nNOTE: By default communication with contacts are NOT secure until a successful key exchange has been executed!</string>
     <!-- Start a key exchange -->
-    <string name="tut_startexchange_title">Great! You\'re almost Communicating Securely</string>
+    <string name="tut_startexchange_title">Great! You\'re Almost Communicating Securely</string>
     <string name="tut_startexchange_body">Now you\'ll need to set up a key exchange with the contact to enable encryption. Don\'t worry, it\'s very quick and easy.\nTo start a key exchange you\'ll need three things: you both must have Tinfoil-SMS installed, import each other within the app, and agree on two shared secrets.</string>
     <!--  Set shared secret -->
     <string name="tut_setsecret_title">Shared Secrets are Important!</string>
