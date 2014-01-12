@@ -8,7 +8,7 @@
  	    android:id="@+id/edit"
  	    android:title="@string/edit_contact_menu"
  	    android:icon="@android:drawable/ic_menu_edit"
- 	    android:showAsAction="always" />
+ 	    android:showAsAction="ifRoom" />
  	
  	<!-- TODO make icon -->
  	<item

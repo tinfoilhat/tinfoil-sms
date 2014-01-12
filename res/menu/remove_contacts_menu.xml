@@ -1,6 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
- 	
-    
     <item
         android:id="@+id/all"
         android:title="@string/select_all_menu"
@@ -9,6 +7,5 @@
         android:id="@+id/remove"
         android:title="@string/remove_all_menu"
         android:titleCondensed="@string/remove_all_menu_condensed"/>
-	
 </menu>
 
