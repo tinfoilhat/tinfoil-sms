@@ -45,7 +45,7 @@
     </style>
     
     <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
-        <item name="sv_backgroundColor">#A8DFF4</item>
+        <item name="sv_backgroundColor">#E2F4FB</item>
         <item name="sv_showcaseColor">#33B5E5</item>
 	    <item name="sv_titleTextAppearance">@style/CustomTitle</item>
 	    <item name="sv_detailTextAppearance">@style/CustomDetailText</item>
@@ -67,6 +67,6 @@
 
 
     <style name="TinfoilSMSTheme" parent="@android:style/Theme.Light">
-        <item name="showcaseViewStyle">@style/ShowcaseView.Light</item>
+        <item name="showcaseViewStyle">@style/CustomShowcaseTheme</item>
     </style>
 </resources>
