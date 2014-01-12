@@ -267,23 +267,28 @@ public class ConversationView extends Activity {
     	{
     		updateList(this, false);
     	}
-        super.onResume();
+        super.onResume();       
         
-        // If tutorial enabled display the first two steps of the tutorial
-        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
-        {
-            Walkthrough.show(Step.INTRO, this);
-            Walkthrough.show(Step.START_IMPORT, this);
-        }
-        else if (!Walkthrough.hasShown(Step.START_EXCHANGE, this))
-        {
-            // Display the key exchange instructions if step 1&2 already shown
+        // Display the key exchange instructions if step 1&2 of tutorial already shown
+        if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
+                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {   
             Walkthrough.show(Step.START_EXCHANGE, this);
         }
 
+        // Don't show the introduction before the EULA
+        PackageInfo versionInfo = getPackageInfo();
+        final String eulaKey = "eula_" + versionInfo.versionCode;
+        if (sharedPrefs.getBoolean(eulaKey, false))
+        {
+            // Display the walkthrough tutorial introduction
+            displayIntro();
+        }
+        
         // Display the last step of the tutorial upon successful key exchange
         DBAccessor dba = new DBAccessor(this);
-        if ( (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
+        if ( (Walkthrough.hasShown(Step.ACCEPT, this) || Walkthrough.hasShown(Step.SET_SECRET, this))  
+                && (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
         {
             Walkthrough.show(Step.SUCCESS, this);
             Walkthrough.show(Step.CLOSE, this);
@@ -390,6 +395,9 @@ public class ConversationView extends Activity {
 	                SharedPreferences.Editor editor = sharedPrefs.edit();
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
+	                
+	                // Display the walkthrough tutorial introduction
+	                displayIntro();
 	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
 	                checkDefault();
@@ -507,6 +515,19 @@ public class ConversationView extends Activity {
     	}
     }
 
+    /**
+     * Displays the introduction to the walkthrough tutorial after accepting the EULA.
+     */
+    public void displayIntro()
+    {
+        // If tutorial enabled display the first two steps of the tutorial
+        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
+        {
+            Walkthrough.show(Step.INTRO, this);
+            Walkthrough.show(Step.START_IMPORT, this);
+        }
+    }
+    
 	/**
 	 * The handler class for cleaning up after the loading thread as well as the
 	 * update thread.
