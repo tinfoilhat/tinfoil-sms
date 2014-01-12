@@ -149,6 +149,35 @@ public class QuickPrefsActivity extends PreferenceActivity {
                 return true;
             }
         });
+        
+        /* Set an onclick listener for contact developers */
+        findPreference("contact").setOnPreferenceClickListener(new OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick(Preference preference)
+            {
+                /**
+                 * Create the Intent
+                 */
+                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+                /**
+                 * Fill it with Data
+                 */
+                emailIntent.setType("plain/text");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, QuickPrefsActivity.this
+                        .getResources().getStringArray(R.array.dev_emails));
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                
+                /**
+                 * Send it off to the Activity-Chooser
+                 */
+                QuickPrefsActivity.this.startActivity(Intent.createChooser(emailIntent,
+                        QuickPrefsActivity.this.getResources().getString(R.string.email_chooser)));
+                return true;
+            }
+        });
     }
     
     @Override

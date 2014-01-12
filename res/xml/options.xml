@@ -149,6 +149,12 @@
 		    android:defaultValue="true"
 		    android:persistent="true"/>
         
+          <Preference
+	        android:title="@string/contact_title"
+	        android:summary="@string/contact_summary"
+	        android:key="contact">
+          </Preference>
+          
           <PreferenceScreen
            	android:title="@string/source_code_title"
             android:key="source_code"

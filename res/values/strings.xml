@@ -3,7 +3,7 @@
 
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
-    <string name="contact_name">name</string>
+    <string name="contact_name">Name</string>
     <string name="cancel">Cancel</string>
     <string name="tell_me_more">Tell Me More</string>
     <string name="save">Save</string>
@@ -214,6 +214,15 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="flattr_option">Flattr</string>
     <string name="paypal_option">PayPal</string>
 
+    <!-- Contact the developers strings -->
+    <string name="contact_title">Contact</string>
+    <string name="contact_summary">Contact the Developers</string>
+    <string-array name="dev_emails">
+       <item>tinfoil.sms@gmail.com</item>
+    </string-array>
+    <string name="email_subject">Tinfoil-SMS Feedback</string>
+    <string name="email_chooser">Email the developers&#8230;</string>
+    
     <!-- Urls -->
     <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
     <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
