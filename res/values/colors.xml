@@ -141,4 +141,5 @@
  <color name="Navy">#000080</color>
  <color name="Black">#000000</color>
  <color name="DividerColor">#8F8F8F</color>
+ <color name="DividerBottomColor">#668F8F8F</color>
 </resources>

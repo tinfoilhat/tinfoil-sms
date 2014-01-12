@@ -166,6 +166,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
 
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Send</string>
+    <string name="send_hint">Send a message</string>
 
     <!-- SendMessageActivity strings -->
     <string name="to">To</string>
@@ -256,7 +257,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="vibrate_length_option_summary">Select the length of vibration notifications</string>
     <string name="feedback_options">Feedback</string>
     <string name="donate_option_title">Donate</string>
-    <string name="donate_option_summary">Support the developers</string>
+    <string name="donate_option_summary">Support the Developers</string>
     <string name="ringtone_settings_title">Enable Ringtone</string>
     <string name="message_order_title">Message Order</string>
     <string name="message_order_summary">Show latest message at the top</string>
