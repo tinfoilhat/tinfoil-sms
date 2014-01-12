@@ -163,6 +163,7 @@ public abstract class SMSUtility {
 		    {
 		    	final TrustedContact tc = dba.getRow(number);
 		    	final Number numberO = tc.getNumber(number);
+		    	final String name = tc.getName();
 		    	
 		    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		    	
@@ -181,7 +182,7 @@ public abstract class SMSUtility {
 			    			}
 			     		   else
 			     		   {
-			     			   KeyExchangeManager.setAndSend(activity, numberO, tc.getName(), entry);
+			     			   KeyExchangeManager.requestSharedSecrets(activity, numberO, name, entry);
 			      		}}})
 		    	    .setNegativeButton(android.R.string.no,
 		    	    		new DialogInterface.OnClickListener() {
@@ -207,6 +208,9 @@ public abstract class SMSUtility {
 			    }
 			    else 
 			    {
+			        // TODO Show the tutorial for when key exchange sent, need to set listener for keythread
+			        // Walkthrough.show(Step.KEY_SENT, activity)
+			        
 			    	//Initiate the key exchange with the contact. 
 			    	keyThread.startThread(activity, SMSUtility.format(number), null);
 			    }

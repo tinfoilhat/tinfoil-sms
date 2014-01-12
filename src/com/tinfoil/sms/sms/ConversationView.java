@@ -67,6 +67,8 @@ import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * This activity shows all of the conversations the user has with contacts. The
@@ -231,24 +233,6 @@ public class ConversationView extends Activity {
 				}
 			}
 		});
-        
-        /* If tutorial enabled display the first two steps of the tutorial */
-        // TODO add checks based on array of bools from preferences
-        /*ShowcaseViews mViews = new ShowcaseViews(this);
-        
-        // First step of the introductory walkthrough, initial intro
-        mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
-                R.string.tut_intro_title,
-                R.string.tut_intro_body,
-                0.0f));
-        
-        // Second step importing contacts, highlights add/import contacts 
-        mViews.addView( new ShowcaseViews.ItemViewProperties(R.id.empty,
-                R.string.tut_startimport_title,
-                R.string.tut_startimport_body,
-                ShowcaseView.ITEM_TITLE,
-                1.6f));
-        mViews.show();*/
     }
 
     /**
@@ -288,6 +272,30 @@ public class ConversationView extends Activity {
     	
         super.onResume();
         
+        // Display the key exchange instructions if step 1&2 of tutorial already shown
+        if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
+                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {   
+            Walkthrough.show(Step.START_EXCHANGE, this);
+        }
+
+        // Don't show the introduction before the EULA
+        PackageInfo versionInfo = getPackageInfo();
+        final String eulaKey = "eula_" + versionInfo.versionCode;
+        if (sharedPrefs.getBoolean(eulaKey, false))
+        {
+            // Display the walkthrough tutorial introduction
+            displayIntro();
+        }
+        
+        // Display the last step of the tutorial upon successful key exchange
+        DBAccessor dba = new DBAccessor(this);
+        if ( (Walkthrough.hasShown(Step.ACCEPT, this) || Walkthrough.hasShown(Step.SET_SECRET, this))  
+                && (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
+        {
+            Walkthrough.show(Step.SUCCESS, this);
+            Walkthrough.show(Step.CLOSE, this);
+        }
     }
 
     @Override
@@ -391,6 +399,9 @@ public class ConversationView extends Activity {
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
 	                
+	                // Display the walkthrough tutorial introduction
+	                displayIntro();
+	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
 	                //checkDefault();
 				}
@@ -428,6 +439,39 @@ public class ConversationView extends Activity {
 	    	final String myPackageName = getPackageName();
 	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
 	        	
+	        	//TODO move strings to strings.xml
+	        	/*AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		        .setTitle("Change SMS app?")
+		        .setCancelable(true)
+		        .setMessage("Use Tinfoil-SMS instead your currently selected SMS app?")
+		        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+		
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
+	                            myPackageName);
+	                    startActivity(intent);
+					}
+		        })
+		        .setOnCancelListener(new OnCancelListener(){
+	
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						// Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+					}	        	
+		        })
+		        .setNegativeButton(android.R.string.no, new Dialog.OnClickListener() {
+		
+		            @Override
+		            public void onClick(DialogInterface dialog, int which) {
+		                // Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+		            }
+		        });
+		    	builder.create().show();
+		    	*/
 	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle(R.string.kitkat_dialog_title)
 		        .setCancelable(true)
@@ -474,6 +518,19 @@ public class ConversationView extends Activity {
     	}
     }
 
+    /**
+     * Displays the introduction to the walkthrough tutorial after accepting the EULA.
+     */
+    public void displayIntro()
+    {
+        // If tutorial enabled display the first two steps of the tutorial
+        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
+        {
+            Walkthrough.show(Step.INTRO, this);
+            Walkthrough.show(Step.START_IMPORT, this);
+        }
+    }
+    
 	/**
 	 * The handler class for cleaning up after the loading thread as well as the
 	 * update thread.

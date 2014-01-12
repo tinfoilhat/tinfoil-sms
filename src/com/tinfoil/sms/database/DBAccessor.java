@@ -32,9 +32,11 @@ import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
+import com.tinfoil.sms.dataStructures.WalkthroughStep;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * Creates a database that is read and write and provides methods to 
@@ -892,6 +894,28 @@ public class DBAccessor {
 		return null;
 	}
 	
+	public boolean anyTrusted()
+	{
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
+				new String[]{SQLitehelper.KEY_ID}, SQLitehelper.KEY_PUBLIC_KEY 
+				+ " IS NOT NULL" , null, null);
+		
+		if(cur != null)
+		{
+			if (cur.moveToFirst())
+			{
+				if(cur.getCount()> 0)
+				{
+					cur.close();
+					return true;
+				}
+				cur.close();
+			}
+		}
+		return false;
+		
+	}
+	
 	/**
 	 * Get all of the rows in the database with the columns
 	 * @param select Whether to get trusted, untrusted or all contacts.
@@ -1332,6 +1356,73 @@ public class DBAccessor {
 			trusted[i] = isTrustedContact(number.get(i).getNumber());
 		}
 		return trusted;
+	}
+	
+	public void updateWalkthrough(WalkthroughStep ws)
+	{
+		ContentValues cv = new ContentValues();
+		
+		if(ws.get(Step.INTRO) != null)
+			cv.put(SQLitehelper.KEY_INTRO, ws.get(Step.INTRO));
+		
+		if(ws.get(Step.START_IMPORT) != null)
+			cv.put(SQLitehelper.KEY_START_IMPORT, ws.get(Step.START_IMPORT));
+		
+		if(ws.get(Step.IMPORT) != null)
+			cv.put(SQLitehelper.KEY_IMPORT, ws.get(Step.IMPORT));
+		
+		if(ws.get(Step.START_EXCHANGE) != null)
+			cv.put(SQLitehelper.KEY_START_EXCHANGE, ws.get(Step.START_EXCHANGE));
+		
+		if(ws.get(Step.SET_SECRET) != null)
+			cv.put(SQLitehelper.KEY_SET_SECRET, ws.get(Step.SET_SECRET));
+		
+		if(ws.get(Step.KEY_SENT) != null)
+			cv.put(SQLitehelper.KEY_KEY_SENT, ws.get(Step.KEY_SENT));
+		
+		if(ws.get(Step.PENDING) != null)
+			cv.put(SQLitehelper.KEY_PENDING, ws.get(Step.PENDING));
+		
+		if(ws.get(Step.ACCEPT) != null)
+			cv.put(SQLitehelper.KEY_ACCEPT, ws.get(Step.ACCEPT));
+		
+		if(ws.get(Step.SUCCESS) != null)
+			cv.put(SQLitehelper.KEY_SUCCESS, ws.get(Step.SUCCESS));
+		
+		if(ws.get(Step.CLOSE) != null)
+			cv.put(SQLitehelper.KEY_CLOSE, ws.get(Step.CLOSE));
+		
+		context.getContentResolver().update(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
+        		cv, null, null);
+	}
+	
+	public WalkthroughStep getWalkthrough()
+	{
+		Cursor cur = context.getContentResolver().query(DatabaseProvider.WALKTHROUGH_CONTENT_URI,
+        		new String[]{SQLitehelper.KEY_INTRO, SQLitehelper.KEY_START_IMPORT,
+				SQLitehelper.KEY_IMPORT, SQLitehelper.KEY_START_EXCHANGE,
+				SQLitehelper.KEY_SET_SECRET, SQLitehelper.KEY_KEY_SENT,
+				SQLitehelper.KEY_PENDING, SQLitehelper.KEY_ACCEPT,
+				SQLitehelper.KEY_SUCCESS, SQLitehelper.KEY_CLOSE}, null, null, null);
+
+		WalkthroughStep ws = new WalkthroughStep();
+		if(cur.moveToFirst())
+		{
+			ws.set(Step.INTRO, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_INTRO)));
+			ws.set(Step.START_IMPORT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_IMPORT)));
+			ws.set(Step.IMPORT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_IMPORT)));
+			ws.set(Step.START_EXCHANGE, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_START_EXCHANGE)));
+			ws.set(Step.SET_SECRET, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SET_SECRET)));
+			ws.set(Step.KEY_SENT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_KEY_SENT)));
+			ws.set(Step.PENDING, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_PENDING)));
+			ws.set(Step.ACCEPT, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_ACCEPT)));
+			ws.set(Step.SUCCESS, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SUCCESS)));
+			ws.set(Step.CLOSE, cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_CLOSE)));
+			cur.close();
+			return ws;
+		}
+		cur.close();
+		return null;
 	}
 	
 	/**

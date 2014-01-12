@@ -41,6 +41,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.espian.showcaseview.OnShowcaseEventListener;
+import com.espian.showcaseview.ShowcaseView;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.crypto.KeyExchangeHandler;
@@ -52,6 +54,8 @@ import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * The activity for handling pending key exchanges. If the user does not set
@@ -80,6 +84,12 @@ public class KeyExchangeManager extends Activity {
 		runThread = new KeyExchangeLoader(this, handler);
 		
 		setupActionBar();
+		
+        // Show the tutorial for pending key exchanges
+		if (! Walkthrough.hasShown(Step.PENDING, this))
+		{
+		    Walkthrough.show(Step.PENDING, this);
+		}
 	}
 
 	/**
@@ -99,7 +109,6 @@ public class KeyExchangeManager extends Activity {
 			{
 				if(sba.get(i))
 				{
-					
 					TrustedContact tc = dba.getRow(SMSUtility.
 							format(runThread.getEntries().get(0).getNumber()));
 					
@@ -113,7 +122,7 @@ public class KeyExchangeManager extends Activity {
 					}
 					else
 					{
-						setAndSend(this, number, tc.getName(), runThread.getEntries().get(i));
+					    requestSharedSecrets(this, number, tc.getName(), runThread.getEntries().get(i));
 					}
 				}
 				
@@ -123,13 +132,47 @@ public class KeyExchangeManager extends Activity {
 	}
 	
 	/**
+     * Requests the shared secrets from the user with an alert dialog.
+     * @param context The context of the setting.
+     * @param number The Number of the contact.
+     * @param name The name of the contact
+     * @param entry The key exchange message.
+	 */
+	public static void requestSharedSecrets(final Context context, final Number number, final String name, final Entry entry)
+	{
+        // Show the tutorial for setting shared secrets
+	    if (! Walkthrough.hasShown(Step.ACCEPT, (Activity) context))
+	    {
+    	    Walkthrough.showWithListener(Step.ACCEPT, (Activity) context, 
+    	            new OnShowcaseEventListener() {
+                        public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                            // Load the dialog to get the shared secrets
+                            setAndSend(context, number, name, entry);  
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewShow(ShowcaseView showcaseView) {
+                        }
+                    });
+	    }
+	    else
+	    {
+	        setAndSend(context, number, name, entry);
+	    }
+	}
+		
+	/**
 	 * Set the shared secrets for the contacts.
 	 * @param context The context of the setting.
 	 * @param number The Number of the contact.
 	 * @param name The name of the contact
 	 * @param entry The key exchange message.
 	 */
-	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
+	private static void setAndSend(final Context context, final Number number, String name, final Entry entry)
 	{
 		final DBAccessor dba = new DBAccessor(context);
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -205,8 +248,7 @@ public class KeyExchangeManager extends Activity {
 				
 				dba.deleteKeyExchangeMessage(entry.getNumber());
 				
-				dba.updateNumberRow(number,
-						number.getNumber(), 0);
+				dba.updateNumberRow(number, number.getNumber(), 0);
 				
 				if(!number.isInitiator())
 				{
@@ -226,6 +268,8 @@ public class KeyExchangeManager extends Activity {
 							true, Message.SENT_KEY_EXCHANGE_INIT);
 					dba.addNewMessage(newMessage, entry.getMessage(), true);
 				}
+				
+				ConversationView.updateList(context, ConversationView.messageViewActive);
 				
 				if(dba.getKeyExchangeMessageCount() == 0)
 			    {
@@ -414,7 +458,4 @@ public class KeyExchangeManager extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-
-
 }

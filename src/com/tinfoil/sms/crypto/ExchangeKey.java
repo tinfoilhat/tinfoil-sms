@@ -24,6 +24,7 @@ import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.text.InputType;
@@ -38,6 +39,7 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
+import com.tinfoil.sms.sms.ConversationView;
 import com.tinfoil.sms.utility.OnKeyExchangeResolvedListener;
 import com.tinfoil.sms.utility.SMSUtility;
 
@@ -55,12 +57,11 @@ public class ExchangeKey implements Runnable {
     private ArrayList<String> trusted;
     private Number number;
     
-    private Activity activity;
+    private Activity activity; 
     private TrustedContact trustedContact;
     
     private OnKeyExchangeResolvedListener listener;
     
-    private boolean multiNumber = false;
     private DBAccessor dba;
     
 
@@ -92,7 +93,6 @@ public class ExchangeKey implements Runnable {
         {
         	this.untrusted.add(untrusted);
         }
-        multiNumber = false;
         dba = new DBAccessor(activity);
         Thread thread = new Thread(this);
         thread.start();
@@ -155,7 +155,7 @@ public class ExchangeKey implements Runnable {
             }
         }
         
-        if (invalid)
+        if (invalid && activity != null)
         {
         	trustedContact = dba.getRow(number.getNumber());
         	
@@ -164,73 +164,66 @@ public class ExchangeKey implements Runnable {
         	 */
         	activity.runOnUiThread(new Runnable() {
         	    public void run() {
-        	    	
-        	    	if(!multiNumber)
-        	    	{
-        	    		//Toast.makeText(activity, "Shared secrets must be set prior to key exchange", Toast.LENGTH_LONG).show();
-        	    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        	    		LinearLayout linearLayout = new LinearLayout(activity);
-        	    		linearLayout.setOrientation(LinearLayout.VERTICAL);
+    	    		//Toast.makeText(activity, "Shared secrets must be set prior to key exchange", Toast.LENGTH_LONG).show();
+    	    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    	    		LinearLayout linearLayout = new LinearLayout(activity);
+    	    		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        	    		final EditText sharedSecret1 = new EditText(activity);
-        	    		sharedSecret1.setHint(R.string.shared_secret_hint_1);
-        	    		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
-        	    		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
-        	    		linearLayout.addView(sharedSecret1);
+    	    		final EditText sharedSecret1 = new EditText(activity);
+    	    		sharedSecret1.setHint(R.string.shared_secret_hint_1);
+    	    		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
+    	    		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
+    	    		linearLayout.addView(sharedSecret1);
 
-        	    		final EditText sharedSecret2 = new EditText(activity);
-        	    		sharedSecret2.setHint(R.string.shared_secret_hint_2);
-        	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
-        	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
-        	    		linearLayout.addView(sharedSecret2);
-        	    		
-        	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
-        	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
-        	    		       .setCancelable(true)
-        	    		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-        	    		    	   @Override
-        	    		    	   public void onClick(DialogInterface dialog, int id) {
-        	    		                //Save the shared secrets
-        	    		    		   String s1 = sharedSecret1.getText().toString();
-        	    		    		   String s2 = sharedSecret2.getText().toString();
-        	    		    		   if (SMSUtility.checksharedSecret(s1) &&
-        	    		                		SMSUtility.checksharedSecret(s2))
-        	    		               {     	    		    			   
-        	    		    			   sendKeyExchange(dba, number, s1, s2, true);
-        	    		    		   }
-        	    		    		   else
-        	    		    		   {
-        	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
-        	    		    		   }
-        	    		           }})
-        	    		       .setOnCancelListener(new OnCancelListener(){
+    	    		final EditText sharedSecret2 = new EditText(activity);
+    	    		sharedSecret2.setHint(R.string.shared_secret_hint_2);
+    	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
+    	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
+    	    		linearLayout.addView(sharedSecret2);
+    	    		
+    	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
+    	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
+    	    		       .setCancelable(true)
+    	    		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+    	    		    	   @Override
+    	    		    	   public void onClick(DialogInterface dialog, int id) {
+    	    		                //Save the shared secrets
+    	    		    		   String s1 = sharedSecret1.getText().toString();
+    	    		    		   String s2 = sharedSecret2.getText().toString();
+    	    		    		   if (SMSUtility.checksharedSecret(s1) &&
+    	    		                		SMSUtility.checksharedSecret(s2))
+    	    		               {     	    		    			   
+    	    		    			   sendKeyExchange(dba, number, s1, s2, true);
+    	    		    		   }
+    	    		    		   else
+    	    		    		   {
+    	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
+    	    		    		   }
+    	    		           }})
+    	    		       .setOnCancelListener(new OnCancelListener(){
 
-									@Override
-									public void onCancel(DialogInterface arg0) {
-										//Cancel the key exchange
-										Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
-									}
-        	    		    	   
-        	    		       })
-        	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-        	    		    	   @Override
-        	    		    	   public void onClick(DialogInterface arg0, int arg1) {
-        	    		    			//Cancel the key exchange
-        	    		    		   Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
-        	    		    	   }});
-        	    		AlertDialog alert = builder.create();
-        	    		
-        	    		alert.setView(linearLayout);
-        	    		alert.show();
-        	    	}
-        	    	else
-        	    	{
-        	    		Toast.makeText(activity, R.string.unsuccessful_key_exchanges, Toast.LENGTH_LONG).show();
-        	    	}
+								@Override
+								public void onCancel(DialogInterface arg0) {
+									//Cancel the key exchange
+									Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
+								}
+    	    		    	   
+    	    		       })
+    	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+    	    		    	   @Override
+    	    		    	   public void onClick(DialogInterface arg0, int arg1) {
+    	    		    			//Cancel the key exchange
+    	    		    		   Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
+    	    		    	   }});
+    	    		AlertDialog alert = builder.create();
+    	    		
+    	    		alert.setView(linearLayout);
+    	    		alert.show();
         	    }
         	});
         }
 
+        ConversationView.updateList(activity, ConversationView.messageViewActive);
         if((trusted == null || trusted.size() == 0) && listener != null)
         {
         	Log.v("onKeyExchangeResolved", "TRUE");
