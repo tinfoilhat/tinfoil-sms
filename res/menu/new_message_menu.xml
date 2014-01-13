@@ -3,5 +3,4 @@
     <item
         android:id="@+id/exchange"
         android:title="@string/exchange_keys_menu"/>
-
 </menu>
