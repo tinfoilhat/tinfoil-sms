@@ -1,6 +1,8 @@
 package com.tinfoil.sms.utility;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -9,7 +11,6 @@ import com.espian.showcaseview.OnShowcaseEventListener;
 import com.espian.showcaseview.ShowcaseView;
 import com.espian.showcaseview.ShowcaseViews;
 import com.espian.showcaseview.targets.ActionViewTarget;
-import com.espian.showcaseview.targets.PointTarget;
 import com.espian.showcaseview.targets.Target;
 import com.espian.showcaseview.targets.ViewTarget;
 import com.tinfoil.sms.R;
@@ -138,6 +139,7 @@ public abstract class Walkthrough
         case CLOSE:
             // Done as part of the SUCCESS step, skip
             disableWalkthroughStep(step, activity);
+            disableWalkthrough(activity);
             break;
             
         default:
@@ -240,12 +242,19 @@ public abstract class Walkthrough
     
     /**
      * Disables the whole walkthrough by initializing every step as not having been viewed,
-     * this should be executed the first time the application is started.
+     * this should be executed the first time the application is started. The walkthrough is
+     * also disabled in the settings.
      */
     public static void disableWalkthrough(Activity activity)
     {
         WalkthroughStep ws = new WalkthroughStep(true);
         DBAccessor dba = new DBAccessor(activity);
         dba.updateWalkthrough(ws);
+        
+        // Disable the walkthrough in the settings
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        Editor editor = prefs.edit();
+        editor.putBoolean(QuickPrefsActivity.ENABLE_WALKTHROUGH_SETTING_KEY, false);
+        editor.commit();
     }
 }
