@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tinfoil-SMS</string>
+    <string name="vibration_default_length">500</string>
+    <string name="contact_name">Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="tell_me_more">Tell Me More</string>
+    <string name="save">Save</string>
+    <string name="accept">Accept</string>
+    <string name="refuse">Refuse</string>
+    <string name="key_exchange_failed_to_decrypt">FAILED TO DECRYPT</string>
+    <string name="possible_man_in_the_middle_attack_warning">Possible Man In The Middle Attack</string>
+    <string name="key_exchange_received">Exchange Key Message Received</string>
+
+    <!-- ConversationView Activity strings -->
+    <string name="add_contacts_list">Add Contact</string>
+    <string name="import_contacts_list">Import Contact</string>
+    <string name="eula_title">Tinfoil-SMS EULA</string>
+    <string name="eula_message">"PLEASE READ THE TERMS AND CONDITIONS OF THIS END USER LICENSE AGREEMENT (EULA) CAREFULLY BEFORE INSTALLING OR USING THIS SOFTWARE.\n
+This distribution includes cryptographic software. The country in which you currently reside may have restrictions on the import, possession, use, and/or re-export to another country, of encryption software. BEFORE using any encryption software, please check your country's laws, regulations and policies concerning the import, possession, or use, and re-export of encryption software, to see if this is permitted. See http://www.wassenaar.org for more information.\n
+BY CLICKING ACCEPT YOU ACKNOWLEDGE THAT YOU UNDERSTAND THE CRYPTOGRAPHIC IMPORT/EXPORT LAWS OF YOUR COUNTRY AND ARE FULLY RESPONSIBLE FOR ENSURING THAT YOU ARE LEGALLY PERMITTED TO IMPORT/EXPORT THIS SOFTWARE. BY CLICKING ACCEPT YOU AGREE THAT YOU MAY NOT HOLD THE AUTHORS LIABLE FOR ANY LEGAL RAMIFICATIONS AS A RESULT OF THIS SOFTWARE, NOR MAY THE AUTHORS BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THIS SOFTWARE.\n
+LASTLY, THIS SOFTWARE IS OPEN SOURCE AND IS LICENSED UNDER THE GNU GENERAL PUBLIC LICENSE V3 (GPLv3). BY CLICKING ACCEPT YOU MUST ALSO AGREE TO THE TERMS OF THE GNU GENERAL PUBLIC LICENSE V3, PLEASE SEE http://www.gnu.org/licenses/gpl.html FOR THE COMPLETE LICENSE. FURTHERMORE, DUE TO THE OPEN SOURCE NATURE OF THIS SOFTWARE, WHEN YOU IMPORT THIS SOFTWARE OR SOURCE CODE TO YOUR COUNTRY, REDISTRIBUTE IT FROM THERE OR EVEN JUST EMAIL TECHNICAL SUGGESTIONS OR SOURCE PATCHES TO THE AUTHORS YOU ARE STRONGLY ADVISED TO PAY CLOSE ATTENTION TO ANY IMPORT/EXPORT AND/OR USE LAWS WHICH MAY APPLY TO YOU.\n
+ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USER LICENSE AGREEMENT (EULA)."</string>
+    <string name="compose_menu">Compose</string>
+    <string name="settings_menu">Settings</string>
+    <string name="pending_key_exchange_menu">Pending Key Exchanges</string>
+    <string name="pending_key_exchange_menu_condensed">Exchange</string>
+    
+    <string name="kitkat_dialog_title">Warning!</string>
+    <string name="kitkat_dialog_message">Tinfoil-SMS currently does not support Android KitKat 4.4 and will not be able to send any text messages. Continue anyways?</string>
+
+    <!-- Database Accessor strings -->
+    <string name="duplicate_key_exchange">has sent another key exchange message</string>
+    <string name="duplicate_key_exchange_warning_1">Warning: A message received has been identified as a different key exchange than the one previously received from</string>
+    <string name="duplicate_key_exchange_warning_2">This is a potential man-in-the-middle attack.</string>
+    <string name="user">Me</string>
+
+    <string-array name="phone_types">
+        <item>Home</item>
+        <item>Mobile</item>
+        <item>Work</item>
+        <item>Work Fax</item>
+        <item>Home Fax</item>
+        <item>Pager</item>
+        <item>Other</item>
+        <item>Custom</item>
+        <item>Callback</item>
+        <item>Car</item>
+        <item>Company Main</item>
+        <item>ISDN</item>
+        <item>Main</item>
+        <item>Other Fax</item>
+        <item>Telex</item>
+        <item>TTY TTD</item>
+        <item>Work Mobile</item>
+        <item>Work Pager</item>
+        <item>Assistant</item>
+        <item>MMS</item>
+    </string-array>
+
+    <!-- KeyExchangeManager Activity strings -->
+    <string name="key_exchange_manager">Key Exchange Manager</string>
+    <string name="empty_key_exchange_list">No Pending Key Exchanges</string>
+    <string name="key_exchange_error_title">Key Exchange Warning!</string>
+    <string name="key_exchange_error_message_1">The Key Exchange with</string>
+    <string name="key_exchange_error_message_2">was unsuccessful. This is a potential man-in-the-middle attack.\nPlease ensure your shared secrets are correct.</string>
+    <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
+    <string name="invalid_secrets">Invalid shared secrets, must be different and at least 8 characters!</string>
+    <string name="shared_secret_hint_1">Shared Secret 1</string>
+    <string name="shared_secret_hint_2">Shared Secret 2</string>
+    <string name="set_shared_secrets">Set the shared secret for</string>
+    <string name="set_shared_secrets_title">Key Exchange</string>
+
+    <!-- RemoveContactsActivity strings -->
+    <string name="select_all_menu_condensed">All</string>
+    <string name="remove_all_menu">Remove All</string>
+    <string name="remove_all_menu_condensed">Remove</string>
+
+    <!-- Settings strings -->
+    <string name="settings">Settings</string>
+
+    <!-- activity_key_exchange_manager strings -->
+    <string name="reject_button">Reject</string>
+    <string name="user_key_settings">User Key Settings</string>
+    <string name="exchange_button">Exchange</string>
+
+    <!-- AddContact strings -->
+    <string name="add_contact_activity">Edit Contact</string>
+    <string name="number">Number</string>
+    <string name="add_number">Add Number</string>
+    <string name="phone_type_title">Phone Type:</string>
+    <string name="insufficent_message">Insufficient information provided</string>
+    <string name="delete_contact_menu">Delete Contact</string>
+    <string name="delete_contact_menu_condensed">Delete</string>
+
+    <!-- ManageContactsActivity strings -->
+    <string name="exchange_keys">Exchange Keys</string>
+    <string name="manage_contacts">Manage Contacts</string>
+    <string name="untrust_button_name">Untrust</string>
+    <string name="empty_list_value">Empty List</string>
+    <string name="empty_loader_value">No Contacts</string>
+    <string name="empty_loader_trusted_value">No Trusted Contacts</string>
+    <string name="loading_dialog_header">Load Contacts</string>
+    <string name="loading_dialog_body">Loading Contacts&#8230;</string>
+
+    <!-- EditNumber strings -->
+    <string name="shared_secret_1">Secret Message</string>
+    <string name="shared_secret_2">Secret Message</string>
+    <string name="book_path_text">Book Path</string>
+    <string name="book_path">default</string>
+    <string name="book_inverse_text">Book Inverse Path</string>
+    <string name="book_inverse">default</string>
+    <string name="contact_public_key">Contact\'s Public Key</string>
+    <string name="public_key">Public Key</string>
+    <string name="key_exchange_settings">Key Exchange Settings</string>
+    <string name="auto_key_exchange">Automatically Exchange</string>
+    <string name="manual_key_exchange">Manual Exchange</string>
+    <string name="ignore_key_exchange">Ignore All Exchanges</string>
+    <string name="edit_number">Edit Number</string>
+    <string name="import_contact_key_menu">Import Contact Key</string>
+    <string name="import_contact_key_menu_condensed">Import Key</string>
+    <string name="delete_number_menu">Delete Number</string>
+    <string name="delete_number_menu_condensed">Delete</string>
+
+    <!-- Shared between EditNumber and -->
+    <string name="phone_text">Phone Number</string>
+
+    <!-- ImportContacts strings -->
+    <string name="import_contacts">Import Contacts</string>
+    <string name="searching_title">Searching</string>
+    <string name="searching_message">Locating Contacts&#8230;</string>
+    <string name="importing_title">Importing</string>
+    <string name="importing_message">Saving Contacts&#8230;</string>
+    <string name="empty_import_list">No Contacts to Import</string>
+    <string name="select_all_menu">Select All</string>
+    <string name="deselect_all_menu">Deselect All</string>
+
+    <!-- MessageView strings -->
+    <string name="message">Messages</string>
+    <string name="forward_title">Input Contact Number</string>
+    <string name="invalid_number_message">Invalid Number</string>
+    <string name="untrust_contact_menu_full">Untrust Contact</string>
+    <string name="untrust_contact_menu_short">Untrust</string>
+    <string name="resolve_key_exchange_full">Resolve Key Exchange</string>
+    <string name="resolve_key_exchange_short">Resolve</string>
+    <string name="exchange_key_full">Exchange Keys</string>
+    <string name="exchange_key_short">Exchange Keys</string>
+
+    <string-array name="sms_options">
+        <item>Delete Message</item>
+        <item>Copy Message</item>
+        <item>Forward Message</item>
+    </string-array>
+
+    <string name="key_exchange_dialog_message">Would you like to exchange keys with</string>
+    <string name="shared_secret">Shared secrets must be longer than</string>
+    <string name="export_number_title">Input Contact\'s Number</string>
+    <string name="key_exchange_import">Key Exchange Import</string>
+    <string name="key_exchange_respond">Would you like to export or send via SMS the key exchange for</string>
+    <string name="sms_option">SMS</string>
+    <string name="export_option">Export</string>
+    <string name="delete_thread_menu">Delete Thread</string>
+    <string name="exchange_keys_menu">Exchange Keys</string>
+    <string name="edit_contact_menu">Edit Contact</string>
+
+    <!-- Shared between MessageView and SendMessageActivity strings -->
+    <string name="send">Send</string>
+    <string name="send_hint">Send a message</string>
+
+    <!-- SendMessageActivity strings -->
+    <string name="to">To</string>
+    <string name="send_message">New message</string>
+    <string name="insufficent_information_provided">You have failed to provide sufficient information</string>
+
+    <!-- DeleteContacts strings -->
+    <string name="delete_contacts">Delete Contacts</string>
+
+    <!-- SMSUtility strings -->
+    <string name="encrypted_message_sent">Encrypted Message Sent</string>
+    <string name="message_sent">Message Sent</string>
+    <string name="failed_to_encrypt">FAILED TO ENCRYPT</string>
+    <string name="failed_to_sent">FAILED TO SEND</string>
+
+    <!-- Tabbed activity -->
+    <string name="contacts_tab">Contacts</string>
+    <string name="trusted_contact_tab">Trusted Contacts</string>
+    <string name="pending_key_exchange_tab">Pending Key Exchanges</string>
+
+    <!-- UserKeySettings strings -->
+    <string name="user_public_key">Your Public Key:</string>
+    <string name="export_public_key">Export Public Key</string>
+    <string name="import_contacts_title">Input Contact\'s Number</string>
+    <string name="written_path">Written to your SD card under</string>
+
+    <!-- Exchange Key -->
+    <string name="unsuccessful_key_exchanges">Not all numbers could be exchanged, they must have shared secrets</string>
+    <string name="key_exchange_cancelled">Key Exchange Cancelled</string>
+
+    <!-- KeyExchangeHandler strings -->
+    <string name="key_exchange_double_message">initiated a key exchange after you initiated one. This is a potential man-in-the-middle attack. Would you like to exchange keys anyways?</string>
+    <string name="key_exchange_double_title">Key Exchange Warning!</string>
+
+    <!-- Application crash reporting -->
+    <string name="pref_enable_bugsense">Enable Bugsense</string>
+    <string name="pref_bugsense_enabled">Disable Bug Reporting</string>
+    <string name="pref_bugsense_disabled">Enable Bug Reporting</string>
+    <string name="title_activity_tab_selection">Manage Contacts</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="title_activity_donations">Donate</string>
+
+    <!-- The Donation strings -->
+    <string name="donate">Donate</string>
+    <string name="donate_dialog_message">Would you like to donate to Tinfoil-SMS?</string>
+    <string name="flattr_option">Flattr</string>
+    <string name="paypal_option">PayPal</string>
+
+    <!-- Contact the developers strings -->
+    <string name="contact_title">Contact</string>
+    <string name="contact_summary">Contact the Developers</string>
+    <string-array name="dev_emails">
+       <item>tinfoil.sms@gmail.com</item>
+    </string-array>
+    <string name="email_subject">Tinfoil-SMS Feedback</string>
+    <string name="email_chooser">Email the developers&#8230;</string>
+    
+    <!-- Urls -->
+    <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
+    <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
+    <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
+    <string name="tinfoil_sms_website">http://tinfoilhat.github.io/tinfoil-sms</string>
+
+    <!-- Settings string keys -->
+    <string name="source_code_title">Get Tinfoil-SMS Source</string>
+    <string name="source_code_sub_title">Contribute to Tinfoil-SMS</string>
+    <string name="application_settings_options">Application Settings</string>
+    <string name="enable_tinfoil_sms_option_summary">Enable or disable SMS encryption</string>
+    <string name="enable_tinfoil_sms_option_title">Enable Tinfoil-SMS</string>
+    <string name="message_settings_option_title">Message Settings</string>
+    <string name="native_save_option_title">Native Save</string>
+    <string name="native_save_option_summary">Save messages to the native SMS app</string>
+    <string name="message_limit_option_title">Message Limit</string>
+    <string name="maximum_number_of_messages_saved">Maximum number of messages saved for contacts</string>
+    <string name="contact_settings_option_title">Contact Settings</string>
+    <string name="import_contacts_option_title">Import Contacts</string>
+    <string name="import_contacts_option_summary">Import Trusted Contacts from phone</string>
+    <string name="manage_contacts_option_title">Remove Contacts</string>
+    <string name="encryption_option_title">Encryption Settings</string>
+    <string name="encryption_message_option_title">Encrypted Messages</string>
+    <string name="encrypted_message_option_summary">Display the original encrypted message</string>
+    <string name="public_key_option_title">My Public Key</string>
+    <string name="public_key_option_summary">Manage your public key</string>
+    <string name="notifications_option_title">Notification Settings</string>
+    <string name="enable_notification_option_title">Enable Notifications</string>
+    <string name="vibrate_option_title">Vibrate</string>
+    <string name="vibrate_length_option_title">Vibrate Length</string>
+    <string name="vibrate_length_option_summary">Select the length of vibration notifications</string>
+    <string name="feedback_options">Feedback</string>
+    <string name="donate_option_title">Donate</string>
+    <string name="donate_option_summary">Support the Developers</string>
+    <string name="ringtone_settings_title">Enable Ringtone</string>
+    <string name="message_order_title">Message Order</string>
+    <string name="message_order_summary">Show latest message at the top</string>
+    <string name="walkthrough_title">Enable Walkthrough</string>
+    <string name="walkthrough_summary">Show Walkthrough</string>
+
+    <!-- Notification strings -->
+    <string name="new_message_notification_title">New Messages</string>
+    <string name="unread_email_message">Unread Messages</string>
+    <string name="pending_key_exchange_notification">Pending Key Exchanges</string>
+    <string name="pending_key_exchange_message">Click here to resolve</string>
+
+    <!-- New Key Exchange strings -->
+    <string name="key_exchange_sent">Key Exchange Sent</string>
+    <string name="new_key_exchange">Key Exchange</string>
+    <string name="new_key_exchange_menu">New Key Exchange</string>
+
+    <!-- Introductory Tutorial strings -->
+    <!-- Intro -->
+    <string name="tut_intro_title">Welcome to Tinfoil-SMS!</string>
+    <string name="tut_intro_body">This guide will walk you through the basics and make you familiar with Tinfoil-SMS and its features.\nIf you like you can always restart this guide anytime by enabling it in the settings. So let\'s get started!</string>
+    <!-- Start importing contacts -->
+    <string name="tut_startimport_title">Importing Contacts</string>
+    <string name="tut_startimport_body">In order to use Tinfoil-SMS to text securely you must begin by adding or importing contacts.</string>
+    <!-- Importing existing contacts -->
+    <string name="tut_import_title">Import Contacts from your Phone</string>
+    <string name="tut_import_boby">Select contacts from your phone to import, all previous conversations will be imported and your future conversations will be handled by the app.\nNOTE: By default communication with contacts are NOT secure until a successful key exchange has been executed!</string>
+    <!-- Start a key exchange -->
+    <string name="tut_startexchange_title">Great! You\'re Almost Communicating Securely</string>
+    <string name="tut_startexchange_body">Now you\'ll need to set up a key exchange with the contact to enable encryption. Don\'t worry, it\'s very quick and easy.\nTo start a key exchange you\'ll need three things: you both must have Tinfoil-SMS installed, import each other within the app, and agree on two shared secrets.</string>
+    <!--  Set shared secret -->
+    <string name="tut_setsecret_title">Shared Secrets are Important!</string>
+    <string name="tut_setsecret_body">The shared secrets must be only known by you and the contact and are used to verify your identities when exchanging keys! They must be different and at least 8 characters long.\nThe best shared secrets are difficult but easy to remember, such as \"what lies in the\" and \"shadow of the statue\".</string>
+    <!-- Key exchange sent -->
+    <string name="tut_keysent_title">Key Exchange Sent!</string>
+    <string name="tut_keysent_body">Your key exchange has been sent, your contact should receive a notification to initiate a key exchange. If all goes well you should receive a key back from them! You can view pending key exchanges any time from the menu.</string>
+    <!-- Pending key exchanges -->
+    <string name="tut_pending_title">Pending Key Exchanges</string>
+    <string name="tut_pending_body">This shows any key exchanges you have received, a key exchange is not successful when the shared secrets are incorrect!\nIf you are not expecting a key exchange, or do not know the shared secret, you should reject the key exchange! Communicate with the contact in person and agree on the shared secrets, then redo the key exchange.</string>
+    <!-- Accepting a key exchange -->
+    <string name="tut_accept_title">Enter the Shared Secrets Carefully!</string>
+    <string name="tut_accept_body">Ensure that you and the other contact have agreed on the two shared secrets, enter them in carefully, the shared secrets are case sensitive and must be entered in the correct order!</string>
+    <!-- Successful key exchange -->
+    <string name="tut_success_title">Congratulations! You\'re Now Texting this Contact Securely!</string>
+    <string name="tut_success_body">The key exchange succeeded, you\'ll notice that the contact is now a trusted contact and will have a locked icon beside their name in the list of contacts.\nIf you view the messages sent with the now trusted contact, you\'ll notice that any new messages will also have a locked icon, indicating that the messages have been transmitted securely using encryption.</string>
+    <!-- Closing -->
+    <string name="tut_close_title">That\'s it!</string>
+    <string name="tut_close_body">Thanks for following the tutorial, you can add more contacts any time by going to the settings and importing them. If you need more information be sure to see our website http://tinfoilhat.github.io/tinfoil-sms for a video tutorial and documentation. If you have any feedback please contact us, you can do so from the settings.\nYou can restart the tutorial at anytime by enabling it in the settings.</string>
+</resources>
