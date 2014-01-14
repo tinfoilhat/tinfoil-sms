@@ -580,6 +580,7 @@ public class SendMessageActivity extends Activity {
             // Show the tutorial for setting shared secrets
             if (! Walkthrough.hasShown(Step.SET_SECRET, this))
             {
+            	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 Walkthrough.showWithListener(Step.SET_SECRET, SendMessageActivity.this, 
                         new OnShowcaseEventListener() {
                             public void onShowcaseViewHide(ShowcaseView showcaseView) {

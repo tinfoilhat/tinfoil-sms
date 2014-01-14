@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -48,6 +49,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -270,11 +272,7 @@ public class ConversationView extends Activity {
         super.onResume();       
         
         // Display the key exchange instructions if step 1&2 of tutorial already shown
-        if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
-                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
-        {   
-            Walkthrough.show(Step.START_EXCHANGE, this);
-        }
+        displayKeyHelp();
 
         // Don't show the introduction before the EULA
         PackageInfo versionInfo = getPackageInfo();
@@ -292,6 +290,25 @@ public class ConversationView extends Activity {
         {
             Walkthrough.show(Step.SUCCESS, this);
             Walkthrough.show(Step.CLOSE, this);
+        }
+    }
+    
+    @TargetApi(android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void displayKeyHelp()
+    {
+    	//TODO make tutorial show for non-overflow menu phones
+    	if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
+                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {
+    		// Check if greater than v 10 or v 14 without p	ermanent menu key
+    		// Versions 11 through 13 cannot have a permanent menu key
+        	if((Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.GINGERBREAD_MR1
+        			&& Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
+        			|| (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH &&    
+                    !ViewConfiguration.get(this).hasPermanentMenuKey()))
+        	{
+        		Walkthrough.show(Step.START_EXCHANGE, this);
+        	}
         }
     }
 
