@@ -1,11 +1,13 @@
 package com.tinfoil.sms.utility;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.ViewConfiguration;
 
 import com.espian.showcaseview.OnShowcaseEventListener;
 import com.espian.showcaseview.ShowcaseView;
@@ -39,6 +41,7 @@ public abstract class Walkthrough
      * Displays the step in the walkthrough specified
      * @param step The current step to display
      */
+    @TargetApi(android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void show(Step step, Activity activity)
     {
         ShowcaseViews mViews;
@@ -78,7 +81,12 @@ public abstract class Walkthrough
             
         case START_EXCHANGE:
             // Display the start new key exchange instructions
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+        	// Check if greater than v 10 or v 14 without permanent menu key
+    		// Versions 11 through 13 cannot have a permanent menu key
+            if ((Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.GINGERBREAD_MR1
+        			&& Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
+        			|| (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH &&    
+                   !ViewConfiguration.get(activity).hasPermanentMenuKey()))
             {
                 target = new ActionViewTarget(activity, ActionViewTarget.Type.OVERFLOW);
                 sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_startexchange_title, 
