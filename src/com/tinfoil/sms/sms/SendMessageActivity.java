@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
@@ -193,6 +194,8 @@ public class SendMessageActivity extends Activity {
 		this.setTitle(R.string.message);
 		currentActivity = ConversationView.MESSAGE_VIEW;
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
 		setupMessageInterface();
         
