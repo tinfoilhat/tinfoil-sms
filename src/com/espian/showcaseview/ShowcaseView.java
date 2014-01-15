@@ -396,10 +396,10 @@ public class ShowcaseView extends RelativeLayout
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB && !mHasNoTarget) {
         	Path path = new Path();
             
-        	// TODO Add an actual fix for this
-        	// Don't draw circle for older android, since can't adjust its size!
-        	//path.addCircle(showcaseX, showcaseY, showcaseRadius, Path.Direction.CW);
-            
+        	if (scaleMultiplier > 0f)
+        	{
+        	    path.addCircle(showcaseX, showcaseY, showcaseRadius, Path.Direction.CW);
+            }
         	canvas.clipPath(path, Op.DIFFERENCE);
         }
 
@@ -865,6 +865,7 @@ public class ShowcaseView extends RelativeLayout
 
         public boolean block = true, noButton = false;
         public boolean hideOnClickOutside = false;
+        public float scale = 1f;
 
         /**
          * Does not work with the {@link ShowcaseViews} class as it does not make sense (only with

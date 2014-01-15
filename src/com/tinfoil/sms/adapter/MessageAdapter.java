@@ -151,12 +151,38 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         	holder.indicator.setImageResource(R.drawable.not_encrypted);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
-        else if (sentValue >= Message.SENT_KEY_EXCHANGE_INIT)
+        // Key exchange sent
+        else if (sentValue == Message.SENT_KEY_EXCHANGE_INIT || 
+                sentValue == Message.SENT_KEY_EXCHANGE_RESP)
         {
+            holder.c_message.setText(R.string.key_exchange_sent);
+            setKeyExchangeTypeface(holder.c_message);
+            
         	holder.indicator.setImageResource(R.drawable.key_exchange);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
         }
+		// Key exchange received
+        else if (sentValue >= Message.RECEIVED_KEY_EXCHANGE_INIT)
+        {
+            holder.c_message.setText(R.string.key_exchange_received);
+            setKeyExchangeTypeface(holder.c_message);
+            
+            holder.indicator.setImageResource(R.drawable.key_exchange);
+            holder.indicator.setVisibility(ImageView.VISIBLE);
+        }
 
         return row;
+    }
+    
+    private void setKeyExchangeTypeface(TextView tv)
+    {
+        if ((tv.getTypeface() != null) && tv.getTypeface().isBold())
+        {
+            tv.setTypeface(null, Typeface.BOLD_ITALIC);
+        }
+        else
+        {
+            tv.setTypeface(null, Typeface.ITALIC);
+        }
     }
 }
