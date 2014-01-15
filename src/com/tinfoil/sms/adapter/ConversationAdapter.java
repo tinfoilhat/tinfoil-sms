@@ -30,7 +30,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.utility.SMSUtility;
 
 public class ConversationAdapter extends ArrayAdapter<String[]>{
 
@@ -119,6 +121,21 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         
         holder.c_message.setText(contact[2]);
         
+        int sentValue = Integer.valueOf(contact[4]);
+        
+        if (sentValue == Message.SENT_KEY_EXCHANGE_INIT || 
+                sentValue == Message.SENT_KEY_EXCHANGE_RESP)
+        {
+            holder.c_message.setText(R.string.key_exchange_sent);
+            SMSUtility.setKeyExchangeTypeface(holder.c_message);
+        }
+		// Key exchange received
+        else if (sentValue >= Message.RECEIVED_KEY_EXCHANGE_INIT)
+        {
+            holder.c_message.setText(R.string.key_exchange_received);
+            SMSUtility.setKeyExchangeTypeface(holder.c_message);
+        }
+
         return row;
     }
 }
