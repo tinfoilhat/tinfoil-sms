@@ -395,8 +395,12 @@ public class ShowcaseView extends RelativeLayout
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB && !mHasNoTarget) {
         	Path path = new Path();
-            path.addCircle(showcaseX, showcaseY, showcaseRadius, Path.Direction.CW);
-            canvas.clipPath(path, Op.DIFFERENCE);
+            
+        	// TODO Add an actual fix for this
+        	// Don't draw circle for older android, since can't adjust its size!
+        	//path.addCircle(showcaseX, showcaseY, showcaseRadius, Path.Direction.CW);
+            
+        	canvas.clipPath(path, Op.DIFFERENCE);
         }
 
         //Draw background color
