@@ -449,39 +449,6 @@ public class ConversationView extends Activity {
 	    	final String myPackageName = getPackageName();
 	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
 	        	
-	        	//TODO move strings to strings.xml
-	        	/*AlertDialog.Builder builder = new AlertDialog.Builder(this)
-		        .setTitle("Change SMS app?")
-		        .setCancelable(true)
-		        .setMessage("Use Tinfoil-SMS instead your currently selected SMS app?")
-		        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
-		
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
-	                            myPackageName);
-	                    startActivity(intent);
-					}
-		        })
-		        .setOnCancelListener(new OnCancelListener(){
-	
-					@Override
-					public void onCancel(DialogInterface arg0) {
-						// Close the activity since they refuse to set to default
-		                ConversationView.this.finish();
-					}	        	
-		        })
-		        .setNegativeButton(android.R.string.no, new Dialog.OnClickListener() {
-		
-		            @Override
-		            public void onClick(DialogInterface dialog, int which) {
-		                // Close the activity since they refuse to set to default
-		                ConversationView.this.finish();
-		            }
-		        });
-		    	builder.create().show();
-		    	*/
 	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle(R.string.kitkat_dialog_title)
 		        .setCancelable(true)

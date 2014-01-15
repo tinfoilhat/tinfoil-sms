@@ -737,8 +737,10 @@ public class DBAccessor {
 				{
 					name = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME));
 				}
+				//Locale a = ;
 				String message = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_MESSAGE));
-				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_DATE)));
+				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_DATE)), 
+						context.getResources().getConfiguration().locale);
 				String id = String.valueOf(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)));
 				String sent = String.valueOf(sentFlag);
 				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));

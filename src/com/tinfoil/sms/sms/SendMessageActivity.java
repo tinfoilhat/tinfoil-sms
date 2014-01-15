@@ -601,11 +601,6 @@ public class SendMessageActivity extends Activity {
             {
                 SMSUtility.handleKeyExchange(keyThread, dba, this, temp[0]);
             }	
-
-			//TODO Give user feedback.
-			//Toast.makeText(this, R.string.key_exchange_sent, Toast.LENGTH_SHORT).show();
-			
-			//finish();
 		}
 		else
 		{

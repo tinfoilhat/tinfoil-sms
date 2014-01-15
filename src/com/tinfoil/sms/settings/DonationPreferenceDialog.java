@@ -18,7 +18,6 @@ public class DonationPreferenceDialog extends DialogPreference{
 		super(context, attrs);
 		
 		this.context = context;
-		// TODO Auto-generated constructor stub
 		//this.onBindDialogView(view)
 	}
 
