@@ -49,7 +49,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -399,7 +398,10 @@ public class ConversationView extends Activity {
 	                editor.commit();
 	                
 	                // Display the walkthrough tutorial introduction
-	                displayIntro();
+	                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	                {
+	                    displayIntro();
+	                }
 	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
 	                checkDefault();
@@ -430,10 +432,10 @@ public class ConversationView extends Activity {
     	}
     }
 
-    @TargetApi(android.os.Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES.KITKAT)
 	public void checkDefault()
     {
-    	if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
     	{
 	    	final String myPackageName = getPackageName();
 	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
