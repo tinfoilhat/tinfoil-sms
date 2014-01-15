@@ -359,6 +359,15 @@ public class ConversationView extends Activity {
         return pi;
     }
     
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
+    private void setTextColor(TextView text)
+    {
+    	if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
+    	{
+    		text.setTextColor(this.getResources().getColor(R.color.White));
+    	}
+    }
+    
     public void getEULA()
     {
     	PackageInfo versionInfo = getPackageInfo();
@@ -379,7 +388,7 @@ public class ConversationView extends Activity {
     		textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
 
     		textBox.setMovementMethod(LinkMovementMethod.getInstance());
-    		//textBox.setTextColor(this.getResources().getColor(R.color.White));
+    		setTextColor(textBox);
     		textBox.setTextSize(18);
     		textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
     		
