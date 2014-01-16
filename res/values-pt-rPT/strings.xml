@@ -100,16 +100,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="delete_contact_menu">Apagar Contacto</string>
     <string name="delete_contact_menu_condensed">Apagar</string>
 
-    <!-- ManageContactsActivity strings -->
-    <string name="exchange_keys">Troca de Chaves</string>
-    <string name="manage_contacts">Gestor Contactos</string>
-    <string name="untrust_button_name">Não Confiável</string>
-    <string name="empty_list_value">Lista Vazia</string>
     <string name="empty_loader_value">Sem Contactos</string>
-    <string name="empty_loader_trusted_value">Sem Contactos Confiáveis</string>
-    <!-- TODO Translate -->
-    <string name="loading_dialog_header">Load Contacts</string>
-    <string name="loading_dialog_body">Loading Contacts&#8230;</string>
 
     <!-- EditNumber strings -->
     <string name="shared_secret_1">Mensagem Secreta</string>
