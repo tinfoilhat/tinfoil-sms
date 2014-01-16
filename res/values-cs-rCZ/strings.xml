@@ -182,11 +182,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="failed_to_encrypt">NEPODAŘILO SE ZAŠIFROVAT</string>
     <string name="failed_to_sent">NEPODAŘILO SE ODESLAT</string>
 
-    <!-- Tabbed activity -->
-    <string name="contacts_tab">Kontakty</string>
-    <string name="trusted_contact_tab">Důvěryhodné kontakty</string>
-    <string name="pending_key_exchange_tab">Nevyřízené výměny klíčů</string>
-
     <!-- UserKeySettings strings -->
     <string name="user_public_key">Váš veřejný klíč:</string>
     <string name="export_public_key">Exportovat Veřejný Klíč</string>

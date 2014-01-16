@@ -181,11 +181,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="message_sent">Mensagem Enviada</string>
     <string name="failed_to_encrypt">FALHOU NA CIFRA</string>
     <string name="failed_to_sent">FALHOU O ENVIO</string>
-    
-    <!-- Tabbed activity -->
-    <string name="contacts_tab">Contactos</string>
-    <string name="trusted_contact_tab">Contactos de Confiança</string>
-    <string name="pending_key_exchange_tab">Em Espera pela Troca de Chaves</string>
 
     <!-- UserKeySettings strings -->
     <string name="user_public_key">Chave Publica:</string>

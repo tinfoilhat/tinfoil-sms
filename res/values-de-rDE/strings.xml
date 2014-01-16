@@ -176,11 +176,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="failed_to_encrypt">FAILED TO ENCRYPT</string>
     <string name="failed_to_sent">FAILED TO SEND</string>
 
-    <!-- Tabbed activity -->
-    <string name="contacts_tab">Contacts</string>
-    <string name="trusted_contact_tab">Trusted Contacts</string>
-    <string name="pending_key_exchange_tab">Pending Key Exchanges</string>
-
     <!-- UserKeySettings strings -->
     <string name="user_public_key">Your Public Key:</string>
     <string name="export_public_key">Export Public Key</string>
