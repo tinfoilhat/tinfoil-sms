@@ -31,7 +31,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="kitkat_dialog_message">Tinfoil-SMS currently does not support Android KitKat 4.4 and will not be able to send any text messages. Continue anyways?</string>
     <!-- BETA notice with info on how to contribute -->
     <string name="beta_notice_title">BETA Notice</string>
-    <string name="beta_notice_message">This is a BETA release, your feedback and support is greatly appreciated! We are looking for people to help with translations and testing, if you are interested visit http://tinfoilhat.github.io/tinfoil-sms or contact us at tinfoil.sms@gmail.com.\nYou can also contact us anytime from the feedback section of the application settings.</string>
+    <string name="beta_notice_message">This is a BETA release, your feedback and support is greatly appreciated! We are looking for people to help with translations and testing, if you\'re interested visit http://tinfoilhat.github.io/tinfoil-sms or contact us at tinfoil.sms@gmail.com.\nYou can also contact us anytime from the feedback section of the application settings.</string>
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">has sent another key exchange message</string>
     <string name="duplicate_key_exchange_warning_1">Warning: A message received has been identified as a different key exchange than the one previously received from</string>

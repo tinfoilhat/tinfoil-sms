@@ -280,7 +280,8 @@ public class ConversationView extends Activity {
         // Don't show the introduction before the EULA
         PackageInfo versionInfo = getPackageInfo();
         final String eulaKey = "eula_" + versionInfo.versionCode;
-        if (sharedPrefs.getBoolean(eulaKey, false))
+        final String betaKey = "beta_notice_" + versionInfo.versionCode;
+        if (sharedPrefs.getBoolean(eulaKey, false) && sharedPrefs.getBoolean(betaKey, false))
         {
             // Display the walkthrough tutorial introduction
             displayIntro();
@@ -406,10 +407,10 @@ public class ConversationView extends Activity {
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
 	                
-	                // Display the walkthrough tutorial introduction
+	                // Display the beta Notice dialog
 	                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
 	                {
-	                    displayIntro();
+	                    betaNotice();
 	                }
 	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
@@ -461,6 +462,8 @@ public class ConversationView extends Activity {
 	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
 	                            myPackageName);
 	                    startActivity(intent);
+	                    // Display the beta Notice dialog
+	                    betaNotice();
 					}
 		        })
 		        .setOnCancelListener(new OnCancelListener(){
@@ -487,6 +490,9 @@ public class ConversationView extends Activity {
 						Intent i = new Intent(Intent.ACTION_VIEW);
 						i.setData(Uri.parse(url));
 						ConversationView.this.startActivity(i);
+						
+	                    // Display the beta Notice dialog
+                        betaNotice();
 					}
 		        	
 		        });
@@ -495,6 +501,64 @@ public class ConversationView extends Activity {
     	}
     }
 
+    /**
+     * Display a BETA notice with information about how they can provide feedback, 
+     * translations, and other support to help improve the app.
+     */
+    public void betaNotice()
+    {
+        PackageInfo versionInfo = getPackageInfo();
+        final String betaKey = "beta_notice_" + versionInfo.versionCode;
+        boolean hasBeenShown = sharedPrefs.getBoolean(betaKey, false);
+
+        if (hasBeenShown == false)
+        {
+            final TextView textBox = new TextView(this);    
+            String betaMessage = this.getString(R.string.beta_notice_message);
+            final SpannableString message = new SpannableString(betaMessage);
+            Linkify.addLinks(message, Linkify.ALL);
+            
+            textBox.setText(message);
+            
+            int horDimen = Math.round(this.getResources().getDimension(R.dimen.activity_horizontal_margin));
+            int verDimen = Math.round(this.getResources().getDimension(R.dimen.activity_vertical_margin));
+            textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
+    
+            textBox.setMovementMethod(LinkMovementMethod.getInstance());
+            setTextColor(textBox);
+            textBox.setTextSize(18);
+            textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+    
+            String title = this.getString(R.string.beta_notice_title);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setCancelable(true)
+            .setView(textBox)
+            .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+    
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean(betaKey, true);
+                    editor.commit();
+                    // Display the walkthrough tutorial introduction
+                    displayIntro();
+                }
+            })
+            .setOnCancelListener(new OnCancelListener(){
+                @Override
+                public void onCancel(DialogInterface arg0) {
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean(betaKey, true);
+                    editor.commit();
+                    // Display the walkthrough tutorial introduction
+                    displayIntro();
+                }               
+            });
+            builder.create().show();
+        }
+    }
+    
     /**
      * Displays the introduction to the walkthrough tutorial after accepting the EULA.
      */
