@@ -25,12 +25,18 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.NavUtils;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -46,7 +52,6 @@ import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 public class UserKeySettings extends Activity {
@@ -58,18 +63,23 @@ public class UserKeySettings extends Activity {
 	public static final String path = "/keys";
 	public static final String file = "exchange.txt";
 	
+	private DBAccessor dba;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_key_settings);
 		
+		setupActionBar();
+		
+		dba = new DBAccessor(this);
 		TextView keyView = (TextView)findViewById(R.id.public_key);
 		
 		// Check if the user is null
 		if(SMSUtility.user == null)
 		{
-			SMSUtility.user = MessageService.dba.getUserRow();
+			SMSUtility.user = dba.getUserRow();
 		}
 		
 		//Check if the user is still null (never set in db)	
@@ -81,7 +91,7 @@ public class UserKeySettings extends Activity {
 	        SMSUtility.user = new User(keyGen.generatePubKey(), keyGen.generatePriKey());
 	        
 	        //Set the user's 
-	        MessageService.dba.setUser(SMSUtility.user);
+	        dba.setUser(SMSUtility.user);
 		}
 		
 		keyView.setText(new String(SMSUtility.user.getPublicKey()));
@@ -103,7 +113,7 @@ public class UserKeySettings extends Activity {
             if (tc == null)
             {
             	//Do in thread.
-                tc = MessageService.dba.getAllRows(DBAccessor.ALL);
+                tc = dba.getAllRows(DBAccessor.ALL);
             }
 
             if (tc != null)
@@ -125,7 +135,7 @@ public class UserKeySettings extends Activity {
 			popup_builder.setTitle(R.string.import_contacts_title)
 				.setCancelable(true)
                 .setView(phoneBook)
-                .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                 	public void onClick(final DialogInterface dialog, final int which) { 
                 		
@@ -141,7 +151,7 @@ public class UserKeySettings extends Activity {
                 				contactInfo[0] = contactInfo[1];
                 			}
                 			
-                			final Number number = MessageService.dba.getNumber(contactInfo[1]);
+                			final Number number = dba.getNumber(contactInfo[1]);
                 			
                 			if(number != null)
                 			{                			
@@ -177,14 +187,14 @@ public class UserKeySettings extends Activity {
 	                		    		   {
 	                		    			   number.setSharedInfo1(s1);
 	                		    			   number.setSharedInfo2(s2);
-	                		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+	                		    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
 	
 	                		    			   number.setInitiator(true);
-	                		    			   MessageService.dba.updateInitiator(number);
+	                		    			   dba.updateInitiator(number);
 		       		                			
 	                		    			   //TODO add check for shared secrets
 	                		    			   String keyExchangeMessage = KeyExchange.sign(number,
-	                		    					   MessageService.dba, SMSUtility.user);
+	                		    					   dba, SMSUtility.user);
 		       		
 	                		    			   writeToFile(number.getNumber(), keyExchangeMessage);
 		       			            			
@@ -256,6 +266,43 @@ public class UserKeySettings extends Activity {
 		catch (IOException e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.remove_contacts_menu, menu);
+        return true;
+    }
+	
+	 @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+	        case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+	        default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+	 
+	 /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
 }

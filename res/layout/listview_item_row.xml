@@ -27,6 +27,8 @@
         android:textStyle="bold"/>
     
      <TextView android:id="@+id/c_message"
+        android:autoLink="all"
+        android:linksClickable="false"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/c_name"

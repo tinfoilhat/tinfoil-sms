@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.utility.SMSUtility;
 
 public class MessageAdapter extends ArrayAdapter<String[]> {
 
@@ -150,6 +151,24 @@ public class MessageAdapter extends ArrayAdapter<String[]> {
         {
         	holder.indicator.setImageResource(R.drawable.not_encrypted);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
+        }
+        // Key exchange sent
+        else if (sentValue == Message.SENT_KEY_EXCHANGE_INIT || 
+                sentValue == Message.SENT_KEY_EXCHANGE_RESP)
+        {
+            holder.c_message.setText(R.string.key_exchange_sent);
+            SMSUtility.setKeyExchangeTypeface(holder.c_message);
+            
+        	holder.indicator.setImageResource(R.drawable.key_exchange);
+        	holder.indicator.setVisibility(ImageView.VISIBLE);
+        }
+		// Key exchange received
+        else if (sentValue >= Message.RECEIVED_KEY_EXCHANGE_INIT)
+        {
+            holder.c_message.setText(R.string.key_exchange_received);
+            SMSUtility.setKeyExchangeTypeface(holder.c_message);            
+            holder.indicator.setImageResource(R.drawable.key_exchange);
+            holder.indicator.setVisibility(ImageView.VISIBLE);
         }
 
         return row;

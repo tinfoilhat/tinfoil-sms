@@ -11,6 +11,13 @@
             android:title="@string/enable_tinfoil_sms_option_title" 
             android:defaultValue="true"
             android:persistent="true" />
+        
+        <CheckBoxPreference 
+            android:key="enable_walkthrough"
+            android:summary="@string/walkthrough_title"
+            android:title="@string/walkthrough_summary" 
+            android:defaultValue="true"
+            android:persistent="true" />
                    
     </PreferenceCategory>
     
@@ -60,7 +67,7 @@
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:targetPackage="com.tinfoil.sms"
-				android:targetClass="com.tinfoil.sms.settings.TabSelection" />
+				android:targetClass="com.tinfoil.sms.settings.RemoveContactsActivity" />
     	</PreferenceScreen>
 	</PreferenceCategory>
 	
@@ -133,24 +140,24 @@
     <PreferenceCategory 
         android:title="@string/feedback_options"
         android:key="feedback_category">
-        
+
+                  <Preference
+	        android:title="@string/contact_title"
+	        android:summary="@string/contact_summary"
+	        android:key="contact">
+          </Preference>
+          
           <PreferenceScreen
            	android:title="@string/source_code_title"
             android:key="source_code"
             android:summary="@string/source_code_sub_title">	
           </PreferenceScreen>
           
-          
-          <PreferenceScreen 
-            android:title="@string/donate_option_title"
-            android:key="donate"
-            android:summary="@string/donate_option_summary">
-			
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:targetPackage="com.tinfoil.sms"
-				android:targetClass="com.tinfoil.sms.settings.DonationsActivity" />	
-        </PreferenceScreen>
+          <com.tinfoil.sms.settings.DonationPreferenceDialog
+              android:key="donate"
+              android:title="@string/donate_option_title"
+              android:summary="@string/donate_option_summary">
+          </com.tinfoil.sms.settings.DonationPreferenceDialog>
             
 	</PreferenceCategory>
     

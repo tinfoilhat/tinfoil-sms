@@ -21,14 +21,13 @@ import java.nio.ByteOrder;
 import java.security.Security;
 import java.util.HashMap;
 
-import org.spongycastle.crypto.CipherParameters;
-import org.spongycastle.crypto.InvalidCipherTextException;
-import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.engines.ISAACEngine;
-import org.spongycastle.crypto.params.ECPrivateKeyParameters;
-import org.spongycastle.crypto.params.ECPublicKeyParameters;
-import org.spongycastle.crypto.params.Nonce;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.crypto.InvalidCipherTextException;
+import org.strippedcastle.crypto.digests.SHA256Digest;
+import org.strippedcastle.crypto.engines.ISAACEngine;
+import org.strippedcastle.crypto.params.ECPrivateKeyParameters;
+import org.strippedcastle.crypto.params.ECPublicKeyParameters;
+import org.strippedcastle.crypto.prng.RandomGenerator;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.util.Base64;
 import android.util.Log;
@@ -36,12 +35,13 @@ import android.util.Log;
 import com.orwell.crypto.APrioriInfo;
 import com.orwell.crypto.ECEngine;
 import com.orwell.crypto.ECGKeyUtil;
-import com.orwell.crypto.ECKeyParam;
 import com.orwell.csprng.ISAACRandomGenerator;
 import com.orwell.csprng.SDFGenerator;
-import com.orwell.csprng.SDFParameters;
+import com.orwell.params.ECKeyParam;
+import com.orwell.params.Nonce;
+import com.orwell.params.SDFParameters;
 import com.tinfoil.sms.dataStructures.Number;
-import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.dataStructures.User;
 
 /**
  * A class which operates as a facade to greatly simplify the underlying
@@ -52,6 +52,8 @@ public class Encryption
 {
     private HashMap<Long, ECEngine> encryptMap;
     private HashMap<Long, ECEngine> decryptMap;
+    
+    private User user;
     
     /* Size of the message counter in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
     private static final int COUNT_SIZE = 2;
@@ -64,10 +66,11 @@ public class Encryption
     /**
      * The basic constructor, initializes the encrypt/decrypt hash maps.
      */
-    public Encryption()
+    public Encryption(User user)
     {
         this.encryptMap = new HashMap<Long, ECEngine>();
         this.decryptMap = new HashMap<Long, ECEngine>();
+        this.user = user;
     }
     
     
@@ -99,11 +102,13 @@ public class Encryption
         encMessage = encryptMap.get(number.getId()).processBlock(message.getBytes());
         finalMessage = addCounter(encMessage, number.getNonceEncrypt());
         
+        /* Log data for debugging, in the event of a crash */
         Log.v("Nonce counter:", Integer.toString(number.getNonceEncrypt()));
         
         /* Increment and save the counter used by the nonce for encryption */
         number.setNonceEncrypt(number.getNonceEncrypt() + 1);
        
+        /* Log data for debugging, in the event of a crash */
         Log.v("Encrypted Message", Base64.encodeToString(finalMessage, Base64.DEFAULT));
         
         return Base64.encodeToString(finalMessage, Base64.DEFAULT);
@@ -205,7 +210,7 @@ public class Encryption
         Log.v("SharedInfo 2", sharedInfo2);
         
         /* Setup apriori info, generator, and nonce used by the block cipher to generate IVs */
-        CipherParameters nonce;
+        RandomGenerator nonce;
         ISAACRandomGenerator CSPRNG = new ISAACRandomGenerator(new ISAACEngine());
         if (mode)
         {
@@ -213,7 +218,9 @@ public class Encryption
             sharedInfo = new APrioriInfo(sharedInfo1, sharedInfo2);
             generator.init(new SDFParameters(sharedInfo1, sharedInfo2));
             nonce = new Nonce(CSPRNG, number.getNonceEncrypt());
-            Log.v("Nonce encrypt", String.valueOf(number.getNonceEncrypt()));
+            
+            /* Log data for debugging, in the event of a crash */
+            Log.v("Nonce Encrypt", String.valueOf(number.getNonceEncrypt()));
         }
         else
         {
@@ -221,7 +228,9 @@ public class Encryption
             sharedInfo = new APrioriInfo(sharedInfo2, sharedInfo1);
             generator.init(new SDFParameters(sharedInfo2, sharedInfo1));
             nonce = new Nonce(CSPRNG, number.getNonceDecrypt());
-            Log.v("Nonce decrypt", String.valueOf(number.getNonceDecrypt()));
+            
+            /* Log data for debugging, in the event of a crash */
+            Log.v("Nonce Decrypt", String.valueOf(number.getNonceDecrypt()));
         }
         
         /* Generate the seed, initialize the nonce */
@@ -232,12 +241,14 @@ public class Encryption
         
         /* Initialize the keypair using the current user's private key and the number's public key */
         ECKeyParam param = new ECKeyParam();
-        ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, SMSUtility.user.getPrivateKey());
-        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, number.getPublicKey());
         
-        Log.v("My private key", new String(SMSUtility.user.getPrivateKey()));
+        /* Log keys for debugging, in the event of a crash */
+        Log.v("My private key", new String(user.getPrivateKey()));
         Log.v("Number's public key", new String(number.getPublicKey()));
         
+        ECPrivateKeyParameters priKey = ECGKeyUtil.decodeBase64PriKey(param, user.getPrivateKey());
+        ECPublicKeyParameters pubKey = ECGKeyUtil.decodeBase64PubKey(param, number.getPublicKey());       
+       
         /* Finally initialize the encryption engine */
         ECEngine engine = new ECEngine(nonce, sharedInfo);
         engine.init(mode,priKey,pubKey);

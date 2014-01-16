@@ -25,12 +25,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.Loader;
 
 public class MessageLoader extends Loader{
 	
     private boolean update;
     private Handler handler;
+    private String number;
     
     /**
      * Create the object and start the thread 
@@ -39,11 +41,12 @@ public class MessageLoader extends Loader{
      * @param handler The Handler that takes care of UI setup after the thread
      * has finished
      */
-    public MessageLoader(Context context, boolean update, Handler handler)
+    public MessageLoader(String number, Context context, boolean update, Handler handler)
     {
     	super(context);
     	this.update = update;
     	this.handler = handler;
+    	this.number = number;
     	start();
     }
 
@@ -51,37 +54,47 @@ public class MessageLoader extends Loader{
 	public void execution() {
     	
 		if(!update)
-		{				
-	        final boolean isTrusted = loader.isTrustedContact(ConversationView.selectedNumber);
+		{
+	        final boolean isTrusted = loader.isTrustedContact(number);
 	        
-			List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-			final int unreadCount = loader.getUnreadMessageCount(ConversationView.selectedNumber);
+			List<String[]> msgList2 = loader.getSMSList(number);
+			final int unreadCount = loader.getUnreadMessageCount(number);
 
 	        //Retrieve the name of the contact from the database
-	        String contact_name = loader.getRow(ConversationView.selectedNumber).getName();
 			
-	        Message msg = new Message();
-        	Bundle b = new Bundle();
-        	b.putString(MessageView.CONTACT_NAME, contact_name);
-        	b.putBoolean(MessageView.IS_TRUSTED, isTrusted);
-        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
-        	b.putInt(MessageView.UNREAD_COUNT, unreadCount);
-        	msg.setData(b);
-        	msg.what = MessageView.LOAD;
-	        
-	        this.handler.sendMessage(msg);
+			TrustedContact tc = loader.getRow(number);
+			
+			if(tc != null)
+			{
+		        String contact_name = tc.getName();
+				
+		        Message msg = new Message();
+	        	Bundle b = new Bundle();
+	        	b.putString(SendMessageActivity.CONTACT_NAME, contact_name);
+	        	b.putBoolean(SendMessageActivity.IS_TRUSTED, isTrusted);
+	        	b.putSerializable(SendMessageActivity.MESSAGE_LIST, (Serializable)msgList2);
+	        	b.putInt(SendMessageActivity.UNREAD_COUNT, unreadCount);
+	        	msg.setData(b);
+	        	msg.what = SendMessageActivity.LOAD;
+		        
+		        this.handler.sendMessage(msg);
+			}
+			else
+			{
+				this.handler.sendEmptyMessage(SendMessageActivity.FINISH);
+			}
 		}
 		else
 		{
-			List<String[]> msgList2 = loader.getSMSList(ConversationView.selectedNumber);
-			loader.updateMessageCount(ConversationView.selectedNumber, 0);
+			List<String[]> msgList2 = loader.getSMSList(number);
+			loader.updateMessageCount(number, 0);
 			setUpdate(false);
 			
 			Message msg = new Message();
         	Bundle b = new Bundle();
-        	b.putSerializable(MessageView.MESSAGE_LIST, (Serializable)msgList2);
+        	b.putSerializable(SendMessageActivity.MESSAGE_LIST, (Serializable)msgList2);
         	msg.setData(b);
-        	msg.what = MessageView.UPDATE;
+        	msg.what = SendMessageActivity.UPDATE;
 	        
 	        this.handler.sendMessage(msg);
 		}

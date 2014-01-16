@@ -17,23 +17,29 @@
 
 package com.tinfoil.sms.settings;
 
-import com.tinfoil.sms.R;
-import com.tinfoil.sms.utility.SMSUtility;
-
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
 
 public class QuickPrefsActivity extends PreferenceActivity {
     
 	public static final String ENABLE_SETTING_KEY = "enable";
+	public static final String ENABLE_WALKTHROUGH_SETTING_KEY = "enable_walkthrough";
 	public static final String NATIVE_SAVE_SETTING_KEY = "native_save_settings";
 	public static final String MESSAGE_LIMIT_SETTING_KEY = "message_limit";
 	public static final String IMPORT_CONTACT_SETTING_KEY = "import_contacts";
@@ -56,6 +62,8 @@ public class QuickPrefsActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {        
         super.onCreate(savedInstanceState);
         
+        
+        setupActionBar();
         /*
          * Add preferences from the options.xml file.
          */
@@ -76,19 +84,98 @@ public class QuickPrefsActivity extends PreferenceActivity {
         	
         });
         
+        EditTextPreference vibrateLength = (EditTextPreference)findPreference(VIBRATE_LENGTH_SETTING_KEY);
+        vibrateLength.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+
+			@Override
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				boolean ret = false;
+								
+				try{
+					if(SMSUtility.isASmallNumber(newValue.toString())
+							&& Integer.valueOf(newValue.toString()) > 0)
+					{
+						ret = true;
+					}
+				}
+				catch(NumberFormatException e)
+				{
+					e.printStackTrace();
+				}
+				return ret;
+			}
+        	
+        });
+        
         //TODO implement the OnPreferenceChangeListener for the other preferences that use numbers only
         EditTextPreference messageLimit = (EditTextPreference)findPreference(MESSAGE_LIMIT_SETTING_KEY);
         messageLimit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
         {
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
+				boolean ret = false;	
 				
-				if(SMSUtility.isANumber(newValue.toString()) && Integer.valueOf(newValue.toString()) >0)
-				{
-					return true;
+				try{
+					if(SMSUtility.isASmallNumber(newValue.toString())
+							&& Integer.valueOf(newValue.toString()) > 0)
+					{
+						ret = true;
+					}
 				}
-				return false;
+				catch(NumberFormatException e)
+				{
+					e.printStackTrace();
+				}
+				return ret;
 			}        
+        });
+        
+        findPreference("enable_walkthrough").setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                // If walkthrough enabled, reset all the steps so they are displayed again
+                if (Boolean.valueOf(newValue.toString()))
+                {
+                    Walkthrough.enableWalkthrough(QuickPrefsActivity.this);
+                }
+                else
+                {
+                    Walkthrough.disableWalkthrough(QuickPrefsActivity.this);
+                }
+                return true;
+            }
+        });
+        
+        /* Set an onclick listener for contact developers */
+        findPreference("contact").setOnPreferenceClickListener(new OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick(Preference preference)
+            {
+                /**
+                 * Create the Intent
+                 */
+                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+                /**
+                 * Fill it with Data
+                 */
+                emailIntent.setType("plain/text");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, QuickPrefsActivity.this
+                        .getResources().getStringArray(R.array.dev_emails));
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                
+                /**
+                 * Send it off to the Activity-Chooser
+                 */
+                QuickPrefsActivity.this.startActivity(Intent.createChooser(emailIntent,
+                        QuickPrefsActivity.this.getResources().getString(R.string.email_chooser)));
+                return true;
+            }
         });
     }
     
@@ -100,7 +187,29 @@ public class QuickPrefsActivity extends PreferenceActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return true;
+    	switch (item.getItemId()) {
+		case android.R.id.home:
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		default:
+            return super.onOptionsItemSelected(item);
+    	}
     }
     
+    /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+	}    
 }

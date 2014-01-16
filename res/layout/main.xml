@@ -29,8 +29,6 @@
 		 android:layout_alignParentBottom="true"
 		 android:divider="@color/DividerColor"
 		 android:dividerHeight="1px"
-		 android:background="@color/White"
-		 >
-     </ListView>
-    
+		 android:background="@color/White"/>
+     
 </RelativeLayout>

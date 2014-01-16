@@ -7,13 +7,13 @@
         android:id="@+id/key_exchange_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button_layout"
+        android:layout_above="@+id/counter_layout"
         android:layout_alignParentTop="true" >
 
     </ListView>
     
     <LinearLayout 
-        android:id="@+id/button_layout"
+        android:id="@+id/counter_layout"
         android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
 		android:layout_alignParentBottom="true">

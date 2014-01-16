@@ -19,9 +19,12 @@ package com.tinfoil.sms;
 
 import java.security.Security;
 
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.app.Application;
+import android.preference.PreferenceManager;
+
+import com.tinfoil.sms.settings.QuickPrefsActivity;
 
 
 /**
@@ -30,7 +33,6 @@ import android.app.Application;
  */
 public class TinfoilSMS extends Application
 {
-	public static boolean threadable = false;
 	
     /* Register spongycastle as the most preferred security provider */
     static {
@@ -42,10 +44,5 @@ public class TinfoilSMS extends Application
     {
         super.onCreate();
         
-        /*if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-        		QuickPrefsActivity.BUGSENSE_ENABLE_SETTING_KEY, true))
-        {
-            BugSenseHandler.initAndStartSession(this, "169095e2");
-        }*/
     }
 }

@@ -17,10 +17,12 @@
 
 package com.tinfoil.sms.settings;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +39,6 @@ import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ContactAdapter;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 
 /**
  * Add or Edit contacts of the user.
@@ -59,15 +60,20 @@ public class AddContact extends Activity {
     private ListView listView;
     private EditText contactName;
     private static AlertDialog alert;
+    
+    private DBAccessor dba;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.add_contact);
+        
+        setupActionBar();
 
         //Sets the keyboard to not pop-up until a text area is selected 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        dba = new DBAccessor(this);
 
         this.listView = (ListView) this.findViewById(R.id.contact_numbers);
         //this.addNumber = (Button) this.findViewById(R.id.add_new_number);
@@ -197,11 +203,11 @@ public class AddContact extends Activity {
         {
             if (addContact)
             {
-            	MessageService.dba.updateContactInfo(AddContact.this.contactEdit, contactEdit.getANumber());
+            	dba.updateContactInfo(AddContact.this.contactEdit, contactEdit.getANumber());
             }
             else
             {
-                MessageService.dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
+                dba.updateContactInfo(AddContact.this.contactEdit, AddContact.this.originalNumber);
             }
             
             if (AddContact.this.originalNumber != null && AddContact.this.contactEdit.getNumber(AddContact.this.originalNumber) == null)
@@ -225,7 +231,7 @@ public class AddContact extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(AddContact.this);
             builder.setMessage(R.string.insufficent_message)
                     .setCancelable(true)
-                    .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
 
                         }
@@ -312,7 +318,7 @@ public class AddContact extends Activity {
 	    						contactName.setText(name);    						
 	    					}
 	    					contactEdit.addNumber(number);
-	    					MessageService.dba.updateContactInfo(contactEdit, number);
+	    					dba.updateContactInfo(contactEdit, number);
 	    					update(null);
 	    				}
 	    				else
@@ -344,7 +350,7 @@ public class AddContact extends Activity {
 	    		}
 	    		else
 	    		{
-	    			MessageService.dba.removeRow(temp);
+	    			dba.removeRow(temp);
 	    			AddContact.this.setResult(AddContact.DELETED_NUMBER);
 	    			finish();
 	    		}
@@ -363,13 +369,26 @@ public class AddContact extends Activity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
+	        case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+	        	
+	        	//TODO fix this to navigate properly
+				//NavUtils.navigateUpFromSameTask(this);
+	        	finish();
+				return true;
             case R.id.delete_contact: {
             
             	if(contactEdit.getANumber() != null)
             	{
-            		MessageService.dba.removeRow(contactEdit.getANumber());
+            		dba.removeRow(contactEdit.getANumber());
             	}
-            	
+            	 AddContact.this.setResult(AddContact.DELETED_NUMBER);
             	finish();
             	
             	return true;
@@ -379,5 +398,15 @@ public class AddContact extends Activity {
         }
 
     }
+    
+    /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+	}
     
 }

@@ -46,7 +46,7 @@ public abstract class Loader implements Runnable {
 	public void run() {
 		while (loopRunner)
 		{
-			loader = DBAccessor.createNewConnection(context);
+			loader = new DBAccessor(context);
 			execution();
 			// Wait for the next time the list needs to be updated/loaded
 			while(loopRunner && start)

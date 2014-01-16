@@ -20,6 +20,7 @@ package com.tinfoil.sms.sms;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,14 +28,17 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Telephony;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
@@ -52,7 +56,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.TinfoilSMS;
 import com.tinfoil.sms.adapter.ConversationAdapter;
 import com.tinfoil.sms.adapter.DefaultListAdapter;
 import com.tinfoil.sms.dataStructures.User;
@@ -65,6 +68,8 @@ import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.utility.MessageReceiver;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * This activity shows all of the conversations the user has with contacts. The
@@ -77,17 +82,18 @@ import com.tinfoil.sms.utility.SMSUtility;
  */
 public class ConversationView extends Activity {
 
+	public static final String selectedNumberIntent = "com.tinfoil.sms.sms.Selected";
+	public static final String MESSAGE_INTENT = "com.tinfoil.sms.sms.message";
+	
 	//public static DBAccessor dba;
     public static final String INBOX = "content://sms/inbox";
     public static final String SENT = "content://sms/sent";
-    public static SharedPreferences sharedPrefs;
-    public static String selectedNumber;
-    public static final String selectedNumberIntent = "com.tinfoil.sms.Selected";
+    public static SharedPreferences sharedPrefs;    
     private static ConversationAdapter conversations;
     public static List<String[]> msgList;
     private static ListView list;
     private static DefaultListAdapter ap;
-    private final MessageReceiver boot = new MessageReceiver();
+    public static final MessageReceiver boot = new MessageReceiver();
     private final SignalListener pSL = new SignalListener();
     public static boolean messageViewActive = false;
     
@@ -103,6 +109,10 @@ public class ConversationView extends Activity {
     
     public static final int ADD_CONTACT = 0;
     public static final int IMPORT_CONTACT = 1;
+    
+    public static final int COMPOSE = 0;
+    public static final int MESSAGE_VIEW = 1;
+    public static final int NEW_KEY_EXCHANGE = 2;
 
     /** Called when the activity is first created. */
     @Override
@@ -120,9 +130,9 @@ public class ConversationView extends Activity {
         
         messageSender.startThread(getApplicationContext());
         
-        MessageService.dba = new DBAccessor(this);
+        DBAccessor dba = new DBAccessor(this);
         
-        SMSUtility.user = MessageService.dba.getUserRow();
+        SMSUtility.user = dba.getUserRow();
         
         if(SMSUtility.user == null)
         {
@@ -133,27 +143,11 @@ public class ConversationView extends Activity {
         	SMSUtility.user = new User();
 	        
 	        //Set the user's in the database
-	        MessageService.dba.setUser(SMSUtility.user);
+	        dba.setUser(SMSUtility.user);
         }
         Log.v("public key", new String(SMSUtility.user.getPublicKey()));
         Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
         
-        // Set the user's build version
-        String versionNumber =  Build.VERSION.RELEASE;
-        String[] numbers = versionNumber.split("\\.");
-        
-        try {
-        	if(Integer.valueOf(numbers[0]) >= 4 && Integer.valueOf(numbers[1]) >= 1)
-        	{
-        		TinfoilSMS.threadable = true;
-        	}
-        }
-        // If the version cannot be parsed assume the version is requires the 2.3 version
-        catch (NumberFormatException e){}
-        
-        Log.v("Build Version", Build.VERSION.RELEASE + " " + TinfoilSMS.threadable);
-        Log.v("Build Thread Safe", ""+TinfoilSMS.threadable);
-
         if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
             /*
@@ -171,7 +165,8 @@ public class ConversationView extends Activity {
              * This check is to find out if there is a single message received pending.
              * If so then the conversation with that contact will be loaded.
              */
-            final Intent intent = new Intent(this, MessageView.class);
+            final Intent intent = new Intent(this, SendMessageActivity.class);
+            intent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
             intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
             this.getIntent().removeExtra(MessageService.notificationIntent);
             this.startActivity(intent);
@@ -209,7 +204,8 @@ public class ConversationView extends Activity {
             public void onItemClick(final AdapterView<?> parent, final View view,
                     final int position, final long id) {
 
-                final Intent intent = new Intent(ConversationView.this.getBaseContext(), MessageView.class);
+                final Intent intent = new Intent(ConversationView.this.getBaseContext(), SendMessageActivity.class);
+                intent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
                 intent.putExtra(ConversationView.selectedNumberIntent, msgList.get(position)[0]);
                 ConversationView.this.startActivity(intent);
             }
@@ -259,7 +255,7 @@ public class ConversationView extends Activity {
             
             if (messageViewUpdate)
             {
-                MessageView.updateList();
+                SendMessageActivity.updateList();
             }
         }
     }
@@ -272,14 +268,38 @@ public class ConversationView extends Activity {
     	{
     		updateList(this, false);
     	}
-        super.onResume();
+        super.onResume();       
         
+        // Display the key exchange instructions if step 1&2 of tutorial already shown
+        if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
+                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {
+       		Walkthrough.show(Step.START_EXCHANGE, this);
+        }
+
+        // Don't show the introduction before the EULA
+        PackageInfo versionInfo = getPackageInfo();
+        final String eulaKey = "eula_" + versionInfo.versionCode;
+        final String betaKey = "beta_notice_" + versionInfo.versionCode;
+        if (sharedPrefs.getBoolean(eulaKey, false) && sharedPrefs.getBoolean(betaKey, false))
+        {
+            // Display the walkthrough tutorial introduction
+            displayIntro();
+        }
+        
+        // Display the last step of the tutorial upon successful key exchange
+        DBAccessor dba = new DBAccessor(this);
+        if ( (Walkthrough.hasShown(Step.ACCEPT, this) || Walkthrough.hasShown(Step.SET_SECRET, this))  
+                && (! Walkthrough.hasShown(Step.SUCCESS, this)) && dba.anyTrusted() )
+        {
+            Walkthrough.show(Step.SUCCESS, this);
+            Walkthrough.show(Step.CLOSE, this);
+        }
     }
 
     @Override
     protected void onPause()
     {
-    	 MessageService.dba.close();
     	 super.onPause();
     }
     
@@ -302,14 +322,18 @@ public class ConversationView extends Activity {
 
         final MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.texting_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+    	
+    	Intent i = null;
         switch (item.getItemId()) {
             case R.id.compose:
-                this.startActivity(new Intent(this, SendMessageActivity.class));
+            	i = new Intent(this, SendMessageActivity.class);
+            	i.putExtra(MESSAGE_INTENT, COMPOSE);
+                this.startActivity(i);
                 return true;
             case R.id.settings:
                 this.startActivity(new Intent(this, QuickPrefsActivity.class));
@@ -317,6 +341,10 @@ public class ConversationView extends Activity {
             case R.id.exchange:
             	this.startActivity(new Intent(this, KeyExchangeManager.class));
             	return true;
+            case R.id.key_exchange:
+            	i = new Intent(this, SendMessageActivity.class);
+            	i.putExtra(MESSAGE_INTENT, NEW_KEY_EXCHANGE);
+                this.startActivity(i);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -330,6 +358,15 @@ public class ConversationView extends Activity {
             e.printStackTrace();
         }
         return pi;
+    }
+    
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
+    private void setTextColor(TextView text)
+    {
+    	if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
+    	{
+    		text.setTextColor(this.getResources().getColor(R.color.White));
+    	}
     }
     
     public void getEULA()
@@ -352,7 +389,7 @@ public class ConversationView extends Activity {
     		textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
 
     		textBox.setMovementMethod(LinkMovementMethod.getInstance());
-    		textBox.setTextColor(this.getResources().getColor(R.color.White));
+    		setTextColor(textBox);
     		textBox.setTextSize(18);
     		textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
     		
@@ -369,6 +406,15 @@ public class ConversationView extends Activity {
 	                SharedPreferences.Editor editor = sharedPrefs.edit();
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
+	                
+	                // Display the beta Notice dialog
+	                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	                {
+	                    betaNotice();
+	                }
+	                
+	                //If api level > kitkat check if tinfoil-sms is default SMS.
+	                checkDefault();
 				}
 	        })
 	        .setOnCancelListener(new OnCancelListener(){
@@ -389,8 +435,143 @@ public class ConversationView extends Activity {
 	        });
 	    	builder.create().show();
         }
+    	else
+    	{
+    		// Check if Tinfoil-SMS is default SMS app.
+    		//checkDefault();
+    	}
     }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+	public void checkDefault()
+    {
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+    	{
+	    	final String myPackageName = getPackageName();
+	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
+	        	
+	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		        .setTitle(R.string.kitkat_dialog_title)
+		        .setCancelable(true)
+		        .setMessage(R.string.kitkat_dialog_message)
+		        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
 		
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
+	                            myPackageName);
+	                    startActivity(intent);
+	                    // Display the beta Notice dialog
+	                    betaNotice();
+					}
+		        })
+		        .setOnCancelListener(new OnCancelListener(){
+	
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						// Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+					}	        	
+		        })
+		        .setNegativeButton(android.R.string.no, new Dialog.OnClickListener() {
+		
+		            @Override
+		            public void onClick(DialogInterface dialog, int which) {
+		                // Close the activity since they refuse to set to default
+		                ConversationView.this.finish();
+		            }
+		        })
+		        .setNeutralButton(R.string.tell_me_more, new OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Android-KitKat-Support";
+						Intent i = new Intent(Intent.ACTION_VIEW);
+						i.setData(Uri.parse(url));
+						ConversationView.this.startActivity(i);
+						
+	                    // Display the beta Notice dialog
+                        betaNotice();
+					}
+		        	
+		        });
+		    	builder.create().show();
+	        }
+    	}
+    }
+
+    /**
+     * Display a BETA notice with information about how they can provide feedback, 
+     * translations, and other support to help improve the app.
+     */
+    public void betaNotice()
+    {
+        PackageInfo versionInfo = getPackageInfo();
+        final String betaKey = "beta_notice_" + versionInfo.versionCode;
+        boolean hasBeenShown = sharedPrefs.getBoolean(betaKey, false);
+
+        if (hasBeenShown == false)
+        {
+            final TextView textBox = new TextView(this);    
+            String betaMessage = this.getString(R.string.beta_notice_message);
+            final SpannableString message = new SpannableString(betaMessage);
+            Linkify.addLinks(message, Linkify.ALL);
+            
+            textBox.setText(message);
+            
+            int horDimen = Math.round(this.getResources().getDimension(R.dimen.activity_horizontal_margin));
+            int verDimen = Math.round(this.getResources().getDimension(R.dimen.activity_vertical_margin));
+            textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
+    
+            textBox.setMovementMethod(LinkMovementMethod.getInstance());
+            setTextColor(textBox);
+            textBox.setTextSize(18);
+            textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+    
+            String title = this.getString(R.string.beta_notice_title);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setCancelable(true)
+            .setView(textBox)
+            .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+    
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean(betaKey, true);
+                    editor.commit();
+                    // Display the walkthrough tutorial introduction
+                    displayIntro();
+                }
+            })
+            .setOnCancelListener(new OnCancelListener(){
+                @Override
+                public void onCancel(DialogInterface arg0) {
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean(betaKey, true);
+                    editor.commit();
+                    // Display the walkthrough tutorial introduction
+                    displayIntro();
+                }               
+            });
+            builder.create().show();
+        }
+    }
+    
+    /**
+     * Displays the introduction to the walkthrough tutorial after accepting the EULA.
+     */
+    public void displayIntro()
+    {
+        // If tutorial enabled display the first two steps of the tutorial
+        if (! (Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this)) )
+        {
+            Walkthrough.show(Step.INTRO, this);
+            Walkthrough.show(Step.START_IMPORT, this);
+        }
+    }
+    
 	/**
 	 * The handler class for cleaning up after the loading thread as well as the
 	 * update thread.
@@ -411,8 +592,11 @@ public class ConversationView extends Activity {
         		emptyItems.add(ConversationView.this.getString(R.string.import_contacts_list));
         		
         		ap = new DefaultListAdapter(ConversationView.this, R.layout.empty_list_item, emptyItems);
+        		
+        		
                 emptyList.setAdapter(ap);
         		emptyList.setVisibility(ListView.VISIBLE);
+        		
         		list.setVisibility(ListView.INVISIBLE);
         		//ConversationView.this.dialog.dismiss();
         	}

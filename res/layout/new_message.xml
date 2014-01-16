@@ -1,67 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/White" >
-            
-	 <AutoCompleteTextView
-         android:id="@+id/new_message_number"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentRight="true"
-         android:layout_alignParentTop="true"
-         android:layout_marginTop="5dp"
-         android:textColorHint="@color/Black"
-         android:textColor="@color/Black"
-         android:cursorVisible="true"
-         android:hint="@string/to" >
+    android:layout_height="fill_parent" >
 
-         <requestFocus />
-     </AutoCompleteTextView>
-     
+    <AutoCompleteTextView
+        android:id="@+id/new_message_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:cursorVisible="true"
+        android:hint="@string/to"
+        android:textColor="@color/Black" >
+    </AutoCompleteTextView>
+    
+    <ListView
+        android:id="@+id/message_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/new_message_field"
+        android:layout_alignParentTop="true"
+        android:divider="@color/DividerColor"
+        android:dividerHeight="1px"
+        android:visibility="invisible">
+    </ListView>
+
+    <!-- Divider -->
+    <View 
+        android:background="@color/DividerBottomColor"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/message_list"
+        android:layout_height="1dp" />
+    
     <LinearLayout
         android:id="@+id/new_message_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/Black" >
+        android:layout_alignParentRight="true" >
 
         <EditText
             android:id="@+id/new_message_message"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_weight="1.00"
+            android:hint="@string/send_hint"
             android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-            android:maxLines="4" />
+            android:maxLines="3" />
 
-        <Button
-            android:id="@+id/new_message_send"
+        <LinearLayout
+            android:id="@+id/counter_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:onClick="sendMessage"/>
+            android:layout_gravity="bottom"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/send_word_count"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp" />
+            
+            <!-- Send button  -->            
+            <ImageButton
+                android:id="@+id/new_message_send"
+                style="?android:attr/borderlessButtonStyle"
+                android:src="@drawable/send_button_selector"
+                android:drawablePadding="0dip"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_weight="1.0"
+                android:layout_marginLeft="4dip"
+                android:layout_gravity="bottom"
+                android:onClick="sendMessage"
+                android:contentDescription="@string/send"
+                android:nextFocusLeft="@id/new_message_message" />
+        
+        </LinearLayout>
     </LinearLayout>
     
-     <RelativeLayout
-        android:id="@+id/counter_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/new_message_field"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/Black" >
+    <LinearLayout
+	    android:id="@+id/key_exchange_field"
+	    android:visibility="invisible"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentRight="true" >
 
-        <TextView
-            android:id="@+id/send_word_count"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/key_exchange"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textSize="12sp"
-            android:textColor="@color/White" />
-            <!-- android:text="122" --> 
+            android:layout_weight="1.0"
+            android:layout_gravity="bottom"
+            android:onClick="sendKeyExchange"
+            android:text="@string/exchange_key_full" />
+    </LinearLayout>
 
-	</RelativeLayout>
 </RelativeLayout>

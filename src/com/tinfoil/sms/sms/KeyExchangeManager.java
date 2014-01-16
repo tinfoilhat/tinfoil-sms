@@ -17,6 +17,7 @@
 
 package com.tinfoil.sms.sms;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -24,11 +25,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NavUtils;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,15 +41,21 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.espian.showcaseview.OnShowcaseEventListener;
+import com.espian.showcaseview.ShowcaseView;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.crypto.KeyExchangeHandler;
 import com.tinfoil.sms.dataStructures.Entry;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * The activity for handling pending key exchanges. If the user does not set
@@ -59,6 +69,8 @@ public class KeyExchangeManager extends Activity {
 	public static final String ENTRIES = "entries";
 	public static final int FULL = 0;
 	public static final int EMPTY = 1;
+
+	private DBAccessor dba;
 	
 	public static KeyExchangeLoader runThread;
 	
@@ -66,10 +78,18 @@ public class KeyExchangeManager extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_key_exchange_manager);
-		// Show the Up button in the action bar.
-		//setupActionBar();
+
+		dba = new DBAccessor(this);
 		
 		runThread = new KeyExchangeLoader(this, handler);
+		
+		setupActionBar();
+		
+        // Show the tutorial for pending key exchanges
+		if (! Walkthrough.hasShown(Step.PENDING, this))
+		{
+		    Walkthrough.show(Step.PENDING, this);
+		}
 	}
 
 	/**
@@ -89,8 +109,7 @@ public class KeyExchangeManager extends Activity {
 			{
 				if(sba.get(i))
 				{
-					
-					TrustedContact tc = MessageService.dba.getRow(SMSUtility.
+					TrustedContact tc = dba.getRow(SMSUtility.
 							format(runThread.getEntries().get(0).getNumber()));
 					
 					final Number number = tc.getNumber(SMSUtility.
@@ -99,11 +118,11 @@ public class KeyExchangeManager extends Activity {
 					if(SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
 							SMSUtility.checksharedSecret(number.getSharedInfo2()))
 					{
-						respondMessage(this, number, runThread.getEntries().get(i));
+						respondKeyExchangeMessage(this, number, runThread.getEntries().get(i));
 					}
 					else
 					{
-						setAndSend(this, number, tc.getName(), runThread.getEntries().get(i));
+					    requestSharedSecrets(this, number, tc.getName(), runThread.getEntries().get(i));
 					}
 				}
 				
@@ -113,14 +132,49 @@ public class KeyExchangeManager extends Activity {
 	}
 	
 	/**
+     * Requests the shared secrets from the user with an alert dialog.
+     * @param context The context of the setting.
+     * @param number The Number of the contact.
+     * @param name The name of the contact
+     * @param entry The key exchange message.
+	 */
+	public static void requestSharedSecrets(final Context context, final Number number, final String name, final Entry entry)
+	{
+        // Show the tutorial for setting shared secrets
+	    if (! Walkthrough.hasShown(Step.ACCEPT, (Activity) context))
+	    {
+    	    Walkthrough.showWithListener(Step.ACCEPT, (Activity) context, 
+    	            new OnShowcaseEventListener() {
+                        public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                            // Load the dialog to get the shared secrets
+                            setAndSend(context, number, name, entry);  
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewShow(ShowcaseView showcaseView) {
+                        }
+                    });
+	    }
+	    else
+	    {
+	        setAndSend(context, number, name, entry);
+	    }
+	}
+		
+	/**
 	 * Set the shared secrets for the contacts.
 	 * @param context The context of the setting.
 	 * @param number The Number of the contact.
 	 * @param name The name of the contact
 	 * @param entry The key exchange message.
 	 */
-	public static void setAndSend(final Context context, final Number number, String name, final Entry entry)
+	private static void setAndSend(final Context context, final Number number, String name, final Entry entry)
 	{
+		final DBAccessor dba = new DBAccessor(context);
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		LinearLayout linearLayout = new LinearLayout(context);
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -152,9 +206,9 @@ public class KeyExchangeManager extends Activity {
 	    		   {
 	    			   number.setSharedInfo1(s1);
 	    			   number.setSharedInfo2(s2);
-	    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
+	    			   dba.updateNumberRow(number, number.getNumber(), number.getId());
 
-		               respondMessage(context, number, entry);
+		               respondKeyExchangeMessage(context, number, entry);
 	    		   }
 	    		   else
 	    		   {
@@ -179,32 +233,45 @@ public class KeyExchangeManager extends Activity {
 	 * @param number The number of the contact for the key exchange
 	 * @param entry The key exchange entry received.
 	 */
-	public static void respondMessage(final Context context, final Number number, final Entry entry)
+	public static void respondKeyExchangeMessage(final Context context, final Number number, final Entry entry)
 	{
 		// Handles the key exchange received.
 		new KeyExchangeHandler(context, number, entry.getMessage(), true){
-			
 			@Override
 			public void accept(){
+				
+				DBAccessor dba = new DBAccessor(context);
 				Log.v("Key Exchange", "Exchange Key Message Received");
 				
 				number.setPublicKey(KeyExchange.encodedPubKey(entry.getMessage()));
 				number.setSignature(KeyExchange.encodedSignature(entry.getMessage()));
 				
-				MessageService.dba.deleteKeyExchangeMessage(entry.getNumber());
+				dba.deleteKeyExchangeMessage(entry.getNumber());
 				
-				MessageService.dba.updateNumberRow(number,
-						number.getNumber(), 0);
+				dba.updateNumberRow(number, number.getNumber(), 0);
 				
 				if(!number.isInitiator())
 				{
 					Log.v("Key Exchange", "Not Initiator");
-					MessageService.dba.addMessageToQueue(number.getNumber(),
-							KeyExchange.sign(number, MessageService.dba,
+					dba.addMessageToQueue(number.getNumber(), KeyExchange.sign(number, dba,
 							SMSUtility.user), true);
+					
+					//Store the key exchange in message list (received key exchange, not initiator)
+					Message newMessage = new Message(entry.getMessage(),
+							true, Message.SENT_KEY_EXCHANGE_RESP);
+					dba.addNewMessage(newMessage, entry.getNumber(), true);
+				}
+				else
+				{
+					//Store the key exchange in message list (received key exchange, initiator)
+					Message newMessage = new Message(entry.getNumber(),
+							true, Message.SENT_KEY_EXCHANGE_INIT);
+					dba.addNewMessage(newMessage, entry.getMessage(), true);
 				}
 				
-				if(MessageService.dba.getKeyExchangeMessageCount() == 0)
+				ConversationView.updateList(context, ConversationView.messageViewActive);
+				
+				if(dba.getKeyExchangeMessageCount() == 0)
 			    {
 					// Added this check and instantiation to ensure the notification
 					// service is able to dismiss notifications
@@ -226,7 +293,8 @@ public class KeyExchangeManager extends Activity {
 			public void invalid(){
 				Log.v("Key Exchange", "Invalid key exchange");
 				 
-				 String name = MessageService.dba.getRow(number.getNumber()).getName();
+				 DBAccessor dba = new DBAccessor(context);
+				 String name = dba.getRow(number.getNumber()).getName();
 				 
 				 final String text = name + ", " + number.getNumber();
 				 
@@ -239,7 +307,7 @@ public class KeyExchangeManager extends Activity {
 				 builder.setMessage(message)
 			       .setCancelable(true)
 			       .setTitle(R.string.key_exchange_error_title)
-			       .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+			       .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			    	   @Override
 			    	   public void onClick(DialogInterface dialog, int id) {
 			    		  
@@ -288,7 +356,7 @@ public class KeyExchangeManager extends Activity {
 			{
 				if(sba.get(i))
 				{
-					MessageService.dba.deleteKeyExchangeMessage(runThread.getEntries().get(i).getNumber());
+					dba.deleteKeyExchangeMessage(runThread.getEntries().get(i).getNumber());
 				
 					runThread.getEntries().remove(runThread.getEntries().get(i));
 					
@@ -363,5 +431,31 @@ public class KeyExchangeManager extends Activity {
         	}
         }
     };
-
+    
+    /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

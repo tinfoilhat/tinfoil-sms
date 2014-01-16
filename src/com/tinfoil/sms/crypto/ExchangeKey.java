@@ -20,7 +20,7 @@ package com.tinfoil.sms.crypto;
 import java.security.Security;
 import java.util.ArrayList;
 
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,11 +33,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
-import com.tinfoil.sms.dataStructures.ContactParent;
+import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.EditNumber;
-import com.tinfoil.sms.utility.MessageService;
+import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.utility.OnKeyExchangeResolvedListener;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -52,39 +54,21 @@ public class ExchangeKey implements Runnable {
     //public static ProgressDialog keyDialog;
     private ArrayList<String> untrusted;
     private ArrayList<String> trusted;
-    private ArrayList<ContactParent> contacts;
     private Number number;
     
-    private Activity activity;
+    private Activity activity; 
     private TrustedContact trustedContact;
     
-    private boolean multiNumber = false;
+    private OnKeyExchangeResolvedListener listener;
+    
+    private DBAccessor dba;
+    
 
     /* Register spongycastle as the most preferred security provider */
     static {
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
     
-    /**
-     * Used by the ManageContactsActivity to set up the key exchange thread
-     * 
-     * @param contacts The list of contacts
-     */
-    public void startThread(Activity activity, final ArrayList<ContactParent> contacts)
-    {
-        this.activity = activity;
-        this.contacts = contacts;
-        this.trusted = null;
-        this.untrusted = null;
-        
-        multiNumber = true;
-        /*
-         * Start the thread from the constructor
-         */
-        Thread thread = new Thread(this);
-        thread.start();
-    }
-
     /**
      * Used to setup the a key exchange for a single contact or to untrust a
      * single contact.
@@ -108,42 +92,13 @@ public class ExchangeKey implements Runnable {
         {
         	this.untrusted.add(untrusted);
         }
-        multiNumber = false;
+        dba = new DBAccessor(activity);
         Thread thread = new Thread(this);
         thread.start();
     }
 
     public void run() {
-
-        /* 
-         * Used by ManageContacts Activity to determine from the 
-         * contacts that have been selected need to exchange keys or
-         * stop sending secure messages
-         */
-        if (this.trusted == null && this.untrusted == null)
-        {
-            this.trusted = new ArrayList<String>();
-            this.untrusted = new ArrayList<String>();
-
-            for (int i = 0; i < this.contacts.size(); i++)
-            {
-                for (int j = 0; j < this.contacts.get(i).getNumbers().size(); j++)
-                {
-                    if (this.contacts.get(i).getNumber(j).isSelected())
-                    {
-                        if (!this.contacts.get(i).getNumber(j).isTrusted())
-                        {
-                            this.trusted.add(this.contacts.get(i).getNumber(j).getNumber());
-                        }
-                        else
-                        {
-                            this.untrusted.add(this.contacts.get(i).getNumber(j).getNumber());
-                        }
-                    }
-                }
-            }
-        }
-
+    	
         /*
          * This is actually how removing contacts from trusted should look since it is just a
          * deletion of keys. We don't care if the contact will now fail to decrypt messages that
@@ -154,144 +109,178 @@ public class ExchangeKey implements Runnable {
             for (int i = 0; i < this.untrusted.size(); i++)
             {
                 //untrusted.get(i).clearPublicKey();
-                this.number = MessageService.dba.getNumber(this.untrusted.get(i));
+                this.number = dba.getNumber(this.untrusted.get(i));
                 this.number.clearPublicKey();
                 
                 //set the initiator flag to false
                 this.number.setInitiator(false);
-                MessageService.dba.updateKey(this.number);
+                dba.updateKey(this.number);
             }
         }
 
+        //TODO give a status update for each person sent and received
         /*
          * Start Key exchanges 1 by 1, messages are prepared and then placed in
          * the messaging queue.
          */       
-
         boolean invalid = false;
         if (this.trusted != null)
         {
             for (int i = 0; i < this.trusted.size(); i++)
             {
-                number = MessageService.dba.getNumber(trusted.get(i));
+                number = dba.getNumber(trusted.get(i));
                 
-                if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
-                		SMSUtility.checksharedSecret(number.getSharedInfo2()))
+                if(number != null)
                 {
-                	Log.v("S1", number.getSharedInfo1());
-                    Log.v("S2", number.getSharedInfo2());
-                	
-	                /*
-	                 * Set the initiator flag since this user is starting the key exchange.
-	                 */
-	                number.setInitiator(true);					
-	                                
-	                MessageService.dba.updateInitiator(number);
-	                
-	                String keyExchangeMessage = KeyExchange.sign(number,
-	                		MessageService.dba, SMSUtility.user);
-	                
-	                MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+	                if (SMSUtility.checksharedSecret(number.getSharedInfo1()) &&
+	                		SMSUtility.checksharedSecret(number.getSharedInfo2()))
+	                {
+                		Log.v("S1", number.getSharedInfo1());
+                		Log.v("S2", number.getSharedInfo2());
+	                	
+                		sendKeyExchange(dba, number, true);
+	                }
+	                else
+	                {
+	                	invalid = true;
+	                	//Toast.makeText(c, "Invalid shared secrets", Toast.LENGTH_LONG).show();
+	                	Log.v("Shared Secret", "Invalid shared secrets");
+	                }
                 }
                 else
                 {
-                	invalid = true;
-                	//Toast.makeText(c, "Invalid shared secrets", Toast.LENGTH_LONG).show();
-                	Log.v("Shared Secret", "Invalid shared secrets");
+                	//TODO give error message
                 }
             }
         }
         
-        if (invalid)
+        if (invalid && activity != null)
         {
-        	trustedContact = MessageService.dba.getRow(number.getNumber());
+        	trustedContact = dba.getRow(number.getNumber());
         	
         	/*
         	 * Get the shared secrets from the user.
         	 */
         	activity.runOnUiThread(new Runnable() {
         	    public void run() {
-        	    	
-        	    	if(!multiNumber)
-        	    	{
-        	    		//Toast.makeText(activity, "Shared secrets must be set prior to key exchange", Toast.LENGTH_LONG).show();
-        	    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        	    		LinearLayout linearLayout = new LinearLayout(activity);
-        	    		linearLayout.setOrientation(LinearLayout.VERTICAL);
+    	    		//Toast.makeText(activity, "Shared secrets must be set prior to key exchange", Toast.LENGTH_LONG).show();
+    	    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    	    		LinearLayout linearLayout = new LinearLayout(activity);
+    	    		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        	    		final EditText sharedSecret1 = new EditText(activity);
-        	    		sharedSecret1.setHint(R.string.shared_secret_hint_1);
-        	    		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
-        	    		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
-        	    		linearLayout.addView(sharedSecret1);
+    	    		final EditText sharedSecret1 = new EditText(activity);
+    	    		sharedSecret1.setHint(R.string.shared_secret_hint_1);
+    	    		sharedSecret1.setMaxLines(EditNumber.SHARED_INFO_MAX);
+    	    		sharedSecret1.setInputType(InputType.TYPE_CLASS_TEXT);
+    	    		linearLayout.addView(sharedSecret1);
 
-        	    		final EditText sharedSecret2 = new EditText(activity);
-        	    		sharedSecret2.setHint(R.string.shared_secret_hint_2);
-        	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
-        	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
-        	    		linearLayout.addView(sharedSecret2);
-        	    		
-        	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
-        	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
-        	    		       .setCancelable(true)
-        	    		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-        	    		    	   @Override
-        	    		    	   public void onClick(DialogInterface dialog, int id) {
-        	    		                //Save the shared secrets
-        	    		    		   String s1 = sharedSecret1.getText().toString();
-        	    		    		   String s2 = sharedSecret2.getText().toString();
-        	    		    		   if(s1 != null && s2 != null &&
-        	    		    				   s1.length() >= EditNumber.SHARED_INFO_MIN &&
-        	    		    				   s2.length() >= EditNumber.SHARED_INFO_MIN)
-        	    		    		   {
-        	    		    			   //Toast.makeText(activity, "Valid secrets", Toast.LENGTH_LONG).show();
-        	    		    			   number.setSharedInfo1(s1);
-        	    		    			   number.setSharedInfo2(s2);
-        	    		    			   MessageService.dba.updateNumberRow(number, number.getNumber(), number.getId());
-        	    		    			   number.setInitiator(true);					
-       	                                
-        	    			               MessageService.dba.updateInitiator(number);
-        	    			                
-        	    			               String keyExchangeMessage = KeyExchange.sign(number,
-        	    			            		   MessageService.dba, SMSUtility.user);
-        	    			                
-        	    			               MessageService.dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
-        	    		    		   }
-        	    		    		   else
-        	    		    		   {
-        	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
-        	    		    		   }
-        	    		           }})
-        	    		       .setOnCancelListener(new OnCancelListener(){
+    	    		final EditText sharedSecret2 = new EditText(activity);
+    	    		sharedSecret2.setHint(R.string.shared_secret_hint_2);
+    	    		sharedSecret2.setMaxLines(EditNumber.SHARED_INFO_MAX);
+    	    		sharedSecret2.setInputType(InputType.TYPE_CLASS_TEXT);
+    	    		linearLayout.addView(sharedSecret2);
+    	    		
+    	    		builder.setMessage(activity.getString(R.string.set_shared_secrets)
+    	    				+ " " + trustedContact.getName() + ", " + number.getNumber())
+    	    		       .setCancelable(true)
+    	    		       .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+    	    		    	   @Override
+    	    		    	   public void onClick(DialogInterface dialog, int id) {
+    	    		                //Save the shared secrets
+    	    		    		   String s1 = sharedSecret1.getText().toString();
+    	    		    		   String s2 = sharedSecret2.getText().toString();
+    	    		    		   if (SMSUtility.checksharedSecret(s1) &&
+    	    		                		SMSUtility.checksharedSecret(s2))
+    	    		               {     	    		    			   
+    	    		    			   sendKeyExchange(dba, number, s1, s2, true);
+    	    		    		   }
+    	    		    		   else
+    	    		    		   {
+    	    		    			   Toast.makeText(activity, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
+    	    		    		   }
+    	    		           }})
+    	    		       .setOnCancelListener(new OnCancelListener(){
 
-									@Override
-									public void onCancel(DialogInterface arg0) {
-										//Cancel the key exchange
-										Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
-									}
-        	    		    	   
-        	    		       })
-        	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-        	    		    	   @Override
-        	    		    	   public void onClick(DialogInterface arg0, int arg1) {
-        	    		    			//Cancel the key exchange
-        	    		    		   Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
-        	    		    	   }});
-        	    		AlertDialog alert = builder.create();
-        	    		
-        	    		alert.setView(linearLayout);
-        	    		alert.show();
-        	    	}
-        	    	else
-        	    	{
-        	    		Toast.makeText(activity, R.string.unsuccessful_key_exchanges, Toast.LENGTH_LONG).show();
-        	    	}
+								@Override
+								public void onCancel(DialogInterface arg0) {
+									//Cancel the key exchange
+									Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
+								}
+    	    		    	   
+    	    		       })
+    	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+    	    		    	   @Override
+    	    		    	   public void onClick(DialogInterface arg0, int arg1) {
+    	    		    			//Cancel the key exchange
+    	    		    		   Toast.makeText(activity, R.string.key_exchange_cancelled, Toast.LENGTH_LONG).show();
+    	    		    	   }});
+    	    		AlertDialog alert = builder.create();
+    	    		
+    	    		alert.setView(linearLayout);
+    	    		alert.show();
         	    }
         	});
         }
 
+        ConversationView.updateList(activity, ConversationView.messageViewActive);
+        if((trusted == null || trusted.size() == 0) && listener != null)
+        {
+        	Log.v("onKeyExchangeResolved", "TRUE");
+        	listener.onKeyExchangeResolved();
+        }
         //Dismisses the load dialog since the load is finished
         //keyDialog.dismiss();
     }
+    
+    public void setOnFinishedTaskListener(OnKeyExchangeResolvedListener listener)
+    {
+    	this.listener = listener;
+    }
 
+    public void removeOnFinishedTaskListener()
+    {
+    	this.listener = null;
+    }
+    
+    /**
+     * Set the share and then make the key exchange. Note you must check whether the
+     * share secrets are valid first.
+     * @param dba The database interface.
+     * @param number The number in use
+     * @param s1 The first new shared secret 
+     * @param s2 The second new shared secret
+     * @param initiator Whether the user is the key exchange initiator.
+     */
+    public static void sendKeyExchange(DBAccessor dba, Number number, String s1, String s2, boolean initiator)
+    {
+    	number.setSharedInfo1(s1);
+		number.setSharedInfo2(s2);
+		dba.updateNumberRow(number, number.getNumber(), number.getId());
+		sendKeyExchange(dba, number, initiator);
+    }
+    
+    /**
+     * Make the key exchange. Note you must check whether the share secrets are valid first.
+     * @param dba The database interface.
+     * @param number The number in use
+     * @param initiator Whether the user is the key exchange initiator.
+     */	
+    public static void sendKeyExchange(DBAccessor dba, Number number, boolean initiator)
+    {
+    	/*
+         * Set the initiator flag since this user is starting the key exchange.
+         */
+		number.setInitiator(initiator);					
+        
+        dba.updateInitiator(number);
+         
+        String keyExchangeMessage = KeyExchange.sign(number,
+     		   dba, SMSUtility.user);
+         
+        dba.addMessageToQueue(number.getNumber(), keyExchangeMessage, true);
+        
+        Message newMessage = new Message(keyExchangeMessage,
+					true, Message.SENT_KEY_EXCHANGE_INIT);
+		dba.addNewMessage(newMessage, number.getNumber(), false);
+    }
 }

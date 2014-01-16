@@ -518,4 +518,9 @@ public class Number implements Serializable {
 	public void setKeyExchangeFlag(int keyExchangeFlag) {
 		this.keyExchangeFlag = keyExchangeFlag;
 	}
+	
+	public void setMessage(ArrayList<Message> messages)
+	{
+		this.messages = messages;
+	}
 }

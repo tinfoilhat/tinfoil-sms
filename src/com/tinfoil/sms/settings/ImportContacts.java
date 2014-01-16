@@ -19,12 +19,14 @@ package com.tinfoil.sms.settings;
 
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +39,9 @@ import android.widget.ListView;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
+import com.tinfoil.sms.loader.OnFinishedImportingListener;
+import com.tinfoil.sms.utility.Walkthrough;
+import com.tinfoil.sms.utility.Walkthrough.Step;
 
 /**
  * ImportContact activity allows for contacts to be imported from the native
@@ -47,7 +52,7 @@ import com.tinfoil.sms.dataStructures.TrustedContact;
  * contact in the native database. An imported contact will appear in the
  * ManageContactsActivity.
  */
-public class ImportContacts extends Activity {
+public class ImportContacts extends Activity implements OnFinishedImportingListener {
     private ListView importList;
     private ArrayList<TrustedContact> tc;
     private boolean disable;
@@ -58,8 +63,10 @@ public class ImportContacts extends Activity {
     public static final String IN_DATABASE = "in_database";
     public static final int LOAD = 0;
     public static final int FINISH = 1;
+	public static final int NOTHING = 2;
 
-    private ImportContactLoader runThread;
+    //private ImportContactLoader runThread;
+    private ImportTask runTask;
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -67,11 +74,14 @@ public class ImportContacts extends Activity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.importcontacts);
         
+        setupActionBar();
+        
         this.importList = (ListView) this.findViewById(R.id.import_contact_list);
         
         if(savedInstanceState == null)
         {
-	        runThread = new ImportContactLoader(this, false, false, inDb, tc, handler);
+        	runTask = new ImportTask(this, false);
+        	runTask.execute(this);
 	        
 	        //final Thread thread = new Thread(this);
 	        this.dialog = ProgressDialog.show(this, this
@@ -80,7 +90,7 @@ public class ImportContacts extends Activity {
 	        		new OnCancelListener() {
 	    		
 	        	public void onCancel(DialogInterface dialog) {
-	    			runThread.setStop(true);
+	        		runTask.cancel(true);
 	    			dialog.dismiss();
 	    			ImportContacts.this.finish();
 	    		}
@@ -90,7 +100,8 @@ public class ImportContacts extends Activity {
         {
         	tc = (ArrayList<TrustedContact>) savedInstanceState.getSerializable(ImportContacts.TRUSTED_CONTACTS);
         	inDb = (ArrayList<Boolean>) savedInstanceState.getSerializable(ImportContacts.IN_DATABASE);
-        	runThread = new ImportContactLoader(this, false, true, inDb, tc, handler);
+        	runTask = new ImportTask(this, true);
+        	runTask.execute(this);
         	setUpUI();
         }
         
@@ -104,7 +115,6 @@ public class ImportContacts extends Activity {
                 }
             }
         });
-        
     }
     
     @Override
@@ -124,10 +134,12 @@ public class ImportContacts extends Activity {
     	//Add Contacts to the tinfoil-sms database from android's database
         if (!ImportContacts.this.disable)
         {
-            runThread.setClicked(true);
+        	
 
-            runThread.setStart(false);
+        	runTask = new ImportTask(this, true, false, tc, inDb);
+        	runTask.execute(this);
 
+        	//TODO fix leaked window
             ImportContacts.this.dialog = ProgressDialog.show(ImportContacts.this,
             		this.getString(R.string.importing_title),
                     this.getString(R.string.importing_message), true, false);
@@ -195,9 +207,7 @@ public class ImportContacts extends Activity {
     @Override
     protected void onDestroy()
     {
-    	if(runThread != null){
-    		runThread.setRunner(false);
-    	}
+    	runTask = null;
 	    //tc = null;
 	    //dialog = null;
 	    super.onDestroy();
@@ -214,6 +224,16 @@ public class ImportContacts extends Activity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
+	        case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
             case R.id.all:
                 if (this.tc != null)
                 {
@@ -266,36 +286,64 @@ public class ImportContacts extends Activity {
                     android.R.layout.simple_list_item_1, ImportContacts.this.getNames()));
         }
     }
-
-    /*
-     * Please note android.os.Message is needed because tinfoil-sms has another
-     * class called Message.
+    
+    /**
+     * Displays the import part of the tutorial after the contacts have been loaded.
      */
-    private final Handler handler = new Handler() {
-        @SuppressWarnings("unchecked")
-		@Override
-        public void handleMessage(final android.os.Message msg)
+    public void displayStartImport()
+    {
+        // If walkthrough enabled display the third step of the tutorial
+        if (! Walkthrough.hasShown(Step.IMPORT, this))
         {
-        	
-        	switch (msg.what){
-	    		case LOAD:
-		        	Bundle b = msg.getData();
-		        	tc = (ArrayList<TrustedContact>) b.getSerializable(ImportContacts.TRUSTED_CONTACTS);
-		        	inDb = (ArrayList<Boolean>) b.getSerializable(ImportContacts.IN_DATABASE);
-		        	
-		        	setUpUI();
-		            		            
-		            if (ImportContacts.this.dialog.isShowing())
-		            {
-		            	ImportContacts.this.dialog.dismiss();
-		            }
-		            break;
-	    		case FINISH:
-	    			ImportContacts.this.finish();
-	    			break;
-        	}
-        	
+            Walkthrough.show(Step.IMPORT, this);
         }
-    };
+    }
+    
+    /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+	}
+
+	@Override
+	public void onFinishedImportingListener(final Integer success,
+			ArrayList<TrustedContact> tc, ArrayList<Boolean> inDb) {
+		
+		if(success == ImportContacts.LOAD)
+		{
+			this.tc = tc;
+	    	this.inDb = inDb;
+		}
+	
+    	runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				
+				if(success == ImportContacts.LOAD)
+				{
+					setUpUI();
+				}
+				
+				
+				if (ImportContacts.this.dialog.isShowing())
+	            {
+	            	ImportContacts.this.dialog.dismiss();
+	            }
+				
+				if(success == ImportContacts.FINISH)
+				{
+					finish();
+				}
+				
+			}
+    	});
+	
+    	// Display the import tutorial
+    	displayStartImport();
+	}
 
 }

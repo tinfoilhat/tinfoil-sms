@@ -18,7 +18,10 @@
 package com.tinfoil.sms.dataStructures;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A class used to store information from the message table
@@ -34,8 +37,9 @@ public class Message implements Serializable {
      * /serialization/spec/version.doc.html> details. </a>
 	 */
 	private static final long serialVersionUID = -5145840563250998474L;
+	
+	private static final String NORMAL_TIME = "yyyy/MM/dd h:mm aa";
 		
-	private static final boolean clockStyle = true;
 	private String message;
 	private long date;
 	private int sent;
@@ -54,6 +58,11 @@ public class Message implements Serializable {
 	 * 7. Received (de-obfuscation failed (not sure if this is possible))
 	 * 8. Received (de-obfuscated and failed to decrypt, Hash-Mac failed after
 	 * de-obfuscation (not sure about this one either))
+	 * 9. Sent a key exchange to the contact and was the initiator
+	 * 10. Sent a key exchange to the contact and was not the initiator
+	 * 11. Received a key exchange from the contact and was the initiator
+	 * 12. Received a key exchange from the contact and was not the initiator
+	 * 13. Received a key exchange from the contact and was not the initiator with a incomplete key exchange were they were the initiator
 	 */
 	public static final int SENT_DEFAULT = 0; 
 	public static final int SENT_ENCRYPTED = 1;
@@ -64,6 +73,12 @@ public class Message implements Serializable {
 	public static final int RECEIVED_ENC_OBF = 6; 
 	public static final int RECEIVED_OBF_FAIL = 7;
 	public static final int RECEIVED_ENC_OBF_FAIL = 8;
+	public static final int SENT_KEY_EXCHANGE_INIT = 9;
+	public static final int SENT_KEY_EXCHANGE_RESP = 10;
+	public static final int RECEIVED_KEY_EXCHANGE_INIT = 11;
+	public static final int RECEIVED_KEY_EXCHANGE_RESP = 12;
+	public static final int RECEIVED_KEY_EXCHANGE_INIT_RESP = 13;
+	
 	
 	/**
 	 * A class for storing messages retrieved or to be stored in the database. 
@@ -164,36 +179,11 @@ public class Message implements Serializable {
 	 * @param currentTime The current time in milliseconds
 	 * @return The current time formated.
 	 */
-	public static String millisToDate(long currentTime) {
-        Calendar calendar = Calendar.getInstance();
+	public static String millisToDate(long currentTime, Locale locale) {
+		
+		SimpleDateFormat simpleDate = new SimpleDateFormat(NORMAL_TIME, locale);
         
-        calendar.setTimeInMillis(currentTime);
-        String date = calendar.get(Calendar.YEAR) + "/" +  (calendar.getTime().getMonth()+1) + "/" + 
-        		calendar.getTime().getDate();
-        
-        if (clockStyle && calendar.getTime().getHours() > 12)
-        {
-        	date += " " + (calendar.getTime().getHours()-12);
-        }
-        else
-        {
-        	date += " " + calendar.getTime().getHours() ;
-        }
-        
-        String minutes = ""+calendar.getTime().getMinutes();
-        if (minutes.length() < 2)
-        {
-        	minutes = "0" + minutes;
-        }
-        date += ":" + minutes;
-
-        if (calendar.get(Calendar.AM_PM) == 1)
-        {
-        	date += " PM";
-        }
-        else {
-        	date += " AM";
-        }
+        String date = simpleDate.format(new Date(currentTime));
         return date;
     }
 	

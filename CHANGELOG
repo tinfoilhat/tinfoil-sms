@@ -1,0 +1,73 @@
+Beta Release version 1.3.0
+
+* Major Changes:
+	* Change the Theme used for application to Holo Light with Dark Action Bar for 4.0+, Holo Light for 3.0 - 3.2 and Light for 2.2 - 2.3.3
+	* Removed Manage Contacts
+	* Added New Key Exchange sending activity to send a key exchange to a contact
+	* Added an in-app tutorial
+	* Made key exchange messages visible to the user
+* Minor Changes:
+	* Donations through custom dialog
+	* Added ability to send a key exchange through new message
+	* Added action bar features for 4.0+
+	* Added links to message lists
+	* Added warning for Kitkat (4.4) users since Kitkat is not supported yet.
+* Major Fixes:
+	* Database interface which has solved numerous issues in countered with the system.
+	* Layout of Messages
+	* Layout of New Message
+	* Fixed an issue decrypting messages if app garbage collected
+	* Fixed issues with send and send to capabilities
+	* Fixed import contact messages
+* Minor Fixes:
+	* Invalid message limit issue
+	* Invalid vibrate length issue
+	* Compose invalid number warning
+	* Incorrect loading of a contact's messages
+	* Arbitrary limit on messages created in compose
+
+Beta Release version 1.2.6
+
+* Fixed manual user key exchange with invalid number
+* Fixed database creation schema
+* Fixed parsing telephone number error
+* Fixed edit number retrieval
+* Fixed loading issues
+
+
+Beta Release version 1.2.4
+
+* Added Czech language support BETA
+* Fixed Issues with key exchange bug.
+* Moved the rest of the in app strings to the string.xml file to support localization.
+
+Beta Release version 1.2.3
+
+* Added 2.2 support
+* Fixed 2.3-2.2 data base support issues
+
+Beta Release version 1.2.2
+
+* Add contact's name before number issue
+* Fixed delete contact's number before it is saved
+* Fixed delete contact before it is saved
+* Fixed import contact key before contact has been saved
+
+Beta Release version 1.2.1
+
+* Fixed import contact orientation loading issue
+
+Beta Release version 1.2.0
+
+* Fixed database connection issue which was crashing application
+
+Beta Release version 1.1.1
+
+* Fixed message list auto scrolling feature so messages will show on screen
+
+Beta Release version 1.1
+
+* Fixed pop-up text box hint
+* Reversed message list ordering to show newest message at the bottom of the list
+* Added an option to change the ordering of the message list
+* Fixed import contacts feature to handle contacts with duplicate numbers

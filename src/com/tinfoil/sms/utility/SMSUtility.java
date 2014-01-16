@@ -21,31 +21,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.spongycastle.crypto.InvalidCipherTextException;
+import org.strippedcastle.crypto.InvalidCipherTextException;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Environment;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.crypto.Encryption;
+import com.tinfoil.sms.crypto.ExchangeKey;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.database.InvalidDatabaseStateException;
 import com.tinfoil.sms.messageQueue.MessageBroadcastReciever;
 import com.tinfoil.sms.settings.EditNumber;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
+import com.tinfoil.sms.sms.KeyExchangeManager;
 
 /**
  * An abstract class used to retrieve contacts information from the native
@@ -54,7 +62,8 @@ import com.tinfoil.sms.sms.ConversationView;
 public abstract class SMSUtility {
     private static final Pattern phoneNumber = Pattern.compile("^[+]1.{10}");
     private static final Pattern numOnly = Pattern.compile("\\W");
-    private static final String numberPattern = "\\d*";
+    private static final String numberPattern = "\\d+";
+    private static final String smallNumberPattern = "\\d{1,9}";
     private static final SmsManager sms = SmsManager.getDefault();
     public static final String SENT = "content://sms/sent";
 
@@ -67,6 +76,8 @@ public abstract class SMSUtility {
     public static final int LIMIT = 50;
     public static final boolean saveMessage = false;
     
+    /* The encryption engine used to process messages */
+    public static Encryption cryptoEngine;
     
     public static User user;
 
@@ -112,6 +123,104 @@ public abstract class SMSUtility {
         number = number.replaceAll(numOnly.pattern(), "");
 
         return number;
+    }
+    
+    /**
+     * Ensure that the user's information is in memory.
+     * @param dba The database accessor to retrieve the user's key if necessary
+     * @param user The user stored in memory. 
+     * @return The user that is not null
+     * @throws InvalidDatabaseStateException If the user's keys are not found then they have
+     * been deleted thus making any key exchange prior invalid.
+     */
+    public static User getUser(DBAccessor dba, User user) throws InvalidDatabaseStateException
+    {
+        if(user == null)
+        {
+            user = dba.getUserRow();
+            if (user == null)
+            {
+                throw new InvalidDatabaseStateException("User's keys not set in database");
+                //user = new User();
+                //dba.setUser(user);
+            }
+        }
+        return user;
+    }
+    
+    public static void handleKeyExchange(ExchangeKey keyThread, final DBAccessor dba,
+    		final Activity activity, String number)
+    {
+    	/*ExchangeKey.keyDialog = ProgressDialog.show(this, "Exchanging Keys",
+        "Exchanging. Please wait...", true, false);*/
+
+	    if (!dba.isTrustedContact(SMSUtility.format
+	        (number)))
+	    {
+		    final Entry entry = dba.getKeyExchangeMessage(number);
+		
+		    //Resolving a key exchange
+		    if (entry != null)
+		    {
+		    	final TrustedContact tc = dba.getRow(number);
+		    	final Number numberO = tc.getNumber(number);
+		    	final String name = tc.getName();
+		    	
+		    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		    	
+		    	builder.setMessage(activity.getString(R.string.key_exchange_dialog_message)
+		    		+ " " + tc.getName() + ", " + numberO.getNumber() + "?")
+		    		.setCancelable(true)
+		    		.setPositiveButton(android.R.string.ok,
+		    	    		new DialogInterface.OnClickListener() {
+			     	   @Override
+			     	   public void onClick(DialogInterface dialog, int id) {
+			     		   //Save the shared secrets
+			     		   if(SMSUtility.checksharedSecret(numberO.getSharedInfo1()) &&
+			    					SMSUtility.checksharedSecret(numberO.getSharedInfo2()))
+			    			{
+			     			   KeyExchangeManager.respondKeyExchangeMessage(activity, numberO, entry);
+			    			}
+			     		   else
+			     		   {
+			     			   KeyExchangeManager.requestSharedSecrets(activity, numberO, name, entry);
+			      		}}})
+		    	    .setNegativeButton(android.R.string.no,
+		    	    		new DialogInterface.OnClickListener() {
+			     	   @Override
+			     	   public void onClick(DialogInterface arg0, int arg1) {
+			     		   // Cancel the key exchange
+			     		   Toast.makeText(activity, activity
+			     				   .getString(R.string.key_exchange_cancelled), Toast.LENGTH_LONG).show();
+			     		   
+			     		   // Delete key exchange
+			     		   dba.deleteKeyExchangeMessage(numberO.getNumber());
+			     		   
+			     		  if(dba.getKeyExchangeMessageCount() == 0)
+			     		  {
+			    				  MessageService.mNotificationManager.cancel(MessageService.KEY);
+			     		  }
+			     	   	}
+			     	});
+		    	
+		    		AlertDialog alert = builder.create();
+		    		//ExchangeKey.keyDialog.dismiss();
+		    		alert.show();
+			    }
+			    else 
+			    {
+			        // TODO Show the tutorial for when key exchange sent, need to set listener for keythread
+			        // Walkthrough.show(Step.KEY_SENT, activity)
+			        
+			    	//Initiate the key exchange with the contact. 
+			    	keyThread.startThread(activity, SMSUtility.format(number), null);
+			    }
+	    }
+	    else
+	    {
+	    	//Untrust the contact.
+	    	keyThread.startThread(activity, null, SMSUtility.format(number));
+	    }
     }
 
     /**
@@ -205,20 +314,24 @@ public abstract class SMSUtility {
                     QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, true) &&
                     !message.isExchange())
             {
-            	Encryption CryptoEngine = new Encryption();
+                // Initialize the cryptographic engine if null
+                if (SMSUtility.cryptoEngine == null)
+                {
+                    SMSUtility.cryptoEngine = new Encryption(SMSUtility.getUser(dba, null));
+                }
             	
             	Number number = dba.getNumber(format(message.getNumber()));
             	
             	Log.v("Before Encryption", message.getMessage());
                 //Create the an encrypted message
-            	final String encrypted = CryptoEngine.encrypt(number, message.getMessage());
+            	final String encrypted = SMSUtility.cryptoEngine.encrypt(number, message.getMessage());
             	
             	Log.v("After Encrypted", encrypted);
 
                 sendSMS(context, new Entry(message.getNumber(), encrypted,
                 		message.getId(), message.getExchange()));
                 
-                MessageService.dba.updateEncryptNonce(number);
+                dba.updateEncryptNonce(number);
 
                 if(ConversationView.sharedPrefs.getBoolean(
                 		QuickPrefsActivity.SHOW_ENCRYPT_SETTING_KEY, false))
@@ -273,6 +386,15 @@ public abstract class SMSUtility {
     public static boolean isANumber(final String number)
     {
     	if(number.matches(numberPattern))
+    	{
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public static boolean isASmallNumber(final String number)
+    {
+    	if(number.matches(smallNumberPattern))
     	{
     		return true;
     	}
@@ -370,5 +492,17 @@ public abstract class SMSUtility {
     		return true;
     	}
     	return false;
-    }	
+    }
+    
+    public static void setKeyExchangeTypeface(TextView tv)
+    {
+        if ((tv.getTypeface() != null) && tv.getTypeface().isBold())
+        {
+            tv.setTypeface(null, Typeface.BOLD_ITALIC);
+        }
+        else
+        {
+            tv.setTypeface(null, Typeface.ITALIC);
+        }
+    }
 }

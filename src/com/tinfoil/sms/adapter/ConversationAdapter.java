@@ -19,9 +19,6 @@ package com.tinfoil.sms.adapter;
 
 import java.util.List;
 
-import com.tinfoil.sms.R;
-import com.tinfoil.sms.utility.MessageService;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -31,6 +28,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tinfoil.sms.R;
+import com.tinfoil.sms.dataStructures.Message;
+import com.tinfoil.sms.database.DBAccessor;
+import com.tinfoil.sms.utility.SMSUtility;
 
 public class ConversationAdapter extends ArrayAdapter<String[]>{
 
@@ -45,12 +47,14 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
     private Context context; 
     private int layoutResourceId;    
     private List<String[]> data = null;
+    private DBAccessor dba;
     
     public ConversationAdapter(Context context, int layoutResourceId, List<String[]> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
+        dba = new DBAccessor(context);
     }
     
     /**
@@ -104,7 +108,7 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         	holder.c_message.setTypeface(null, Typeface.BOLD);
         }
         
-        if(MessageService.dba.isTrustedContact(contact[0]))
+        if(dba.isTrustedContact(contact[0]))
         {
         	holder.indicator.setImageResource(R.drawable.encrypted);
         	holder.indicator.setVisibility(ImageView.VISIBLE);
@@ -117,6 +121,21 @@ public class ConversationAdapter extends ArrayAdapter<String[]>{
         
         holder.c_message.setText(contact[2]);
         
+        int sentValue = Integer.valueOf(contact[4]);
+        
+        if (sentValue == Message.SENT_KEY_EXCHANGE_INIT || 
+                sentValue == Message.SENT_KEY_EXCHANGE_RESP)
+        {
+            holder.c_message.setText(R.string.key_exchange_sent);
+            SMSUtility.setKeyExchangeTypeface(holder.c_message);
+        }
+		// Key exchange received
+        else if (sentValue >= Message.RECEIVED_KEY_EXCHANGE_INIT)
+        {
+            holder.c_message.setText(R.string.key_exchange_received);
+            SMSUtility.setKeyExchangeTypeface(holder.c_message);
+        }
+
         return row;
     }
 }

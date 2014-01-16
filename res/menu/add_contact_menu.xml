@@ -3,6 +3,8 @@
     <item
 		android:id="@+id/delete_contact"
 		android:title="@string/delete_contact_menu"
-		android:titleCondensed="@string/delete_contact_menu_condensed">
+		android:titleCondensed="@string/delete_contact_menu_condensed"
+		android:icon="@android:drawable/ic_menu_delete"
+ 	    android:showAsAction="always">
     </item>
 </menu>

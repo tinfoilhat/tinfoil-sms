@@ -18,13 +18,13 @@ package com.tinfoil.sms.crypto;
 
 import java.security.Security;
 
-import org.spongycastle.crypto.params.ECPrivateKeyParameters;
-import org.spongycastle.crypto.params.ECPublicKeyParameters;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.crypto.params.ECPrivateKeyParameters;
+import org.strippedcastle.crypto.params.ECPublicKeyParameters;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import com.orwell.crypto.ECGKeyUtil;
 import com.orwell.crypto.ECKey;
-import com.orwell.crypto.ECKeyParam;
+import com.orwell.params.ECKeyParam;
 
 
 /**

@@ -25,13 +25,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,7 +52,6 @@ import com.tinfoil.sms.crypto.KeyExchange;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
-import com.tinfoil.sms.utility.MessageService;
 import com.tinfoil.sms.utility.SMSUtility;
 
 /**
@@ -89,11 +91,15 @@ public class EditNumber extends Activity{
 	public static final int SHARED_INFO_MAX = 128;
 	
 	private ArrayList<RadioButton> keyExchangeSetting;
+	private DBAccessor dba;
 	
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_number);
+        setupActionBar();
+        
+        dba = new DBAccessor(this);
 
         keyExchangeSetting = new ArrayList<RadioButton>();
         
@@ -139,7 +145,7 @@ public class EditNumber extends Activity{
         	/*
         	 * Initialize the values to be adjusted
         	 */
-        	number = MessageService.dba.getNumber(SMSUtility.format(originalNumber));
+        	number = dba.getNumber(SMSUtility.format(originalNumber));
         
 	        phoneNumber.setText(originalNumber);        
 	        
@@ -153,7 +159,7 @@ public class EditNumber extends Activity{
 
 	        keyExchangeSetting.get(number.getKeyExchangeFlag()).setChecked(true);
 	        
-	        if(MessageService.dba.isTrustedContact(originalNumber))
+	        if(dba.isTrustedContact(originalNumber))
 	        {
 	        	trusted = true;
 	        }
@@ -276,20 +282,20 @@ public class EditNumber extends Activity{
 				{
 					if(position == AddContact.NEW_NUMBER_CODE)
 					{
-						tc = MessageService.dba.getRow(originalNumber);
+						tc = dba.getRow(originalNumber);
 						tc.addNumber(number);
-						MessageService.dba.updateRow(tc, originalNumber);
+						dba.updateRow(tc, originalNumber);
 					}
 					else
 					{
-						MessageService.dba.updateNumberRow(number, originalNumber, 0);
+						dba.updateNumberRow(number, originalNumber, 0);
 					}
 				}
 				else
 				{
 					tc = new TrustedContact();
 					tc.addNumber(number);
-					MessageService.dba.addRow(tc);
+					dba.addRow(tc);
 				}
 				
 				
@@ -341,10 +347,21 @@ public class EditNumber extends Activity{
     
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+    	   	
         switch (item.getItemId()) {
+	        case android.R.id.home:
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
             case R.id.import_key:
-            	
-            	if (originalNumber == null || originalNumber == "" || MessageService.dba.getRow(originalNumber) == null)
+           	
+            	if (originalNumber == null || originalNumber == "" || dba.getRow(originalNumber) == null)
             	{
             		Toast.makeText(getApplicationContext(), "You must save the number first", Toast.LENGTH_LONG).show();
             	}
@@ -408,7 +425,7 @@ public class EditNumber extends Activity{
 	                							number.setPublicKey(KeyExchange.encodedPubKey(keyExchangeMessage));
 	                							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
 	                							
-	                							MessageService.dba.updateNumberRow(number, number.getNumber(), 0);
+	                							dba.updateNumberRow(number, number.getNumber(), 0);
 	                							Toast.makeText(EditNumber.this, R.string.key_exchange_import, Toast.LENGTH_SHORT).show();
 	                							
 	                							if(!number.isInitiator())
@@ -419,7 +436,7 @@ public class EditNumber extends Activity{
 	    											exportOrSend(EditNumber.this, number);
 	    										}
 	    										
-	    										ManageContactsActivity.updateList();
+	                							EditNumber.this.setResult(AddContact.UPDATED_NUMBER);
 	                						}
 	                            		}
 	        	            			
@@ -438,20 +455,20 @@ public class EditNumber extends Activity{
             	
             	Intent data = new Intent();
             	
-            	if (originalNumber == null || originalNumber == "" || MessageService.dba.getRow(originalNumber) == null)
+            	if (originalNumber == null || originalNumber == "" || dba.getRow(originalNumber) == null)
             	{
             		// User deleted the number so 
             		finish();
             	}            		
             	else {
-	            	if (MessageService.dba.getRow(originalNumber).getNumbers().size() == 1)
+	            	if (dba.getRow(originalNumber).getNumbers().size() == 1)
 	            	{
-	            		MessageService.dba.removeRow(originalNumber);
+	            		dba.removeRow(originalNumber);
 	            		data.putExtra(EditNumber.IS_DELETED, true);
 	            	}
 	            	else
 	            	{
-	            		MessageService.dba.deleteNumber(originalNumber);
+	            		dba.deleteNumber(originalNumber);
 	            	}
             	}
             	
@@ -471,7 +488,8 @@ public class EditNumber extends Activity{
     
     public static void exportOrSend(Context context,final Number number)
     {
-    	final String name = MessageService.dba.getRow(number.getNumber()).getName();
+    	final DBAccessor dba = new DBAccessor(context);
+    	final String name = dba.getRow(number.getNumber()).getName();
     	AlertDialog.Builder builder = new AlertDialog.Builder(context);
     	builder.setMessage(context.getString(R.string.key_exchange_respond)
     			+ " " + name + ", " + number.getNumber() + "?")
@@ -479,20 +497,30 @@ public class EditNumber extends Activity{
 		    .setPositiveButton(R.string.sms_option, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
-	    		   MessageService.dba.addMessageToQueue(number.getNumber(),
-							KeyExchange.sign(number, MessageService.dba,
+	    		   dba.addMessageToQueue(number.getNumber(),
+							KeyExchange.sign(number, dba,
 							SMSUtility.user), true);
 		    }})
 		    .setNegativeButton(R.string.export_option, new DialogInterface.OnClickListener() {
 	    	   @Override
 	    	   public void onClick(DialogInterface dialog, int id) {
 	    		   UserKeySettings.writeToFile(number.getNumber(), KeyExchange.sign(number, 
-	    				   MessageService.dba, SMSUtility.user));
+	    				   dba, SMSUtility.user));
 	    	   }
 		    });
 		
  		AlertDialog alert = builder.create();
  		alert.show();
     }
+    
+    /**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+	}
 
 }

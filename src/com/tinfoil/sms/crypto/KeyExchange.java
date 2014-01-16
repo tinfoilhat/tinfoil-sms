@@ -21,22 +21,23 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
-import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.params.ECPublicKeyParameters;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.util.encoders.Hex;
+import org.strippedcastle.crypto.digests.SHA256Digest;
+import org.strippedcastle.crypto.params.ECPublicKeyParameters;
+import org.strippedcastle.jce.provider.BouncyCastleProvider;
+import org.strippedcastle.util.encoders.Hex;
 
 import android.util.Base64;
 import android.util.Log;
 
+import com.orwell.crypto.APrioriInfo;
+import com.orwell.crypto.ECGKeyExchange;
+import com.orwell.crypto.ECGKeyUtil;
+import com.orwell.params.ECKeyParam;
 import com.tinfoil.sms.dataStructures.Number;
 import com.tinfoil.sms.dataStructures.User;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.database.InvalidDatabaseStateException;
-import com.orwell.crypto.APrioriInfo;
-import com.orwell.crypto.ECGKeyExchange;
-import com.orwell.crypto.ECGKeyUtil;
-import com.orwell.crypto.ECKeyParam;
+import com.tinfoil.sms.utility.SMSUtility;
 
 
 /**
@@ -144,29 +145,6 @@ public abstract class KeyExchange
     }
     
     /**
-     * Ensure that the user's information is in memory.
-     * @param dba The database accessor to retrieve the user's key if necessary
-     * @param user The user stored in memory. 
-     * @return The user that is not null
-     * @throws InvalidDatabaseStateException If the user's keys are not found then they have
-     * been deleted thus making any key exchange prior invalid.
-     */
-    public static User getUser(DBAccessor dba, User user) throws InvalidDatabaseStateException
-    {
-    	if(user == null)
-    	{
-    		user = dba.getUserRow();
-    		if (user == null)
-    		{
-    			throw new InvalidDatabaseStateException("User's keys not set in database");
-    			//user = new User();
-    			//dba.setUser(user);
-    		}
-    	}
-    	return user;
-    }
-    
-    /**
      * Wrapper method to sign a key exchange with the user's public key. This is used
      * to ensure that the user's information is in memory (and if not it is retrieved)
      * and catches and handles possible errors involving illegal database states.
@@ -189,7 +167,7 @@ public abstract class KeyExchange
     public static String sign(Number number, DBAccessor dba, User user)
     {
     	try {
-			user = getUser(dba, user);
+			user = SMSUtility.getUser(dba, user);
 			return signWithUser(number, user);
 		} catch (InvalidDatabaseStateException e) {
 			//TODO create error message to tell user key exchange failed because of db issue
