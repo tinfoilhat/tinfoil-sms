@@ -18,7 +18,10 @@
 package com.tinfoil.sms.dataStructures;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A class used to store information from the message table
@@ -34,8 +37,9 @@ public class Message implements Serializable {
      * /serialization/spec/version.doc.html> details. </a>
 	 */
 	private static final long serialVersionUID = -5145840563250998474L;
+	
+	private static final String NORMAL_TIME = "yyyy/MM/dd h:mm aa";
 		
-	private static final boolean clockStyle = true;
 	private String message;
 	private long date;
 	private int sent;
@@ -170,42 +174,16 @@ public class Message implements Serializable {
 	}
 	
 	/**
-	 * TODO update this to use locale
 	 * Convert the current time in milliseconds to the current time formated as:
 	 * YYYY/MM/DD HH:MM AM/PM
 	 * @param currentTime The current time in milliseconds
 	 * @return The current time formated.
 	 */
-	public static String millisToDate(long currentTime) {
-        Calendar calendar = Calendar.getInstance();
+	public static String millisToDate(long currentTime, Locale locale) {
+		
+		SimpleDateFormat simpleDate = new SimpleDateFormat(NORMAL_TIME, locale);
         
-        calendar.setTimeInMillis(currentTime);
-        String date = calendar.get(Calendar.YEAR) + "/" +  (calendar.getTime().getMonth()+1) + "/" + 
-        		calendar.getTime().getDate();
-        
-        if (clockStyle && calendar.getTime().getHours() > 12)
-        {
-        	date += " " + (calendar.getTime().getHours()-12);
-        }
-        else
-        {
-        	date += " " + calendar.getTime().getHours() ;
-        }
-        
-        String minutes = ""+calendar.getTime().getMinutes();
-        if (minutes.length() < 2)
-        {
-        	minutes = "0" + minutes;
-        }
-        date += ":" + minutes;
-
-        if (calendar.get(Calendar.AM_PM) == 1)
-        {
-        	date += " PM";
-        }
-        else {
-        	date += " AM";
-        }
+        String date = simpleDate.format(new Date(currentTime));
         return date;
     }
 	

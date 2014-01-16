@@ -31,10 +31,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Environment;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -493,5 +495,17 @@ public abstract class SMSUtility {
     		return true;
     	}
     	return false;
-    }	
+    }
+    
+    public static void setKeyExchangeTypeface(TextView tv)
+    {
+        if ((tv.getTypeface() != null) && tv.getTypeface().isBold())
+        {
+            tv.setTypeface(null, Typeface.BOLD_ITALIC);
+        }
+        else
+        {
+            tv.setTypeface(null, Typeface.ITALIC);
+        }
+    }
 }

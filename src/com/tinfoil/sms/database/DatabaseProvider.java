@@ -26,7 +26,8 @@ public class DatabaseProvider extends ContentProvider {
 			SQLitehelper.NUMBERS_TABLE_NAME + "." + SQLitehelper.KEY_UNREAD + ", " + 
 			SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_MESSAGE + ", " + 
 			SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_REFERENCE + ", " + 
-			SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_DATE + " FROM " + 
+			SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_DATE + ", " +
+			SQLitehelper.MESSAGES_TABLE_NAME + "." + SQLitehelper.KEY_SENT + " FROM " + 
 			SQLitehelper.TRUSTED_TABLE_NAME + ", " + 
 			SQLitehelper.NUMBERS_TABLE_NAME + ", " + 
 			SQLitehelper.MESSAGES_TABLE_NAME + " WHERE " + 

@@ -49,7 +49,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -275,12 +274,17 @@ public class ConversationView extends Activity {
         super.onResume();
         
         // Display the key exchange instructions if step 1&2 of tutorial already shown
-        displayKeyHelp();
+        if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
+                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
+        {
+       		Walkthrough.show(Step.START_EXCHANGE, this);
+        }
 
         // Don't show the introduction before the EULA
         PackageInfo versionInfo = getPackageInfo();
         final String eulaKey = "eula_" + versionInfo.versionCode;
-        if (sharedPrefs.getBoolean(eulaKey, false))
+        final String betaKey = "beta_notice_" + versionInfo.versionCode;
+        if (sharedPrefs.getBoolean(eulaKey, false) && sharedPrefs.getBoolean(betaKey, false))
         {
             // Display the walkthrough tutorial introduction
             displayIntro();
@@ -293,25 +297,6 @@ public class ConversationView extends Activity {
         {
             Walkthrough.show(Step.SUCCESS, this);
             Walkthrough.show(Step.CLOSE, this);
-        }
-    }
-    
-    @TargetApi(android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private void displayKeyHelp()
-    {
-    	//TODO make tutorial show for non-overflow menu phones
-    	if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
-                && !Walkthrough.hasShown(Step.START_EXCHANGE, this))
-        {
-    		// Check if greater than v 10 or v 14 without p	ermanent menu key
-    		// Versions 11 through 13 cannot have a permanent menu key
-        	if((Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.GINGERBREAD_MR1
-        			&& Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
-        			|| (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH &&    
-                    !ViewConfiguration.get(this).hasPermanentMenuKey()))
-        	{
-        		Walkthrough.show(Step.START_EXCHANGE, this);
-        	}
         }
     }
 
@@ -378,6 +363,15 @@ public class ConversationView extends Activity {
         return pi;
     }
     
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
+    private void setTextColor(TextView text)
+    {
+    	if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
+    	{
+    		text.setTextColor(this.getResources().getColor(R.color.White));
+    	}
+    }
+    
     public void getEULA()
     {
     	PackageInfo versionInfo = getPackageInfo();
@@ -398,7 +392,7 @@ public class ConversationView extends Activity {
     		textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
 
     		textBox.setMovementMethod(LinkMovementMethod.getInstance());
-    		//textBox.setTextColor(this.getResources().getColor(R.color.White));
+    		setTextColor(textBox);
     		textBox.setTextSize(18);
     		textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
     		
@@ -416,8 +410,11 @@ public class ConversationView extends Activity {
 	                editor.putBoolean(eulaKey, true);
 	                editor.commit();
 	                
-	                // Display the walkthrough tutorial introduction
-	                displayIntro();
+	                // Display the beta Notice dialog
+	                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	                {
+	                    betaNotice();
+	                }
 	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
 	                //checkDefault();
@@ -448,47 +445,14 @@ public class ConversationView extends Activity {
     	}
     }
 
-    @TargetApi(android.os.Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES.KITKAT)
 	public void checkDefault()
     {
-    	if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
     	{
 	    	final String myPackageName = getPackageName();
 	        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
 	        	
-	        	//TODO move strings to strings.xml
-	        	/*AlertDialog.Builder builder = new AlertDialog.Builder(this)
-		        .setTitle("Change SMS app?")
-		        .setCancelable(true)
-		        .setMessage("Use Tinfoil-SMS instead your currently selected SMS app?")
-		        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
-		
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
-	                            myPackageName);
-	                    startActivity(intent);
-					}
-		        })
-		        .setOnCancelListener(new OnCancelListener(){
-	
-					@Override
-					public void onCancel(DialogInterface arg0) {
-						// Close the activity since they refuse to set to default
-		                ConversationView.this.finish();
-					}	        	
-		        })
-		        .setNegativeButton(android.R.string.no, new Dialog.OnClickListener() {
-		
-		            @Override
-		            public void onClick(DialogInterface dialog, int which) {
-		                // Close the activity since they refuse to set to default
-		                ConversationView.this.finish();
-		            }
-		        });
-		    	builder.create().show();
-		    	*/
 	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle(R.string.kitkat_dialog_title)
 		        .setCancelable(true)
@@ -501,6 +465,8 @@ public class ConversationView extends Activity {
 	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
 	                            myPackageName);
 	                    startActivity(intent);
+	                    // Display the beta Notice dialog
+	                    betaNotice();
 					}
 		        })
 		        .setOnCancelListener(new OnCancelListener(){
@@ -527,6 +493,9 @@ public class ConversationView extends Activity {
 						Intent i = new Intent(Intent.ACTION_VIEW);
 						i.setData(Uri.parse(url));
 						ConversationView.this.startActivity(i);
+						
+	                    // Display the beta Notice dialog
+                        betaNotice();
 					}
 		        	
 		        });
@@ -535,6 +504,64 @@ public class ConversationView extends Activity {
     	}
     }
 
+    /**
+     * Display a BETA notice with information about how they can provide feedback, 
+     * translations, and other support to help improve the app.
+     */
+    public void betaNotice()
+    {
+        PackageInfo versionInfo = getPackageInfo();
+        final String betaKey = "beta_notice_" + versionInfo.versionCode;
+        boolean hasBeenShown = sharedPrefs.getBoolean(betaKey, false);
+
+        if (hasBeenShown == false)
+        {
+            final TextView textBox = new TextView(this);    
+            String betaMessage = this.getString(R.string.beta_notice_message);
+            final SpannableString message = new SpannableString(betaMessage);
+            Linkify.addLinks(message, Linkify.ALL);
+            
+            textBox.setText(message);
+            
+            int horDimen = Math.round(this.getResources().getDimension(R.dimen.activity_horizontal_margin));
+            int verDimen = Math.round(this.getResources().getDimension(R.dimen.activity_vertical_margin));
+            textBox.setPadding(horDimen, verDimen, horDimen, verDimen);
+    
+            textBox.setMovementMethod(LinkMovementMethod.getInstance());
+            setTextColor(textBox);
+            textBox.setTextSize(18);
+            textBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+    
+            String title = this.getString(R.string.beta_notice_title);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setCancelable(true)
+            .setView(textBox)
+            .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+    
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean(betaKey, true);
+                    editor.commit();
+                    // Display the walkthrough tutorial introduction
+                    displayIntro();
+                }
+            })
+            .setOnCancelListener(new OnCancelListener(){
+                @Override
+                public void onCancel(DialogInterface arg0) {
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean(betaKey, true);
+                    editor.commit();
+                    // Display the walkthrough tutorial introduction
+                    displayIntro();
+                }               
+            });
+            builder.create().show();
+        }
+    }
+    
     /**
      * Displays the introduction to the walkthrough tutorial after accepting the EULA.
      */

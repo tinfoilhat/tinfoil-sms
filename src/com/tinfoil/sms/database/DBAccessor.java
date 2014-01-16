@@ -737,8 +737,10 @@ public class DBAccessor {
 				{
 					name = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME));
 				}
+				//Locale a = ;
 				String message = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_MESSAGE));
-				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_DATE)));
+				String date = Message.millisToDate(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_DATE)), 
+						context.getResources().getConfiguration().locale);
 				String id = String.valueOf(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)));
 				String sent = String.valueOf(sentFlag);
 				//String count = cur.getString(cur.getColumnIndex(KEY_UNREAD));
@@ -757,8 +759,8 @@ public class DBAccessor {
 	{
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.QUERY_CONTENT_URI,
 				new String[]{SQLitehelper.KEY_NAME, SQLitehelper.KEY_NUMBER,
-				SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_MESSAGE}, null, null,
-				SQLitehelper.KEY_DATE + " DESC");
+				SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_MESSAGE,
+				SQLitehelper.KEY_SENT}, null, null, SQLitehelper.KEY_DATE + " DESC");
 		
 		List<String[]> sms = new ArrayList<String[]>();
 		
@@ -767,8 +769,9 @@ public class DBAccessor {
 			String address = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER));
 			String count = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_UNREAD));
 			String name = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NAME));
+			int type = cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_SENT));
 			String message = cur.getString(cur.getColumnIndex(SQLitehelper.KEY_MESSAGE));
-			sms.add(new String[] {address, name, message, count});
+			sms.add(new String[] {address, name, message, count, String.valueOf(type)});
 		}
 		cur.close();
 		return sms;

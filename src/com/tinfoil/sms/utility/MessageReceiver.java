@@ -214,17 +214,19 @@ public class MessageReceiver extends BroadcastReceiver {
 
 						if (!this.getNumber().isInitiator()) {
 							Log.v("Key Exchange", "Not Initiator");
+							
+							String keyMessage = KeyExchange.sign(this.getNumber(),
+									dba, SMSUtility.user);
 							dba.addMessageToQueue(getNumber().getNumber(),
-									KeyExchange.sign(this.getNumber(),
-									dba, SMSUtility.user), true);
+									keyMessage, true);
 							
 							//Store the key exchange in message list (received key exchange, not initiator)
-							//TODO ensure the type of the key exchange
-							Message newMessage = new Message(fullMessage,
+							Message receivedMessage = new Message(fullMessage,
 									true, Message.RECEIVED_KEY_EXCHANGE_RESP);
+							dba.addNewMessage(receivedMessage, address, true);
+							Message newMessage = new Message(keyMessage,
+									true, Message.SENT_KEY_EXCHANGE_RESP);
 							dba.addNewMessage(newMessage, address, true);
-							
-							
 						}
 						else
 						{

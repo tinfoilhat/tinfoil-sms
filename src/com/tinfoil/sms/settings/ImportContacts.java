@@ -37,8 +37,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.targets.PointTarget;
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.loader.OnFinishedImportingListener;
@@ -117,12 +115,6 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
                 }
             }
         });
-        
-        // If walkthrough enabled display the third step of the tutorial
-        if (! Walkthrough.hasShown(Step.IMPORT, this))
-        {
-            Walkthrough.show(Step.IMPORT, this);
-        }
     }
     
     @Override
@@ -296,6 +288,18 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
     }
     
     /**
+     * Displays the import part of the tutorial after the contacts have been loaded.
+     */
+    public void displayStartImport()
+    {
+        // If walkthrough enabled display the third step of the tutorial
+        if (! Walkthrough.hasShown(Step.IMPORT, this))
+        {
+            Walkthrough.show(Step.IMPORT, this);
+        }
+    }
+    
+    /**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -316,7 +320,6 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
 		}
 	
     	runOnUiThread(new Runnable(){
-
 			@Override
 			public void run() {
 				
@@ -337,8 +340,10 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
 				}
 				
 			}
-    		
-    	});		
+    	});
+	
+    	// Display the import tutorial
+    	displayStartImport();
 	}
 
 }

@@ -18,7 +18,6 @@ public class DonationPreferenceDialog extends DialogPreference{
 		super(context, attrs);
 		
 		this.context = context;
-		// TODO Auto-generated constructor stub
 		//this.onBindDialogView(view)
 	}
 
@@ -32,8 +31,10 @@ public class DonationPreferenceDialog extends DialogPreference{
 	@Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
 		builder.setTitle(R.string.donate);
+		builder.setIcon(R.drawable.donate);
 		builder.setMessage(R.string.donate_dialog_message);
 		builder.setCancelable(true);
+		builder.setIcon(R.drawable.donate);
         builder.setPositiveButton(R.string.paypal_option, 
         		new DialogInterface.OnClickListener() {
     	   @Override

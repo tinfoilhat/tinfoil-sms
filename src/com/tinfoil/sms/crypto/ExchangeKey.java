@@ -24,7 +24,6 @@ import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.text.InputType;
