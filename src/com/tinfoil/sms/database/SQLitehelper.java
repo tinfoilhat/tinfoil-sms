@@ -220,7 +220,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + MESSAGES_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + QUEUE_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + EXCHANGE_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + WALKTHROUGH_TABLE_CREATE);
+		db.execSQL("DROP TABLE IF EXISTS " + WALKTHROUGH_TABLE_NAME);
 		onCreate(db);		
 	}
 	

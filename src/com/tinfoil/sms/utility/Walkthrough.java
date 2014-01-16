@@ -117,7 +117,7 @@ public abstract class Walkthrough
             
         case PENDING:
             // Show the tutorial for pending key exchanges
-            target = new ViewTarget(R.id.button_layout, activity);
+            target = new ViewTarget(R.id.counter_layout, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, R.string.tut_pending_title, R.string.tut_pending_body);      
             sv.setScaleMultiplier(0.0f);
             disableWalkthroughStep(step, activity);
@@ -180,7 +180,7 @@ public abstract class Walkthrough
         
         case ACCEPT:
             // Show the accept tutorial when the user accepts key exchange;
-            target = new ViewTarget(R.id.button_layout, activity);
+            target = new ViewTarget(R.id.counter_layout, activity);
             sv = ShowcaseView.insertShowcaseView(target, activity, 
                        R.string.tut_accept_title, R.string.tut_accept_body);            
             sv.setOnShowcaseEventListener(listener);
