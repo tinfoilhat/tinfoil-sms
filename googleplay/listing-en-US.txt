@@ -60,6 +60,7 @@ Beta Release version 1.3.0
 	* Removed Manage Contacts
 	* Added New Key Exchange sending activity to send a key exchange to a contact
 	* Added an in-app tutorial
+	* Made key exchange messages visible to the user
 * Minor Changes:
 	* Donations through custom dialog
 	* Added ability to send a key exchange through new message
@@ -72,6 +73,7 @@ Beta Release version 1.3.0
 	* Layout of New Message
 	* Fixed an issue decrypting messages if app garbage collected
 	* Fixed issues with send and send to capabilities
+	* Fixed import contact messages
 * Minor Fixes:
 	* Invalid message limit issue
 	* Invalid vibrate length issue
