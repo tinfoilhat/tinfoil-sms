@@ -33,6 +33,7 @@ public class DonationPreferenceDialog extends DialogPreference{
 		builder.setTitle(R.string.donate);
 		builder.setMessage(R.string.donate_dialog_message);
 		builder.setCancelable(true);
+		builder.setIcon(R.drawable.donate);
         builder.setPositiveButton(R.string.paypal_option, 
         		new DialogInterface.OnClickListener() {
     	   @Override
