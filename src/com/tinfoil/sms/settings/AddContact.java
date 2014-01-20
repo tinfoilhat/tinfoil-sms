@@ -288,7 +288,7 @@ public class AddContact extends Activity {
     	String name = null;
     	boolean addNumber = false;
     	
-    	if(requestCode == resultCode && resultCode == AddContact.REQUEST_CODE)
+    	if(requestCode == AddContact.REQUEST_CODE && resultCode == RESULT_OK)
     	{
     		update = data.getBooleanExtra(EditNumber.UPDATE, true);
     		number = data.getStringExtra(EditNumber.NUMBER);

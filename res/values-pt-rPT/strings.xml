@@ -120,6 +120,9 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="import_contact_key_menu_condensed">Importar Chave</string>
     <string name="delete_number_menu">Apagar Número</string>
     <string name="delete_number_menu_condensed">Apagar</string>
+    <!-- TODO translate -->
+    <string name="number_exists">Number is already used</string>
+    <string name="number_must_exist">You must save the number first</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Número de Telefone</string>
@@ -188,8 +191,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="import_contacts_title">Introduzir Números de Contactos</string>
     <string name="written_path">Escrever no cartão de memória (SD card) sobre</string>
     
-    <!-- Exchange Key -->
-    <string name="unsuccessful_key_exchanges">Nem todos os números podem ser trocados, eles tem de conter os Segredos Partilhados</string>
+    <!-- Exchange Key --> 
     <string name="key_exchange_cancelled">Troca de Chaves Cancelado</string>
     
     <!-- KeyExchangeHandler strings -->

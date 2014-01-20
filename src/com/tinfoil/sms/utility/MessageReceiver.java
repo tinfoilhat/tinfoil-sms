@@ -440,11 +440,17 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		if (ConversationView.sharedPrefs.getBoolean(
 				QuickPrefsActivity.RINGTONE_SETTING_KEY, false)) {
-			Uri notification = RingtoneManager
-					.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-			Ringtone ringtone = RingtoneManager.getRingtone(
-					context, notification);
-			ringtone.play();
+			Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+			
+			if(notification == null){ 
+				notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);               
+	         }
+			
+			Ringtone ringtone = RingtoneManager.getRingtone(context, notification);
+			if(ringtone != null)
+			{
+				ringtone.play();
+			}
 		}
 	}
 }
