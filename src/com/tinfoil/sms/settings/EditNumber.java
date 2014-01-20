@@ -276,27 +276,49 @@ public class EditNumber extends Activity{
 				}
 				number.setKeyExchangeFlag(index);
 				
+				
 				/*
 				 * Update/Add the number to the database
 				 */
 				if(originalNumber != null)
 				{
 					if(position == AddContact.NEW_NUMBER_CODE)
-					{
-						tc = dba.getRow(originalNumber);
-						tc.addNumber(number);
-						dba.updateRow(tc, originalNumber);
+					{							
+						if(checkUniqueNumber(dba))
+						{
+							tc = dba.getRow(originalNumber);
+							tc.addNumber(number);
+							dba.updateRow(tc, originalNumber);
+						}
+						else
+						{
+							finish();
+						}
 					}
 					else
 					{
-						dba.updateNumberRow(number, originalNumber, 0);
+						if(number.getNumber() == originalNumber && checkUniqueNumber(dba))
+						{
+							dba.updateNumberRow(number, originalNumber, 0);
+						}
+						else
+						{
+							finish();
+						}
 					}
 				}
 				else
 				{
-					tc = new TrustedContact();
-					tc.addNumber(number);
-					dba.addRow(tc);
+					if(checkUniqueNumber(dba))
+					{
+						tc = new TrustedContact();
+						tc.addNumber(number);
+						dba.addRow(tc);
+					}
+					else
+					{
+						finish();
+					}
 				}
 				
 				
@@ -514,6 +536,20 @@ public class EditNumber extends Activity{
 		
  		AlertDialog alert = builder.create();
  		alert.show();
+    }
+    
+    private boolean checkUniqueNumber(DBAccessor dba)
+    {
+    	if(dba.inDatabase(number.getNumber()))
+    	{  	
+	    	Intent returnIntent = new Intent();
+			setResult(RESULT_CANCELED, returnIntent);
+			
+			Toast.makeText(this, R.string.number_exists, Toast.LENGTH_SHORT).show();
+			
+			return false;
+    	}
+    	return true;
     }
     
     /**

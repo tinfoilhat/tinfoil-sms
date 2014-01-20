@@ -120,6 +120,8 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="import_contact_key_menu_condensed">Importovat klíč</string>
     <string name="delete_number_menu">Smazat číslo</string>
     <string name="delete_number_menu_condensed">Smazat</string>
+    <!-- TODO translate -->
+    <string name="number_exists">Number is already used</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Telefonní číslo</string>
@@ -189,7 +191,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="written_path">Uloženo na vaši paměťovou kartu jako</string>
     
     <!-- Exchange Key -->
-    <string name="unsuccessful_key_exchanges">Ne všechna čísla mohou být vyměněna, musí obsahovat ověřovací věty</string>
     <string name="key_exchange_cancelled">Výměna klíčů zrušena</string>
     
     <!-- KeyExchangeHandler strings -->

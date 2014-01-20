@@ -116,6 +116,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="import_contact_key_menu_condensed">Import Key</string>
     <string name="delete_number_menu">Delete Number</string>
     <string name="delete_number_menu_condensed">Delete</string>
+    <string name="number_exists">Number is already used</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Phone Number</string>
@@ -183,7 +184,6 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="written_path">Written to your SD card under</string>
 
     <!-- Exchange Key -->
-    <string name="unsuccessful_key_exchanges">Not all numbers could be exchanged, they must have shared secrets</string>
     <string name="key_exchange_cancelled">Key Exchange Cancelled</string>
 
     <!-- KeyExchangeHandler strings -->
