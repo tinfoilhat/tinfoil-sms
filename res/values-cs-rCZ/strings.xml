@@ -122,6 +122,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="delete_number_menu_condensed">Smazat</string>
     <!-- TODO translate -->
     <string name="number_exists">Number is already used</string>
+    <string name="number_must_exist">You must save the number first</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Telefonní číslo</string>

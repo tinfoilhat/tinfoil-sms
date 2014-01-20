@@ -122,6 +122,7 @@ ONLY CLICK ACCEPT IF YOU FULLY UNDERSTAND AND AGREE TO THE TERMS OF THIS END USE
     <string name="delete_number_menu_condensed">Apagar</string>
     <!-- TODO translate -->
     <string name="number_exists">Number is already used</string>
+    <string name="number_must_exist">You must save the number first</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Número de Telefone</string>
