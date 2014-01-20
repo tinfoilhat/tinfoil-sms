@@ -328,17 +328,24 @@ public class ImportContacts extends Activity implements OnFinishedImportingListe
 					setUpUI();
 				}
 				
-				
-				if (ImportContacts.this.dialog.isShowing())
-	            {
-	            	ImportContacts.this.dialog.dismiss();
-	            }
-				
-				if(success == ImportContacts.FINISH)
+				if(ImportContacts.this.dialog != null)
 				{
-					finish();
-				}
-				
+					try {
+						if (ImportContacts.this.dialog.isShowing())
+			            {
+			            	ImportContacts.this.dialog.dismiss();
+			            }
+						
+						if(success == ImportContacts.FINISH)
+						{
+							finish();
+						}
+					}
+					catch(IllegalArgumentException e)
+					{
+						
+					}
+				}				
 			}
     	});
 	
