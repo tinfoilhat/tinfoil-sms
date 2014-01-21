@@ -325,9 +325,11 @@ public class SendMessageActivity extends Activity {
     	{
     		String text = messageBox.getText().toString();
     	
-	    	if(text != null && text.length() > 0)
+	    	if(text != null && selectedNumber.length() > 0 && text.length() > 0)
 	        {
-	            sendMessage(selectedNumber, text);
+	    		cleanUI();
+	            sendMessage(dba, selectedNumber, text);
+	            refresh();
 	        }
     	}
     	else if(currentActivity == ConversationView.COMPOSE)
@@ -350,19 +352,8 @@ public class SendMessageActivity extends Activity {
 	        	{
 	        		dba.addRow(new TrustedContact(new Number(number)));
 	        	}
-	        	
-	        	//Add the message to the database
-	        	if(dba.isTrustedContact(number))
-	        	{
-	        		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
-	        	}
-	        	else
-	        	{
-	        		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
-	        	}
-	
-	            //Add the message to the queue to send it
-	            dba.addMessageToQueue(number, text, false);         
+
+	        	sendMessage(dba, number, text);
 	            
 	            SendMessageActivity.this.messageBox.setText("");
 	            SendMessageActivity.this.phoneBox.setText("");
@@ -372,37 +363,33 @@ public class SendMessageActivity extends Activity {
     
     /**
      * Take the message information and put the message in the queue.
+     * @param dba The database interface
      * @param number The number the message will be sent to
      * @param text The message content for the message
      */
-    public void sendMessage(final String number, final String text)
+    public void sendMessage(DBAccessor dba, final String number, final String text)
     {
         if (number.length() > 0 && text.length() > 0)
         {
-            //Sets so that a new message sent from the user will not show up as bold
-            messages.setCount(0);
-            this.messageBox.setText("");
-            messageEvent.resetCount();
             dba.addMessageToQueue(number, text, false);
 
-            if(dba.isTrustedContact(number))
-            {
-            	dba.addNewMessage(new Message(text, true, 
-                		Message.SENT_ENCRYPTED), number, false);
-            }
-            else
-            {
-            	dba.addNewMessage(new Message(text, true, 
-                		Message.SENT_DEFAULT), number, false);
-            }
-            
-            //Encrypt the text message before sending it	
-            //SMSUtility.sendMessage(number, text, this.getBaseContext());
-            
-            //Start update thread
-            runThread.setUpdate(true);
-            runThread.setStart(false);
+            SMSUtility.addMessageToDB(dba, number, text);
         }
+    }
+    
+    private void cleanUI()
+    {
+    	//Sets so that a new message sent from the user will not show up as bold
+        messages.setCount(0);
+        this.messageBox.setText("");
+        messageEvent.resetCount();
+    }
+    
+    private void refresh()
+    {
+    	//Start update thread
+    	runThread.setUpdate(true);
+        runThread.setStart(false);
     }
     
 	public void setupMessageInterface() 

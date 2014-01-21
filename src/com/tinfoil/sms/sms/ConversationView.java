@@ -451,8 +451,7 @@ public class ConversationView extends Activity {
     	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
     	{
 	    	final String myPackageName = getPackageName();
-	        if (Telephony.Sms.getDefaultSmsPackage(this) != null || 
-	        		!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
+	        if (!myPackageName.equals(Telephony.Sms.getDefaultSmsPackage(this))) {
 	        	
 	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle(R.string.kitkat_dialog_title)

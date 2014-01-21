@@ -508,4 +508,18 @@ public abstract class SMSUtility {
             tv.setTypeface(null, Typeface.ITALIC);
         }
     }
+    
+    public static void addMessageToDB(DBAccessor dba, final String number, final String text)
+    {
+    	if(dba.isTrustedContact(number))
+        {
+        	dba.addNewMessage(new Message(text, true, 
+            		Message.SENT_ENCRYPTED), number, false);
+        }
+        else
+        {
+        	dba.addNewMessage(new Message(text, true, 
+            		Message.SENT_DEFAULT), number, false);
+        }
+    }
 }
