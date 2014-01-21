@@ -25,6 +25,15 @@ public class QuickSMSSendingService extends Service {
 		
 		DBAccessor dba = new DBAccessor(this);
 		
+		/*if(ConversationView.messageSender == null)
+		{
+			ConversationView.messageSender = new MessageSender();
+		}
+		
+		ConversationView.messageSender.startThread(this);
+
+		SendMessageActivity.sendMessage(this,dba, number, message);*/
+		
 		// TODO fix to use queue.
 		SMSUtility.sendMessage(dba, this, new Entry(number, message));
 		SMSUtility.addMessageToDB(dba, number, message);
