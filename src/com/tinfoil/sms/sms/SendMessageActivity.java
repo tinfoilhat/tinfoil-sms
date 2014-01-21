@@ -130,6 +130,7 @@ public class SendMessageActivity extends Activity {
         	int intentValue = this.getIntent().getIntExtra(ConversationView.MESSAGE_INTENT, ConversationView.COMPOSE);
         	if(intentValue == ConversationView.MESSAGE_VIEW)
         	{
+        		//Set up MessageViews
         		setupMessageView(null, null);
         	}
         	else
@@ -140,12 +141,14 @@ public class SendMessageActivity extends Activity {
                 
         		if(intentValue == ConversationView.COMPOSE)
         		{
+        			//Set up Compose
         			this.setTitle(R.string.send_message);
                     setupMessageBox();                    
                     currentActivity = ConversationView.COMPOSE;
         		}
         		else if (intentValue == ConversationView.NEW_KEY_EXCHANGE)
         		{
+        			//Setup New Key Exchange activity
         			setupKeyExchangeInterface();
         			this.setTitle(R.string.new_key_exchange);
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
@@ -207,6 +210,10 @@ public class SendMessageActivity extends Activity {
 		{
 			selectedNumber = number;
 		}
+		
+		//Set the Activity's title to the name of the contact
+		TrustedContact tc = dba.getRow(selectedNumber);
+		this.setTitle(tc.getName());
         
         setupMessageViewUI();
         
