@@ -298,16 +298,24 @@ public class SendMessageActivity extends Activity {
                     {
                         if (SMSUtility.isANumber(info[0].trim()))
                         {
-                            if (SendMessageActivity.this.newCont.isNumbersEmpty())
+                            if (newCont.isNumbersEmpty())
                             {
-                                SendMessageActivity.this.newCont.addNumber(info[0].trim());
+                                newCont.addNumber(info[0].trim());
                             }
                             else
                             {
-                                SendMessageActivity.this.newCont.setNumber(info[0].trim());
+                                newCont.setNumber(info[0].trim());
                             }
                         }
+                        else
+                        {
+                        	newCont = new TrustedContact();
+                        }
                     }
+                }
+                else
+                {
+                	newCont = new TrustedContact();
                 }
             }
 
@@ -580,7 +588,7 @@ public class SendMessageActivity extends Activity {
 	
 	public void sendKeyExchange(View view)
 	{
-		final String[] temp = SendMessageActivity.checkValidNumber(this, newCont, null, false, true);
+		final String[] temp = checkValidNumber(this, newCont, null, false, true);
 		
 		if(temp != null)
 		{
@@ -611,7 +619,8 @@ public class SendMessageActivity extends Activity {
 		}
 		else
 		{
-			//TODO Handle bad number
+			//Handle bad number
+			Toast.makeText(this, R.string.invalid_number_message, Toast.LENGTH_LONG).show();
 		}
 	}
 	
@@ -716,7 +725,7 @@ public class SendMessageActivity extends Activity {
     public static String[] checkValidNumber(Context context, TrustedContact newCont,
     		String text, boolean checkText, boolean showError)
     {
-    	if (!newCont.getNumber().isEmpty()) {
+    	if (newCont != null && !newCont.getNumber().isEmpty()) {
             final String number = newCont.getNumber(0);
             
             if (number.length() > 0 && (!checkText || text.length() > 0))
@@ -862,7 +871,6 @@ public class SendMessageActivity extends Activity {
             	}
             	else if(currentActivity == ConversationView.MESSAGE_VIEW)
             	{
-            		//TODO update list of messages once key exchange is sent 
             		SMSUtility.handleKeyExchange(keyThread, dba, this, selectedNumber);
             	}
 
