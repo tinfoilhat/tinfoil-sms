@@ -275,27 +275,49 @@ public class EditNumber extends Activity{
 				}
 				number.setKeyExchangeFlag(index);
 				
+				
 				/*
 				 * Update/Add the number to the database
 				 */
 				if(originalNumber != null)
 				{
 					if(position == AddContact.NEW_NUMBER_CODE)
-					{
-						tc = dba.getRow(originalNumber);
-						tc.addNumber(number);
-						dba.updateRow(tc, originalNumber);
+					{							
+						if(checkUniqueNumber())
+						{
+							tc = dba.getRow(originalNumber);
+							tc.addNumber(number);
+							dba.updateRow(tc, originalNumber);
+						}
+						else
+						{
+							finish();
+						}
 					}
 					else
 					{
-						dba.updateNumberRow(number, originalNumber, 0);
+						if(number.getNumber() == originalNumber && checkUniqueNumber())
+						{
+							dba.updateNumberRow(number, originalNumber, 0);
+						}
+						else
+						{
+							finish();
+						}
 					}
 				}
 				else
 				{
-					tc = new TrustedContact();
-					tc.addNumber(number);
-					dba.addRow(tc);
+					if(checkUniqueNumber())
+					{
+						tc = new TrustedContact();
+						tc.addNumber(number);
+						dba.addRow(tc);
+					}
+					else
+					{
+						finish();
+					}
 				}
 				
 				
@@ -361,125 +383,12 @@ public class EditNumber extends Activity{
 				return true;
             case R.id.import_key:
            	
-            	if (originalNumber == null || originalNumber == "" || dba.getRow(originalNumber) == null)
-            	{
-            		Toast.makeText(getApplicationContext(), "You must save the number first", Toast.LENGTH_LONG).show();
-            	}
-            	else
-            	{	            	
-	            	if(SMSUtility.isMediaAvailable() && SMSUtility.checksharedSecret(number.getSharedInfo1()) 
-	            			&& SMSUtility.checksharedSecret(number.getSharedInfo2()))
-	            	{
-	            		final File root = Environment.getExternalStorageDirectory();
-	            		
-	            		File dir = new File(root.getAbsolutePath() + UserKeySettings.path + "/"); 
-	            		File[] contents = dir.listFiles();
-	            		
-	            		fileNames = new String[contents.length];
-	            		for (int i = 0; i < contents.length; i++)
-	            		{
-	            			fileNames[i] = contents[i].getAbsolutePath();
-	            		}
-	        			
-	        			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
-	        			
-	        			popup_builder.setTitle(R.string.export_number_title)
-	        				.setCancelable(true)
-	                        .setSingleChoiceItems(fileNames, 0, new DialogInterface.OnClickListener() {
-	
-	                        	public void onClick(final DialogInterface dialog, final int which) { 
-	                        		
-	                        		popup_alert.dismiss();
-	                        		String selectedFile = (String) fileNames[which];
-	                        		
-	                        		if(selectedFile != null)
-	                        		{                        			
-	                        			StringBuilder sb = new StringBuilder();
-	                        			
-	                        			File pubKey = new File(selectedFile);
-	                            		
-	                            		try {
-	                						FileInputStream f = new FileInputStream(pubKey);
-	                						
-	                						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(f));
-	                					    String line;
-	                					    while ((line = bufferedReader.readLine()) != null) {
-	                					        sb.append(line);
-	                					    }
-	                					    bufferedReader.close();
-	                					    f.close();
-	                					} catch (FileNotFoundException e) {
-	                						e.printStackTrace();
-	                					} catch (IOException e) {
-	                						e.printStackTrace();
-	                					}
-	                           		
-	                            		String keyExchangeMessage = sb.toString();
-	                            		
-	                            		if(KeyExchange.isKeyExchange(keyExchangeMessage))
-	                            		{
-	                            			if(KeyExchange.verify(number, keyExchangeMessage))
-	                						{
-	                            				Log.v("Key Exchange", "Exchange Key Message Received");
-	                			                
-	                							number.setPublicKey(KeyExchange.encodedPubKey(keyExchangeMessage));
-	                							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
-	                							
-	                							dba.updateNumberRow(number, number.getNumber(), 0);
-	                							Toast.makeText(EditNumber.this, R.string.key_exchange_import, Toast.LENGTH_SHORT).show();
-	                							
-	                							if(!number.isInitiator())
-	    										{
-	    											Log.v("Key Exchange", "Not Initiator");
-	    											//MessageService.dba.addMessageToQueue(number.getNumber(),
-	    												//	KeyExchange.sign(number), true);
-	    											exportOrSend(EditNumber.this, number);
-	    										}
-	    										
-	                							EditNumber.this.setResult(AddContact.UPDATED_NUMBER);
-	                						}
-	                            		}
-	        	            			
-	                        		}
-	                        	}
-	                        });
-	        			
-	        			popup_alert = popup_builder.create();
-	        			popup_alert.show();
-	            	}
-            	}
-            	
+            	exportKey();
             	return true;
             	
             case R.id.delete:
             	
-            	Intent data = new Intent();
-            	
-            	if (originalNumber == null || originalNumber == "" || dba.getRow(originalNumber) == null)
-            	{
-            		// User deleted the number so 
-            		finish();
-            	}            		
-            	else {
-	            	if (dba.getRow(originalNumber).getNumbers().size() == 1)
-	            	{
-	            		dba.removeRow(originalNumber);
-	            		data.putExtra(EditNumber.IS_DELETED, true);
-	            	}
-	            	else
-	            	{
-	            		dba.deleteNumber(originalNumber);
-	            	}
-            	}
-            	
-            	data.putExtra(EditNumber.UPDATE, true);
-				//data.putExtra(EditNumber.NUMBER, null);
-				data.putExtra(AddContact.POSITION, position);
-				data.putExtra(EditNumber.ADD, true);
-            	data.putExtra(EditNumber.DELETE, originalNumber);
-				EditNumber.this.setResult(AddContact.REQUEST_CODE, data);
-				
-				EditNumber.this.finish();
+            	deleteNumber();
             	return true;            
             default:
                 return super.onOptionsItemSelected(item);
@@ -513,6 +422,20 @@ public class EditNumber extends Activity{
  		alert.show();
     }
     
+    private boolean checkUniqueNumber()
+    {
+    	if(dba.inDatabase(number.getNumber()))
+    	{  	
+	    	Intent returnIntent = new Intent();
+			setResult(RESULT_CANCELED, returnIntent);
+			
+			Toast.makeText(this, R.string.number_exists, Toast.LENGTH_SHORT).show();
+			
+			return false;
+    	}
+    	return true;
+    }
+    
     /**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -522,5 +445,126 @@ public class EditNumber extends Activity{
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
+	
+	private void deleteNumber()
+	{
+		Intent data = new Intent();
+    	
+    	if (originalNumber == null || originalNumber == "" || dba.getRow(originalNumber) == null)
+    	{
+    		// User deleted the number so 
+    		finish();
+    	}            		
+    	else {
+        	if (dba.getRow(originalNumber).getNumbers().size() == 1)
+        	{
+        		dba.removeRow(originalNumber);
+        		data.putExtra(EditNumber.IS_DELETED, true);
+        	}
+        	else
+        	{
+        		dba.deleteNumber(originalNumber);
+        	}
+    	}
+    	
+    	data.putExtra(EditNumber.UPDATE, true);
+		data.putExtra(AddContact.POSITION, position);
+		data.putExtra(EditNumber.ADD, true);
+    	data.putExtra(EditNumber.DELETE, originalNumber);
+		setResult(AddContact.REQUEST_CODE, data);
+		
+		finish();
+	}
 
+	private void exportKey()
+	{
+		if (originalNumber == null || originalNumber == "" || dba.getRow(originalNumber) == null)
+    	{
+    		Toast.makeText(getApplicationContext(), R.string.number_must_exist, Toast.LENGTH_LONG).show();
+    	}
+    	else
+    	{	            	
+        	if(SMSUtility.isMediaAvailable() && SMSUtility.checksharedSecret(number.getSharedInfo1()) 
+        			&& SMSUtility.checksharedSecret(number.getSharedInfo2()))
+        	{
+        		final File root = Environment.getExternalStorageDirectory();
+        		
+        		File dir = new File(root.getAbsolutePath() + UserKeySettings.path + "/"); 
+        		File[] contents = dir.listFiles();
+        		
+        		fileNames = new String[contents.length];
+        		for (int i = 0; i < contents.length; i++)
+        		{
+        			fileNames[i] = contents[i].getAbsolutePath();
+        		}
+    			
+    			final AlertDialog.Builder popup_builder = new AlertDialog.Builder(this);
+    			
+    			popup_builder.setTitle(R.string.export_number_title)
+    				.setCancelable(true)
+                    .setSingleChoiceItems(fileNames, 0, new DialogInterface.OnClickListener() {
+
+                    	public void onClick(final DialogInterface dialog, final int which) { 
+                    		
+                    		popup_alert.dismiss();
+                    		String selectedFile = (String) fileNames[which];
+                    		
+                    		if(selectedFile != null)
+                    		{                        			
+                    			StringBuilder sb = new StringBuilder();
+                    			
+                    			File pubKey = new File(selectedFile);
+                        		
+                        		try {
+            						FileInputStream f = new FileInputStream(pubKey);
+            						
+            						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(f));
+            					    String line;
+            					    while ((line = bufferedReader.readLine()) != null) {
+            					        sb.append(line);
+            					    }
+            					    bufferedReader.close();
+            					    f.close();
+            					} catch (FileNotFoundException e) {
+            						e.printStackTrace();
+            					} catch (IOException e) {
+            						e.printStackTrace();
+            					}
+                       		
+                        		String keyExchangeMessage = sb.toString();
+                        		
+                        		if(KeyExchange.isKeyExchange(keyExchangeMessage))
+                        		{
+                        			if(KeyExchange.verify(number, keyExchangeMessage))
+            						{
+                        				Log.v("Key Exchange", "Exchange Key Message Received");
+            			                
+            							number.setPublicKey(KeyExchange.encodedPubKey(keyExchangeMessage));
+            							number.setSignature(KeyExchange.encodedSignature(keyExchangeMessage));
+            							
+            							dba.updateNumberRow(number, number.getNumber(), 0);
+            							Toast.makeText(EditNumber.this, R.string.key_exchange_import, Toast.LENGTH_SHORT).show();
+            							
+            							if(!number.isInitiator())
+										{
+											Log.v("Key Exchange", "Not Initiator");
+											//MessageService.dba.addMessageToQueue(number.getNumber(),
+												//	KeyExchange.sign(number), true);
+											exportOrSend(EditNumber.this, number);
+										}
+										
+            							EditNumber.this.setResult(AddContact.UPDATED_NUMBER);
+            						}
+                        		}
+    	            			
+                    		}
+                    	}
+                    });
+    			
+    			popup_alert = popup_builder.create();
+    			popup_alert.show();
+        	}
+    	}
+	}
+	
 }

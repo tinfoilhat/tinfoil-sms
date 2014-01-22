@@ -12,11 +12,6 @@ application so your texts don’t fall into the wrong hands. Tinfoil-SMS uses 25
 bit ECC public keys as well as a unique signed key exchange to prevent any 
 “man-in-the-middle” attacks.
 
-The only way an unwanted party will see your messages is if they know your secret 
-passphrases and trick you into accepting a key exchange from them. If you think 
-we’re bluffing or you need to see it to believe it, feel free to poke around the 
-source code. It’s open source and we’ve got nothing to hide.
-
 
 ## Get Tinfoil-SMS
 
@@ -36,7 +31,6 @@ to submit pull requests for any contributions you would like to make.
 4. Security above all else, including performance
 
 
-
 ## Project Goals
 
 * Always free for anyone to use and with no limitations
@@ -51,15 +45,17 @@ to submit pull requests for any contributions you would like to make.
 * Thorough guide to help mitigate any security risks as a result of improper use
 
 
-
 ## Future Plans
 
-* Thorough beta phase with comprehensive bug testing and reporting using BugSense
 * Security audits and a detailed cryptanalysis of the application and the library, [Orwell](https://github.com/gnu-user/Orwell)
 * Finalizing the cryptography during the beta release, so that it can remain unchanged for the stable release
 * A stable release within 6 months of the beta release
 * Incorporating steganography to obfuscate text messages for the next major release
 
+
+## Contributing to Tinfoil-SMS
+
+We are looking for people who are interested in providing translations, testing the app, and providing feedback to help fix bugs and make the app more stable and secure (including security audits!). If you are interested you can either send us an email at <a href="mailto:tinfoil.sms@gmail.com">tinfoil.sms@gmail.com</a> or submit an issue on <a href="https://github.com/tinfoilhat/tinfoil-sms/issues" target="_blank">GitHub</a>. Feel free to clone the project and submit pull requests for any contributions you would like to make, we recommend contacting us first so that we understand what you are trying to contribute.
 
 
 ## Cryptography Notice
@@ -79,7 +75,6 @@ functions with asymmetric algorithms. The form and manner of this distribution
 makes it eligible for export under the License Exception ENC Technology Software 
 Unrestricted (TSU) exception (see the BIS Export Administration Regulations, 
 Section 740.13) for both object code and source code.
-
 
 
 ## Copyright (Really Copyleft)

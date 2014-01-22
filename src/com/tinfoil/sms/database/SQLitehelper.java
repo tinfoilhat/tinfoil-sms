@@ -30,7 +30,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "tinfoil-sms.db";
 	
-	private static final String PATH = "/data/data/com.tinfoil.sms/databases/" + DATABASE_NAME;
+	//private static final String PATH = "/data/data/com.tinfoil.sms/databases/" + DATABASE_NAME;
 	
 	/*
 	 * Upgraded the version of the database since signature was removed from the
