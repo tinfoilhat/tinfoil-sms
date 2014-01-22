@@ -31,6 +31,7 @@ public class DonationPreferenceDialog extends DialogPreference{
 	@Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
 		builder.setTitle(R.string.donate);
+		builder.setIcon(R.drawable.donate);
 		builder.setMessage(R.string.donate_dialog_message);
 		builder.setCancelable(true);
 		builder.setIcon(R.drawable.donate);
