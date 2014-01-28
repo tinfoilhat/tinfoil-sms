@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.strippedcastle.crypto.InvalidCipherTextException;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -33,7 +34,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.TextView;
@@ -521,5 +524,18 @@ public abstract class SMSUtility {
         	dba.addNewMessage(new Message(text, true, 
             		Message.SENT_DEFAULT), number, false);
         }
+    }
+    
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static boolean checkDefault(Context context)
+    {
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+    	{
+	    	final String myPackageName = context.getPackageName();
+	        if (!myPackageName.equals(Telephony.Sms.getDefaultSmsPackage(context))) {
+	        	return false;
+	        }
+    	}
+    	return true;
     }
 }

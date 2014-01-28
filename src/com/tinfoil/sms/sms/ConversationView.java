@@ -445,13 +445,9 @@ public class ConversationView extends Activity {
     	}
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
 	public void checkDefault()
     {
-    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-    	{
-	    	final String myPackageName = getPackageName();
-	        if (!myPackageName.equals(Telephony.Sms.getDefaultSmsPackage(this))) {
+    	if(!SMSUtility.checkDefault(this)) {
 	        	
 	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle(R.string.kitkat_dialog_title)
@@ -463,7 +459,7 @@ public class ConversationView extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
 	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
-	                            myPackageName);
+	                    		getPackageName());
 	                    startActivity(intent);
 	                    // Display the beta Notice dialog
 	                    betaNotice();
@@ -495,12 +491,11 @@ public class ConversationView extends Activity {
 						ConversationView.this.startActivity(i);
 						
 	                    // Display the beta Notice dialog
-                        betaNotice();
+                        //betaNotice();
 					}
 		        	
 		        });
 		    	builder.create().show();
-	        }
     	}
     }
 
