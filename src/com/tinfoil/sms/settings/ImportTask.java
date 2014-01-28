@@ -215,10 +215,17 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	                    } while (sCur.moveToNext());
 	                }
 	                
-	                int [] ent = TrustedContact.isNumberUsed(tc, newNumber.getNumber());
+	                int [] ent = null;
 	                
-	                if (newNumber != null && ent == null
-	                        && !loader.inDatabase(newNumber.getNumber()) && newNumber.getNumber() != null)
+	                if(newNumber != null)
+	                {
+	                	ent = TrustedContact.isNumberUsed(tc, newNumber.getNumber());
+	                }
+	                
+	                
+	                if (ent == null && newNumber != null && 
+	                		!loader.inDatabase(newNumber.getNumber())
+	                         && newNumber.getNumber() != null)
 	                {
 	                    tc.add(new TrustedContact(newNumber));
 	                    this.inDb.add(false);
@@ -251,11 +258,13 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	            {
 	            	sCur.close();
 	            }
-	            convCur.close();
+	            if(convCur != null)
+	            {
+	            	convCur.close();
+	            }
 	        }
 	        else
-	        {
-	        	
+	        {   	
 	            for (int i = 0; i < this.tc.size(); i++)
 	            {
 	                if (this.inDb.get(i))

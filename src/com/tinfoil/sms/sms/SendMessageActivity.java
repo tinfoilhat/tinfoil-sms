@@ -130,6 +130,7 @@ public class SendMessageActivity extends Activity {
         	int intentValue = this.getIntent().getIntExtra(ConversationView.MESSAGE_INTENT, ConversationView.COMPOSE);
         	if(intentValue == ConversationView.MESSAGE_VIEW)
         	{
+        		//Set up MessageViews
         		setupMessageView(null, null);
         	}
         	else
@@ -140,12 +141,14 @@ public class SendMessageActivity extends Activity {
                 
         		if(intentValue == ConversationView.COMPOSE)
         		{
+        			//Set up Compose
         			this.setTitle(R.string.send_message);
                     setupMessageBox();                    
                     currentActivity = ConversationView.COMPOSE;
         		}
         		else if (intentValue == ConversationView.NEW_KEY_EXCHANGE)
         		{
+        			//Setup New Key Exchange activity
         			setupKeyExchangeInterface();
         			this.setTitle(R.string.new_key_exchange);
         			currentActivity = ConversationView.NEW_KEY_EXCHANGE;
@@ -206,6 +209,18 @@ public class SendMessageActivity extends Activity {
 		else
 		{
 			selectedNumber = number;
+		}
+		
+		//Set the Activity's title to the name of the contact
+		TrustedContact tc = dba.getRow(selectedNumber);
+		
+		if(tc != null)
+		{
+			setTitle(tc.getName());
+		}
+		else
+		{
+			finish();
 		}
         
         setupMessageViewUI();
@@ -291,16 +306,24 @@ public class SendMessageActivity extends Activity {
                     {
                         if (SMSUtility.isANumber(info[0].trim()))
                         {
-                            if (SendMessageActivity.this.newCont.isNumbersEmpty())
+                            if (newCont.isNumbersEmpty())
                             {
-                                SendMessageActivity.this.newCont.addNumber(info[0].trim());
+                                newCont.addNumber(info[0].trim());
                             }
                             else
                             {
-                                SendMessageActivity.this.newCont.setNumber(info[0].trim());
+                                newCont.setNumber(info[0].trim());
                             }
                         }
+                        else
+                        {
+                        	newCont = new TrustedContact();
+                        }
                     }
+                }
+                else
+                {
+                	newCont = new TrustedContact();
                 }
             }
 
@@ -560,7 +583,7 @@ public class SendMessageActivity extends Activity {
 	
 	public void sendKeyExchange(View view)
 	{
-		final String[] temp = SendMessageActivity.checkValidNumber(this, newCont, null, false, true);
+		final String[] temp = checkValidNumber(this, newCont, null, false, true);
 		
 		if(temp != null)
 		{
@@ -591,7 +614,8 @@ public class SendMessageActivity extends Activity {
 		}
 		else
 		{
-			//TODO Handle bad number
+			//Handle bad number
+			Toast.makeText(this, R.string.invalid_number_message, Toast.LENGTH_LONG).show();
 		}
 	}
 	
@@ -696,7 +720,7 @@ public class SendMessageActivity extends Activity {
     public static String[] checkValidNumber(Context context, TrustedContact newCont,
     		String text, boolean checkText, boolean showError)
     {
-    	if (!newCont.getNumber().isEmpty()) {
+    	if (newCont != null && !newCont.getNumber().isEmpty()) {
             final String number = newCont.getNumber(0);
             
             if (number.length() > 0 && (!checkText || text.length() > 0))
@@ -842,7 +866,6 @@ public class SendMessageActivity extends Activity {
             	}
             	else if(currentActivity == ConversationView.MESSAGE_VIEW)
             	{
-            		//TODO update list of messages once key exchange is sent 
             		SMSUtility.handleKeyExchange(keyThread, dba, this, selectedNumber);
             	}
 
@@ -897,6 +920,10 @@ public class SendMessageActivity extends Activity {
                 	 invalid = true;
                 }
             }
+        }
+        else
+        {
+        	invalid = true;
         }
 
         if (invalid)
