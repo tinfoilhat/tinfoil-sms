@@ -223,7 +223,8 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	                }
 	                
 	                
-	                if (ent == null && !loader.inDatabase(newNumber.getNumber())
+	                if (ent == null && newNumber != null && 
+	                		!loader.inDatabase(newNumber.getNumber())
 	                         && newNumber.getNumber() != null)
 	                {
 	                    tc.add(new TrustedContact(newNumber));

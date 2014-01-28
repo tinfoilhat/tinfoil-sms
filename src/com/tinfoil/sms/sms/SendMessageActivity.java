@@ -926,6 +926,10 @@ public class SendMessageActivity extends Activity {
                 }
             }
         }
+        else
+        {
+        	invalid = true;
+        }
 
         if (invalid)
         {

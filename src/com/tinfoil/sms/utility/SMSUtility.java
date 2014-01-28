@@ -388,7 +388,7 @@ public abstract class SMSUtility {
      */
     public static boolean isANumber(final String number)
     {
-    	if(number.matches(numberPattern))
+    	if(number != null && number.matches(numberPattern))
     	{
     		return true;
     	}
