@@ -258,7 +258,10 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	            {
 	            	sCur.close();
 	            }
-	            convCur.close();
+	            if(convCur != null)
+	            {
+	            	convCur.close();
+	            }
 	        }
 	        else
 	        {   	
