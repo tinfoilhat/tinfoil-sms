@@ -213,7 +213,15 @@ public class SendMessageActivity extends Activity {
 		
 		//Set the Activity's title to the name of the contact
 		TrustedContact tc = dba.getRow(selectedNumber);
-		this.setTitle(tc.getName());
+		
+		if(tc != null)
+		{
+			setTitle(tc.getName());
+		}
+		else
+		{
+			finish();
+		}
         
         setupMessageViewUI();
         
