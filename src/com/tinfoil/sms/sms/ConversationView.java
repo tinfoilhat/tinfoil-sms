@@ -445,6 +445,7 @@ public class ConversationView extends Activity {
     	}
     }
 
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public void checkDefault()
     {
     	if(!SMSUtility.checkDefault(this)) {

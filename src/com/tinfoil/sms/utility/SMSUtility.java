@@ -271,34 +271,39 @@ public abstract class SMSUtility {
      * @param dest The folder in the android database that the message
      *            will be stored in
      */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static void sendToSelf(final Context c, final String srcNumber, final String decMessage, final String dest) {
-        //Prevent message from doing to native client given user settings
-        if (ConversationView.sharedPrefs.getBoolean(
-        		QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, false))
-        {
-            final ContentValues values = new ContentValues();
-            values.put("address", srcNumber);
-            values.put("body", decMessage);
-
-            //Stops native sms client from reading messages as new.
-            values.put("read", true);
-            values.put("seen", true);
-
-            /* Sets used to determine who sent the message, 
-             * if type == 2 then it is sent from the user
-             * if type == 1 it has been sent by the contact
-             */
-            if (dest.equalsIgnoreCase(SENT))
-            {
-                values.put("type", "2");
-            }
-            else
-            {
-                values.put("type", "1");
-            }
-
-            c.getContentResolver().insert(Uri.parse(dest), values);
-        }
+        
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+    	{
+	    	//Prevent message from doing to native client given user settings
+	        if (ConversationView.sharedPrefs.getBoolean(
+	        		QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, false))
+	        {
+	            final ContentValues values = new ContentValues();
+	            values.put("address", srcNumber);
+	            values.put("body", decMessage);
+	
+	            //Stops native sms client from reading messages as new.
+	            values.put("read", true);
+	            values.put("seen", true);
+	
+	            /* Sets used to determine who sent the message, 
+	             * if type == 2 then it is sent from the user
+	             * if type == 1 it has been sent by the contact
+	             */
+	            if (dest.equalsIgnoreCase(SENT))
+	            {
+	                values.put("type", "2");
+	            }
+	            else
+	            {
+	                values.put("type", "1");
+	            }
+	
+	            c.getContentResolver().insert(Uri.parse(dest), values);
+	        }        
+    	}
     }
     
     /**
