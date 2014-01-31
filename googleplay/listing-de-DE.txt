@@ -53,15 +53,15 @@ Tinfoil-SMS - Texting for the paranoid.
 RECENT CHANGES
 ----------------------------------------
 
-Beta Release version 1.3.1
+Beta Release version 1.3.2
 
 Changes:
-* Added contact name to MessageView's Title.
+	* Added German tranlations
 Fixes:
-* Text used in application.
-* Issues with adding the same number to two contacts.
-* Default ringtone issues.
-* No default SMS app for Kitkat check.
-* Compose invalid number issues.
+	* Forward empty number
+	* Import invalid contact
+	* Invalid contact issue
+	* No default SMS app for Kitkat check.
+	* Fixed Compose menu strings.
 
 For a complete listing of all changes please see the CHANGELOG on GitHub.
