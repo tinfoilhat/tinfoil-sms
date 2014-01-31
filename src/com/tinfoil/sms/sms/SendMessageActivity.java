@@ -686,15 +686,15 @@ public class SendMessageActivity extends Activity {
 		        else if(ret == UNTRUSTED)
 		        {
 	        		menu.findItem(R.id.exchange)
-	        			.setTitle(R.string.resolve_key_exchange_full)
-	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
+	        			.setTitle(R.string.exchange_key_full)
+	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
 	        			.setEnabled(true);
 		        }
 	        	else if(ret == RESOLVE)
 	        	{
 	        		menu.findItem(R.id.exchange)
-	        			.setTitle(R.string.exchange_key_full)
-	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
+	        			.setTitle(R.string.resolve_key_exchange_full)
+	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
 	        			.setEnabled(true);
 		        }
 	        }
