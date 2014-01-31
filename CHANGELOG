@@ -3,9 +3,10 @@ Beta Release version 1.3.2
 Changes:
 	*
 Fixes:
-	* Forward empty number issue
-	* Import invalid contact issue
+	* Forward empty number
+	* Import invalid contact
 	* Invalid contact issue
+	* No default SMS app for Kitkat check.
 
 Beta Release version 1.3.1
 
