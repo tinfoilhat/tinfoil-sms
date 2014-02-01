@@ -28,6 +28,11 @@ body {
     padding-bottom: 20px;
 }
 
+/* Remove the extra height of navbar on mobile phones */
+.navbar-header {
+    height: 0px;
+}
+
 /* The main image */
 .bgimg {
     background: url(../img/header-img.jpg) no-repeat center center;
@@ -97,7 +102,7 @@ html, body {
 .footer {
  position: relative;
  margin-top: 25px;
- height: 80px;
+ min-height: 80px;
  padding: 20px;
 }
 
