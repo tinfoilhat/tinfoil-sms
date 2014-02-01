@@ -32,11 +32,31 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	
 	//private static final String PATH = "/data/data/com.tinfoil.sms/databases/" + DATABASE_NAME;
 	
-	/*
+	/**
+	 * Beta release v1.4.0+
+	 */
+	private static final int DB_V4 = 4;
+	
+	/**
+	 * Beta release v1.3.0 - v1.3.2
+	 */
+	private static final int DB_V3 = 3;
+
+	/**
+	 * Beta release v1.0.0 - v1.2.6
+	 */
+	private static final int DB_V2 = 2;
+
+	/**
+	 * Pre-beta release of Tinfoil-SMS
+	 */
+	private static final int DB_V1 = 1;
+	
+	/**
 	 * Upgraded the version of the database since signature was removed from the
 	 * user database.
 	 */
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = DB_V4;
 	
 	/* Table Names */
 	public static final String USER_TABLE_NAME = "user";
@@ -94,6 +114,12 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	public static final String KEY_ACCEPT = "accept";
 	public static final String KEY_SUCCESS = "success";
 	public static final String KEY_CLOSE = "close";
+	
+	private static final String KEY_DRAFT = "draft";
+	
+	private static final String ALTER_NUMBERS_TABLE_DRAFT_UPDATE =
+			"ALTER TABLE " + NUMBERS_TABLE_NAME + " ADD COLUMN "
+			+ KEY_DRAFT + " TEXT DEFAULT \"\";";
     
     /* Create statements */
     private static final String SHARED_INFO_TABLE_CREATE =
@@ -128,6 +154,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " " + KEY_NUMBER + " TEXT UNIQUE," +
+            " " + KEY_DRAFT + "TEXT DEFAULT \"\"," +
             " " + KEY_TYPE + " INTEGER," +
             " " + KEY_UNREAD + " INTEGER," +
             " " + KEY_PUBLIC_KEY + " BLOB," +
@@ -211,17 +238,35 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.v("Database Update", "tables are being deleted to update from version "
-				+ oldVersion + " to version " + newVersion); 
-		db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + TRUSTED_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + NUMBERS_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + SHARED_INFO_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + BOOK_PATHS_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + MESSAGES_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + QUEUE_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + EXCHANGE_TABLE_NAME);
-		db.execSQL("DROP TABLE IF EXISTS " + WALKTHROUGH_TABLE_NAME);
-		onCreate(db);		
+				+ oldVersion + " to version " + newVersion);
+		
+		if(oldVersion <= DB_V1)
+		{
+			// Using an unreleased version of the database. Clear and re-create.
+			db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + TRUSTED_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + NUMBERS_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + SHARED_INFO_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + BOOK_PATHS_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + MESSAGES_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + QUEUE_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + EXCHANGE_TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + WALKTHROUGH_TABLE_NAME);
+			onCreate(db);
+		}
+		else {
+		
+			if(oldVersion == DB_V2)
+			{
+				db.execSQL(INSERT_WALKTHROUGH);
+			}
+			
+			if(oldVersion <= DB_V3)
+			{
+				db.execSQL(ALTER_NUMBERS_TABLE_DRAFT_UPDATE);
+			}
+			
+		}
 	}
 	
 	@Override

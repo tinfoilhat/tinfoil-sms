@@ -50,6 +50,7 @@ CREATE TABLE numbers
     reference INTEGER REFERENCES trusted_contact (id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     number TEXT,
+    draft TEXT,
     type INTEGER,
     unread INTEGER,
     public_key BLOB,
@@ -103,3 +104,6 @@ CREATE TABLE walkthrough
 )
 
 INSERT OR IGNORE INTO walkthrough (id, intro, start_import, import, start_exchange, set_secret, key_send, pending, accept, success, close) VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+/* Alter table command for upgrading to v1.4.0+ */
+ALTER TABLE numbers ADD COLUMN draft TEXT DEFAULT "";
