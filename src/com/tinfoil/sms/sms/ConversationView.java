@@ -437,6 +437,7 @@ public class ConversationView extends Activity {
         }
     	else
     	{
+    		
     		// Check if Tinfoil-SMS is default SMS app.
     		//checkDefault();
     	}

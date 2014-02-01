@@ -236,7 +236,7 @@ public class AddContact extends Activity {
 
                         }
                     })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int whichButton) {
                             dialog.cancel();// Canceled.
                         }

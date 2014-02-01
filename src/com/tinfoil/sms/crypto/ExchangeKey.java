@@ -208,7 +208,7 @@ public class ExchangeKey implements Runnable {
 								}
     	    		    	   
     	    		       })
-    	    		       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+    	    		       .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
     	    		    	   @Override
     	    		    	   public void onClick(DialogInterface arg0, int arg1) {
     	    		    			//Cancel the key exchange
