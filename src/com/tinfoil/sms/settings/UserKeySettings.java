@@ -208,7 +208,7 @@ public class UserKeySettings extends Activity {
 	                		    			   Toast.makeText(UserKeySettings.this, R.string.invalid_secrets, Toast.LENGTH_LONG).show();
 	                		    		   }
 	                		    }})
-			    		 	       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			    		 	       .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 			    		 	    	   @Override
 			    		 	    	   public void onClick(DialogInterface arg0, int arg1) {
 			    		 	    		   	//Cancel the key exchange

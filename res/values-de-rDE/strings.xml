@@ -4,7 +4,6 @@
     <string name="app_name">Tinfoil-SMS</string>
     <string name="vibration_default_length">500</string>
     <string name="contact_name">Name</string>
-    <string name="cancel">Cancel</string>
     <string name="tell_me_more">Tell Me More</string>
     <string name="save">Save</string>
     <string name="accept">Accept</string>
