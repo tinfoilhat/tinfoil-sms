@@ -115,7 +115,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	public static final String KEY_SUCCESS = "success";
 	public static final String KEY_CLOSE = "close";
 	
-	private static final String KEY_DRAFT = "draft";
+	public static final String KEY_DRAFT = "draft";
 	
 	private static final String ALTER_NUMBERS_TABLE_DRAFT_UPDATE =
 			"ALTER TABLE " + NUMBERS_TABLE_NAME + " ADD COLUMN "
@@ -256,6 +256,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 		}
 		else {
 		
+			// Tweak the database to be consistent with the current database version.
 			if(oldVersion == DB_V2)
 			{
 				db.execSQL(INSERT_WALKTHROUGH);
@@ -265,7 +266,6 @@ public class SQLitehelper extends SQLiteOpenHelper {
 			{
 				db.execSQL(ALTER_NUMBERS_TABLE_DRAFT_UPDATE);
 			}
-			
 		}
 	}
 	

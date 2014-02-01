@@ -789,9 +789,9 @@ public class DBAccessor {
 	{
 		
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
-				new String[]{SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER, SQLitehelper.KEY_TYPE,
-				SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_PUBLIC_KEY, SQLitehelper.KEY_SIGNATURE,
-				SQLitehelper.KEY_NONCE_ENCRYPT, SQLitehelper.KEY_NONCE_DECRYPT,
+				new String[]{SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER, SQLitehelper.KEY_DRAFT,
+				SQLitehelper.KEY_TYPE, SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_PUBLIC_KEY,
+				SQLitehelper.KEY_SIGNATURE, SQLitehelper.KEY_NONCE_ENCRYPT, SQLitehelper.KEY_NONCE_DECRYPT,
 				SQLitehelper.KEY_INITIATOR, SQLitehelper.KEY_EXCHANGE_SETTING},
 				SQLitehelper.KEY_NUMBER + " = ?", new String[]{number}, null);
 		
@@ -799,6 +799,7 @@ public class DBAccessor {
 		{
 			Number returnNumber = new Number(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)),
 					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_DRAFT)),
 					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_TYPE)),
 					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_UNREAD)),
 					cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
@@ -869,7 +870,9 @@ public class DBAccessor {
 				do
 				{
 					num_id = pCur.getLong(pCur.getColumnIndex(SQLitehelper.KEY_ID));
-					tc.addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+					tc.addNumber(new Number (num_id, 
+							pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+							pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_DRAFT)),
 							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_TYPE)),
 							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_UNREAD)),
 							pCur.getBlob(pCur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
