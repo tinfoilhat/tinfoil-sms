@@ -259,6 +259,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 			// Tweak the database to be consistent with the current database version.
 			if(oldVersion == DB_V2)
 			{
+				db.execSQL(WALKTHROUGH_TABLE_CREATE);
 				db.execSQL(INSERT_WALKTHROUGH);
 			}
 			
