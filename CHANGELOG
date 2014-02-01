@@ -1,12 +1,13 @@
 Beta Release version 1.3.2
 
 Changes:
-	*
+	* Added German tranlations
 Fixes:
 	* Forward empty number
 	* Import invalid contact
 	* Invalid contact issue
 	* No default SMS app for Kitkat check.
+	* Fixed Compose menu strings.
 
 Beta Release version 1.3.1
 
