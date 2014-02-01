@@ -81,7 +81,7 @@ public class SendMessageActivity extends Activity {
 	private static MessageAdapter messages;
     private static MessageBoxWatcher messageEvent;
     private AutoCompleteTextView phoneBox;
-    private EditText messageBox;
+    private static EditText messageBox;
     private ImageButton sendSMS;
 	private static ListView messageList;
 	private AlertDialog popup_alert;
@@ -106,6 +106,7 @@ public class SendMessageActivity extends Activity {
     public static String selectedNumber;
     public static MessageLoader runThread;
     private static String contact_name;
+    private static String message = "";
         
     private DBAccessor dba;
     private static ExchangeKey keyThread = new ExchangeKey();
@@ -163,11 +164,8 @@ public class SendMessageActivity extends Activity {
         {
             handleSendIntent();
         }
-
-        // Set the send button as disabled until they enter text
-        sendSMS = (ImageButton) this.findViewById(R.id.new_message_send);
-        sendSMS.setEnabled(false);
-        sendSMS.setClickable(false);
+        
+        setUpSendButton();
     }
     
     private void setupComposeView(String number, String message)
@@ -225,12 +223,25 @@ public class SendMessageActivity extends Activity {
         
         setupMessageViewUI();
         
+        setupMessageBox();
+        
         if(message != null)
         {
         	messageBox.setText(message);
         }
         
         handleNotifications();
+    }
+    
+    private void setUpSendButton()
+    {
+        // Set the send button as disabled until they enter text
+        sendSMS = (ImageButton) this.findViewById(R.id.new_message_send);
+        if(message == null || message.length() == 0)
+        {
+	        sendSMS.setEnabled(false);
+	        sendSMS.setClickable(false);
+        }
     }
     
     private void handleSendIntent()
@@ -334,7 +345,7 @@ public class SendMessageActivity extends Activity {
             }
         });
     }
-    
+
     public void setupMessageBox()
     {
     	 messageEvent = new MessageBoxWatcher(this, R.id.new_message_send, R.id.send_word_count);
@@ -355,7 +366,7 @@ public class SendMessageActivity extends Activity {
     	}
     	else if(currentActivity == ConversationView.COMPOSE)
     	{
-	    	String box =  SendMessageActivity.this.messageBox.getText().toString();
+	    	String box =  messageBox.getText().toString();
 	    	String[] temp = checkValidNumber(this, newCont, box, true, true);
 	    	
 	    	if(temp != null)
@@ -387,8 +398,8 @@ public class SendMessageActivity extends Activity {
 	            //Add the message to the queue to send it
 	            dba.addMessageToQueue(number, text, false);         
 	            
-	            SendMessageActivity.this.messageBox.setText("");
-	            SendMessageActivity.this.phoneBox.setText("");
+	            messageBox.setText("");
+	            phoneBox.setText("");
 	    	}  	
     	}            
     }
@@ -404,7 +415,7 @@ public class SendMessageActivity extends Activity {
         {
             //Sets so that a new message sent from the user will not show up as bold
             messages.setCount(0);
-            this.messageBox.setText("");
+            messageBox.setText("");
             messageEvent.resetCount();
             dba.addMessageToQueue(number, text, false);
 
@@ -670,7 +681,7 @@ public class SendMessageActivity extends Activity {
         
         if(currentActivity == ConversationView.COMPOSE)
         {
-	        String text =  SendMessageActivity.this.messageBox.getText().toString();
+	        String text =  messageBox.getText().toString();
 	        String[] values = checkValidNumber(this, newCont, text, false, false);
 	        if(values != null)
 	        {
@@ -819,6 +830,13 @@ public class SendMessageActivity extends Activity {
         super.onResume();
     }
 	
+	@Override
+	protected void onPause()
+	{
+		message = messageBox.getText().toString();
+		super.onPause();
+	}
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
             super.onActivityResult(requestCode, resultCode, data);
@@ -864,7 +882,7 @@ public class SendMessageActivity extends Activity {
             	if(currentActivity == ConversationView.COMPOSE)
             	{
             		//This is a bit of a redundant check
-                	String text =  SendMessageActivity.this.messageBox.getText().toString();
+                	String text =  messageBox.getText().toString();
                 	String[] value = checkValidNumber(this, newCont, text, false, false);
                 	if(value!= null) {
                 		
