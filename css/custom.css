@@ -64,8 +64,9 @@ span .PayPalButton {
   width: 74px;
   height: 21px;
   border: none;
+  margin-bottom: 1px;
+  margin-right: 10px;
   box-shadow: none;
-  margin: 0 5px;
   top: 9px;
   right: 2px;
 }
