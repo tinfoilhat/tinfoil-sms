@@ -851,6 +851,8 @@ public class SendMessageActivity extends Activity {
 	{	
 		if(currentActivity == ConversationView.MESSAGE_VIEW)
     	{
+			EditText et = (EditText)findViewById(R.id.new_message_message);
+			message = et.getText().toString();
 			dba.updateDraft(selectedNumber, message);
     	}
 		super.onPause();
