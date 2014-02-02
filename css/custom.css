@@ -34,14 +34,28 @@ body {
 }
 
 /* The main image */
-.bgimg {
-    background: url(../img/header-img.jpg) no-repeat center center;
-    height: 400px;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    margin-bottom: 25px;
+@media (max-width: 1024px) {
+    .bgimg {
+        background: url(../img/header-img-small.jpg) no-repeat center center;
+        height: 300px;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        margin-bottom: 25px;
+    }
+}
+
+@media (min-width: 1025px) {
+      .bgimg {
+        background: url(../img/header-img.jpg) no-repeat center center;
+        height: 400px;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        margin-bottom: 25px;
+    }
 }
 
 .donate {
