@@ -81,7 +81,7 @@ public class SendMessageActivity extends Activity {
 	private static MessageAdapter messages;
     private static MessageBoxWatcher messageEvent;
     private AutoCompleteTextView phoneBox;
-    private static EditText messageBox;
+    private EditText messageBox;
     private ImageButton sendSMS;
 	private static ListView messageList;
 	private AlertDialog popup_alert;
