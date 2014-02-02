@@ -237,11 +237,34 @@ public class SendMessageActivity extends Activity {
     {
         // Set the send button as disabled until they enter text
         sendSMS = (ImageButton) this.findViewById(R.id.new_message_send);
+        
+        handleDraft();
+        
         if(message == null || message.length() == 0)
         {
 	        sendSMS.setEnabled(false);
 	        sendSMS.setClickable(false);
         }
+    }
+    
+    private void handleDraft()
+    {
+    	if(currentActivity == ConversationView.MESSAGE_VIEW)
+    	{
+	        if(message == null || message.length() == 0)
+	        {
+	        	Number number = dba.getNumber(selectedNumber);
+	        	message = number.getDraft();
+	        }
+	        
+	        EditText et = (EditText)findViewById(R.id.new_message_message);
+	    	
+	        if(et.getText() != null && (et.getText().toString() == null 
+	        		|| et.getText().toString().length() <= 0))
+			{
+	        	et.setText(message);
+			}
+    	}
     }
     
     private void handleSendIntent()
@@ -814,6 +837,8 @@ public class SendMessageActivity extends Activity {
 	@Override
     protected void onResume()
     {
+		handleDraft();
+		
         if(MessageService.mNotificationManager != null)
         {
         	MessageService.mNotificationManager.cancel(MessageService.SINGLE);
@@ -823,8 +848,11 @@ public class SendMessageActivity extends Activity {
 	
 	@Override
 	protected void onPause()
-	{
-		message = messageBox.getText().toString();
+	{	
+		if(currentActivity == ConversationView.MESSAGE_VIEW)
+    	{
+			dba.updateDraft(selectedNumber, message);
+    	}
 		super.onPause();
 	}
 	

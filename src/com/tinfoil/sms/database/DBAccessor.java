@@ -1213,6 +1213,7 @@ public class DBAccessor {
 		
 		cv.put(SQLitehelper.KEY_REFERENCE, id);
         cv.put(SQLitehelper.KEY_NUMBER, numb.getNumber());
+        cv.put(SQLitehelper.KEY_DRAFT, numb.getDraft());
         cv.put(SQLitehelper.KEY_TYPE, numb.getType());
         cv.put(SQLitehelper.KEY_UNREAD, numb.getUnreadMessageCount());
         cv.put(SQLitehelper.KEY_PUBLIC_KEY, numb.getPublicKey());
@@ -1230,6 +1231,19 @@ public class DBAccessor {
 		updateSharedInfo(num_id, numb.getSharedInfo1(), numb.getSharedInfo2());
 	}
 	
+	/**
+	 * Update the draft in the database.
+	 * @param number The number of the contact the draft is for.
+	 * @param draft The draft of the message.
+	 */
+	public void updateDraft(String number, String draft)
+	{
+		ContentValues cv = new ContentValues();
+		cv.put(SQLitehelper.KEY_DRAFT, draft);
+		context.getContentResolver().update(DatabaseProvider.NUMBER_CONTENT_URI,
+        		cv, SQLitehelper.KEY_NUMBER + " LIKE ?" , new String[]{number});
+	}
+		
 	/**
 	 * Update a row from the Numbers table
 	 * @param tc The new information to be stored
@@ -1267,6 +1281,7 @@ public class DBAccessor {
 		{
 			cv.put(SQLitehelper.KEY_REFERENCE, id);
 	        cv.put(SQLitehelper.KEY_NUMBER, number.get(i).getNumber());
+	        cv.put(SQLitehelper.KEY_DRAFT, number.get(i).getDraft());
 	        cv.put(SQLitehelper.KEY_TYPE, number.get(i).getType());
 	        cv.put(SQLitehelper.KEY_UNREAD, number.get(i).getUnreadMessageCount());
 	        cv.put(SQLitehelper.KEY_PUBLIC_KEY, number.get(i).getPublicKey());

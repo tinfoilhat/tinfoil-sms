@@ -262,11 +262,8 @@ public class DatabaseProvider extends ContentProvider {
 
 		//SQLiteDatabase.NO_LOCALIZED_COLLATORS;// | SQLiteDatabase.OPEN_READWRITE);
 		
-		//dba.
-		
 		dba = db.getDB();
-		
-		
+	
         // Delete either user data, or booking data.
         switch (choose)
         {
