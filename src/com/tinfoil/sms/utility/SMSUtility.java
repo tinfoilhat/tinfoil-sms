@@ -320,7 +320,7 @@ public abstract class SMSUtility {
         {
             if (dba.isTrustedContact(message.getNumber()) &&
                     ConversationView.sharedPrefs.getBoolean(
-                    QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, true) &&
+                    QuickPrefsActivity.ENABLE_SETTING_KEY, true) &&
                     !message.isExchange())
             {
                 // Initialize the cryptographic engine if null
