@@ -297,7 +297,7 @@ public class EditNumber extends Activity{
 					}
 					else
 					{
-						if(number.getNumber() == originalNumber && checkUniqueNumber())
+						if(number.getNumber() == originalNumber || checkUniqueNumber())
 						{
 							dba.updateNumberRow(number, originalNumber, 0);
 						}
