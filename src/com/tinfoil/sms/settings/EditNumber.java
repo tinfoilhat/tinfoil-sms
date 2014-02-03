@@ -238,17 +238,17 @@ public class EditNumber extends Activity{
 				/*
 				 * Set the updated information
 				 */
-				String newSharedInfo1 = sharedInfo1.getText().toString();
-				String newSharedInfo2 = sharedInfo2.getText().toString();
+				//String newSharedInfo1 = s1;
+				//String newSharedInfo2 = s2;
 				
-				if(SMSUtility.isChanged(number.getSharedInfo1(), newSharedInfo1) ||
-						SMSUtility.isChanged(number.getSharedInfo2(), newSharedInfo2))
+				if(SMSUtility.isChanged(number.getSharedInfo1(), s1) ||
+						SMSUtility.isChanged(number.getSharedInfo2(), s2))
 				{
 					number.setInitiator(false);
 				}
 				
-				number.setSharedInfo1(newSharedInfo1);
-				number.setSharedInfo2(newSharedInfo2);
+				number.setSharedInfo1(s1);
+				number.setSharedInfo2(s2);
 				number.setBookPath(bookPath.getText().toString());
 				number.setBookInversePath(bookInverse.getText().toString());
 				
@@ -297,7 +297,7 @@ public class EditNumber extends Activity{
 					}
 					else
 					{
-						if(number.getNumber() == originalNumber && checkUniqueNumber())
+						if(number.getNumber().equals(originalNumber) || checkUniqueNumber())
 						{
 							dba.updateNumberRow(number, originalNumber, 0);
 						}
