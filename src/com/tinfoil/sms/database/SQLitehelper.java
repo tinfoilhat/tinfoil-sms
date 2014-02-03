@@ -154,7 +154,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
             " " + KEY_REFERENCE + " INTEGER REFERENCES trusted_contact (id)" +
             " ON DELETE CASCADE ON UPDATE CASCADE, " +
             " " + KEY_NUMBER + " TEXT UNIQUE," +
-            " " + KEY_DRAFT + "TEXT DEFAULT \"\"," +
+            " " + KEY_DRAFT + " TEXT DEFAULT \"\"," +
             " " + KEY_TYPE + " INTEGER," +
             " " + KEY_UNREAD + " INTEGER," +
             " " + KEY_PUBLIC_KEY + " BLOB," +

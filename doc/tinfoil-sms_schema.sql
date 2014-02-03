@@ -50,7 +50,7 @@ CREATE TABLE numbers
     reference INTEGER REFERENCES trusted_contact (id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     number TEXT,
-    draft TEXT,
+    draft TEXT DEFAULT "",
     type INTEGER,
     unread INTEGER,
     public_key BLOB,
