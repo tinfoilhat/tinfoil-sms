@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tinfoil-SMS</string>
+    <string name="vibration_default_length">500</string>
+    <string name="contact_name">Имя</string>
+    
+    <string name="tell_me_more">Расскажите мне больше</string>
+    <string name="save">Сохранить</string>
+    <string name="accept">Принять</string>
+    <string name="refuse">Отклонить</string>
+    <string name="key_exchange_failed_to_decrypt">Не удалось расшифровать</string>
+    <string name="possible_man_in_the_middle_attack_warning">Возможная атака Человека в центре</string>
+    <string name="key_exchange_received">Поступления сообщения ключа обмена</string>
+
+    <!-- ConversationView Activity strings -->
+    <string name="add_contacts_list">Добавить контакт</string>
+    <string name="import_contacts_list">Импортировать контакт</string>
+    <string name="eula_title">Tinfoil-SMS EULA</string>
+    <string name="eula_message">"ПРОЧТИТЕ УСЛОВИЯ ДАННОГО ЛИЦЕНЗИОННОМ СОГЛАШЕНИИ ПОЛЬЗОВАТЕЛЯ (EULA), ТЩАТЕЛЬНО ПЕРЕД УСТАНОВКОЙ ИЛИ ИСПОЛЬЗОВАНИЕМ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ.\n
+Этот дистрибутив содержит криптографическое программное обеспечение. Страна, в которой вы на данный момент пребываете может иметь ограничения на импорт, владения, пользования и / или реэкспорт в другую страну, на шифровальное программное обеспечение. Перед использованием любого программного обеспечения для шифрования, пожалуйста, проверьте законы, правила и политику в отношении импорта, владение , использование или реэкспорта программного обеспечения для шифрования в вашей стране, чтобы увидеть, если это разрешается. Смотрите http://www.wassenaar.org для получения дополнительных сведень.\n
+НАЖИМАЯ, ПРИНИМАЮ, ВЫ ПОДТВЕРЖДАЕТЕ, ЧТО ВЫ ПОНИМАЕТЕ КРИПТОГРАФИЧЕСКИХ ЗАКОНЫ ИМПОРТА / ЭКСПОРТА ВАШЕЙ СТРАНЫ И ПОЛНОСТЬЮ ОТВЕЧАЕТ ЗА ТО, ЧТО ВАС ИНТЕРЕСУЕТ ЗАКОННОЕ РАЗРЕШЕНИЕ НА ЗАКОНЫ ИМПОРТА / ЭКСПОРТА ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ. НАЖИМАЯ, ПРИНИМАЮ, ВЫ СОГЛАШАЕТЕСЬ, ЧТО НЕ МОЖЕТ ОБВИНЯТЬ АВТОРОВ В ОТВЕТСТВЕННОСТИ ЗА ЛЮБЫЕ ПРАВОВЫЕ ПОСЛЕДСТВИЯ В РЕЗУЛЬТАТЕ ИСПОЛЗОВАНИЯ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ И АВТОРОВ В НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ПЕРЕД ВАМИ ЗА УБЫТКИ, ВКЛЮЧАЯ ОБЩИЕ, СПЕЦИАЛЬНЫЕ, СЛУЧАЙНЫЕ ИЛИ КОСВЕННЫЕ УБЫТКИ, СВЯЗАННЫЕ С ИСПОЛЬЗОВАНИЕМ ИЛИ НЕВОЗМОЖНОСТИ ИСПОЛЬЗОВАНИЯ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ.\n
+НАКОНЕЦ, ЭТО ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ С ОТКРЫТЫМ ДОСТУПОМ И НА НЕМ ДЕЙСТВУЕТ ЛИЦЕНЗИЯ GNU GENERAL PUBLIC LICENSE V3 (GPLV3). НАЖИМАЯ "ПРИНИМАЮ" ВЫ ТАКЖЕ СОГЛАШАЕТЕСЬ С УСЛОВИЯМИ GNU GENERAL PUBLIC LICENSE V3, СМОТРИТЕ HTTP://WWW.GNU.ORG/LICENSES/GPL.HTML ДЛЯ ПОЛУЧЕНИЯ СВЕДЕНИЙ ПО ЛИЦЕНЗИИ. КРОМЕ ТОГО, ИЗ-ЗА ПРИРОДЫ ДАННОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ, ПРИ ИМПОРТЕ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ИСХОДНОМУ КОДУ К ВАШЕЙ СТРАНЕ, РАСПРОСТРАНЯТЬ ЕГО ОТТУДА ИЛИ ДАЖЕ ПРОСТО НАПИШИТЕ ТЕХНИЧЕСКИХ ПРЕДЛОЖЕНИЙ ИЛИ ИСПРАВЛЕНИЙ ИСТОЧНИКА К АВТОРОВ ВАМ НАСТОЯТЕЛЬНО РЕКОМЕНДУЕТСЯ ОБРАТИТЬ ПРИСТАЛЬНОЕ ВНИМАНИЕ НА ЛЮБЫЕ ЗАКОНЫ ИМПОРТА / ЭКСПОРТА И / ИЛИ ИСПОЛЬЗОВАНИЕ ЗАКОНОВ, КОТОРЫЕ БУДУТ РАСПРОСТРАНЯТЬСЯ НА ВАС.\n
+ТОЛЬКО НАЖМИТЕ КНОПКУ ПРИНЯТЬ ЕСЛИ ВЫ ХОРОШО ПОНИМАЕТЕ И СОГЛАСНЫ С УСЛОВИЯМИ ДАННОГО ЛИЦЕНЗИОННОМ СОГЛАШЕНИИ ПОЛЬЗОВАТЕЛЯ (EULA)."</string>
+    <string name="compose_menu">Написать</string>
+    <string name="settings_menu">Настройки</string>
+    <string name="pending_key_exchange_menu">В ожидании обмена ключами</string>
+    <string name="pending_key_exchange_menu_condensed">Обмен</string>    
+    <!-- Android KitKat (4.4) warning -->
+    <string name="kitkat_dialog_title">Предупреждение!</string>
+    <string name="kitkat_dialog_message">Tinfoil-SMS настоящее время не поддерживает Android KitKat 4.4 и не будет иметь возможность отправлять любые текстовые сообщения. Продолжать в любом случае?</string>
+    <!-- BETA notice with info on how to contribute -->
+    <string name="beta_notice_title">BETA уведомление</string>
+    <string name="beta_notice_message">Это BETA релиз, ваша обратная связь и поддержка очень ценится! Мы ищем людей, чтобы помочь с переводами и тестирования, если вы заинтересованы визит http://tinfoilhat.github.io/tinfoil-sms или свяжитесь с нами по tinfoil.sms@gmail.com.\nВы также можете связаться с разработчиками в любое время из раздела обратной связи настройках приложения.</string>
+    <!-- Database Accessor strings -->
+    <string name="duplicate_key_exchange">послал еще один ключ обмена</string>
+    <string name="duplicate_key_exchange_warning_1">Предупреждение: сообщение, полученное был определен как другой ключ обмена, чем тот, ранее полученной от</string>
+    <string name="duplicate_key_exchange_warning_2">Это потенциальная атака человек-в-середине.</string>
+    <string name="user">Я</string>
+
+    <string-array name="phone_types">
+        <item>Домашний</item>
+        <item>Мобильный</item>
+        <item>Рабочий</item>
+        <item>Рабочий факс</item>
+        <item>Домашний Факс</item>
+        <item>Пейджер</item>
+        <item>Другой</item>
+        <item>Изготовленый</item>
+        <item>Обратный звонок</item>
+        <item>Машиный</item>
+        <item>Основной компании</item>
+        <item>ISDN</item>
+        <item>Основной компании</item>
+        <item>Другой Факс</item>
+        <item>телекс</item>
+        <item>TTY TTD</item>
+        <item>Мобильный рабочий</item>
+        <item>Пейджер рабочий</item>
+        <item>Помощник</item>
+        <item>ММС</item>
+    </string-array>
+
+    <!-- KeyExchangeManager Activity strings -->
+    <string name="key_exchange_manager">Менеджер по ключам обмена</string>
+    <string name="empty_key_exchange_list">Нет в ожидании ключей обмена</string>
+    <string name="key_exchange_error_title">Предупреждение ключа обмена!</string>
+    <string name="key_exchange_error_message_1">Обмена ключом с</string>
+    <string name="key_exchange_error_message_2">была неудачной. Это потенциальная атака человек-в-середине.\nПожалуйста, убедитесь, что ваши общие секреты являются правильными.</string>
+    <string name="key_exchange_info_url">https://github.com/tinfoilhat/tinfoil-sms/wiki/Tinfoil-SMS-Introductory-Walkthrough#receiving-key-exchanges</string>
+    <string name="invalid_secrets">Недействительные общие секреты, должны быть разными и не менее 8 символов!</string>
+    <string name="shared_secret_hint_1">Общий Секрет 1</string>
+    <string name="shared_secret_hint_2">Общий Секрет 2</string>
+    <string name="set_shared_secrets">Установить общий секрет для</string>
+    <string name="set_shared_secrets_title">Обмен ключем</string>
+
+    <!-- RemoveContactsActivity strings -->
+    <string name="select_all_menu_condensed">Все</string>
+    <string name="remove_all_menu">Убрать все</string>
+    <string name="remove_all_menu_condensed">Убрать</string>
+
+    <!-- Settings strings -->
+    <string name="settings">Настройки</string>
+
+    <!-- activity_key_exchange_manager strings -->
+    <string name="reject_button">Отклонить</string>
+    <string name="user_key_settings">Настройки ключа пользователя</string>
+    <string name="exchange_button">Обмен</string>
+
+    <!-- AddContact strings -->
+    <string name="add_contact_activity">Редактировать Контакт</string>
+    <string name="number">Номер</string>
+    <string name="add_number">Добавить номер</string>
+    <string name="phone_type_title">Тип телефона:</string>
+    <string name="insufficent_message">Недостаточно предоставленой инфрмации</string>
+    <string name="delete_contact_menu">Удалить Контакт</string>
+    <string name="delete_contact_menu_condensed">Удалить</string>
+
+    <string name="empty_loader_value">Нет Контактов</string>
+
+    <!-- EditNumber strings -->
+    <string name="shared_secret_1">Секретное сообщение</string>
+    <string name="shared_secret_2">Секретное сообщение</string>
+    <string name="book_path_text">Книга Путь</string>
+    <string name="book_path">по умолчанию</string>
+    <string name="book_inverse_text">Обратный путь книги</string>
+    <string name="book_inverse">по умолчанию</string>
+    <string name="contact_public_key">Открытый Ключ контакта</string>
+    <string name="public_key">Открытый ключ</string>
+    <string name="key_exchange_settings">Настройки обмена ключа</string>
+    <string name="auto_key_exchange">Автоматическая обмена</string>
+    <string name="manual_key_exchange">Ручная обмена</string>
+    <string name="ignore_key_exchange">Игнорировать все обмены</string>
+    <string name="edit_number">Редактировать номер</string>
+    <string name="import_contact_key_menu">Импортировать контакный ключ</string>
+    <string name="import_contact_key_menu_condensed">Импортировать ключ</string>
+    <string name="delete_number_menu">Удалить номер</string>
+    <string name="delete_number_menu_condensed">Удалить</string>
+    <string name="number_exists">Количество уже используется</string>
+    <string name="number_must_exist">Вы должны сохранить номер первый</string>
+
+    <!-- Shared between EditNumber  -->
+    <string name="phone_text">Номер телефона</string>
+
+    <!-- ImportContacts strings -->
+    <string name="import_contacts">Импорт контактов</string>
+    <string name="searching_title">Поиск</string>
+    <string name="searching_message">Обнаружение контактов&#8230;</string>
+    <string name="importing_title">Иморт</string>
+    <string name="importing_message">Сохранение контактов&#8230;</string>
+    <string name="empty_import_list">Отсутствие контактов для импорта</string>
+    <string name="select_all_menu">Выбрать все</string>
+    <string name="deselect_all_menu">Отменить выбор всех</string>
+
+    <!-- MessageView strings -->
+    <string name="message">Сообщения</string>
+    <string name="forward_title">Втавить номер контакта</string>
+    <string name="invalid_number_message">Неверный номер</string>
+    <string name="untrust_contact_menu_full">Не доверять контакту</string>
+    <string name="untrust_contact_menu_short">Не доверять</string>
+    <string name="resolve_key_exchange_full">Решить обмен ключа</string>
+    <string name="resolve_key_exchange_short">Решить</string>
+    <string name="exchange_key_full">Обмена ключами</string>
+    <string name="exchange_key_short">Обмена ключами</string>
+
+    <string-array name="sms_options">
+        <item>Удалить сообщение</item>
+        <item>Копировать сообщение</item>
+        <item>Переслать Сообщение</item>
+    </string-array>
+
+    <string name="key_exchange_dialog_message">Хотите обменяться ключами с</string>
+    <string name="shared_secret">Общие секреты должны быть больше, чем</string>
+    <string name="export_number_title">Ввод номера контакта</string>
+    <string name="key_exchange_import">Импорт обеного ключа</string>
+    <string name="key_exchange_respond">Хотите экспортировать или отправить по СМС обмена ключами для</string>
+    <string name="sms_option">СМС</string>
+    <string name="export_option">Экспорт</string>
+    <string name="delete_thread_menu">Удалить переписку</string>
+    <string name="exchange_keys_menu">Обмена ключами</string>
+    <string name="edit_contact_menu">Редактировать Контакт</string>
+
+    <!-- Shared between MessageView and SendMessageActivity strings -->
+    <string name="send">Отправить</string>
+    <string name="send_hint">Отправить сообщение</string>
+
+    <!-- SendMessageActivity strings -->
+    <string name="to">К</string>
+    <string name="send_message">Новое Сообщение</string>
+    <string name="insufficent_information_provided">Вы не в состоянии обеспечить достаточную информацию</string>
+
+    <!-- DeleteContacts strings -->
+    <string name="delete_contacts">Удалить Контакты</string>
+
+    <!-- SMSUtility strings -->
+    <string name="encrypted_message_sent">Зашифрованные Сообщение отправлено</string>
+    <string name="message_sent">Сообщение отправлено</string>
+    <string name="failed_to_encrypt">Не удалось зашифровать</string>
+    <string name="failed_to_sent">Не удалось отправить</string>
+
+    <!-- UserKeySettings strings -->
+    <string name="user_public_key">Ваш публичный ключ:</string>
+    <string name="export_public_key">Экспртировать публичный ключ</string>
+    <string name="import_contacts_title">ввод номера контакта</string>
+    <string name="written_path">Записано на карту SD под</string>
+
+    <!-- Exchange Key -->
+    <string name="key_exchange_cancelled">Обмена ключом отменена</string>
+
+    <!-- KeyExchangeHandler strings -->
+    <string name="key_exchange_double_message">инициировал обмен ключами после того как вы инициировали один. Это потенциальная атака человек-в-середине. Хотите обменяться ключи так или иначе?</string>
+    <string name="key_exchange_double_title">Предупреждение ключа обмена!</string>
+
+    <!-- Application crash reporting -->
+    <string name="pref_enable_bugsense">Разрешить Bugsense</string>
+    <string name="pref_bugsense_enabled">Отключение отчетов об ошибках</string>
+    <string name="pref_bugsense_disabled">Включение отчетов об ошибках</string>
+    <string name="title_activity_tab_selection">Управление контактами</string>
+    <string name="add_contact">Добавить Контакты</string>
+    <string name="title_activity_donations">Пожертвы</string>
+
+    <!-- The Donation strings -->
+    <string name="donate">Пожертвы</string>
+    <string name="donate_dialog_message">Хотите пожертвовать на разработку Tinfoil-SMS?</string>
+    <string name="flattr_option">Flattr</string>
+    <string name="paypal_option">PayPal</string>
+
+    <!-- Contact the developers strings -->
+    <string name="contact_title">Контакт</string>
+    <string name="contact_summary">Связаться с разработчиками</string>
+    <string-array name="dev_emails">
+       <item>tinfoil.sms@gmail.com</item>
+    </string-array>
+    <string name="email_subject">Tinfoil-SMS Обратная-связь</string>
+    <string name="email_chooser">Напишите разработчикам&#8230;</string>
+    
+    <!-- Urls -->
+    <string name="paypal_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=QZP8ZHVFATTTY</string>
+    <string name="flattr_url">http://flattr.com/thing/1807230/Tinfoil-SMS-Texting-for-the-Paranoid</string>
+    <string name="tinfoil_sms_github">https://github.com/tinfoilhat/tinfoil-sms</string>
+    <string name="tinfoil_sms_website">http://tinfoilhat.github.io/tinfoil-sms</string>
+
+    <!-- Settings string keys -->
+    <string name="source_code_title">Получить Tinfoil-SMS источник</string>
+    <string name="source_code_sub_title">Способствовать с Tinfoil-SMS</string>
+    <string name="application_settings_options">Настройки приложения</string>
+    <string name="enable_tinfoil_sms_option_summary">Включение или отключение СМС шифрование</string>
+    <string name="enable_tinfoil_sms_option_title">Включение Tinfoil-SMS</string>
+    <string name="message_settings_option_title">Настройки Сообщения</string>
+    <string name="native_save_option_title">сохранения с телефона</string>
+    <string name="native_save_option_summary">сохранить смс на телефон</string>
+    <string name="message_limit_option_title">Лимит Сообщения</string>
+    <string name="maximum_number_of_messages_saved">Максимальное количество сообщений сохраненых для контактов</string>
+    <string name="contact_settings_option_title">Настройки контактов</string>
+    <string name="import_contacts_option_title">Импорт контактов</string>
+    <string name="import_contacts_option_summary">Импорт Надежных контактов из телефона</string>
+    <string name="manage_contacts_option_title">Убрать Контакты</string>
+    <string name="encryption_option_title">Настройки шифровки</string>
+    <string name="encryption_message_option_title">зашифрованное Сообщение</string>
+    <string name="encrypted_message_option_summary">Отображение исходного зашифрованного сообщения</string>
+    <string name="public_key_option_title">Мой публичный ключ</string>
+    <string name="public_key_option_summary">Управление вашим публичным ключом</string>
+    <string name="notifications_option_title">Настройки уведомлений</string>
+    <string name="enable_notification_option_title">Разрешить уведомления</string>
+    <string name="vibrate_option_title">Вибрация</string>
+    <string name="vibrate_length_option_title">Продолжительность вибрации</string>
+    <string name="vibrate_length_option_summary">Выберите продолжительность вибрации уведомления</string>
+    <string name="feedback_options">Обратная связь</string>
+    <string name="donate_option_title">Пожертвовать</string>
+    <string name="donate_option_summary">Поддержка разработчиков</string>
+    <string name="ringtone_settings_title">Разрешить рингтон</string>
+    <string name="message_order_title">Порядок сообщений</string>
+    <string name="message_order_summary">Показать последнее сообщение с верху</string>
+    <string name="walkthrough_title">Включение пошаговое руководство</string>
+    <string name="walkthrough_summary">Показать пошаговое руководство</string>
+
+    <!-- Notification strings -->
+    <string name="new_message_notification_title">Новые сообщения</string>
+    <string name="unread_email_message">Непрочитаные сообщения</string>
+    <string name="pending_key_exchange_notification">В ожидании обмена ключами</string>
+    <string name="pending_key_exchange_message">Нажмите сюда, чтобы решить</string>
+
+    <!-- New Key Exchange strings -->
+    <string name="key_exchange_sent">Отправлено обмен ключ</string>
+    <string name="new_key_exchange">Обмен ключа</string>
+    <string name="new_key_exchange_menu">Новый обмен ключа</string>
+
+    <!-- Introductory Tutorial strings -->
+    <!-- Intro -->
+    <string name="tut_intro_title">Добро пожаловать в Tinfoil-SMS!</string>
+    <string name="tut_intro_body">Это руководство проведет вас через основы и ознакомить вас с Фольга-СМС и его свойствами.\nЕсли вы хотитевы всегда сможете перезапустить это руководство в любое время путем включения его в настройках. Так давайте начнем!</string>
+    <!-- Start importing contacts -->
+    <string name="tut_startimport_title">Импортировать контакты</string>
+    <string name="tut_startimport_body">Для того чтобы использовать Фольга-СМС Для СМСок надежно вы должны начать, добавляя или импортируя контакты.</string>
+    <!-- Importing existing contacts -->
+    <string name="tut_import_title">Импорт контактов из телефона</string>
+    <string name="tut_import_boby">Выберите контакты из памяти телефона на импорт, все предыдущие разговоры будут импортированы и ваши будущие разговоры будут обработаны приложением.\nПРИМЕЧАНИЕ: По по умолчанию связь с контактами не является безопасным, пока не произведен успешная обмена ключами!</string>
+    <!-- Start a key exchange -->
+    <string name="tut_startexchange_title">Отлично! Ты Почти общаешься в безопасности</string>
+    <string name="tut_startexchange_body">Теперь вам нужно настроить обмен ключами с контактом для включения шифрования. Не волнуйтесь, это очень быстро и легко.\nЧтобы начать обмен ключами вам нужно три вещи: у вас обоих должно быть установлено Фольга-СМС, импортируйте друг друга в пределах приложения, и договориться о двух общих секретов.</string>
+    <!--  Set shared secret -->
+    <string name="tut_setsecret_title">Общие секреты важны!</string>
+    <string name="tut_setsecret_body">Общие секреты должны быть известен только вам и контакту и используются для проверки вашей личности при обмене ключами! Они должны быть разными и длиной не менее 8 символов.\nНаиболее общие секреты трудно, но легко запомнить, например, \"то, что лежит в\" и \"тени статуи\".</string>
+    <!-- Key exchange sent -->
+    <string name="tut_keysent_title">Обмен ключами Отправлено!</string>
+    <string name="tut_keysent_body">Ваш ключ обмена был отправлен, ваш контакт должен получить уведомление, чтобы инициировать обмен ключами. Если все пойдет хорошо, вы должны получить ключ от них! Вы можете просмотреть ожидаемые Ключи обмена в любое время из меню.</string>
+    <!-- Pending key exchanges -->
+    <string name="tut_pending_title">Ключи обмена в ожидании</string>
+    <string name="tut_pending_body">Это показывает, любые ключевые обмены, которые вы получили, обмен ключами не удается, когда общие секреты неверны!\nЕсли вы не ожидаете обмен ключами, или не знаете общий секрет, вы должны отказаться от обмена ключами! Свяжитесь с контактом с глазу на глаз и согласуйте общие секреты, потом повторно выполните обмен ключами.</string>
+    <!-- Accepting a key exchange -->
+    <string name="tut_accept_title">Введите общие секреты Осторожно!</string>
+    <string name="tut_accept_body">Убедитесь, что вы и другой контакт договорились о двух общих секретов, введите их в тщательно, общие секреты чувствительны к регистру и должны быть введены в правильном порядке!</string>
+    <!-- Successful key exchange -->
+    <string name="tut_success_title">Поздравляем! Вы сейчас переписываетесь с этим Контактом Безопасно!</string>
+    <string name="tut_success_body">Обмен ключами удался, вы заметите, что контакт теперь доверенный контакт и будет иметь значок закрытого замка рядом с его именем в списке контактов.\nЕсли просмотреть сообщения, отправленные с предприятием доверенному лицу, вы заметите, что любые новые сообщения также будет иметь значок закрытого замка, указывая, что сообщения были переданы надежно с помощью шифрования.</string>
+    <!-- Closing -->
+    <string name="tut_close_title">Вот и все!</string>
+    <string name="tut_close_body">Спасибо за следованием пошагового руководства, вы можете добавить больше контактов в любое время, зайдя в настройки и их импорта. Если вам нужна дополнительная информация, не забудьте посмотреть наш сайт http://tinfoilhat.github.io/tinfoil-sms для видео-учебника и документации. Если у вас есть какие-либо отзывы, пожалуйста, свяжитесь с нами, вы можете сделать это в настройках.\nВы можете перезапустить пошаговое руководство в любое время путем включения его в настройках.</string>
+</resources>
