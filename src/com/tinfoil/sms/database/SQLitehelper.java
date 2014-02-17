@@ -36,7 +36,7 @@ public class SQLitehelper extends SQLiteOpenHelper {
 	 * Upgraded the version of the database since signature was removed from the
 	 * user database.
 	 */
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	
 	/* Table Names */
 	public static final String USER_TABLE_NAME = "user";
