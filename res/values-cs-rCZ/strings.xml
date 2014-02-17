@@ -28,13 +28,13 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="pending_key_exchange_menu_condensed">Vyměnit klíč</string>
     <!-- TODO Translate -->
 	<!-- Android KitKat (4.4) warning -->
-    <string name="kitkat_dialog_title">Warning!</string>
+    <string name="kitkat_dialog_title">Varování!</string>
     <!-- TODO Translate -->
-    <string name="kitkat_dialog_message">Tinfoil-SMS currently does not support Android KitKat 4.4 and will not be able to send any text messages. Continue anyways?</string>
+    <string name="kitkat_dialog_message">Tinfoil-SMS zatím nepodporuje Android 4.4 KitKat a pravděpodobně vám nepůjde odesílat textové zprávy. Chcete i přesto pokračovat?</string>
 	<!-- TODO Translate the following (RECENTLY UPDATED) -->
 	<!-- BETA notice with info on how to contribute -->
     <string name="beta_notice_title">BETA Notice</string>
-    <string name="beta_notice_message">This is a BETA release, your feedback and support is greatly appreciated! We are looking for people to help with translations and testing, if you\'re interested visit http://tinfoilhat.github.io/tinfoil-sms or contact us at tinfoil.sms@gmail.com.\nYou can also contact us anytime from the feedback section of the application settings.</string>
+    <string name="beta_notice_message">Toto je BETA verze, vaše zpětná vazba je zde velmi důležitá. Hledáme lidi, kteří nám mohou pomoci s překlady a testováním, pokud byste měli zájem, navštivte http://tinfoilhat.github.io/tinfoil-sms nebo nás kontaktujte na tinfoil.sms@gmail.com.\nKdykoliv nás také můžete kontaktovat v sekci "Zpětná vazba" v nastavení.</string>
     <!-- Database Accessor strings -->
     <string name="duplicate_key_exchange">Zpráva obsahující jiný klíč byla odeslána</string>
     <string name="duplicate_key_exchange_warning_1">Varování: Klíč v obdržené zprávě se neshoduje s dříve obdrženým klíčem.</string>
@@ -213,8 +213,8 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
 
     <!-- Contact the developers strings -->
 	<!-- TODO Translate (RECENTLY ADDED) -->
-    <string name="contact_title">Contact</string>
-    <string name="contact_summary">Contact the Developers</string>
+    <string name="contact_title">Kontakt</string>
+    <string name="contact_summary">Kontaktovat vývojáře</string>
     <string-array name="dev_emails">
        <item>tinfoil.sms@gmail.com</item>
     </string-array>
@@ -260,9 +260,9 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="message_order_title">Pořadí zpráv</string>
     <string name="message_order_summary">Zobrazit poslední zprávu nahoře</string>
     <!-- TODO Translate -->
-    <string name="walkthrough_title">Enable Walkthrough</string>
+    <string name="walkthrough_title">Zapnout Průvodce</string>
     <!-- TODO Translate -->
-    <string name="walkthrough_summary">Show Walkthrough</string>
+    <string name="walkthrough_summary">Zobrazit Průvodce</string>
 
     <!-- Notification strings -->
     <string name="new_message_notification_title">Nové zprávy</string>
@@ -272,40 +272,40 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     
 	<!-- New Key Exchange strings -->
 	<!-- TODO Translate all the following strings-->
-    <string name="key_exchange_sent">Key Exchange Sent</string>
-    <string name="new_key_exchange">Key Exchange</string>
-	<string name="new_key_exchange_menu">New Key Exchange</string>
+    <string name="key_exchange_sent">Výměna klíčů odeslána</string>
+    <string name="new_key_exchange">Výměna klíčů</string>
+	<string name="new_key_exchange_menu">Nová výměna klíčů</string>
     
     <!-- Introductory Tutorial strings -->
     <!-- Intro -->
     <!-- TODO Translate all the following strings (RECENTLY UPDATED) -->
-    <string name="tut_intro_title">Welcome to Tinfoil-SMS!</string>
-    <string name="tut_intro_body">This guide will walk you through the basics and make you familiar with Tinfoil-SMS and its features.\nIf you like you can always restart this guide anytime by enabling it in the settings. So let\'s get started!</string>
+    <string name="tut_intro_title">Vítejte v Tinfoil-SMS!</string>
+    <string name="tut_intro_body">Tento průvodce vás provede základy ovládání aplikace a seznámí vás s Tinfoil-SMS a jeho možnostmi.\nPokud chcete, můžete tohoto průvodcy kdykoliv znovu spustit povolením v nastavení. Pojďme na to!</string>
     <!-- Start importing contacts -->
-    <string name="tut_startimport_title">Importing Contacts</string>
-    <string name="tut_startimport_body">In order to use Tinfoil-SMS to text securely you must begin by adding or importing contacts.</string>
+    <string name="tut_startimport_title">Import kontaktů</string>
+    <string name="tut_startimport_body">Aby jste mohli bezpečně odesílat zprávy prostřednictvím Tinfoil-SMS, musíte nejpreve vytvořit nebo importovat kontakty.</string>
     <!-- Importing existing contacts -->
-    <string name="tut_import_title">Import Contacts from your Phone</string>
-    <string name="tut_import_boby">Select contacts from your phone to import, all previous conversations will be imported and your future conversations will be handled by the app.\nNOTE: By default communication with contacts are NOT secure until a successful key exchange has been executed!</string>
+    <string name="tut_import_title">Import kontaktů z telefonu</string>
+    <string name="tut_import_boby">Zvolte kontakty z telefonu, které se mají importovat. Všechny předešlé konverzace s těmito kontakty se importují a všechny budoucí budou spravovány touto aplikací.\nPOZNÁMKA: Komunikace není zabezpečená, dokud neproběhne úspěšná výměna klíčů!</string>
     <!-- Start a key exchange -->
-    <string name="tut_startexchange_title">Great! You\'re Almost Communicating Securely</string>
-    <string name="tut_startexchange_body">Now you\'ll need to set up a key exchange with the contact to enable encryption. Don\'t worry, it\'s very quick and easy.\nTo start a key exchange you\'ll need three things: you both must have Tinfoil-SMS installed, import each other within the app, and agree on two shared secrets.</string>
+    <string name="tut_startexchange_title">Výborně! Za chvíli už budete moci bezpečně komunikovat</string>
+    <string name="tut_startexchange_body">Teď si potřebujete vyměnit klíče s kontaktem, aby vaše zprávy mohly být zašifrovány. Nebojte se, nejedná se o nic složitého.\nAbyste mohli spustit výměnu klíčů, potřebujete tři věci: Oba musíte mít nainstalovanou aplikaci Tinfoil-SMS, musíte mít importované kontakty jeden druhého a musíte se shodnout na dvou ověřovacích větách.</string>
     <!--  Set shared secret -->
-    <string name="tut_setsecret_title">Shared Secrets are Important!</string>
-    <string name="tut_setsecret_body">The shared secrets must be only known by you and the contact and are used to verify your identities when exchanging keys! They must be different and at least 8 characters long.\nThe best shared secrets are difficult but easy to remember, such as \"what lies in the\" and \"shadow of the statue\".</string>
+    <string name="tut_setsecret_title">Ověřovací věty jsou důležité!</string>
+    <string name="tut_setsecret_body">Ověřovací věty mají svůj význam - ivěřují vaši identitu při výměně klíčů. Musí být minimálně 8 znaků dlouhé.\nTy nejlepší jsou těžké, ale snadno zapamatovatelné a samozřejmě dlouhé, jako například \"Kočka leze dírou\" a \"pes oknem\".</string>
     <!-- Key exchange sent -->
-    <string name="tut_keysent_title">Key Exchange Sent!</string>
-    <string name="tut_keysent_body">Your key exchange has been sent, your contact should receive a notification to initiate a key exchange. If all goes well you should receive a key back from them! You can view pending key exchanges any time from the menu.</string>
+    <string name="tut_keysent_title">Výměna klíčů odeslána!</string>
+    <string name="tut_keysent_body">Výměna klíčů byla odeslána, váš kontakt by měl každou chvíli obdržet notifikaci upozorňující na příchozí výměnu klíčů. Pokud všechno půjde tak, jak by mělo, za chvíli od něj také obdržíte klíč. Nevyřízené výměny klíčů můžete kdykoliv zobrazit v menu.</string>
     <!-- Pending key exchanges -->
-    <string name="tut_pending_title">Pending Key Exchanges</string>
-    <string name="tut_pending_body">This shows any key exchanges you have received, a key exchange is not successful when the shared secrets are incorrect!\nIf you are not expecting a key exchange, or do not know the shared secret, you should reject the key exchange! Communicate with the contact in person and agree on the shared secrets, then redo the key exchange.</string>
+    <string name="tut_pending_title">Nevyřízené výměny klíčů</string>
+    <string name="tut_pending_body">Zde se vám zobrazí všechny výměny klíčů, které jste obdrželi. Pamatujte, že výměna není úspěšná, pokud špatně napíšete ověřovací věty.\nPokud neočekáváte výměnu klíčů nebo neznáte ověřovací věty, doporučujeme vám tento požadavek na výměnu odmítnout. Nejprve se s dotyčným domluvte na ověřovacích větách a poté můžete výměnu znovu spustit.</string>
     <!-- Accepting a key exchange -->
-    <string name="tut_accept_title">Enter the Shared Secrets Carefully!</string>
-    <string name="tut_accept_body">Ensure that you and the other contact have agreed on the two shared secrets, enter them in carefully, the shared secrets are case sensitive and must be entered in the correct order!</string>
+    <string name="tut_accept_title">Pečlivě zadávejte ověřovací věty!</string>
+    <string name="tut_accept_body">Ujistěte se, že vy i váš kontakt zadáváte stejné ověřovací věty. Zadávejte je pečlivě a rozlišujte velká a malá písmena.</string>
     <!-- Successful key exchange -->
-    <string name="tut_success_title">Congratulations! You\'re Now Texting this Contact Securely!</string>
-    <string name="tut_success_body">The key exchange succeeded, you\'ll notice that the contact is now a trusted contact and will have a locked icon beside their name in the list of contacts.\nIf you view the messages sent with the now trusted contact, you\'ll notice that any new messages will also have a locked icon, indicating that the messages have been transmitted securely using encryption.</string>
+    <string name="tut_success_title">Gratulujeme! Nyní si s tímto kontaktem můžete povídat bezpečně!</string>
+    <string name="tut_success_body">Výměna klíčů byla úspěšně dokončena. Nyní byste si měly všimnout ikonky zamknutého zámečku u vašeho kontaktu, který se nyní stal důvěryhodným kontaktem.\nVedle každé nové zprávy by se nyní měla ukázat ikona zamknutého zámečku - znamená to, že všechny tyto zprávy byly zašifrovány.</string>
     <!-- Closing -->
-    <string name="tut_close_title">That\'s it!</string>
-    <string name="tut_close_body">Thanks for following the tutorial, you can add more contacts any time by going to the settings and importing them. If you need more information be sure to see our website for a video tutorial and documentation. If you have any feedback please contact us, you can do so from the settings.\nYou can restart the tutorial at anytime by enabling it in the settings.</string>
+    <string name="tut_close_title">Tak, a je to!</string>
+    <string name="tut_close_body">Děkujeme za přečtení si tohoto návodu. Další kontakty můžete importovat kdykoliv v nastavení. Pro více informací navštivte naši internetovou stránku pro videonávody a dokumentaci (pouze v angličtině). Pokud máte jakoukoliv zpětnou vazbu či návrhy na zlepšení, neváhejte nám napsat!\nTohoto průvodce můžete kdykoliv restartovat tím, že ho v nastavení povolíte.</string>
 </resources>
