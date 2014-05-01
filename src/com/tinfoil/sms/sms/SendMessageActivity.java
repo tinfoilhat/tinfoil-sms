@@ -106,7 +106,7 @@ public class SendMessageActivity extends Activity {
     public static String selectedNumber;
     public static MessageLoader runThread;
     private static String contact_name;
-    private static String message = "";
+    private String message = "";
         
     private DBAccessor dba;
     private static ExchangeKey keyThread = new ExchangeKey();
