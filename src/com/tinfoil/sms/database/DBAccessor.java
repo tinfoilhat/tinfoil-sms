@@ -1051,6 +1051,12 @@ public class DBAccessor {
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.USER_CONTENT_URI, 
 				new String[] {SQLitehelper.KEY_PUBLIC_KEY, SQLitehelper.KEY_PRIVATE_KEY},
 				null, null, null);
+		
+		if(cur == null)
+		{
+			return null;
+		}
+		
 		if (cur.moveToFirst())
 		{
 			User user = new User(cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
@@ -1490,6 +1496,12 @@ public class DBAccessor {
 				SQLitehelper.KEY_MESSAGE, SQLitehelper.KEY_EXCHANGE}, SQLitehelper.KEY_ID + 
 				" = (SELECT MIN(" + SQLitehelper.KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
 				null, null);
+		
+		if(cur == null)
+		{
+			return null;
+		}
+		
 		
 		if (cur.moveToFirst())
 		{

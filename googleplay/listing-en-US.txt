@@ -56,7 +56,8 @@ RECENT CHANGES
 Beta Release version 1.3.2
 
 Changes:
-    * Added German tranlations
+    * Added German translations
+    * Added Russian translations
 Fixes:
     * Forward empty number
     * Import invalid contact
