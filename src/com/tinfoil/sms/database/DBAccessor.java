@@ -276,24 +276,24 @@ public class DBAccessor {
         if (cur.moveToFirst() && cur.getCount() >= Integer.valueOf(sharedPrefs.getString
         		(QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))))
         {
-        	Cursor date_cur = context.getContentResolver().query(
+        	/*Cursor date_cur = context.getContentResolver().query(
         			DatabaseProvider.MESSAGE_CONTENT_URI, new String[]
         			{"MIN("+SQLitehelper.KEY_DATE+")"},
             		null, null, null);
         	
         	if (date_cur.moveToFirst() && date_cur.getLong(0) < message.getDate())
-        	{
+        	{*/
         		/*
 		    	 * Updated the update db sql command to account for messages having the exact same date
 		    	 */
         		context.getContentResolver().update(DatabaseProvider.MESSAGE_CONTENT_URI,
-        				cv, SQLitehelper.KEY_ID + " = " + "(SELECT id FROM " +
-        				SQLitehelper.MESSAGES_TABLE_NAME + " WHERE "+ SQLitehelper.KEY_DATE
-        				+ " = " + "(SELECT MIN("+SQLitehelper.KEY_DATE+") FROM " 
-		        		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
+        				cv, SQLitehelper.KEY_ID + " = (SELECT " + SQLitehelper.KEY_ID + " FROM "
+        				+ SQLitehelper.MESSAGES_TABLE_NAME + " WHERE " 
+        				+ SQLitehelper.KEY_REFERENCE + " = " + reference
+        				+ " ORDER by " + SQLitehelper.KEY_DATE + " DESC LIMIT 1)", null);
         		
-        	}
-        	date_cur.close();
+        	//}
+        	//date_cur.close();
         }
         else
         {
