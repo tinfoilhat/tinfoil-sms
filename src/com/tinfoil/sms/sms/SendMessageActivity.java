@@ -105,12 +105,12 @@ public class SendMessageActivity extends Activity {
     private TrustedContact newCont;
     public static String selectedNumber;
     public static MessageLoader runThread;
-    private static String contact_name;
+    private String contact_name;
     private String message = "";
         
     private DBAccessor dba;
-    private static ExchangeKey keyThread = new ExchangeKey();
-    public static SharedPreferences sharedPrefs;
+    private ExchangeKey keyThread = new ExchangeKey();
+    public SharedPreferences sharedPrefs;
     
     private int currentActivity = -1;
 
