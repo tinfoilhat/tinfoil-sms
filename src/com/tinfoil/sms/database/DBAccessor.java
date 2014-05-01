@@ -310,7 +310,7 @@ public class DBAccessor {
 	public boolean deleteMessage(long id)
 	{
 		int num = context.getContentResolver().delete(DatabaseProvider.MESSAGE_CONTENT_URI,
-				SQLitehelper.KEY_ID + " = " + id, null);
+				SQLitehelper.KEY_REFERENCE + " = " + id, null);
 		
 		if(num == 0)
 		{
