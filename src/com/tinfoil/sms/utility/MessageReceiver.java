@@ -89,6 +89,7 @@ public class MessageReceiver extends BroadcastReceiver {
 				SmsMessage[] messages = new SmsMessage[pdus.length];
 				String fullMessage = "";
 				
+				//TODO handle mms data
 				for (int i = 0; i < pdus.length; i++) {
 					messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
 					fullMessage += messages[i].getMessageBody();

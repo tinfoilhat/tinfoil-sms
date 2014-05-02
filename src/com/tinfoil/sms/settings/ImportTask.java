@@ -183,14 +183,16 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	
 	                if (nCur != null && nCur.moveToFirst())
 	                {
-	                    newNumber = new Number(SMSUtility.format(
-	                            nCur.getString(nCur.getColumnIndex("address"))));
-	                    do
-	                    {
-	                        newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
-	                                nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
-	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
-	                    } while (nCur.moveToNext());
+					 	String value = nCur.getString(nCur.getColumnIndex("address"));
+						if(value != null) {
+							newNumber = new Number(SMSUtility.format(value));
+							do
+							{
+								newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
+										nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
+								//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+							} while (nCur.moveToNext());
+	                	}
 	                }
 	
 	                sCur = context.getContentResolver().query(Uri.parse("content://sms/sent"),
@@ -264,7 +266,12 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	            }
 	        }
 	        else
-	        {   	
+	        {
+	        	//Ensure list of trusted contacts is populated
+	        	if(tc == null) {
+	        		return ImportContacts.NOTHING;
+	        	}
+	        	
 	            for (int i = 0; i < this.tc.size(); i++)
 	            {
 	                if (this.inDb.get(i))

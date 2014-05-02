@@ -1489,8 +1489,7 @@ public class DBAccessor {
 		if(cur == null)
 		{
 			return null;
-		}
-		
+		}		
 		
 		if (cur.moveToFirst())
 		{

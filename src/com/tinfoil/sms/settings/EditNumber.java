@@ -147,6 +147,11 @@ public class EditNumber extends Activity{
         	 * Initialize the values to be adjusted
         	 */
         	number = dba.getNumber(SMSUtility.format(originalNumber));
+        	
+        	// Number was not found in the database
+        	if(number == null) {
+        		finish();
+        	}
         
 	        phoneNumber.setText(originalNumber);        
 	        
@@ -485,7 +490,7 @@ public class EditNumber extends Activity{
     	}
     	else
     	{	            	
-        	if(SMSUtility.isMediaAvailable() && SMSUtility.checksharedSecret(number.getSharedInfo1()) 
+        	if(SMSUtility.isMediaAvailable() && number != null && SMSUtility.checksharedSecret(number.getSharedInfo1()) 
         			&& SMSUtility.checksharedSecret(number.getSharedInfo2()))
         	{
         		final File root = Environment.getExternalStorageDirectory();

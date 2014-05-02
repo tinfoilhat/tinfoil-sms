@@ -54,6 +54,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
@@ -478,7 +479,15 @@ public class ConversationView extends Activity {
 						String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Android-KitKat-Support";
 						Intent i = new Intent(Intent.ACTION_VIEW);
 						i.setData(Uri.parse(url));
-						ConversationView.this.startActivity(i);
+
+						if(i.resolveActivity(getPackageManager()) != null) {
+							ConversationView.this.startActivity(i);
+						}
+						else {
+							//TODO move this to strings.xml
+							//TODO make all url actions protected
+							Toast.makeText(ConversationView.this, "No web browser found", Toast.LENGTH_SHORT).show();
+						}
 						
 	                    // Display the beta Notice dialog
                         //betaNotice();
