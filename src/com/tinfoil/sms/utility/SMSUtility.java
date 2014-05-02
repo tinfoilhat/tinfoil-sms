@@ -253,7 +253,9 @@ public abstract class SMSUtility {
                     intent, PendingIntent.FLAG_CANCEL_CURRENT));
         }
         
-        sms.sendMultipartTextMessage(message.getNumber(), null, messageList, sentPIList, null);
+        if(messageList.size() > 0) {
+        	sms.sendMultipartTextMessage(message.getNumber(), null, messageList, sentPIList, null);
+        }
         
         c.unregisterReceiver(MS);
     }
