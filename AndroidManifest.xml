@@ -47,7 +47,8 @@
         <activity
             android:name="com.tinfoil.sms.sms.SendMessageActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName="com.tinfoil.sms.sms.ConversationView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.sms.ConversationView" />
@@ -69,14 +70,16 @@
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.AddContact"
-            android:label="@string/add_contact_activity" >
+            android:label="@string/add_contact_activity" 
+            android:parentActivityName="com.tinfoil.sms.sms.SendMessageActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.sms.SendMessageActivity" />
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.QuickPrefsActivity"
-            android:label="@string/settings" >
+            android:label="@string/settings"
+            android:parentActivityName="com.tinfoil.sms.sms.ConversationView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.sms.ConversationView" />
@@ -84,7 +87,8 @@
         <activity
             android:name="com.tinfoil.sms.settings.ImportContacts"
             android:configChanges="orientation"
-            android:label="@string/import_contacts" >
+            android:label="@string/import_contacts"
+            android:parentActivityName="com.tinfoil.sms.settings.QuickPrefsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.QuickPrefsActivity" />
@@ -93,7 +97,8 @@
             android:name="com.tinfoil.sms.settings.EditNumber"
             android:configChanges="orientation"
             android:label="@string/edit_number"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:parentActivityName="com.tinfoil.sms.settings.AddContact" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.AddContact" />
@@ -101,7 +106,8 @@
         <activity
             android:name="com.tinfoil.sms.settings.RemoveContactsActivity"
             android:configChanges="orientation"
-            android:label="@string/delete_contacts" >
+            android:label="@string/delete_contacts"
+            android:parentActivityName="com.tinfoil.sms.settings.QuickPrefsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.QuickPrefsActivity" />
@@ -128,14 +134,16 @@
 
         <activity
             android:name="com.tinfoil.sms.sms.KeyExchangeManager"
-            android:label="@string/key_exchange_manager" >
+            android:label="@string/key_exchange_manager"
+            android:parentActivityName="com.tinfoil.sms.sms.ConversationView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".sms.ConversationView" />
+                android:value="com.tinfoil.sms.sms.ConversationView" />
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.UserKeySettings"
-            android:label="@string/user_key_settings" >
+            android:label="@string/user_key_settings"
+            android:parentActivityName="com.tinfoil.sms.settings.QuickPrefsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.QuickPrefsActivity" />
