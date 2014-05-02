@@ -81,7 +81,6 @@ public class MessageService extends Service {
         {
             Intent notifyIntent = null;
             PendingIntent in = null;
-            //Notification notifyDetails = null;
 
             final String address = contentTitle.toString();
 
@@ -90,8 +89,6 @@ public class MessageService extends Service {
             	MessageService.mNotificationManager.cancel(SINGLE);
                 //Might need to change this.
                 contentTitle = dba.getRow(address).getName();
-                //notifyDetails = new Notification(R.drawable.tinfoil_logo,
-                  //      contentTitle + ": " + contentText, System.currentTimeMillis());
 
                 contentTitle = this.getString(R.string.new_message_notification_title);
                 contentText = dba.getUnreadMessageCount() + " " +
@@ -100,15 +97,11 @@ public class MessageService extends Service {
                 //No extra is added so the user will be brought to the main menu
                 notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
                 notifyIntent.putExtra(multipleNotificationIntent, true);
-                
-            	// Adds the back stack
-                stackBuilder.addParentStack(ConversationView.class);
+                notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-                // Adds the Intent to the top of the stack
-                stackBuilder.addNextIntent(notifyIntent);
-                
-                in = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                
+                in = PendingIntent.getActivity(this,
+                        0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 builder.setContentIntent(in)
 	            	.setContentTitle(contentTitle)
 	            	.setContentText(contentText)
@@ -116,18 +109,10 @@ public class MessageService extends Service {
 	            	.setSmallIcon(R.drawable.tinfoil_logo);
                 
                 mNotificationManager.notify(MULTI, builder.build());
-                
-                //in = PendingIntent.getActivity(this,
-                //        0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-                
-                //notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-                //mNotificationManager.notify(MULTI, notifyDetails);
             }
             else
             {
                 contentTitle = dba.getRow(address).getName();
-                //notifyDetails = new Notification(R.drawable.tinfoil_logo,
-                //        contentTitle + ": " + contentText, System.currentTimeMillis());
                 
                 if (MessageReceiver.myActivityStarted)
                 {
@@ -161,13 +146,7 @@ public class MessageService extends Service {
                 	.setSmallIcon(R.drawable.tinfoil_logo);
                 
                 mNotificationManager.notify(SINGLE, builder.build());
-                
-                //notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-                //mNotificationManager.notify(SINGLE, notifyDetails);
             }
-            /*notifyIntent.putExtra("Notification", address);
-            PendingIntent in = PendingIntent.getActivity(this,
-            		0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
         }
         
         if(sharedPrefs.getBoolean(
@@ -178,15 +157,8 @@ public class MessageService extends Service {
 	        {
 	            Intent notifyIntent = null;
 	            PendingIntent in = null;
-	            //Notification notifyDetails = null;
-	
-	    		//notifyDetails = new Notification(R.drawable.key_exchange,
-	    			//	this.getString(R.string.pending_key_exchange_notification),
-	    			//	System.currentTimeMillis());
 	    		
 	    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
-	            //in = PendingIntent.getActivity(this, 0, notifyIntent,
-	            	//	android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 	            
 	            // Adds the back stack
                 stackBuilder.addParentStack(KeyExchangeManager.class);
@@ -203,11 +175,6 @@ public class MessageService extends Service {
 	            	.setSmallIcon(R.drawable.key_exchange);
                 
                 mNotificationManager.notify(KEY, builder.build());
-	        	
-	        	//notifyDetails.setLatestEventInfo(this, 
-	        		//	this.getString(R.string.pending_key_exchange_notification),
-	        		//	this.getString(R.string.pending_key_exchange_message), in);
-	            //mNotificationManager.notify(KEY, notifyDetails);
 	        }
 	        else
 	        {

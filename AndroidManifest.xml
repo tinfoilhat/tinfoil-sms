@@ -33,7 +33,8 @@
         android:allowClearUserData="true"
         android:icon="@drawable/tinfoil_logo"
         android:label="@string/app_name"
-        android:theme="@style/TinfoilSMSTheme" >
+        android:theme="@style/TinfoilSMSTheme"
+        android:launchMode="singleInstance" >
         <activity
             android:name="com.tinfoil.sms.sms.ConversationView"
             android:configChanges="orientation"
