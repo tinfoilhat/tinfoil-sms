@@ -115,6 +115,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Checks if the contact is in the database
 					 */
+					//TODO re-think this for 4.4 (if Tinfoil-SMS is default then it should prob. catch all messages).
 					if (address != null && dba.inDatabase(address)) {
 
 						handleNotifSound(context);
