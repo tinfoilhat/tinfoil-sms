@@ -148,33 +148,20 @@ public class ConversationView extends Activity {
         Log.v("public key", new String(SMSUtility.user.getPublicKey()));
         Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
         
-        if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
+        /*if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
-            /*
-             * Check if there is the activity has been entered from a notification.
-             * This check specifically is to find out if there are multiple pending
-             * received messages.
-             */
-            this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
-        }
 
-        if (this.getIntent().hasExtra(MessageService.notificationIntent))
-        {
-            /*
-             * Check if there is the activity has been entered from a notification.
-             * This check is to find out if there is a single message received pending.
-             * If so then the conversation with that contact will be loaded.
-             */
-            final Intent intent = new Intent(this, SendMessageActivity.class);
-            intent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
-            intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
-            this.getIntent().removeExtra(MessageService.notificationIntent);
-            this.startActivity(intent);
-        }
+            // Check if there is the activity has been entered from a notification.
+            // This check specifically is to find out if there are multiple pending
+            // received messages.
+             
+            this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
+        }*/
         
         ConversationView.messageViewActive = false;
         this.setContentView(R.layout.main);
         
+        //TODO determine usefulness of this
         MessageReceiver.myActivityStarted = true;
 
         /*

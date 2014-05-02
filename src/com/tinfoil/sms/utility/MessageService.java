@@ -62,8 +62,6 @@ public class MessageService extends Service {
         dba = new DBAccessor(this);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
-    
-	//TODO fix deprecated methods in this class
 
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
@@ -94,9 +92,9 @@ public class MessageService extends Service {
                 contentText = dba.getUnreadMessageCount() + " " +
                 		this.getString(R.string.unread_email_message);
 
-                //No extra is added so the user will be brought to the main menu
+                // Extra is added so the user will be brought to the main menu
                 notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
-                notifyIntent.putExtra(multipleNotificationIntent, true);
+                //notifyIntent.putExtra(multipleNotificationIntent, true);
                 notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -114,24 +112,15 @@ public class MessageService extends Service {
             {
                 contentTitle = dba.getRow(address).getName();
                 
-                if (MessageReceiver.myActivityStarted)
-                {
-                    notifyIntent = new Intent(this.getApplicationContext(), SendMessageActivity.class);
-                    notifyIntent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
-                    notifyIntent.putExtra(notificationIntent, address);
+                notifyIntent = new Intent(this.getApplicationContext(), SendMessageActivity.class);
+                notifyIntent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
+                notifyIntent.putExtra(notificationIntent, address);
+                notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     
-                    // Adds the back stack
-                    stackBuilder.addParentStack(SendMessageActivity.class);
-                }
-                else
-                {
-                    notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
-                    notifyIntent.putExtra(notificationIntent, address);
-
-                    // Adds the back stack
-                    stackBuilder.addParentStack(ConversationView.class);
-                }
-                
+                // Adds the back stack
+                stackBuilder.addParentStack(SendMessageActivity.class);
+                              
                 notifyIntent.putExtra(multipleNotificationIntent, false);
                 
                 // Adds the Intent to the top of the stack
@@ -159,6 +148,8 @@ public class MessageService extends Service {
 	            PendingIntent in = null;
 	    		
 	    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
+	    		notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 	            
 	            // Adds the back stack
                 stackBuilder.addParentStack(KeyExchangeManager.class);
