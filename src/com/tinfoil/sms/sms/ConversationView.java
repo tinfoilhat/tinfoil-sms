@@ -130,23 +130,7 @@ public class ConversationView extends Activity {
         
         messageSender.startThread(getApplicationContext());
         
-        DBAccessor dba = new DBAccessor(this);
-        
-        SMSUtility.user = dba.getUserRow();
-        
-        if(SMSUtility.user == null)
-        {
-        	//Toast.makeText(context, "New key pair is generating...", Toast.LENGTH_SHORT).show();
-        	Log.v("First Launch", "keys are generating...");
-        	
-	        // Create a default user with a new key pair
-        	SMSUtility.user = new User();
-	        
-	        //Set the user's in the database
-	        dba.setUser(SMSUtility.user);
-        }
-        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
-        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
+        initEncryptionKeys(this);
         
         /*if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
@@ -180,9 +164,6 @@ public class ConversationView extends Activity {
         
         update = false;
         runThread = new ConversationLoader(this, update, handler);
-       
-        //View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
-        //list.addHeaderView(header);
         
         /*
          * Load the selected conversation thread when clicked
@@ -357,6 +338,26 @@ public class ConversationView extends Activity {
     	{
     		text.setTextColor(this.getResources().getColor(R.color.White));
     	}
+    }
+    
+    //TODO move this to a more general class
+    public static void initEncryptionKeys(Context context) {
+        DBAccessor dba = new DBAccessor(context);
+        
+        SMSUtility.user = dba.getUserRow();
+        
+        if(SMSUtility.user == null)
+        {
+        	Log.v("First Launch", "keys are generating...");
+        	
+	        // Create a default user with a new key pair
+        	SMSUtility.user = new User();
+	        
+	        //Set the user's in the database
+	        dba.setUser(SMSUtility.user);
+        }
+        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
+        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
     }
     
     public void getEULA()
