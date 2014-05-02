@@ -103,8 +103,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					 * Checks if the database interface has been initialized and
 					 * if tinfoil-sms's preference interface has been dealt with
 					 */
-					if (dba == null
-							|| ConversationView.sharedPrefs == null) {
+					if (dba == null || ConversationView.sharedPrefs == null) {
 						dba = new DBAccessor(context);
 						ConversationView.sharedPrefs = PreferenceManager
 								.getDefaultSharedPreferences(context);
@@ -112,11 +111,11 @@ public class MessageReceiver extends BroadcastReceiver {
 
 					final String address = messages[0].getOriginatingAddress();
 					String secretMessage = null;
-
+						
 					/*
 					 * Checks if the contact is in the database
 					 */
-					if (dba.inDatabase(address)) {
+					if (address != null && dba.inDatabase(address)) {
 
 						handleNotifSound(context);
 
