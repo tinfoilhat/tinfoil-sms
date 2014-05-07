@@ -1,0 +1,15 @@
+Beta Release version 1.4.0
+
+Changes:
+	* Android 4.4 (KitKat) support 
+	* Message drafts
+	* Added German translations
+	* Added Russian translations
+Fixes:
+	* Notifications flow issues
+	* Message limit bug
+	* Delete conversation thread bug
+	* Forward empty number
+	* Import invalid contact
+	* Invalid contact issue
+	* Fixed Compose menu strings.

@@ -1,0 +1,15 @@
+Beta Релиз версии 1.4.0
+
+изменения:
+	* Android 4.4 (KitKat) support 
+	* Message drafts
+    * Добавлены Немецкие переводы
+    * Добавлено русский перевод
+Исправлены:
+	* Notifications flow issues
+	* Message limit bug
+	* Delete conversation thread bug
+    * Вперед пустой номер
+    * Импорт недействительным контакт
+    * Неверный вопрос контакт
+    * Фиксированные строки меню
