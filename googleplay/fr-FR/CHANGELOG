@@ -1,0 +1,15 @@
+Beta Release version 1.4.0
+
+Changements:
+	* Support d'Android 4.4 (KitKat) 
+	* Brouillons de messages
+	* Ajout de la traduction allemande
+	* Ajout de la traduction russe
+Réparations:
+	* Problème du flux des notifications
+	* Bug de limite de message
+	* Bug de supression de fil de conversation
+	* Numéro de renvoi vide
+	* Importation de contacts invalides
+	* Problème de contacts invalides
+	* Réparation du bouton Rédiger du menu
