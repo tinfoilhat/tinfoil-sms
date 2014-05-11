@@ -429,7 +429,10 @@ public class SendMessageActivity extends Activity {
         if (number.length() > 0 && text.length() > 0)
         {
             //Sets so that a new message sent from the user will not show up as bold
-            messages.setCount(0);
+        	if(messages != null) {
+        		messages.setCount(0);
+        	}
+        	
             messageBox.setText("");
             messageEvent.resetCount();
             dba.addMessageToQueue(number, text, false);
