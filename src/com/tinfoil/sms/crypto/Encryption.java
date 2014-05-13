@@ -59,6 +59,8 @@ public class Encryption
     /* Size of the message counter in bytes, usually 2 bytes, based on Nonce.MAX_CYCLES */
     private static final int COUNT_SIZE = 2;
     
+    private static final int NONCE_VARIANCE_THRESHOLD = 10;
+    
     /* Register spongycastle as the most preferred security provider */
     static {
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
@@ -158,7 +160,7 @@ public class Encryption
          * is greater than the current counter (to avoid an attack of re-using IVs) and
          * if it is greater by at most 10.
          */
-        if ((counter > number.getNonceDecrypt()) && (counter - number.getNonceDecrypt()) <= 10)
+        if ((counter > number.getNonceDecrypt()) && (counter - number.getNonceDecrypt()) <= NONCE_VARIANCE_THRESHOLD)
         {
             Log.v("Re-initializing nonce counter to:", Integer.toString(counter));
             number.setNonceDecrypt(counter);
