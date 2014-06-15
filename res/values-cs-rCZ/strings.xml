@@ -120,8 +120,8 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="delete_number_menu">Smazat číslo</string>
     <string name="delete_number_menu_condensed">Smazat</string>
     <!-- TODO translate -->
-    <string name="number_exists">Number is already used</string>
-    <string name="number_must_exist">You must save the number first</string>
+    <string name="number_exists">Číslo je již použito</string>
+    <string name="number_must_exist">Nejprve musíte číslo uložit</string>
 
     <!-- Shared between EditNumber and -->
     <string name="phone_text">Telefonní číslo</string>
@@ -167,7 +167,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <!-- Shared between MessageView and SendMessageActivity strings -->
     <string name="send">Odeslat</string>
 	<!-- TODO Translate (RECENTLY ADDED) -->
-	<string name="send_hint">Send a message</string>
+	<string name="send_hint">Odeslat zprávu</string>
 
     <!-- SendMessageActivity strings -->
     <string name="to">Příjemce</string>
@@ -188,7 +188,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="user_public_key">Váš veřejný klíč:</string>
     <string name="export_public_key">Exportovat Veřejný Klíč</string>
     <string name="import_contacts_title">Vložte Kontaktovo číslo</string>
-    <string name="written_path">Uloženo na vaši paměťovou kartu jako</string>
+    <string name="written_path">Uloženo na vaši paměťovou kartu jako</string>
     
     <!-- Exchange Key -->
     <string name="key_exchange_cancelled">Výměna klíčů zrušena</string>
