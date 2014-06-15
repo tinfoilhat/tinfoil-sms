@@ -10,7 +10,6 @@
     <string name="refuse">Odmítnout</string>
     <string name="key_exchange_failed_to_decrypt">DEŠIFROVÁNÍ SELHALO</string>
     <string name="possible_man_in_the_middle_attack_warning">Možný útok typu Man In The Middle Position</string>
-    <!-- TODO Update Translation (RECENTLY UPDATED) -->
 	<string name="key_exchange_received">Zpráva obsahující klíč obdržena</string>
 
     <!-- ConversationView Activity strings -->
@@ -26,12 +25,9 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="settings_menu">Nastavení</string>
     <string name="pending_key_exchange_menu">Nevyřízené výměny klíčů</string>
     <string name="pending_key_exchange_menu_condensed">Vyměnit klíč</string>
-    <!-- TODO Translate -->
 	<!-- Android KitKat (4.4) warning -->
     <string name="kitkat_dialog_title">Varování!</string>
-    <!-- TODO Translate -->
     <string name="kitkat_dialog_message">Tinfoil-SMS zatím nepodporuje Android 4.4 KitKat a pravděpodobně vám nepůjde odesílat textové zprávy. Chcete i přesto pokračovat?</string>
-	<!-- TODO Translate the following (RECENTLY UPDATED) -->
 	<!-- BETA notice with info on how to contribute -->
     <string name="beta_notice_title">BETA Notice</string>
     <string name="beta_notice_message">Toto je BETA verze, vaše zpětná vazba je zde velmi důležitá. Hledáme lidi, kteří nám mohou pomoci s překlady a testováním, pokud byste měli zájem, navštivte http://tinfoilhat.github.io/tinfoil-sms nebo nás kontaktujte na tinfoil.sms@gmail.com.\nKdykoliv nás také můžete kontaktovat v sekci "Zpětná vazba" v nastavení.</string>
@@ -121,6 +117,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="delete_number_menu_condensed">Smazat</string>
     <!-- TODO translate -->
     <string name="number_exists">Number is already used</string>
+    <!-- TODO translate -->
     <string name="number_must_exist">You must save the number first</string>
 
     <!-- Shared between EditNumber and -->
@@ -171,7 +168,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
 
     <!-- SendMessageActivity strings -->
     <string name="to">Příjemce</string>
-	<!-- TODO update translation -->
     <string name="send_message">Odeslat zprávu</string>
     <string name="insufficent_information_provided">Neuvedli jste dostatečné informace</string>
 
@@ -212,7 +208,6 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="paypal_option">PayPal</string>
 
     <!-- Contact the developers strings -->
-	<!-- TODO Translate (RECENTLY ADDED) -->
     <string name="contact_title">Kontakt</string>
     <string name="contact_summary">Kontaktovat vývojáře</string>
     <string-array name="dev_emails">
@@ -241,7 +236,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="contact_settings_option_title">Nastavení kontaktu</string>
     <string name="import_contacts_option_title">Importovat kontakty</string>
     <string name="import_contacts_option_summary">Importovat důvěryhodné kontakty z telefonu</string>
-	<!-- TODO update translation -->
+    <!-- TODO change from manage contacts to remove contacts -->
     <string name="manage_contacts_option_title">Spravovat kontakty</string>
     <string name="encryption_option_title">Nastavení šifrování</string>
     <string name="encryption_message_option_title">Šifrované zprávy</string>
@@ -259,9 +254,7 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
 	<string name="ringtone_settings_title">Povolit vyzvánění</string>
     <string name="message_order_title">Pořadí zpráv</string>
     <string name="message_order_summary">Zobrazit poslední zprávu nahoře</string>
-    <!-- TODO Translate -->
     <string name="walkthrough_title">Zapnout Průvodce</string>
-    <!-- TODO Translate -->
     <string name="walkthrough_summary">Zobrazit Průvodce</string>
 
     <!-- Notification strings -->
@@ -271,14 +264,12 @@ KLIKNĚTE NA "PŘIJMOUT" POUZE POKUD ZCELA ROZUMÍTE A SOUHLASÍTE S TÍMTO LICE
     <string name="pending_key_exchange_message">Klikni pro vyřešení</string>
     
 	<!-- New Key Exchange strings -->
-	<!-- TODO Translate all the following strings-->
     <string name="key_exchange_sent">Výměna klíčů odeslána</string>
     <string name="new_key_exchange">Výměna klíčů</string>
 	<string name="new_key_exchange_menu">Nová výměna klíčů</string>
     
     <!-- Introductory Tutorial strings -->
     <!-- Intro -->
-    <!-- TODO Translate all the following strings (RECENTLY UPDATED) -->
     <string name="tut_intro_title">Vítejte v Tinfoil-SMS!</string>
     <string name="tut_intro_body">Tento průvodce vás provede základy ovládání aplikace a seznámí vás s Tinfoil-SMS a jeho možnostmi.\nPokud chcete, můžete tohoto průvodcy kdykoliv znovu spustit povolením v nastavení. Pojďme na to!</string>
     <!-- Start importing contacts -->
