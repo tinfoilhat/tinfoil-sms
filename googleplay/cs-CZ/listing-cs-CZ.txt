@@ -46,6 +46,3 @@ PROMO TEXT
 ----------------------------------------
 
 Tinfoil-SMS - SMSkování pro paranoidní.
-
-
-For a complete listing of all changes please see the CHANGELOG on GitHub.

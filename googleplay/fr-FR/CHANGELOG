@@ -1,9 +1,16 @@
-Beta Release version 1.4.0
+Pour une liste complète de tous les changements, veuillez regarder le CHANGELOG sur GitHub.
+
+Version Release Beta 1.4.1
+
+Changements:
+	* Ajout de la traduction allemande
+Réparations:
+
+Version Release Beta 1.4.0
 
 Changements:
 	* Support d'Android 4.4 (KitKat) 
 	* Brouillons de messages
-	* Ajout de la traduction allemande
 	* Ajout de la traduction russe
 	* Ajout de la traduction française
 Réparations:
@@ -14,3 +21,15 @@ Réparations:
 	* Importation de contacts invalides
 	* Problème de contacts invalides
 	* Réparation du bouton Rédiger du menu
+
+Version Beta 1.3.2
+
+Changements :
+    * Ajout de la traduction allemande
+    * Ajout de la traduction russe
+Réparations :
+    * Numéro de renvoi vide
+    * Importation de contacts invalides
+    * Problème de contacts invalides
+    * Pas de vérifications de l'application par défaut SMS pour KitKat
+    * Réparation du menu

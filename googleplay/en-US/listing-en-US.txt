@@ -46,23 +46,3 @@ PROMO TEXT
 ----------------------------------------
 
 Tinfoil-SMS - Texting for the paranoid.
-
-
-
-
-RECENT CHANGES
-----------------------------------------
-
-Beta Release version 1.3.2
-
-Changes:
-    * Added German translations
-    * Added Russian translations
-Fixes:
-    * Forward empty number
-    * Import invalid contact
-    * Invalid contact issue
-    * No default SMS app for Kitkat check.
-    * Fixed Compose menu strings.
-
-For a complete listing of all changes please see the CHANGELOG on GitHub.
