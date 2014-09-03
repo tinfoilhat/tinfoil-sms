@@ -1,3 +1,5 @@
+For a complete listing of all changes please see the CHANGELOG on GitHub.
+
 Beta Release version 1.4.1
 
 Changes:
@@ -8,7 +10,7 @@ Fixes:
 Beta Release version 1.4.0
 
 Changes:
-	* Android 4.4 (KitKat) support
+	* Android 4.4 (KitKat) support 
 	* Message drafts
 	* Added Russian translations
 	* Added French translations

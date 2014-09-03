@@ -19,7 +19,6 @@ package com.tinfoil.sms.utility;
 
 import java.util.ArrayList;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -27,6 +26,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.dataStructures.Entry;
@@ -61,13 +62,13 @@ public class MessageService extends Service {
         dba = new DBAccessor(this);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
-    
-	//TODO fix deprecated methods in this class
 
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
 
-
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        
         /*
          * Creates a notification if there is one to be created and if the user set the preferences
          * to allow notifications
@@ -78,7 +79,6 @@ public class MessageService extends Service {
         {
             Intent notifyIntent = null;
             PendingIntent in = null;
-            Notification notifyDetails = null;
 
             final String address = contentTitle.toString();
 
@@ -87,50 +87,55 @@ public class MessageService extends Service {
             	MessageService.mNotificationManager.cancel(SINGLE);
                 //Might need to change this.
                 contentTitle = dba.getRow(address).getName();
-                notifyDetails = new Notification(R.drawable.tinfoil_logo,
-                        contentTitle + ": " + contentText, System.currentTimeMillis());
 
                 contentTitle = this.getString(R.string.new_message_notification_title);
                 contentText = dba.getUnreadMessageCount() + " " +
                 		this.getString(R.string.unread_email_message);
 
-                //No extra is added so the user will be brought to the main menu
+                // Extra is added so the user will be brought to the main menu
                 notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
-                notifyIntent.putExtra(multipleNotificationIntent, true);
+                //notifyIntent.putExtra(multipleNotificationIntent, true);
+                notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
                 in = PendingIntent.getActivity(this,
-                        0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                        0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                builder.setContentIntent(in)
+	            	.setContentTitle(contentTitle)
+	            	.setContentText(contentText)
+	            	.setTicker(contentTitle + ": " + contentText)
+	            	.setSmallIcon(R.drawable.tinfoil_logo);
                 
-                notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-                mNotificationManager.notify(MULTI, notifyDetails);
+                mNotificationManager.notify(MULTI, builder.build());
             }
             else
             {
                 contentTitle = dba.getRow(address).getName();
-                notifyDetails = new Notification(R.drawable.tinfoil_logo,
-                        contentTitle + ": " + contentText, System.currentTimeMillis());
-                if (MessageReceiver.myActivityStarted)
-                {
-                    notifyIntent = new Intent(this.getApplicationContext(), SendMessageActivity.class);
-                    notifyIntent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
-                    notifyIntent.putExtra(notificationIntent, address);
-                    in = PendingIntent.getActivity(this,
-                            0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-                }
-                else
-                {
-                    notifyIntent = new Intent(this.getApplicationContext(), ConversationView.class);
-                    notifyIntent.putExtra(notificationIntent, address);
-                    in = PendingIntent.getActivity(this,
-                            0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-                }
+                
+                notifyIntent = new Intent(this.getApplicationContext(), SendMessageActivity.class);
+                notifyIntent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
+                notifyIntent.putExtra(notificationIntent, address);
+                notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    
+                // Adds the back stack
+                stackBuilder.addParentStack(SendMessageActivity.class);
+                              
                 notifyIntent.putExtra(multipleNotificationIntent, false);
                 
-                notifyDetails.setLatestEventInfo(this, contentTitle, contentText, in);
-                mNotificationManager.notify(SINGLE, notifyDetails);
+                // Adds the Intent to the top of the stack
+                stackBuilder.addNextIntent(notifyIntent);
+                
+                in = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                
+                builder.setContentIntent(in)
+                	.setContentTitle(contentTitle)
+                	.setContentText(contentText)
+                	.setTicker(contentTitle + ": " + contentText)
+                	.setSmallIcon(R.drawable.tinfoil_logo);
+                
+                mNotificationManager.notify(SINGLE, builder.build());
             }
-            /*notifyIntent.putExtra("Notification", address);
-            PendingIntent in = PendingIntent.getActivity(this,
-            		0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);*/
         }
         
         if(sharedPrefs.getBoolean(
@@ -141,36 +146,33 @@ public class MessageService extends Service {
 	        {
 	            Intent notifyIntent = null;
 	            PendingIntent in = null;
-	            Notification notifyDetails = null;
-	
-	    		notifyDetails = new Notification(R.drawable.key_exchange,
-	    				this.getString(R.string.pending_key_exchange_notification),
-	    				System.currentTimeMillis());
 	    		
 	    		notifyIntent = new Intent(this.getApplicationContext(), KeyExchangeManager.class);
-	            in = PendingIntent.getActivity(this, 0, notifyIntent,
-	            		android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-	        	
-	        	notifyDetails.setLatestEventInfo(this, 
-	        			this.getString(R.string.pending_key_exchange_notification),
-	        			this.getString(R.string.pending_key_exchange_message), in);
-	            mNotificationManager.notify(KEY, notifyDetails);
+	    		notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                		| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+	            
+	            // Adds the back stack
+                stackBuilder.addParentStack(KeyExchangeManager.class);
+
+                // Adds the Intent to the top of the stack
+                stackBuilder.addNextIntent(notifyIntent);
+                
+                in = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                
+                builder.setContentIntent(in)
+                	.setContentTitle(this.getString(R.string.pending_key_exchange_notification))
+	            	.setContentText(this.getString(R.string.pending_key_exchange_message))
+	            	.setTicker(this.getString(R.string.pending_key_exchange_notification))
+	            	.setSmallIcon(R.drawable.key_exchange);
+                
+                mNotificationManager.notify(KEY, builder.build());
 	        }
 	        else
 	        {
 	        	MessageService.mNotificationManager.cancel(MessageService.KEY);
 	        }
         }
-        
-        /*
-         * This seems to do the trick for having a notification
-         * that stops if the activity is open
-         */
-        /*if (MessageReceiver.myActivityStarted)
-        {
-        	MessageService.mNotificationManager.cancel(SINGLE);
-            //MessageService.mNotificationManager.cancelAll();
-        }*/
+
         this.stopSelf();
         return Service.START_NOT_STICKY;
     }

@@ -183,14 +183,16 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	
 	                if (nCur != null && nCur.moveToFirst())
 	                {
-	                    newNumber = new Number(SMSUtility.format(
-	                            nCur.getString(nCur.getColumnIndex("address"))));
-	                    do
-	                    {
-	                        newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
-	                                nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
-	                        //newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
-	                    } while (nCur.moveToNext());
+					 	String value = nCur.getString(nCur.getColumnIndex("address"));
+						if(value != null) {
+							newNumber = new Number(SMSUtility.format(value));
+							do
+							{
+								newNumber.addMessage(new Message(nCur.getString(nCur.getColumnIndex("body")),
+										nCur.getLong(nCur.getColumnIndex("date")), nCur.getInt(nCur.getColumnIndex("type"))));
+								//newNumber.setDate(nCur.getLong(nCur.getColumnIndex("date")));
+							} while (nCur.moveToNext());
+	                	}
 	                }
 	
 	                sCur = context.getContentResolver().query(Uri.parse("content://sms/sent"),
@@ -223,7 +225,8 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	                }
 	                
 	                
-	                if (ent == null && !loader.inDatabase(newNumber.getNumber())
+	                if (ent == null && newNumber != null && 
+	                		!loader.inDatabase(newNumber.getNumber())
 	                         && newNumber.getNumber() != null)
 	                {
 	                    tc.add(new TrustedContact(newNumber));
@@ -257,10 +260,18 @@ public class ImportTask extends AsyncTask<Context, Void, Integer>{
 	            {
 	            	sCur.close();
 	            }
-	            convCur.close();
+	            if(convCur != null)
+	            {
+	            	convCur.close();
+	            }
 	        }
 	        else
-	        {   	
+	        {
+	        	//Ensure list of trusted contacts is populated
+	        	if(tc == null) {
+	        		return ImportContacts.NOTHING;
+	        	}
+	        	
 	            for (int i = 0; i < this.tc.size(); i++)
 	            {
 	                if (this.inDb.get(i))

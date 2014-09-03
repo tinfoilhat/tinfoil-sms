@@ -105,11 +105,12 @@ public class SendMessageActivity extends Activity {
     private TrustedContact newCont;
     public static String selectedNumber;
     public static MessageLoader runThread;
-    private static String contact_name;
+    private String contact_name;
+    private String message = "";
         
     private DBAccessor dba;
-    private static ExchangeKey keyThread = new ExchangeKey();
-    public static SharedPreferences sharedPrefs;
+    private ExchangeKey keyThread = new ExchangeKey();
+    public SharedPreferences sharedPrefs;
     
     private int currentActivity = -1;
 
@@ -163,11 +164,8 @@ public class SendMessageActivity extends Activity {
         {
             handleSendIntent();
         }
-
-        // Set the send button as disabled until they enter text
-        sendSMS = (ImageButton) this.findViewById(R.id.new_message_send);
-        sendSMS.setEnabled(false);
-        sendSMS.setClickable(false);
+        
+        setUpSendButton();
     }
     
     private void setupComposeView(String number, String message)
@@ -213,9 +211,19 @@ public class SendMessageActivity extends Activity {
 		
 		//Set the Activity's title to the name of the contact
 		TrustedContact tc = dba.getRow(selectedNumber);
-		this.setTitle(tc.getName());
+		
+		if(tc != null)
+		{
+			setTitle(tc.getName());
+		}
+		else
+		{
+			finish();
+		}
         
         setupMessageViewUI();
+        
+        setupMessageBox();
         
         if(message != null)
         {
@@ -223,6 +231,40 @@ public class SendMessageActivity extends Activity {
         }
         
         handleNotifications();
+    }
+    
+    private void setUpSendButton()
+    {
+        // Set the send button as disabled until they enter text
+        sendSMS = (ImageButton) this.findViewById(R.id.new_message_send);
+        
+        handleDraft();
+        
+        if(message == null || message.length() == 0)
+        {
+	        sendSMS.setEnabled(false);
+	        sendSMS.setClickable(false);
+        }
+    }
+    
+    private void handleDraft()
+    {
+    	if(currentActivity == ConversationView.MESSAGE_VIEW)
+    	{
+	        if(message == null || message.length() == 0)
+	        {
+	        	Number number = dba.getNumber(selectedNumber);
+	        	message = number.getDraft();
+	        }
+	        
+	        EditText et = (EditText)findViewById(R.id.new_message_message);
+	    	
+	        if(et.getText() != null && (et.getText().toString() == null 
+	        		|| et.getText().toString().length() <= 0))
+			{
+	        	et.setText(message);
+			}
+    	}
     }
     
     private void handleSendIntent()
@@ -326,7 +368,7 @@ public class SendMessageActivity extends Activity {
             }
         });
     }
-    
+
     public void setupMessageBox()
     {
     	 messageEvent = new MessageBoxWatcher(this, R.id.new_message_send, R.id.send_word_count);
@@ -340,14 +382,16 @@ public class SendMessageActivity extends Activity {
     	{
     		String text = messageBox.getText().toString();
     	
-	    	if(text != null && text.length() > 0)
+	    	if(text != null && selectedNumber.length() > 0 && text.length() > 0)
 	        {
-	            sendMessage(selectedNumber, text);
+	    		cleanUI();
+	            sendMessage(dba, selectedNumber, text);
+	            refresh();
 	        }
     	}
     	else if(currentActivity == ConversationView.COMPOSE)
     	{
-	    	String box =  SendMessageActivity.this.messageBox.getText().toString();
+	    	String box =  messageBox.getText().toString();
 	    	String[] temp = checkValidNumber(this, newCont, box, true, true);
 	    	
 	    	if(temp != null)
@@ -365,59 +409,51 @@ public class SendMessageActivity extends Activity {
 	        	{
 	        		dba.addRow(new TrustedContact(new Number(number)));
 	        	}
-	        	
-	        	//Add the message to the database
-	        	if(dba.isTrustedContact(number))
-	        	{
-	        		dba.addNewMessage(new Message(text, true, Message.SENT_ENCRYPTED), number, true);
-	        	}
-	        	else
-	        	{
-	        		dba.addNewMessage(new Message(text, true, Message.SENT_DEFAULT), number, true);
-	        	}
-	
-	            //Add the message to the queue to send it
-	            dba.addMessageToQueue(number, text, false);         
+
+	        	sendMessage(dba, number, text);
 	            
-	            SendMessageActivity.this.messageBox.setText("");
-	            SendMessageActivity.this.phoneBox.setText("");
+	            messageBox.setText("");
+	            phoneBox.setText("");
 	    	}  	
     	}            
     }
     
     /**
      * Take the message information and put the message in the queue.
+     * @param dba The database interface
      * @param number The number the message will be sent to
      * @param text The message content for the message
      */
-    public void sendMessage(final String number, final String text)
+    public void sendMessage(DBAccessor dba, final String number, final String text)
     {
         if (number.length() > 0 && text.length() > 0)
         {
             //Sets so that a new message sent from the user will not show up as bold
-            messages.setCount(0);
-            this.messageBox.setText("");
+        	if(messages != null) {
+        		messages.setCount(0);
+        	}
+        	
+            messageBox.setText("");
             messageEvent.resetCount();
             dba.addMessageToQueue(number, text, false);
 
-            if(dba.isTrustedContact(number))
-            {
-            	dba.addNewMessage(new Message(text, true, 
-                		Message.SENT_ENCRYPTED), number, false);
-            }
-            else
-            {
-            	dba.addNewMessage(new Message(text, true, 
-                		Message.SENT_DEFAULT), number, false);
-            }
-            
-            //Encrypt the text message before sending it	
-            //SMSUtility.sendMessage(number, text, this.getBaseContext());
-            
-            //Start update thread
-            runThread.setUpdate(true);
-            runThread.setStart(false);
+            SMSUtility.addMessageToDB(dba, number, text);
         }
+    }
+    
+    private void cleanUI()
+    {
+    	//Sets so that a new message sent from the user will not show up as bold
+        messages.setCount(0);
+        this.messageBox.setText("");
+        messageEvent.resetCount();
+    }
+    
+    private void refresh()
+    {
+    	//Start update thread
+    	runThread.setUpdate(true);
+        runThread.setStart(false);
     }
     
 	public void setupMessageInterface() 
@@ -662,7 +698,7 @@ public class SendMessageActivity extends Activity {
         
         if(currentActivity == ConversationView.COMPOSE)
         {
-	        String text =  SendMessageActivity.this.messageBox.getText().toString();
+	        String text =  messageBox.getText().toString();
 	        String[] values = checkValidNumber(this, newCont, text, false, false);
 	        if(values != null)
 	        {
@@ -678,15 +714,15 @@ public class SendMessageActivity extends Activity {
 		        else if(ret == UNTRUSTED)
 		        {
 	        		menu.findItem(R.id.exchange)
-	        			.setTitle(R.string.resolve_key_exchange_full)
-	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
+	        			.setTitle(R.string.exchange_key_full)
+	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
 	        			.setEnabled(true);
 		        }
 	        	else if(ret == RESOLVE)
 	        	{
 	        		menu.findItem(R.id.exchange)
-	        			.setTitle(R.string.exchange_key_full)
-	        			.setTitleCondensed(this.getString(R.string.exchange_key_short))
+	        			.setTitle(R.string.resolve_key_exchange_full)
+	        			.setTitleCondensed(this.getString(R.string.resolve_key_exchange_short))
 	        			.setEnabled(true);
 		        }
 	        }
@@ -804,12 +840,26 @@ public class SendMessageActivity extends Activity {
 	@Override
     protected void onResume()
     {
+		handleDraft();
+		
         if(MessageService.mNotificationManager != null)
         {
         	MessageService.mNotificationManager.cancel(MessageService.SINGLE);
         }
         super.onResume();
     }
+	
+	@Override
+	protected void onPause()
+	{	
+		if(currentActivity == ConversationView.MESSAGE_VIEW)
+    	{
+			EditText et = (EditText)findViewById(R.id.new_message_message);
+			message = et.getText().toString();
+			dba.updateDraft(selectedNumber, message);
+    	}
+		super.onPause();
+	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -856,7 +906,7 @@ public class SendMessageActivity extends Activity {
             	if(currentActivity == ConversationView.COMPOSE)
             	{
             		//This is a bit of a redundant check
-                	String text =  SendMessageActivity.this.messageBox.getText().toString();
+                	String text =  messageBox.getText().toString();
                 	String[] value = checkValidNumber(this, newCont, text, false, false);
                 	if(value!= null) {
                 		
@@ -925,6 +975,10 @@ public class SendMessageActivity extends Activity {
                 	 invalid = true;
                 }
             }
+        }
+        else
+        {
+        	invalid = true;
         }
 
         if (invalid)

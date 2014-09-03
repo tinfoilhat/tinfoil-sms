@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.strippedcastle.crypto.InvalidCipherTextException;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -33,7 +34,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.TextView;
@@ -249,7 +252,9 @@ public abstract class SMSUtility {
                     intent, PendingIntent.FLAG_CANCEL_CURRENT));
         }
         
-        sms.sendMultipartTextMessage(message.getNumber(), null, messageList, sentPIList, null);
+        if(messageList.size() > 0) {
+        	sms.sendMultipartTextMessage(message.getNumber(), null, messageList, sentPIList, null);
+        }
         
         c.unregisterReceiver(MS);
     }
@@ -267,34 +272,39 @@ public abstract class SMSUtility {
      * @param dest The folder in the android database that the message
      *            will be stored in
      */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static void sendToSelf(final Context c, final String srcNumber, final String decMessage, final String dest) {
-        //Prevent message from doing to native client given user settings
-        if (ConversationView.sharedPrefs.getBoolean(
-        		QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, false))
-        {
-            final ContentValues values = new ContentValues();
-            values.put("address", srcNumber);
-            values.put("body", decMessage);
-
-            //Stops native sms client from reading messages as new.
-            values.put("read", true);
-            values.put("seen", true);
-
-            /* Sets used to determine who sent the message, 
-             * if type == 2 then it is sent from the user
-             * if type == 1 it has been sent by the contact
-             */
-            if (dest.equalsIgnoreCase(SENT))
-            {
-                values.put("type", "2");
-            }
-            else
-            {
-                values.put("type", "1");
-            }
-
-            c.getContentResolver().insert(Uri.parse(dest), values);
-        }
+        
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+    	{
+	    	//Prevent message from doing to native client given user settings
+	        if (ConversationView.sharedPrefs.getBoolean(
+	        		QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, false))
+	        {
+	            final ContentValues values = new ContentValues();
+	            values.put("address", srcNumber);
+	            values.put("body", decMessage);
+	
+	            //Stops native sms client from reading messages as new.
+	            values.put("read", true);
+	            values.put("seen", true);
+	
+	            /* Sets used to determine who sent the message, 
+	             * if type == 2 then it is sent from the user
+	             * if type == 1 it has been sent by the contact
+	             */
+	            if (dest.equalsIgnoreCase(SENT))
+	            {
+	                values.put("type", "2");
+	            }
+	            else
+	            {
+	                values.put("type", "1");
+	            }
+	
+	            c.getContentResolver().insert(Uri.parse(dest), values);
+	        }        
+    	}
     }
     
     /**
@@ -311,7 +321,7 @@ public abstract class SMSUtility {
         {
             if (dba.isTrustedContact(message.getNumber()) &&
                     ConversationView.sharedPrefs.getBoolean(
-                    QuickPrefsActivity.NATIVE_SAVE_SETTING_KEY, true) &&
+                    QuickPrefsActivity.ENABLE_SETTING_KEY, true) &&
                     !message.isExchange())
             {
                 // Initialize the cryptographic engine if null
@@ -385,7 +395,7 @@ public abstract class SMSUtility {
      */
     public static boolean isANumber(final String number)
     {
-    	if(number.matches(numberPattern))
+    	if(number != null && number.matches(numberPattern))
     	{
     		return true;
     	}
@@ -504,5 +514,32 @@ public abstract class SMSUtility {
         {
             tv.setTypeface(null, Typeface.ITALIC);
         }
+    }
+    
+    public static void addMessageToDB(DBAccessor dba, final String number, final String text)
+    {
+    	if(dba.isTrustedContact(number))
+        {
+        	dba.addNewMessage(new Message(text, true, 
+            		Message.SENT_ENCRYPTED), number, false);
+        }
+        else
+        {
+        	dba.addNewMessage(new Message(text, true, 
+            		Message.SENT_DEFAULT), number, false);
+        }
+    }
+    
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static boolean checkDefault(Context context)
+    {
+    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+    	{
+	    	final String myPackageName = context.getPackageName();
+	        if (!myPackageName.equals(Telephony.Sms.getDefaultSmsPackage(context))) {
+	        	return false;
+	        }
+    	}
+    	return true;
     }
 }

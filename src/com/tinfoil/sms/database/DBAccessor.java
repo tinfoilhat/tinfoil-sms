@@ -276,27 +276,16 @@ public class DBAccessor {
         if (cur.moveToFirst() && cur.getCount() >= Integer.valueOf(sharedPrefs.getString
         		(QuickPrefsActivity.MESSAGE_LIMIT_SETTING_KEY, String.valueOf(SMSUtility.LIMIT))))
         {
-        	Cursor date_cur = context.getContentResolver().query(
-        			DatabaseProvider.MESSAGE_CONTENT_URI, new String[]
-        			{"MIN("+SQLitehelper.KEY_DATE+")"},
-            		null, null, null);
-        	
-        	if (date_cur.moveToFirst() && date_cur.getLong(0) < message.getDate())
-        	{
-        		/*
-		    	 * Updated the update db sql command to account for messages having the exact same date
-		    	 */
-        		context.getContentResolver().update(DatabaseProvider.MESSAGE_CONTENT_URI,
-        				cv, SQLitehelper.KEY_ID + " = " + "(SELECT id FROM " +
-        				SQLitehelper.MESSAGES_TABLE_NAME + " WHERE "+ SQLitehelper.KEY_DATE
-        				+ " = " + "(SELECT MIN("+SQLitehelper.KEY_DATE+") FROM " 
-		        		+ SQLitehelper.MESSAGES_TABLE_NAME + ") LIMIT 1)", null);
-        		
-        	}
-        	date_cur.close();
+        	// Update the last item to the new message to preserve message limit
+       		context.getContentResolver().update(DatabaseProvider.MESSAGE_CONTENT_URI,
+       				cv, SQLitehelper.KEY_ID + " = (SELECT " + SQLitehelper.KEY_ID + " FROM "
+       				+ SQLitehelper.MESSAGES_TABLE_NAME + " WHERE " 
+       				+ SQLitehelper.KEY_REFERENCE + " = " + reference
+       				+ " ORDER by " + SQLitehelper.KEY_DATE + " LIMIT 1)", null);
         }
         else
         {
+        	// Insert the new message
         	context.getContentResolver().insert(DatabaseProvider.MESSAGE_CONTENT_URI, cv);
         }
         cur.close();
@@ -310,7 +299,7 @@ public class DBAccessor {
 	public boolean deleteMessage(long id)
 	{
 		int num = context.getContentResolver().delete(DatabaseProvider.MESSAGE_CONTENT_URI,
-				SQLitehelper.KEY_ID + " = " + id, null);
+				SQLitehelper.KEY_REFERENCE + " = " + id, null);
 		
 		if(num == 0)
 		{
@@ -789,9 +778,9 @@ public class DBAccessor {
 	{
 		
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.NUMBER_CONTENT_URI,
-				new String[]{SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER, SQLitehelper.KEY_TYPE,
-				SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_PUBLIC_KEY, SQLitehelper.KEY_SIGNATURE,
-				SQLitehelper.KEY_NONCE_ENCRYPT, SQLitehelper.KEY_NONCE_DECRYPT,
+				new String[]{SQLitehelper.KEY_ID, SQLitehelper.KEY_NUMBER, SQLitehelper.KEY_DRAFT,
+				SQLitehelper.KEY_TYPE, SQLitehelper.KEY_UNREAD, SQLitehelper.KEY_PUBLIC_KEY,
+				SQLitehelper.KEY_SIGNATURE, SQLitehelper.KEY_NONCE_ENCRYPT, SQLitehelper.KEY_NONCE_DECRYPT,
 				SQLitehelper.KEY_INITIATOR, SQLitehelper.KEY_EXCHANGE_SETTING},
 				SQLitehelper.KEY_NUMBER + " = ?", new String[]{number}, null);
 		
@@ -799,6 +788,7 @@ public class DBAccessor {
 		{
 			Number returnNumber = new Number(cur.getLong(cur.getColumnIndex(SQLitehelper.KEY_ID)),
 					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+					cur.getString(cur.getColumnIndex(SQLitehelper.KEY_DRAFT)),
 					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_TYPE)),
 					cur.getInt(cur.getColumnIndex(SQLitehelper.KEY_UNREAD)),
 					cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
@@ -869,7 +859,9 @@ public class DBAccessor {
 				do
 				{
 					num_id = pCur.getLong(pCur.getColumnIndex(SQLitehelper.KEY_ID));
-					tc.addNumber(new Number (num_id, pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+					tc.addNumber(new Number (num_id, 
+							pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_NUMBER)),
+							pCur.getString(pCur.getColumnIndex(SQLitehelper.KEY_DRAFT)),
 							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_TYPE)),
 							pCur.getInt(pCur.getColumnIndex(SQLitehelper.KEY_UNREAD)),
 							pCur.getBlob(pCur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
@@ -1048,6 +1040,12 @@ public class DBAccessor {
 		Cursor cur = context.getContentResolver().query(DatabaseProvider.USER_CONTENT_URI, 
 				new String[] {SQLitehelper.KEY_PUBLIC_KEY, SQLitehelper.KEY_PRIVATE_KEY},
 				null, null, null);
+		
+		if(cur == null)
+		{
+			return null;
+		}
+		
 		if (cur.moveToFirst())
 		{
 			User user = new User(cur.getBlob(cur.getColumnIndex(SQLitehelper.KEY_PUBLIC_KEY)),
@@ -1210,6 +1208,7 @@ public class DBAccessor {
 		
 		cv.put(SQLitehelper.KEY_REFERENCE, id);
         cv.put(SQLitehelper.KEY_NUMBER, numb.getNumber());
+        cv.put(SQLitehelper.KEY_DRAFT, numb.getDraft());
         cv.put(SQLitehelper.KEY_TYPE, numb.getType());
         cv.put(SQLitehelper.KEY_UNREAD, numb.getUnreadMessageCount());
         cv.put(SQLitehelper.KEY_PUBLIC_KEY, numb.getPublicKey());
@@ -1227,6 +1226,19 @@ public class DBAccessor {
 		updateSharedInfo(num_id, numb.getSharedInfo1(), numb.getSharedInfo2());
 	}
 	
+	/**
+	 * Update the draft in the database.
+	 * @param number The number of the contact the draft is for.
+	 * @param draft The draft of the message.
+	 */
+	public void updateDraft(String number, String draft)
+	{
+		ContentValues cv = new ContentValues();
+		cv.put(SQLitehelper.KEY_DRAFT, draft);
+		context.getContentResolver().update(DatabaseProvider.NUMBER_CONTENT_URI,
+        		cv, SQLitehelper.KEY_NUMBER + " LIKE ?" , new String[]{number});
+	}
+		
 	/**
 	 * Update a row from the Numbers table
 	 * @param tc The new information to be stored
@@ -1264,6 +1276,7 @@ public class DBAccessor {
 		{
 			cv.put(SQLitehelper.KEY_REFERENCE, id);
 	        cv.put(SQLitehelper.KEY_NUMBER, number.get(i).getNumber());
+	        cv.put(SQLitehelper.KEY_DRAFT, number.get(i).getDraft());
 	        cv.put(SQLitehelper.KEY_TYPE, number.get(i).getType());
 	        cv.put(SQLitehelper.KEY_UNREAD, number.get(i).getUnreadMessageCount());
 	        cv.put(SQLitehelper.KEY_PUBLIC_KEY, number.get(i).getPublicKey());
@@ -1472,6 +1485,11 @@ public class DBAccessor {
 				SQLitehelper.KEY_MESSAGE, SQLitehelper.KEY_EXCHANGE}, SQLitehelper.KEY_ID + 
 				" = (SELECT MIN(" + SQLitehelper.KEY_ID + ") FROM " + SQLitehelper.QUEUE_TABLE_NAME +")",
 				null, null);
+		
+		if(cur == null)
+		{
+			return null;
+		}		
 		
 		if (cur.moveToFirst())
 		{

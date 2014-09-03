@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -40,7 +41,7 @@ public class QuickPrefsActivity extends PreferenceActivity {
     
 	public static final String ENABLE_SETTING_KEY = "enable";
 	public static final String ENABLE_WALKTHROUGH_SETTING_KEY = "enable_walkthrough";
-	public static final String NATIVE_SAVE_SETTING_KEY = "native_save_settings";
+	public static final String NATIVE_SAVE_SETTING_KEY = "native_save";
 	public static final String MESSAGE_LIMIT_SETTING_KEY = "message_limit";
 	public static final String IMPORT_CONTACT_SETTING_KEY = "import_contacts";
 	public static final String MANAGE_CONTACTS_SETTING_KEY = "manage_contacts";
@@ -69,6 +70,8 @@ public class QuickPrefsActivity extends PreferenceActivity {
          */
         addPreferencesFromResource(R.xml.options);
         
+        
+        setKitKatPref();              
         
         PreferenceScreen sourceCode = (PreferenceScreen)findPreference(SOURCE_CODE_SETTING_KEY);
         sourceCode.setOnPreferenceClickListener(new OnPreferenceClickListener(){
@@ -211,5 +214,16 @@ public class QuickPrefsActivity extends PreferenceActivity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
-	}    
+	}
+	
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	private void setKitKatPref()
+	{
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+    	{
+        	CheckBoxPreference p = (CheckBoxPreference)findPreference(NATIVE_SAVE_SETTING_KEY);
+        	p.setChecked(false);
+        	p.setEnabled(false);
+    	}  
+	}
 }

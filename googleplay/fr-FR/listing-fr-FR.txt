@@ -1,0 +1,49 @@
+﻿DESCRIPTION
+----------------------------------------
+
+*Ceci est une version BETA de l'application, veuillez utiliser Tinfoil-SMS à votre propre discrétion.*
+Comment pouvez-vous être sûr que vos messages soient sécurisés ? Le fait est que vous ne pouvez pas, cependant avec Tinfoil-SMS vous pouvez être sûr qu'ils arriveront à la bonne personne et non dans une agence gouvernementale curieuse ou chez votre voisin d'à côté.
+
+Tinfoil-SMS est une application de messagerie chiffrée développée pour assurer que vos SMS ne tombent pas entre de mauvaises mains. Elle utilise des clés publiques ECC de 256 bits ainsi qu'un unique échange de clé pour contrer les attaques de type "homme du milieu" (man-in-the-middle). Avec Tinfoil-SMS, le seul moyen pour une personne indésirable de voir vos messages est de connaitre votre phrase de passe secrète ou alors de voler votre téléphone. Si vous devez le voir pour le croire, n'hésitez pas à faire un tour dans le code source. C'est open source et nous n'avons rien à cacher.
+
+
+Fonctionnalités de sécurité
+* Chiffrement à clé publique utilisant la Cryptographie sur les courbes elliptiques (ECC)
+* Signature à clé publique utilisant des secrets partagés pour empêcher les attaques de type "homme du milieu".
+* Chiffrement par bloc AES-256 (mode CTR)
+* Empreinte HMAC des messages avec SHA-256
+* CSPRNG basé sur ISAAC
+
+
+Fonctionnalités clé
+* Libre d'utilisation et gratuit pour tout le monde.
+* Aucune limitation ni publicité.
+* Logiciel Open Source sous licence publique générale GNU version 3 (GPLv3)
+* Interface simple et facile d'utilisation
+* Peut être utilisé avec ou sans le chiffrement d'activé.
+* Peut remplacer l'application de messagerie par défaut de Froyo (2.2) à Android Jelly Bean (4.3)
+
+
+Permissions
+* Accès au SMS pour réaliser les activités habituelles de messagerie.
+* Accès aux notifications afin de les afficher quand des messages sont reçus.
+* Accès aux contacts du téléphone afin de pouvoir les importer.
+* Accès au réseau pour reporter anonymement des bugs, comme c'est une version beta vos remarques et soutiens sont grandement appréciés, si vous ne voulez pas rapporter de bugs, vous pouvez facilement le désactivé dans les paramètres.
+* Accès au stockage externe pour une méthode alternative d'échange de clé.
+
+
+Plus d'informations
+
+Plus d'informations sur le projet, incluant le Wiki et un tutoriel d'introduction sur notre page GitHub à : http://tinfoilhat.github.io/tinfoil-sms/
+
+
+Sécurisé, SMS, SMS Chiffrés, SMS Privés, Messagerie Sécurisée, Messagerie Privé, Sécurité,
+Vie Privée, Censure, Cryptographie, Chiffrement, Messagerie SMS, SMS, MMS, BBM, Chat Sécurisé, Chat Privé, Message Secret, Message Caché, WhatsApp, iMessage, Blackberry, RIM, NSA, Snowden, simple, propre, holo, espion
+
+
+
+
+PROMO TEXT
+----------------------------------------
+
+Tinfoil-SMS - L'envoi de SMS pour paranos.

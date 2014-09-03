@@ -54,6 +54,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tinfoil.sms.R;
 import com.tinfoil.sms.adapter.ConversationAdapter;
@@ -130,51 +131,22 @@ public class ConversationView extends Activity {
         
         messageSender.startThread(getApplicationContext());
         
-        DBAccessor dba = new DBAccessor(this);
+        initEncryptionKeys(this);
         
-        SMSUtility.user = dba.getUserRow();
-        
-        if(SMSUtility.user == null)
+        /*if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
         {
-        	//Toast.makeText(context, "New key pair is generating...", Toast.LENGTH_SHORT).show();
-        	Log.v("First Launch", "keys are generating...");
-        	
-	        // Create a default user with a new key pair
-        	SMSUtility.user = new User();
-	        
-	        //Set the user's in the database
-	        dba.setUser(SMSUtility.user);
-        }
-        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
-        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
-        
-        if (this.getIntent().hasExtra(MessageService.multipleNotificationIntent))
-        {
-            /*
-             * Check if there is the activity has been entered from a notification.
-             * This check specifically is to find out if there are multiple pending
-             * received messages.
-             */
-            this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
-        }
 
-        if (this.getIntent().hasExtra(MessageService.notificationIntent))
-        {
-            /*
-             * Check if there is the activity has been entered from a notification.
-             * This check is to find out if there is a single message received pending.
-             * If so then the conversation with that contact will be loaded.
-             */
-            final Intent intent = new Intent(this, SendMessageActivity.class);
-            intent.putExtra(ConversationView.MESSAGE_INTENT, ConversationView.MESSAGE_VIEW);
-            intent.putExtra(selectedNumberIntent, this.getIntent().getStringExtra(MessageService.notificationIntent));
-            this.getIntent().removeExtra(MessageService.notificationIntent);
-            this.startActivity(intent);
-        }
+            // Check if there is the activity has been entered from a notification.
+            // This check specifically is to find out if there are multiple pending
+            // received messages.
+             
+            this.getIntent().removeExtra(MessageService.multipleNotificationIntent);
+        }*/
         
         ConversationView.messageViewActive = false;
         this.setContentView(R.layout.main);
         
+        //TODO determine usefulness of this
         MessageReceiver.myActivityStarted = true;
 
         /*
@@ -193,9 +165,6 @@ public class ConversationView extends Activity {
         
         update = false;
         runThread = new ConversationLoader(this, update, handler);
-       
-        //View header = (View)getLayoutInflater().inflate(R.layout.contact_message, null);
-        //list.addHeaderView(header);
         
         /*
          * Load the selected conversation thread when clicked
@@ -268,7 +237,10 @@ public class ConversationView extends Activity {
     	{
     		updateList(this, false);
     	}
-        super.onResume();       
+    	
+    	checkDefault();
+    	
+        super.onResume();
         
         // Display the key exchange instructions if step 1&2 of tutorial already shown
         if ((Walkthrough.hasShown(Step.INTRO, this) && Walkthrough.hasShown(Step.START_IMPORT, this))
@@ -369,6 +341,26 @@ public class ConversationView extends Activity {
     	}
     }
     
+    //TODO move this to a more general class
+    public static void initEncryptionKeys(Context context) {
+        DBAccessor dba = new DBAccessor(context);
+        
+        SMSUtility.user = dba.getUserRow();
+        
+        if(SMSUtility.user == null)
+        {
+        	Log.v("First Launch", "keys are generating...");
+        	
+	        // Create a default user with a new key pair
+        	SMSUtility.user = new User();
+	        
+	        //Set the user's in the database
+	        dba.setUser(SMSUtility.user);
+        }
+        Log.v("public key", new String(SMSUtility.user.getPublicKey()));
+        Log.v("private key", new String(SMSUtility.user.getPrivateKey()));
+    }
+    
     public void getEULA()
     {
     	PackageInfo versionInfo = getPackageInfo();
@@ -414,7 +406,7 @@ public class ConversationView extends Activity {
 	                }
 	                
 	                //If api level > kitkat check if tinfoil-sms is default SMS.
-	                checkDefault();
+	                //checkDefault();
 				}
 	        })
 	        .setOnCancelListener(new OnCancelListener(){
@@ -437,18 +429,16 @@ public class ConversationView extends Activity {
         }
     	else
     	{
+    		
     		// Check if Tinfoil-SMS is default SMS app.
     		//checkDefault();
     	}
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public void checkDefault()
     {
-    	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-    	{
-	    	final String myPackageName = getPackageName();
-	        if (!myPackageName.equals(Telephony.Sms.getDefaultSmsPackage(this))) {
+    	if(!SMSUtility.checkDefault(this)) {
 	        	
 	        	AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		        .setTitle(R.string.kitkat_dialog_title)
@@ -460,7 +450,7 @@ public class ConversationView extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
 	                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, 
-	                            myPackageName);
+	                    		getPackageName());
 	                    startActivity(intent);
 	                    // Display the beta Notice dialog
 	                    betaNotice();
@@ -489,15 +479,22 @@ public class ConversationView extends Activity {
 						String url = "https://github.com/tinfoilhat/tinfoil-sms/wiki/Android-KitKat-Support";
 						Intent i = new Intent(Intent.ACTION_VIEW);
 						i.setData(Uri.parse(url));
-						ConversationView.this.startActivity(i);
+
+						if(i.resolveActivity(getPackageManager()) != null) {
+							ConversationView.this.startActivity(i);
+						}
+						else {
+							//TODO move this to strings.xml
+							//TODO make all url actions protected
+							Toast.makeText(ConversationView.this, "No web browser found", Toast.LENGTH_SHORT).show();
+						}
 						
 	                    // Display the beta Notice dialog
-                        betaNotice();
+                        //betaNotice();
 					}
 		        	
 		        });
 		    	builder.create().show();
-	        }
     	}
     }
 

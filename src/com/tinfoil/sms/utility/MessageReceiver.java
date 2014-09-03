@@ -52,6 +52,8 @@ public class MessageReceiver extends BroadcastReceiver {
 	public static final String VIBRATOR_LENTH = "500";
 	private static OnKeyExchangeResolvedListener listener;
 	
+	private static final String ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+	
 	private DBAccessor dba;
 
 	public void setOnKeyExchangeResolvedListener(
@@ -69,7 +71,9 @@ public class MessageReceiver extends BroadcastReceiver {
 		dba = new DBAccessor(context);
 		
 		Bundle bundle = intent.getExtras();
-		if (bundle != null) {
+		
+		if (intent.getAction().equals(ACTION_SMS_RECEIVED)
+				&& bundle != null) {
 
 			/*
 			 *  This will put every new message into a array of
@@ -77,13 +81,14 @@ public class MessageReceiver extends BroadcastReceiver {
 			 *  and needs to be converted to a SmsMessage, if you want to
 			 *  get information about the message.
 			 */
-			Object[] pdus = (Object[]) bundle.get("pdus");
+			Object[] pdus = (Object[]) bundle.getSerializable("pdus");
 
 			if (pdus != null) {
 				keyExchangeManual = false;
 				SmsMessage[] messages = new SmsMessage[pdus.length];
 				String fullMessage = "";
 				
+				//TODO handle mms data
 				for (int i = 0; i < pdus.length; i++) {
 					messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
 					fullMessage += messages[i].getMessageBody();
@@ -98,8 +103,7 @@ public class MessageReceiver extends BroadcastReceiver {
 					 * Checks if the database interface has been initialized and
 					 * if tinfoil-sms's preference interface has been dealt with
 					 */
-					if (dba == null
-							|| ConversationView.sharedPrefs == null) {
+					if (dba == null || ConversationView.sharedPrefs == null) {
 						dba = new DBAccessor(context);
 						ConversationView.sharedPrefs = PreferenceManager
 								.getDefaultSharedPreferences(context);
@@ -107,13 +111,14 @@ public class MessageReceiver extends BroadcastReceiver {
 
 					final String address = messages[0].getOriginatingAddress();
 					String secretMessage = null;
-
+						
 					/*
 					 * Checks if the contact is in the database
 					 */
-					if (dba.inDatabase(address)) {
+					//TODO re-think this for 4.4 (if Tinfoil-SMS is default then it should prob. catch all messages).
+					if (address != null && dba.inDatabase(address)) {
 
-						handleNotificiations(context);
+						handleNotifSound(context);
 
 						invalidKeyExchange = false;
 						
@@ -141,34 +146,7 @@ public class MessageReceiver extends BroadcastReceiver {
 						ConversationView.updateList(context,
 								ConversationView.messageViewActive);
 
-						// Check if the message was an invalid key exchange
-						if (!invalidKeyExchange) {
-							// Check if there should be a key exchange
-							// notification
-							if (!keyExchange) {
-								if (!keyExchangeManual) {
-									/*
-									 * Set the values needed for the
-									 * notification
-									 */
-									MessageService.contentTitle = SMSUtility
-											.format(address);
-									if (secretMessage != null) {
-										MessageService.contentText = secretMessage;
-									} else {
-										MessageService.contentText = fullMessage;
-									}
-								} else {
-									MessageService.contentTitle = null;
-									MessageService.contentText = null;
-								}
-								Intent serviceIntent = new Intent(context,
-										MessageService.class);
-								// ServiceConnection conn = new
-								// ServiceConnection() {};
-								context.startService(serviceIntent);
-							}
-						}
+						handleNotification(context, address, fullMessage, secretMessage);
 
 						// Prevent other applications from seeing the message
 						// received
@@ -416,35 +394,72 @@ public class MessageReceiver extends BroadcastReceiver {
 		return secretMessage;
 	}
 	
-	private void handleNotificiations(Context context)
+	private void handleNotifSound(Context context)
 	{
-		/*
-		 * Checks if the user has enabled the vibration option
-		 */
-		if (ConversationView.sharedPrefs.getBoolean(
-				QuickPrefsActivity.VIBRATE_SETTING_KEY, true)) {
-			Vibrator vibrator;
-			vibrator = (Vibrator) context
-					.getSystemService(Context.VIBRATOR_SERVICE);
-			String value = ConversationView.sharedPrefs
-					.getString(
-							QuickPrefsActivity.VIBRATE_LENGTH_SETTING_KEY,
-							VIBRATOR_LENTH);
-			vibrator.vibrate(Long.valueOf(value));
+		if(SMSUtility.checkDefault(context))
+		{
+			/*
+			 * Checks if the user has enabled the vibration option
+			 */
+			if (ConversationView.sharedPrefs.getBoolean(
+					QuickPrefsActivity.VIBRATE_SETTING_KEY, true)) {
+				Vibrator vibrator;
+				vibrator = (Vibrator) context
+						.getSystemService(Context.VIBRATOR_SERVICE);
+				String value = ConversationView.sharedPrefs
+						.getString(
+								QuickPrefsActivity.VIBRATE_LENGTH_SETTING_KEY,
+								VIBRATOR_LENTH);
+				vibrator.vibrate(Long.valueOf(value));
+			}
+	
+			if (ConversationView.sharedPrefs.getBoolean(
+					QuickPrefsActivity.RINGTONE_SETTING_KEY, false)) {
+				Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				
+				if(notification == null){ 
+					notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);               
+		         }
+				
+				Ringtone ringtone = RingtoneManager.getRingtone(context, notification);
+				if(ringtone != null)
+				{
+					ringtone.play();
+				}
+			}
 		}
+	}
+	
+	private void handleNotification(Context context, String address, String message, String secretMessage)
+	{
+		if(SMSUtility.checkDefault(context))
+		{
+			// Check if the message was an invalid key exchange
+			if (!invalidKeyExchange) {
+				// Check if there should be a key exchange
+				// notification
+				if (!keyExchange) {
+					if (!keyExchangeManual) {
+						/*
+						 * Set the values needed for the
+						 * notification
+						 */
+						MessageService.contentTitle = SMSUtility
+								.format(address);
+						if (secretMessage != null) {
+							MessageService.contentText = secretMessage;
+						} else {
+							MessageService.contentText = message;
+						}
+					} else {
+						MessageService.contentTitle = null;
+						MessageService.contentText = null;
+					}
+					Intent serviceIntent = new Intent(context,
+							MessageService.class);
 
-		if (ConversationView.sharedPrefs.getBoolean(
-				QuickPrefsActivity.RINGTONE_SETTING_KEY, false)) {
-			Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-			
-			if(notification == null){ 
-				notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);               
-	         }
-			
-			Ringtone ringtone = RingtoneManager.getRingtone(context, notification);
-			if(ringtone != null)
-			{
-				ringtone.play();
+					context.startService(serviceIntent);
+				}
 			}
 		}
 	}

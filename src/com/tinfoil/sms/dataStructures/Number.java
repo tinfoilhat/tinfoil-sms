@@ -44,6 +44,7 @@ public class Number implements Serializable {
 	
 	private long id;
 	private String number;
+	private String draft;
 	private int type;
 	private int unreadMessageCount = 0;
 	private ArrayList<Message> messages;
@@ -80,12 +81,13 @@ public class Number implements Serializable {
 	 * @param keyExchangeFlag for how key exchange messages from the contact
 	 * will be handled
 	 */
-	public Number (long id, String number, int type, int unreadMessageCount, 
+	public Number (long id, String number, String draft, int type, int unreadMessageCount, 
 			byte[] publicKey, byte[] signature, Integer enNonceCount,
 			Integer deNonceCount, int initiator, int keyExchangeFlag)
 	{
 		this.id = id;
 		this.setNumber(number);
+		this.setDraft(draft);
 		this.setType(type);
 		this.setUnreadMessageCount(unreadMessageCount);
 		this.messages = new ArrayList<Message>();
@@ -519,6 +521,24 @@ public class Number implements Serializable {
 		this.keyExchangeFlag = keyExchangeFlag;
 	}
 	
+	/**
+	 * @return the draft
+	 */
+	public String getDraft() {
+		return draft;
+	}
+
+	/**
+	 * @param draft the draft to set
+	 */
+	public void setDraft(String draft) {
+		if(draft == null)
+		{
+			draft = "";
+		}
+		this.draft = draft;
+	}
+
 	public void setMessage(ArrayList<Message> messages)
 	{
 		this.messages = messages;

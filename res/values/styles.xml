@@ -67,6 +67,6 @@
 
 
     <style name="TinfoilSMSTheme" parent="@android:style/Theme.Light">
-        <item name="showcaseViewStyle">@style/CustomShowcaseTheme</item>
+        <item name="showcaseViewStyle">@style/ShowcaseView.Light</item>
     </style>
 </resources>

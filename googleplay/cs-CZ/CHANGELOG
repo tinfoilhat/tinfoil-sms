@@ -1,0 +1,24 @@
+For a complete listing of all changes please see the CHANGELOG on GitHub.
+
+Beta Release verze 1.4.1
+
+Changes:
+	* Added German translations
+Fixes:
+	*
+
+Beta Release verze 1.4.0
+
+Changes:
+	* Android 4.4 (KitKat) support 
+	* Message drafts
+	* Added Russian translations
+	* Added French translations
+Fixes:
+	* Notifications flow issues
+	* Message limit bug
+	* Delete conversation thread bug
+	* Forward empty number
+	* Import invalid contact
+	* Invalid contact issue
+	* Fixed Compose menu strings.

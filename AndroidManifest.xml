@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tinfoil.sms"
-    android:versionCode="16"
-    android:versionName="1.3.1" >
+    android:versionCode="20"
+    android:versionName="1.4.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -12,6 +13,8 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.SEND_RESPOND_VIA_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
@@ -30,7 +33,8 @@
         android:allowClearUserData="true"
         android:icon="@drawable/tinfoil_logo"
         android:label="@string/app_name"
-        android:theme="@style/TinfoilSMSTheme" >
+        android:theme="@style/TinfoilSMSTheme"
+        android:launchMode="singleInstance" >
         <activity
             android:name="com.tinfoil.sms.sms.ConversationView"
             android:configChanges="orientation"
@@ -44,43 +48,49 @@
         <activity
             android:name="com.tinfoil.sms.sms.SendMessageActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName="com.tinfoil.sms.sms.ConversationView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.sms.ConversationView" />
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SENDTO" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="sms" />
                 <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
             </intent-filter>
             <intent-filter>
                <action android:name="android.intent.action.SEND" />
                <category android:name="android.intent.category.DEFAULT" />
                <data android:mimeType="text/plain" />
-           </intent-filter>
+            </intent-filter>
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.AddContact"
-            android:label="@string/add_contact_activity" >
+            android:label="@string/add_contact_activity" 
+            android:parentActivityName="com.tinfoil.sms.sms.SendMessageActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.sms.SendMessageActivity" />
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.QuickPrefsActivity"
-            android:label="@string/settings">
-        	<meta-data
+            android:label="@string/settings"
+            android:parentActivityName="com.tinfoil.sms.sms.ConversationView" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tinfoil.sms.sms.ConversationView" />    
+                android:value="com.tinfoil.sms.sms.ConversationView" />
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.ImportContacts"
             android:configChanges="orientation"
-            android:label="@string/import_contacts" >
-			<meta-data
+            android:label="@string/import_contacts"
+            android:parentActivityName="com.tinfoil.sms.settings.QuickPrefsActivity" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.QuickPrefsActivity" />
         </activity>
@@ -88,7 +98,8 @@
             android:name="com.tinfoil.sms.settings.EditNumber"
             android:configChanges="orientation"
             android:label="@string/edit_number"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:parentActivityName="com.tinfoil.sms.settings.AddContact" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.AddContact" />
@@ -96,16 +107,27 @@
         <activity
             android:name="com.tinfoil.sms.settings.RemoveContactsActivity"
             android:configChanges="orientation"
-            android:label="@string/delete_contacts" >
-			<meta-data
+            android:label="@string/delete_contacts"
+            android:parentActivityName="com.tinfoil.sms.settings.QuickPrefsActivity" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tinfoil.sms.settings.QuickPrefsActivity" /> 
-		</activity>
+                android:value="com.tinfoil.sms.settings.QuickPrefsActivity" />
+        </activity>
 
-        <receiver android:name="com.tinfoil.sms.utility.MessageReceiver" >
+        <receiver android:name="com.tinfoil.sms.utility.MessageReceiver" 
+            android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="1000" >
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.tinfoil.sms.utility.MmsReceiver"
+            android:permission="android.permission.BROADCAST_WAP_PUSH" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
 
@@ -113,14 +135,16 @@
 
         <activity
             android:name="com.tinfoil.sms.sms.KeyExchangeManager"
-            android:label="@string/key_exchange_manager" >
+            android:label="@string/key_exchange_manager"
+            android:parentActivityName="com.tinfoil.sms.sms.ConversationView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".sms.ConversationView" />
+                android:value="com.tinfoil.sms.sms.ConversationView" />
         </activity>
         <activity
             android:name="com.tinfoil.sms.settings.UserKeySettings"
-            android:label="@string/user_key_settings" >
+            android:label="@string/user_key_settings"
+            android:parentActivityName="com.tinfoil.sms.settings.QuickPrefsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinfoil.sms.settings.QuickPrefsActivity" />
@@ -132,6 +156,20 @@
             android:enabled="true"
             android:exported="false" >
         </provider>
+
+        <service
+            android:name="com.tinfoil.sms.sms.QuickSMSSendingService"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
