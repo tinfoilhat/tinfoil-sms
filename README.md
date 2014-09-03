@@ -16,11 +16,9 @@ bit ECC public keys as well as a unique signed key exchange to prevent any
 ## Get Tinfoil-SMS
 
 You can get the latest release of Tinfoil-SMS from the 
-[Google Play Store](https://play.google.com/store/apps/details?id=com.tinfoil.sms), 
-please see the project [Github page](http://tinfoilhat.github.io/tinfoil-sms/) 
-for the relevant download URLs and screenshots of the application. Or if you 
-prefer, you can get a copy of the latest code from the master branch, feel free 
-to submit pull requests for any contributions you would like to make.
+[Google Play Store](https://play.google.com/store/apps/details?id=com.tinfoil.sms), please see the project [Github page](http://tinfoilhat.github.io/tinfoil-sms/) for the relevant download URLs and screenshots of the application. 
+
+If you prefer you can also download the latest release directly from  [GitHub](https://github.com/tinfoilhat/tinfoil-sms/releases). Or you can get a copy of the latest code from the master branch, feel free to submit pull requests for any contributions you would like to make.
 
 
 ## Guiding Principles
@@ -49,7 +47,7 @@ to submit pull requests for any contributions you would like to make.
 
 * Security audits and a detailed cryptanalysis of the application and the library, [Orwell](https://github.com/gnu-user/Orwell)
 * Finalizing the cryptography during the beta release, so that it can remain unchanged for the stable release
-* A stable release within 6 months of the beta release
+* Add MMS support
 * Incorporating steganography to obfuscate text messages for the next major release
 
 
