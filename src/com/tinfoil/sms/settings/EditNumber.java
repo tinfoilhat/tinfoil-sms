@@ -534,10 +534,8 @@ public class EditNumber extends Activity{
 	            					    f.close();
 	            					} catch (FileNotFoundException e) {
 	            						e.printStackTrace();
-	            						BugSenseHandler.sendExceptionMessage("Type", "Import Public Key Not Found Error", e);
 	            					} catch (IOException e) {
 	            						e.printStackTrace();
-	            						BugSenseHandler.sendExceptionMessage("Type", "Import Public Key Error", e);
 	            					}
 	                       		
 	                        		String keyExchangeMessage = sb.toString();

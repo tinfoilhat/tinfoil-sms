@@ -22,14 +22,10 @@ import java.security.Security;
 import org.strippedcastle.jce.provider.BouncyCastleProvider;
 
 import android.app.Application;
-import android.preference.PreferenceManager;
-
-import com.tinfoil.sms.settings.QuickPrefsActivity;
 
 
 /**
- * The main application class which is simply used to initialize Bugsense, which is
- * used to report crashes and other bugs in the application.
+ * 
  */
 public class TinfoilSMS extends Application
 {
