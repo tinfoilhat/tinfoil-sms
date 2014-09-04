@@ -547,73 +547,73 @@ public class SendMessageActivity extends Activity {
 	
 	            final AlertDialog.Builder popup_builder = new AlertDialog.Builder(SendMessageActivity.this);
 	            popup_builder.setTitle(contact_name)
-	                    .setItems(SendMessageActivity.this.getResources()
-	                		.getStringArray(R.array.sms_options),
-	                			new DialogInterface.OnClickListener() {
-	
-	                        public void onClick(final DialogInterface dialog, final int which) {
-	
-	                            final String[] messageValue = (String[]) messageList.getItemAtPosition(item_num);
-	
-	                            if (which == 0)
-	                            {
-	                                //option = Delete
-	                                dba.deleteMessage(Long.valueOf(messageValue[3]));
-	                                updateList();
-	                            }
-	                            else if (which == 1)
-	                            {
-	                            	copyText(messageValue[1]);
-	                            }
-	                            else if (which == 2)
-	                            {
-	                                //option = Forward message
-	                                phoneBox = new AutoCompleteTextView(SendMessageActivity.this.getBaseContext());
-	
-	                                List<String> contact = null;
-	                                if (tc == null)
-	                                {
-	                                	//TODO Do in thread.
-	                                	tc = dba.getAllRows(DBAccessor.ALL);
-	                                }
-	
-	                                if (tc != null)
-	                                {
-	                                    if (contact == null)
-	                                    {
-	                                        contact = SMSUtility.contactDisplayMaker(tc);
-	                                    }
-	                                }
-	                                else
-	                                {
-	                                    contact = null;
-	                                }
-	                                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-	                                		SendMessageActivity.this.getBaseContext(), 
-	                                		R.layout.auto_complete_list_item, contact);
-	
-	                                phoneBox.setAdapter(adapter);
-	
-	                                final AlertDialog.Builder contact_builder = new AlertDialog.Builder(SendMessageActivity.this);
-	
-	                                contact_builder.setTitle(R.string.forward_title)
-	                                        .setCancelable(true)
-	                                        .setView(phoneBox)
-	                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-	
-	                                            public void onClick(final DialogInterface dialog, final int which) {
-	                                            	
-	                                            	forward(messageValue[1]);
-	                                            }
-	
-	                                        });
-	                                final AlertDialog contact_alert = contact_builder.create();
-	
-	                                SendMessageActivity.this.popup_alert.cancel();
-	                                contact_alert.show();
-	                            }
-	                        }
-	                    }).setCancelable(true);
+                    .setItems(SendMessageActivity.this.getResources()
+                		.getStringArray(R.array.sms_options),
+                			new DialogInterface.OnClickListener() {
+
+                        public void onClick(final DialogInterface dialog, final int which) {
+
+                            final String[] messageValue = (String[]) messageList.getItemAtPosition(item_num);
+
+                            if (which == 0)
+                            {
+                                //option = Delete
+                                dba.deleteMessage(Long.valueOf(messageValue[3]));
+                                updateList();
+                            }
+                            else if (which == 1)
+                            {
+                            	copyText(messageValue[1]);
+                            }
+                            else if (which == 2)
+                            {
+                                //option = Forward message
+                                phoneBox = new AutoCompleteTextView(SendMessageActivity.this.getBaseContext());
+
+                                List<String> contact = null;
+                                if (tc == null)
+                                {
+                                	//TODO Do in thread.
+                                	tc = dba.getAllRows(DBAccessor.ALL);
+                                }
+
+                                if (tc != null)
+                                {
+                                    if (contact == null)
+                                    {
+                                        contact = SMSUtility.contactDisplayMaker(tc);
+                                    }
+                                }
+                                else
+                                {
+                                    contact = null;
+                                }
+                                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                		SendMessageActivity.this.getBaseContext(), 
+                                		R.layout.auto_complete_list_item, contact);
+
+                                phoneBox.setAdapter(adapter);
+
+                                final AlertDialog.Builder contact_builder = new AlertDialog.Builder(SendMessageActivity.this);
+
+                                contact_builder.setTitle(R.string.forward_title)
+                                        .setCancelable(true)
+                                        .setView(phoneBox)
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                            public void onClick(final DialogInterface dialog, final int which) {
+                                            	
+                                            	forward(messageValue[1]);
+                                            }
+
+                                        });
+                                final AlertDialog contact_alert = contact_builder.create();
+
+                                SendMessageActivity.this.popup_alert.cancel();
+                                contact_alert.show();
+                            }
+                        }
+                    }).setCancelable(true);
 	            SendMessageActivity.this.popup_alert = popup_builder.create();
 	            SendMessageActivity.this.popup_alert.show();
 	        			
@@ -628,25 +628,31 @@ public class SendMessageActivity extends Activity {
 		
 		if(temp != null)
 		{
+			
+			if(!dba.inDatabase(temp[0])) {
+				// Add the number to the database.
+				dba.addRow(new TrustedContact(new Number(temp[0])));
+			}
+			
             // Show the tutorial for setting shared secrets
             if (! Walkthrough.hasShown(Step.SET_SECRET, this))
             {
             	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 Walkthrough.showWithListener(Step.SET_SECRET, SendMessageActivity.this, 
-                        new OnShowcaseEventListener() {
-                            public void onShowcaseViewHide(ShowcaseView showcaseView) {
-                                // Load the dialog to get the shared secrets
-                                SMSUtility.handleKeyExchange(keyThread, dba, SendMessageActivity.this, temp[0]);
-                            }
-                            
-                            @Override
-                            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-                            }
-                            
-                            @Override
-                            public void onShowcaseViewShow(ShowcaseView showcaseView) {
-                            }
-                        });
+                    new OnShowcaseEventListener() {
+                        public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                            // Load the dialog to get the shared secrets
+                            SMSUtility.handleKeyExchange(keyThread, dba, SendMessageActivity.this, temp[0]);
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        }
+                        
+                        @Override
+                        public void onShowcaseViewShow(ShowcaseView showcaseView) {
+                        }
+                    });
             }
             else
             {
