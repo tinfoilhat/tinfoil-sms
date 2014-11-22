@@ -19,12 +19,14 @@ package com.tinfoil.sms.utility;
 
 import org.strippedcastle.crypto.InvalidCipherTextException;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -40,6 +42,7 @@ import com.tinfoil.sms.crypto.KeyExchangeHandler;
 import com.tinfoil.sms.dataStructures.Entry;
 import com.tinfoil.sms.dataStructures.Message;
 import com.tinfoil.sms.dataStructures.Number;
+import com.tinfoil.sms.dataStructures.TrustedContact;
 import com.tinfoil.sms.database.DBAccessor;
 import com.tinfoil.sms.settings.QuickPrefsActivity;
 import com.tinfoil.sms.sms.ConversationView;
@@ -66,6 +69,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		listener = null;
 	}
 
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
@@ -116,42 +120,57 @@ public class MessageReceiver extends BroadcastReceiver {
 					/*
 					 * Checks if the contact is in the database
 					 */
-					//TODO re-think this for 4.4 (if Tinfoil-SMS is default then it should prob. catch all messages).
-					if (address != null && dba.inDatabase(address)) {
-
-						handleNotifSound(context);
-
-						invalidKeyExchange = false;
+					
+					if (address != null) {
+						boolean indb = dba.inDatabase(address);
 						
-						secretMessage = handleEncryptedMessage(context, address, fullMessage);
+						// Handle messages that are not from contacts within the database.
+						if(!indb && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+				    	{
+							// Add the contact to the database.
+							TrustedContact tc = new TrustedContact(new Number(address));
+							dba.addRow(tc);
+							
+							// Ensure the number has been added.
+							indb = dba.inDatabase(address);
+				    	}
 						
-						if(secretMessage == null)
-						{
-							Log.v("message", fullMessage);
-
-							/*
-							 * Since the user is not trusted, the message could
-							 * be a key exchange. Assume it is check for key
-							 * exchange message Only once it fails is the
-							 * message considered plain text.
-							 */
-							if(!handleKeyExchange(context, address, fullMessage))
+						if(indb) {
+					
+							handleNotifSound(context);
+	
+							invalidKeyExchange = false;
+							
+							secretMessage = handleEncryptedMessage(context, address, fullMessage);
+							
+							if(secretMessage == null)
 							{
-								handlePlainMessage(context, address, fullMessage);
+								Log.v("message", fullMessage);
+	
+								/*
+								 * Since the user is not trusted, the message could
+								 * be a key exchange. Assume it is check for key
+								 * exchange message Only once it fails is the
+								 * message considered plain text.
+								 */
+								if(!handleKeyExchange(context, address, fullMessage))
+								{
+									handlePlainMessage(context, address, fullMessage);
+								}
 							}
+	
+							/*
+							 * Update the list of messages to show the new messages
+							 */
+							ConversationView.updateList(context,
+									ConversationView.messageViewActive);
+	
+							handleNotification(context, address, fullMessage, secretMessage);
+	
+							// Prevent other applications from seeing the message
+							// received
+							this.abortBroadcast();
 						}
-
-						/*
-						 * Update the list of messages to show the new messages
-						 */
-						ConversationView.updateList(context,
-								ConversationView.messageViewActive);
-
-						handleNotification(context, address, fullMessage, secretMessage);
-
-						// Prevent other applications from seeing the message
-						// received
-						this.abortBroadcast();
 					}
 				}
 			}
